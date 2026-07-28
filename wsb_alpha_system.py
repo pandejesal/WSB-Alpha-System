@@ -178,6 +178,31 @@ def compute_indicators(df):
 
     first_valid = df["GK_Vol"].dropna().iloc[0] if len(df["GK_Vol"].dropna()) > 0 else 0.50
     df["GK_Vol"] = df["GK_Vol"].fillna(first_valid)
+
+    # OSQuant Risk Metrics: Rolling 20-day 95% historical Value-at-Risk (VaR) and Expected Shortfall (CVaR)
+    # Computed on daily percent returns
+    daily_pct_returns = df["Close"].pct_change().fillna(0)
+    rolling_var = []
+    rolling_cvar = []
+    for i in range(len(df)):
+        if i < 20:
+            rolling_var.append(0.02)
+            rolling_cvar.append(0.04)
+        else:
+            window_rets = daily_pct_returns.iloc[i-19:i+1]
+            sorted_rets = np.sort(window_rets.values)
+            # 95% historical VaR index
+            var_idx = int(0.05 * len(sorted_rets))
+            var_val = -sorted_rets[var_idx] if var_idx < len(sorted_rets) else 0.02
+            # 95% Expected Shortfall (CVaR is the mean of returns below the 95% VaR threshold)
+            losses_below_var = sorted_rets[:var_idx+1]
+            cvar_val = -losses_below_var.mean() if len(losses_below_var) > 0 else 0.04
+
+            rolling_var.append(max(var_val, 0.0))
+            rolling_cvar.append(max(cvar_val, 0.0))
+
+    df["VaR_95"] = rolling_var
+    df["CVaR_95"] = rolling_cvar
     return df
 
 import xml.etree.ElementTree as ET
@@ -555,6 +580,13 @@ def run_sentiment_pipeline():
                     sharpe_multiplier = 1.25 if ensemble_score == 4 else 1.0
                     risk_parity_weight = (0.15 / clipped_vol) * sharpe_multiplier
 
+                    # 3. OSQuant Tail-Risk Risk Limit (Expected Shortfall / CVaR Risk Filter):
+                    # If estimated 95% Expected Shortfall (CVaR) exceeds 15% on a single-trade basis,
+                    # we dynamically throttle/halve the position size to limit tail-loss risk exposure.
+                    entry_cvar = entry_row.get("CVaR_95", 0.04)
+                    if entry_cvar > 0.15:
+                        risk_parity_weight *= 0.50
+
                     spy_entry_date = entry_date if entry_date in spy.index else spy.index[spy.index.searchsorted(entry_date, side="left")]
                     spy_entry_px = spy.loc[spy_entry_date]
 
@@ -562,6 +594,8 @@ def run_sentiment_pipeline():
                     base_dict["confluence_triggered"] = confluence_triggered
                     base_dict["GK_Vol"] = gk_vol
                     base_dict["risk_parity_weight"] = risk_parity_weight
+                    base_dict["VaR_95"] = entry_row.get("VaR_95", 0.02)
+                    base_dict["CVaR_95"] = entry_cvar
 
                     for d in FORWARD_DAYS:
                         target_idx = entry_idx + d
@@ -818,10 +852,18 @@ def print_quant_statistics():
         running_max = cum_prod.cummax()
         drawdown = (cum_prod - running_max) / running_max
         max_dd = drawdown.min() if len(drawdown) > 0 else 0.0
-        return mean_ret * 100, std_ret * 100, win_rate * 100, sharpe, sortino, max_dd * 100
 
-    raw_mean, raw_std, raw_win, raw_sharpe, raw_sortino, raw_mdd = compute_stats(raw_rets)
-    mix_mean, mix_std, mix_win, mix_sharpe, mix_sortino, mix_mdd = compute_stats(mixed_rets)
+        # OSQuant Risk Measures: Portfolio 95% historical Value-at-Risk (VaR) & Expected Shortfall (CVaR)
+        sorted_rets = np.sort(rets.values)
+        var_idx = int(0.05 * len(sorted_rets))
+        hist_var = -sorted_rets[var_idx] if len(sorted_rets) > 0 and var_idx < len(sorted_rets) else 0.0
+        losses_below_var = sorted_rets[:var_idx+1]
+        hist_cvar = -losses_below_var.mean() if len(losses_below_var) > 0 else 0.0
+
+        return mean_ret * 100, std_ret * 100, win_rate * 100, sharpe, sortino, max_dd * 100, hist_var * 100, hist_cvar * 100
+
+    raw_mean, raw_std, raw_win, raw_sharpe, raw_sortino, raw_mdd, raw_var, raw_cvar = compute_stats(raw_rets)
+    mix_mean, mix_std, mix_win, mix_sharpe, mix_sortino, mix_mdd, mix_var, mix_cvar = compute_stats(mixed_rets)
 
     print(f"{'Metric':<25} | {'Raw Sentiment Strategy':<25} | {'Optimized Confluence Ensemble':<25}")
     print("-" * 81)
@@ -831,6 +873,8 @@ def print_quant_statistics():
     print(f"{'Annualized Sharpe Ratio':<25} | {raw_sharpe:>24.2f} | {mix_sharpe:>24.2f}")
     print(f"{'Annualized Sortino Ratio':<25} | {raw_sortino:>24.2f} | {mix_sortino:>24.2f}")
     print(f"{'Maximum Drawdown':<25} | {raw_mdd:>22.2f}% | {mix_mdd:>22.2f}%")
+    print(f"{'Value-at-Risk (95% VaR)':<25} | {raw_var:>22.2f}% | {mix_var:>22.2f}%")
+    print(f"{'Expected Shortfall (CVaR)':<25} | {raw_cvar:>22.2f}% | {mix_cvar:>22.2f}%")
     print("-" * 81)
     print("Interpretation: The Optimized Confluence Ensemble with the Bollinger Bands Filter,")
     print("Garman-Klass Volatility Shield, and Max-Sharpe asset allocation vastly reduces volatility")
