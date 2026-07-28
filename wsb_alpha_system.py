@@ -151,6 +151,62 @@ def compute_indicators(df):
     df["HA_Low"] = df[["Low", "HA_Open", "HA_Close"]].min(axis=1)
     return df
 
+import xml.etree.ElementTree as ET
+import requests
+
+def fetch_rss_feed() -> list[dict]:
+    """
+    Fetches the WallStreetBets DD feed via Reddit RSS search.
+    This public RSS endpoint does not require an API key or registration.
+    """
+    url_rss = "https://www.reddit.com/r/wallstreetbets/search.rss?q=flair%3ADD&restrict_sr=1&sort=new"
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/119.0',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    }
+    try:
+        print(f"Requesting public RSS feed from: {url_rss}")
+        r = requests.get(url_rss, headers=headers, timeout=15)
+        if r.status_code != 200:
+            print(f"Warning: RSS feed returned status code {r.status_code}")
+            return []
+
+        root = ET.fromstring(r.text)
+        ns = {'atom': 'http://www.w3.org/2005/Atom'}
+        entries = root.findall('atom:entry', ns)
+
+        items = []
+        for entry in entries:
+            title_node = entry.find('atom:title', ns)
+            content_node = entry.find('atom:content', ns)
+            updated_node = entry.find('atom:updated', ns)
+            id_node = entry.find('atom:id', ns)
+            link_node = entry.find('atom:link', ns)
+
+            title = title_node.text if title_node is not None else ""
+            content = content_node.text if content_node is not None else ""
+            updated = updated_node.text if updated_node is not None else ""
+            raw_id = id_node.text if id_node is not None else ""
+            permalink = link_node.attrib.get('href', '') if link_node is not None else ""
+
+            # Clean up raw reddit ID (e.g., 't3_1v4qilm' -> '1v4qilm')
+            cleaned_id = raw_id.split('_')[-1] if '_' in raw_id else raw_id
+
+            items.append({
+                "id": cleaned_id,
+                "title": title,
+                "body": content,
+                "createdAt": updated,
+                "permalink": permalink,
+                "score": 100,  # Proxy default values as RSS contains basic post metadata
+                "num_comments": 20
+            })
+        print(f"Successfully parsed {len(items)} posts from the public RSS Feed.")
+        return items
+    except Exception as e:
+        print(f"Error fetching RSS feed: {e}")
+        return []
+
 # ============================================================================
 # PHASE 1: INCREMENTAL SCRAPING & SENTIMENT RE-EVALUATION PIPELINE
 # ============================================================================
@@ -162,36 +218,49 @@ def run_sentiment_pipeline():
     # ------------------------------------------------------------------
     # INPUT PROMPTS
     # ------------------------------------------------------------------
-    max_items_input = input("How many posts do you want to find (working backward from present)? (e.g. 100, 500, 1000. Default: 1000): ").strip()
-    max_items = int(max_items_input) if max_items_input.isdigit() else 1000
+    print("Select Reddit data collection mode:")
+    print("1. [FREE] Public RSS Feed Scraper (No API Keys / Accounts / Costs, fetches latest 25 posts)")
+    print("2. [PAID/KEY] Apify Reddit Scraper (Requires Apify API Token)")
+    mode_input = input("Enter option (1 or 2, default 1): ").strip()
     
-    target_year_input = input("Which year do you want to filter? (e.g. 2025, 2026. Press Enter for ALL years): ").strip()
-    target_year = int(target_year_input) if target_year_input.isdigit() else None
+    use_rss = mode_input != "2"
     
-    # Use block-safe URL for all runs to avoid Reddit 403 Forbidden limits
-    start_url = "https://www.reddit.com/r/wallstreetbets/search/?q=flair%3ADD&restrict_sr=1&sort=new"
-        
-    print(f"\nFetching up to {max_items} posts via Apify...")
-    client = ApifyClient(APIFY_TOKEN)
+    max_items = 1000
+    target_year = None
+
+    if not use_rss:
+        max_items_input = input("How many posts do you want to find (working backward from present)? (e.g. 100, 500, 1000. Default: 1000): ").strip()
+        max_items = int(max_items_input) if max_items_input.isdigit() else 1000
+
+        target_year_input = input("Which year do you want to filter? (e.g. 2025, 2026. Press Enter for ALL years): ").strip()
+        target_year = int(target_year_input) if target_year_input.isdigit() else None
     
     items = []
-    try:
-        run = client.actor(ACTOR_ID).call(run_input={
-            "startUrls": [{"url": start_url}],
-            "sort": "new",
-            "maxItems": max_items,
-        })
-        items = list(client.dataset(run.default_dataset_id).iterate_items())
-        print(f"Retrieved {len(items)} raw metadata items from Apify")
-    except Exception as e:
-        print(f"Warning: Failed to fetch items from Apify: {e}")
+    if use_rss:
+        items = fetch_rss_feed()
+    else:
+        # Use block-safe URL for all runs to avoid Reddit 403 Forbidden limits
+        start_url = "https://www.reddit.com/r/wallstreetbets/search/?q=flair%3ADD&restrict_sr=1&sort=new"
+
+        print(f"\nFetching up to {max_items} posts via Apify...")
+        client = ApifyClient(APIFY_TOKEN)
+        try:
+            run = client.actor(ACTOR_ID).call(run_input={
+                "startUrls": [{"url": start_url}],
+                "sort": "new",
+                "maxItems": max_items,
+            })
+            items = list(client.dataset(run.default_dataset_id).iterate_items())
+            print(f"Retrieved {len(items)} raw metadata items from Apify")
+        except Exception as e:
+            print(f"Warning: Failed to fetch items from Apify: {e}")
         
     # ------------------------------------------------------------------
     # ROBUST FALLBACK HANDLING FOR SCRAPER FAILURE
     # ------------------------------------------------------------------
     if not items:
         if os.path.exists(OUTPUT_CSV):
-            print("Apify returned 0 new items (likely due to network blocks).")
+            print("No new items returned or scraper could not fetch data.")
             user_choice = input("Would you like to re-evaluate and update returns for your existing CSV database? (y/n): ").strip().lower()
             if user_choice != 'y':
                 return False
@@ -220,8 +289,14 @@ def run_sentiment_pipeline():
                 created = datetime.fromtimestamp(created_val / 1000 if created_val > 1e12 else created_val)
             elif isinstance(created_val, str):
                 try:
-                    created = datetime.fromisoformat(created_val.replace("Z", "+00:00"))
-                except ValueError:
+                    # Robust ISO or custom timestamp parsing
+                    if "T" in created_val:
+                        # Clean trailing offsets
+                        clean_ts = created_val.split("+")[0].split("Z")[0]
+                        created = datetime.strptime(clean_ts[:19], "%Y-%m-%dT%H:%M:%S")
+                    else:
+                        created = datetime.fromisoformat(created_val.replace("Z", "+00:00"))
+                except Exception:
                     continue
             else:
                 continue
