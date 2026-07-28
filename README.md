@@ -77,6 +77,11 @@ Inspired by state-of-the-art predictive algorithms found in leading stock-predic
 * **Consensus Filter**: Bullish sentiment setups require a positive forecast ($> +0.50\%$ projected gain), and bearish setups require a negative forecast ($< -0.50\%$ projected gain) to be authorized.
 * **Conviction Sizing Booster**: If the localized statistical forecaster signals high conviction (absolute projected return $> 2.0\%$), the allocation weight is boosted by **$1.5\text{x}$** to capture maximum alpha in the minimum amount of time.
 
+### 8. Volatility-Based Dynamic Regime Switching Holding Periods
+Consistent with institutional-grade Markov Regime-Switching models and volatility literature (as seen in major quant publications), the system drops static-day holding horizons in favor of a **Volatility-Based Dynamic Regime Switching holding protocol** to capture high returns in the shortest amount of time:
+* **Low Volatility Regime ($\sigma_{GK} < 30\%$)**: The holding period is set to **10 days** ($T+10$) to let compound trend-following profits run in stable, low-risk conditions.
+* **High Volatility Regime ($\sigma_{GK} \ge 30\%$)**: The holding period is compressed down to **1 day** ($T+1$) to lock in fast gains and shield capital from high-risk tail-risk reversals.
+
 ---
 
 ## 📊 Empirical Results & Comparison
