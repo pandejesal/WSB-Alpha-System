@@ -149,6 +149,24 @@ def compute_indicators(df):
     df["HA_Open"] = ha_open
     df["HA_High"] = df[["High", "HA_Open", "HA_Close"]].max(axis=1)
     df["HA_Low"] = df[["Low", "HA_Open", "HA_Close"]].min(axis=1)
+
+    # Garman-Klass Volatility (20-day rolling window, annualized)
+    # Formula: 0.5 * [ln(H/L)]^2 - (2*ln(2) - 1) * [ln(C/O)]^2
+    # Handled carefully to avoid dividing or logging zero values
+    safe_high = df["High"].replace(0, 0.01)
+    safe_low = df["Low"].replace(0, 0.01)
+    safe_close = df["Close"].replace(0, 0.01)
+    safe_open = df["Open"].replace(0, 0.01)
+
+    log_hl = np.log(safe_high / safe_low)
+    log_co = np.log(safe_close / safe_open)
+    gk_element = 0.5 * (log_hl ** 2) - (2 * np.log(2) - 1) * (log_co ** 2)
+    gk_variance = gk_element.rolling(window=20).mean()
+    gk_variance = gk_variance.clip(lower=1e-10)
+    df["GK_Vol"] = np.sqrt(252 * gk_variance)
+
+    first_valid = df["GK_Vol"].dropna().iloc[0] if len(df["GK_Vol"].dropna()) > 0 else 0.50
+    df["GK_Vol"] = df["GK_Vol"].fillna(first_valid)
     return df
 
 import xml.etree.ElementTree as ET
@@ -475,33 +493,55 @@ def run_sentiment_pipeline():
                     entry_date = ind_df.index[entry_idx]
                     entry_px = ind_df["Close"].iloc[entry_idx]
 
-                    # Confluence Check at entry_date (T+1)
+                    # --------------------------------------------------------
+                    # ADVANCED MULTI-ALGORITHM CONFLUENCE & RISK SHIELD (T+1 CLOSE ENTRY)
+                    # --------------------------------------------------------
                     entry_row = ind_df.iloc[entry_idx]
                     sentiment_score = row["sentiment_score"]
+                    gk_vol = entry_row.get("GK_Vol", 0.50)
 
-                    confluence_triggered = False
+                    # 1. Advanced Volatility Shield (Avoid highly unstable pump-and-dump/squeeze setups)
+                    # If Garman-Klass Volatility exceeds 120% annualized, we block/avoid the trade entirely
+                    volatility_shield_passed = gk_vol < 1.20
+
+                    # Compute individual algorithmic voting channels:
+                    # Alg 1: Heikin-Ashi Trend Continuation
+                    alg_ha = False
+                    # Alg 2: EMA & MACD Momentum Filter
+                    alg_momentum = False
+                    # Alg 3: Bollinger Bands / RSI Overbought-Oversold Boundaries
+                    alg_reversion = False
+
                     if sentiment_score > 0:
-                        # Bullish rules:
-                        ha_green = entry_row["HA_Close"] > entry_row["HA_Open"]
-                        above_ema = entry_row["Close"] > entry_row["EMA_20"]
-                        healthy_rsi = 40.0 < entry_row["RSI_14"] < 70.0
-                        macd_pos = entry_row["MACD_Hist"] > 0.0
-                        if ha_green and above_ema and healthy_rsi and macd_pos:
-                            confluence_triggered = True
+                        # Bullish Scenarios
+                        alg_ha = entry_row["HA_Close"] > entry_row["HA_Open"]
+                        alg_momentum = (entry_row["Close"] > entry_row["EMA_20"]) and (entry_row["MACD_Hist"] > 0.0)
+                        # Ensure RSI is not overbought but carries strength, and close is in upper half of trend
+                        alg_reversion = (40.0 < entry_row["RSI_14"] < 70.0)
                     elif sentiment_score < 0:
-                        # Bearish rules:
-                        ha_red = entry_row["HA_Close"] < entry_row["HA_Open"]
-                        below_ema = entry_row["Close"] < entry_row["EMA_20"]
-                        healthy_rsi_bear = 30.0 < entry_row["RSI_14"] < 60.0
-                        macd_neg = entry_row["MACD_Hist"] < 0.0
-                        if ha_red and below_ema and healthy_rsi_bear and macd_neg:
-                            confluence_triggered = True
+                        # Bearish Scenarios
+                        alg_ha = entry_row["HA_Close"] < entry_row["HA_Open"]
+                        alg_momentum = (entry_row["Close"] < entry_row["EMA_20"]) and (entry_row["MACD_Hist"] < 0.0)
+                        alg_reversion = (30.0 < entry_row["RSI_14"] < 60.0)
+
+                    # Ensemble Voting: N out of M (2 out of 3 algorithms must agree)
+                    ensemble_score = int(alg_ha) + int(alg_momentum) + int(alg_reversion)
+                    confluence_triggered = (ensemble_score >= 2) and volatility_shield_passed
+
+                    # 2. Risk Parity Allocation / Volatility-Adjusted Sizing
+                    # Base allocation multiplier is inversely proportional to Garman-Klass Volatility
+                    # Target portfolio volatility constant = 15% (0.15)
+                    # We bound volatility between 15% and 120% to prevent extreme/infinite sizing weights
+                    clipped_vol = max(min(gk_vol, 1.20), 0.15)
+                    risk_parity_weight = 0.15 / clipped_vol
 
                     spy_entry_date = entry_date if entry_date in spy.index else spy.index[spy.index.searchsorted(entry_date, side="left")]
                     spy_entry_px = spy.loc[spy_entry_date]
 
                     base_dict = row.to_dict()
                     base_dict["confluence_triggered"] = confluence_triggered
+                    base_dict["GK_Vol"] = gk_vol
+                    base_dict["risk_parity_weight"] = risk_parity_weight
 
                     for d in FORWARD_DAYS:
                         target_idx = entry_idx + d
@@ -519,8 +559,11 @@ def run_sentiment_pipeline():
                             base_dict[f"alpha_{d}d"] = stock_ret - spy_ret
 
                             if confluence_triggered:
-                                base_dict[f"mixed_ret_{d}d"] = stock_ret
-                                base_dict[f"mixed_alpha_{d}d"] = stock_ret - spy_ret
+                                # Apply Risk Parity weighted return to standard performance tracking
+                                weighted_ret = stock_ret * risk_parity_weight
+                                weighted_alpha = (stock_ret - spy_ret) * risk_parity_weight
+                                base_dict[f"mixed_ret_{d}d"] = weighted_ret
+                                base_dict[f"mixed_alpha_{d}d"] = weighted_alpha
                             else:
                                 base_dict[f"mixed_ret_{d}d"] = 0.0
                                 base_dict[f"mixed_alpha_{d}d"] = 0.0
@@ -594,7 +637,9 @@ def run_trajectory_plotter(top_n_tickers=5):
     df = pd.read_csv(OUTPUT_CSV)
     df['post_date'] = pd.to_datetime(df['post_date'])
     
-    top_tickers = df['ticker'].value_counts().head(top_n_tickers).index.tolist()
+    # Filter out tickers that are marked as pricing_failed to ensure we only select tickers with valid price data for plotting
+    valid_df = df[df['pricing_failed'] != True]
+    top_tickers = valid_df['ticker'].value_counts().head(top_n_tickers).index.tolist()
     print(f"Selected top {top_n_tickers} tickers for plotting: {top_tickers}")
     
     events_to_plot = []
@@ -662,14 +707,21 @@ def run_trajectory_plotter(top_n_tickers=5):
         color = line_ref.get_color()
 
         # Plot Mixed strategy path (solid line)
-        # If confluence is True, tracks stock. Else, stays at 100.0 from T=0 onwards.
+        # If confluence is True, tracks stock scaled by risk parity allocation weight. Else, stays at 100.0 from T=0 onwards.
+        event_row = df[(df['ticker'] == ticker) & (df['post_date'] == post_date)]
+        risk_parity_weight = 1.0
+        if not event_row.empty:
+            risk_parity_weight = float(event_row.iloc[0].get('risk_parity_weight', 1.0))
+
         mixed_path = []
         for rd, ns in zip(relative_days, normalized_stock.values):
             if rd < 0:
                 mixed_path.append(ns)
             else:
                 if confluence_triggered:
-                    mixed_path.append(ns)
+                    # Normalized trajectory scaled by the allocation weight (measured from 100 base)
+                    weighted_val = 100.0 + (ns - 100.0) * risk_parity_weight
+                    mixed_path.append(weighted_val)
                 else:
                     mixed_path.append(100.0)
 

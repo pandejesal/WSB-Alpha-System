@@ -44,18 +44,24 @@ While retail sentiment highlights high-attention stock ideas, trading them blind
 * **14-Period Relative Strength Index (RSI):** Filters out overbought/oversold extremes (healthy zone boundaries).
 * **MACD Histogram:** Provides short-term momentum confirmation.
 
-#### Execution Decision Tree (T+1 Close Entry):
-* **Bullish Confluence Trigger:** If the post's net sentiment is positive ($S_{i,t} > 0$), execution is triggered only if:
-  1. The Heikin-Ashi candle is green ($HA\_Close > HA\_Open$).
-  2. The close price is above the 20-period EMA ($Close > EMA_{20}$).
-  3. The RSI is in a healthy, active territory ($40 < RSI_{14} < 70$).
-  4. The MACD Histogram is positive ($MACD\_Hist > 0$).
-* **Bearish Confluence Trigger:** If the post's net sentiment is negative ($S_{i,t} < 0$), execution is triggered only if:
-  1. The Heikin-Ashi candle is red ($HA\_Close < HA\_Open$).
-  2. The close price is below the 20-period EMA ($Close < EMA_{20}$).
-  3. The RSI is in a healthy, active territory ($30 < RSI_{14} < 60$).
-  4. The MACD Histogram is negative ($MACD\_Hist < 0$).
-* **Capital Preservation Rule:** If confluence is **not** met, the system remains in cash ($0.0\%$ return / $0.0\%$ alpha).
+#### Execution Decision Tree & Multi-Algorithm Ensemble Voting (T+1 Close Entry):
+To avoid reliance on any single indicator, the system uses an **Ensemble Voting Mechanism** spanning 3 discrete technical channels:
+1. **Channel 1 (Heikin-Ashi Trend Continuation):** Verifies the immediate directional bias of noise-filtered HA candles ($HA\_Close > HA\_Open$ for bullish; $HA\_Close < HA\_Open$ for bearish).
+2. **Channel 2 (EMA & MACD Momentum Filter):** Confirms that price is trading above the 20-period EMA and the short-term MACD histogram is expanding in the direction of the trend ($Close > EMA_{20}$ and $MACD\_Hist > 0$ for bullish; $Close < EMA_{20}$ and $MACD\_Hist < 0$ for bearish).
+3. **Channel 3 (RSI Zone Bounds):** Protects against entering overextended/overbought trades. Healthy active zones are enforced ($40 < RSI_{14} < 70$ for bullish; $30 < RSI_{14} < 60$ for bearish).
+
+* **The Ensemble Confluence Trigger:** A trade is authorized only if at least **2 out of the 3 channels agree ($N \ge 2$)** AND the asset passes the Volatility Shield.
+* **The Annualized Garman-Klass Volatility Shield:** Leverages the open, high, low, and close (OHLC) prices over a rolling 20-day window to calculate a continuous estimation of intraday and interday volatility:
+  $$\sigma_{GK}^2 = \frac{252}{N} \sum_{i=1}^N \left[ 0.5 \left( \ln \frac{H_i}{L_i} \right)^2 - (2\ln 2 - 1) \left( \ln \frac{C_i}{O_i} \right)^2 \right]$$
+  If the annualized volatility exceeds **$120\%$**, the trade is instantly bypassed (retaining $0.0\%$ return / cash position) to shield capital from highly speculative pump-and-dump assets, meme manipulation, or short squeezes.
+* **Capital Preservation Rule:** If confluence is **not** met, or the Volatility Shield is breached, the system remains in cash ($0.0\%$ return / $0.0\%$ alpha).
+
+### 5. Risk Parity Capital Allocation Sizing
+To maximize the system's efficiency and reliability, equal-position weighting is replaced by a professional **Risk Parity Allocation Engine**. The position size/multiplier of a trade is scaled inversely to its Garman-Klass Volatility, ensuring that each trade contributes an identical risk unit to the overall portfolio:
+$$Weight_{i} = \frac{\sigma_{Target}}{\sigma_{GK, i}}$$
+Where:
+* $\sigma_{Target} = 15\%$ (annualized target volatility constant).
+* $\sigma_{GK, i}$ is the annualized Garman-Klass Volatility for ticker $i$ on entry day, clipped between $15\%$ and $120\%$ to prevent extreme or infinite leverage weights.
 
 ---
 
