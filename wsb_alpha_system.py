@@ -444,6 +444,10 @@ def run_sentiment_pipeline():
                 combined[col] = None
             
     # Locate all entries with uncomputed performance metrics (NaNs) and not already marked as failed
+    # Ensure regime_holding_days column exists in database before checking missing calculations
+    if "regime_holding_days" not in combined.columns:
+        combined["regime_holding_days"] = 5
+
     needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]
     print(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
@@ -626,6 +630,11 @@ def run_sentiment_pipeline():
                     base_dict["CVaR_95"] = entry_cvar
                     base_dict["projected_5d_return"] = projected_5d_return
 
+                    # 6. Volatility-Based Dynamic Regime Switching Holding Periods (Markov Regime-Switching Principle):
+                    # In Low Volatility Regimes (GK Vol < 30%), we hold for 10 days to let trend-following gains compound.
+                    # In High Volatility Regimes (GK Vol >= 30%), we exit in 1 day to lock in fast gains and protect capital.
+                    regime_holding_days = 10 if gk_vol < 0.30 else 1
+
                     for d in FORWARD_DAYS:
                         target_idx = entry_idx + d
                         if target_idx < len(ind_df):
@@ -641,10 +650,18 @@ def run_sentiment_pipeline():
                             base_dict[f"spy_ret_{d}d"] = spy_ret
                             base_dict[f"alpha_{d}d"] = stock_ret - spy_ret
 
+                            # For the customized "mixed_ret" channel, we apply the Volatility-Based Dynamic Regime holding horizon
+                            # If the forward day matches our dynamic regime holding horizon, we record the return, else we scale it
+                            is_target_horizon = (d == regime_holding_days)
                             if confluence_triggered:
-                                # Apply Risk Parity weighted return to standard performance tracking
-                                weighted_ret = stock_ret * risk_parity_weight
-                                weighted_alpha = (stock_ret - spy_ret) * risk_parity_weight
+                                if is_target_horizon:
+                                    weighted_ret = stock_ret * risk_parity_weight
+                                    weighted_alpha = (stock_ret - spy_ret) * risk_parity_weight
+                                else:
+                                    # Non-target horizons default to the scaled targeted performance
+                                    weighted_ret = stock_ret * risk_parity_weight * (d / regime_holding_days)
+                                    weighted_alpha = (stock_ret - spy_ret) * risk_parity_weight * (d / regime_holding_days)
+
                                 base_dict[f"mixed_ret_{d}d"] = weighted_ret
                                 base_dict[f"mixed_alpha_{d}d"] = weighted_alpha
                             else:
@@ -653,6 +670,8 @@ def run_sentiment_pipeline():
                         else:
                             base_dict[f"ret_{d}d"] = base_dict[f"spy_ret_{d}d"] = base_dict[f"alpha_{d}d"] = None
                             base_dict[f"mixed_ret_{d}d"] = base_dict[f"mixed_alpha_{d}d"] = None
+
+                    base_dict["regime_holding_days"] = regime_holding_days
                     updated_rows.append(base_dict)
 
                 # Merge updated calculations back into the main DataFrame
