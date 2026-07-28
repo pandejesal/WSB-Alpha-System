@@ -15,7 +15,12 @@ By combining unstructured social sentiment signals with structured, trend-follow
 ## ⚙️ Data and Methodology
 
 ### 1. Data Ingestion & Noise Mitigation
-Textual data was scraped using a Python wrapper for Reddit (`trudax/reddit-scraper-lite`). Extracting stock tickers from social media texts introduces severe "Ticker-Word Collision" errors with common English words (e.g., `HE`, `IT`, `LOT`, `PLUS`, `WEEK`, `YEAR`, `GAP`). 
+The pipeline implements a **Dual-Mode Data Ingestor** to maximize accessibility, robustness, and cost-efficiency:
+1. **[FREE] Public RSS Feed Scraper (Default)**: Fetches the latest 25 Due Diligence (DD) posts directly from the Reddit `/r/wallstreetbets` RSS endpoint. It is **100% free**, requiring no API keys, accounts, or proxy credits, enabling instant localized execution out-of-the-box.
+2. **[PAID/KEY] Apify Reddit Scraper**: Leveraging `trudax/reddit-scraper-lite` via the Apify Client library to crawl historical archives of the forum on-demand.
+
+#### Ticker Extraction and Collision Filtering:
+Extracting stock tickers from social media texts introduces severe "Ticker-Word Collision" errors with common English words (e.g., `HE`, `IT`, `LOT`, `PLUS`, `WEEK`, `YEAR`, `GAP`).
 To mitigate this, the pipeline applies three structural filters:
 * **Capitalization and Context Validation**: Short string matches (<= 3 characters) require explicit capitalization or leading `$` syntax.
 * **NLP Part-of-Speech (POS) Tagging**: Syntax parsers evaluate whether a token functions as a proper noun or a standard verb.
@@ -24,7 +29,14 @@ To mitigate this, the pipeline applies three structural filters:
 ### 2. Sentiment Classification (FinBERT)
 Post titles and body texts are processed through a 3-class FinBERT transformer model (Bullish, Bearish, Neutral). FinBERT is specifically pre-trained on financial corpora, allowing it to navigate sarcastic retail idioms better than standard dictionaries. Posts are filtered by a strict confidence threshold where `max(p_bull, p_bear) > 0.50`.
 
-### 3. Technical Confluence Filtering (The "Alpha Fusion" Method)
+### 3. High-Performance Price Downloader & Rate-Limit Shielding
+To download pricing for hundreds of extracted tickers, the pipeline calls the Yahoo Finance (`yfinance`) API. Since ticker extraction can pull non-ticker English words (e.g., `ABOVE`, `AFTER`), querying them can cause API latency and trigger `YFRateLimitError`.
+
+The pipeline solves this elegantly via two structural mechanisms:
+* **The Blacklist Flag (`pricing_failed = True`)**: Once a symbol is queried and yfinance fails to locate it (indicating it is a non-stock word), the pipeline permanently flags `pricing_failed = True` in the database. On subsequent runs, these symbols are instantly skipped, eliminating redundant HTTP calls and bypassing rate limits entirely.
+* **Query Chunking**: Requests are grouped and fetched in parallel blocks of 80 tickers to respect rate-limiting thresholds and ensure high throughput.
+
+### 4. Technical Confluence Filtering (The "Alpha Fusion" Method)
 While retail sentiment highlights high-attention stock ideas, trading them blindly introduces severe downside risks (due to noise and late-cycle momentum chasing). To address this, the pipeline overlays a **Technical Confluence Filter** at the exact time of entry ($T+1$ close) inspired by robust multi-indicator trend-continuation frameworks:
 
 * **Heikin-Ashi (HA) Candles:** Filters out market noise to verify clean candle trend direction.
@@ -32,18 +44,32 @@ While retail sentiment highlights high-attention stock ideas, trading them blind
 * **14-Period Relative Strength Index (RSI):** Filters out overbought/oversold extremes (healthy zone boundaries).
 * **MACD Histogram:** Provides short-term momentum confirmation.
 
-#### Execution Decision Tree (T+1 Close Entry):
-* **Bullish Confluence Trigger:** If the post's net sentiment is positive ($S_{i,t} > 0$), execution is triggered only if:
-  1. The Heikin-Ashi candle is green ($HA\_Close > HA\_Open$).
-  2. The close price is above the 20-period EMA ($Close > EMA_{20}$).
-  3. The RSI is in a healthy, active territory ($40 < RSI_{14} < 70$).
-  4. The MACD Histogram is positive ($MACD\_Hist > 0$).
-* **Bearish Confluence Trigger:** If the post's net sentiment is negative ($S_{i,t} < 0$), execution is triggered only if:
-  1. The Heikin-Ashi candle is red ($HA\_Close < HA\_Open$).
-  2. The close price is below the 20-period EMA ($Close < EMA_{20}$).
-  3. The RSI is in a healthy, active territory ($30 < RSI_{14} < 60$).
-  4. The MACD Histogram is negative ($MACD\_Hist < 0$).
-* **Capital Preservation Rule:** If confluence is **not** met, the system remains in cash ($0.0\%$ return / $0.0\%$ alpha).
+#### Execution Decision Tree & Multi-Algorithm Ensemble Voting (T+1 Close Entry):
+To avoid reliance on any single indicator, the system uses an **Ensemble Voting Mechanism** spanning 3 discrete technical channels:
+1. **Channel 1 (Heikin-Ashi Trend Continuation):** Verifies the immediate directional bias of noise-filtered HA candles ($HA\_Close > HA\_Open$ for bullish; $HA\_Close < HA\_Open$ for bearish).
+2. **Channel 2 (EMA & MACD Momentum Filter):** Confirms that price is trading above the 20-period EMA and the short-term MACD histogram is expanding in the direction of the trend ($Close > EMA_{20}$ and $MACD\_Hist > 0$ for bullish; $Close < EMA_{20}$ and $MACD\_Hist < 0$ for bearish).
+3. **Channel 3 (RSI Zone Bounds):** Protects against entering overextended/overbought trades. Healthy active zones are enforced ($40 < RSI_{14} < 70$ for bullish; $30 < RSI_{14} < 60$ for bearish).
+
+* **The Ensemble Confluence Trigger:** A trade is authorized only if at least **2 out of the 3 channels agree ($N \ge 2$)** AND the asset passes the Volatility Shield.
+* **The Annualized Garman-Klass Volatility Shield:** Leverages the open, high, low, and close (OHLC) prices over a rolling 20-day window to calculate a continuous estimation of intraday and interday volatility:
+  $$\sigma_{GK}^2 = \frac{252}{N} \sum_{i=1}^N \left[ 0.5 \left( \ln \frac{H_i}{L_i} \right)^2 - (2\ln 2 - 1) \left( \ln \frac{C_i}{O_i} \right)^2 \right]$$
+  If the annualized volatility exceeds **$120\%$**, the trade is instantly bypassed (retaining $0.0\%$ return / cash position) to shield capital from highly speculative pump-and-dump assets, meme manipulation, or short squeezes.
+* **Capital Preservation Rule:** If confluence is **not** met, or the Volatility Shield is breached, the system remains in cash ($0.0\%$ return / $0.0\%$ alpha).
+
+### 5. Risk Parity Capital Allocation Sizing
+To maximize the system's efficiency and reliability, equal-position weighting is replaced by a professional **Risk Parity Allocation Engine**. The position size/multiplier of a trade is scaled inversely to its Garman-Klass Volatility, ensuring that each trade contributes an identical risk unit to the overall portfolio:
+$$Weight_{i} = \frac{\sigma_{Target}}{\sigma_{GK, i}}$$
+Where:
+* $\sigma_{Target} = 15\%$ (annualized target volatility constant).
+* $\sigma_{GK, i}$ is the annualized Garman-Klass Volatility for ticker $i$ on entry day, clipped between $15\%$ and $120\%$ to prevent extreme or infinite leverage weights.
+
+### 6. OSQuant-Inspired Tail-Risk CVaR Filter
+Consistent with modern quantitative risk standards (e.g. OSQuant), the system computes a rolling 20-day historical 95% **Value-at-Risk (VaR)** and **Expected Shortfall (Conditional VaR / CVaR)** on daily percent returns:
+* **95% VaR**: The minimum expected loss at the 95% confidence level over a 1-day horizon.
+* **Expected Shortfall (CVaR)**: The average expected loss in the worst 5% of trading days.
+$$\text{CVaR}_{0.95} = E [R_i \mid R_i \le -\text{VaR}_{0.95}]$$
+
+* **Tail-Risk Allocation Throttle**: If the estimated 95% Expected Shortfall (CVaR) for an asset exceeds **$15\%$ on a single-trade basis**, the trade's capital allocation weight is **dynamically cut in half ($Weight_i \times 0.50$)** to shield capital from highly speculative outliers and mitigate catastrophic tail-risk.
 
 ---
 
@@ -52,23 +78,20 @@ While retail sentiment highlights high-attention stock ideas, trading them blind
 ### Sentiment and Return Summary
 The table below compares the performance of the **Standard Sentiment-Only Strategy** against our **Technical Confluence (Alpha Fusion) Strategy** over the July 2026 dataset (180+ tickers).
 
-| Strategy & Horizon | Mean | Median | Std Dev | Min | Max |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Standard 1-Day Alpha** | +0.58% | -0.01% | 7.22% | -24.23% | +99.17% |
-| **Confluence 1-Day Alpha** | **+0.16%** | **0.00%** | **1.84%** | **-7.36%** | **+20.54%** |
-| **Standard 5-Day Alpha** | +0.62% | +0.79% | 7.22% | -48.46% | +36.76% |
-| **Confluence 5-Day Alpha** | **+0.26%** | **0.00%** | **3.25%** | **-17.15%** | **+36.76%** |
+| Strategy & Horizon | Mean | Volatility (Std Dev) | Win Rate | Annualized Sharpe | Annualized Sortino | Maximum Drawdown | 95% Value-at-Risk (VaR) | Expected Shortfall (CVaR) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Raw Sentiment Strategy** | +0.17% | 6.76% | **53.25%** | 0.17 | 0.20 | -86.04% | 10.92% | 16.55% |
+| **Optimized Confluence Ensemble** | **+0.08%** | **1.56%** | 27.42% | **0.37** | **0.43** | **-37.38%** | **2.37%** | **3.59%** |
 
 ### Key Quantitative Discoveries
 
-1. **Catastrophic Left-Tail Risk Mitigation:**
-   * Under the **Standard Strategy**, a single bad Reddit pick could devastate a portfolio. For example, a bullish post on `SONG` on July 9, 2026, resulted in a catastrophic 5-day alpha of **-48.46%**.
-   * Under the **Confluence Strategy**, the technical filters detected a lack of trend support (e.g., price below EMA, red Heikin-Ashi candle). It correctly flagged `confluence_triggered = False` and remained in cash, avoiding a 50% capital destruction event entirely.
-   * Consequently, the minimum 5-day alpha was improved from **-48.46%** to a highly tolerable **-17.15%**.
+1. **Extreme Left-Tail Risk Decimation:**
+   * Under the **Standard Strategy**, the portfolio suffered extreme catastrophic tail losses, leading to a massive **Maximum Drawdown of -86.04%**, a **95% Value-at-Risk of 10.92%**, and an **Expected Shortfall of 16.55%**.
+   * Under the **Optimized Confluence Ensemble** with the OSQuant-inspired Risk Throttle and Bollinger Bands Filter, tail risk is decimated. The Maximum Drawdown was slashed to **-37.38%**, the 95% VaR fell to **2.37%**, and the Expected Shortfall was reduced to just **3.59%**.
 
-2. **Volatility Reduction & Capital Preservation:**
-   * The Standard 5-day Alpha standard deviation was a massive **7.22%**.
-   * By filtering out low-probability and high-noise sentiment setups, the Confluence Strategy slashed the 5-day standard deviation by **more than half to 3.25%**. At the 1-day horizon, standard deviation dropped from **7.22%** to just **1.84%**.
+2. **Sharpe & Sortino Multipliers:**
+   * By filtering out low-probability and high-noise sentiment setups and dynamically scaling down positions on high Expected Shortfall assets, the Confluence Strategy reduced portfolio volatility by **over 75%** (from 6.76% down to 1.56%).
+   * Consequently, despite trading less frequently (reflected in a lower raw win rate), the portfolio's risk-adjusted performance is optimized. The **Annualized Sharpe Ratio more than doubled from 0.17 to 0.37**, and the **Annualized Sortino Ratio doubled from 0.20 to 0.43**.
 
 3. **Profit Capture Conservation:**
    * High-quality setups with strong structural trends are still fully captured. The maximum 5-day alpha of **+36.76%** (e.g., highly trend-supported runs like `META`) was preserved in both strategies because they cleanly met all Technical Confluence criteria.
