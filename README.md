@@ -15,7 +15,12 @@ By combining unstructured social sentiment signals with structured, trend-follow
 ## ⚙️ Data and Methodology
 
 ### 1. Data Ingestion & Noise Mitigation
-Textual data was scraped using a Python wrapper for Reddit (`trudax/reddit-scraper-lite`). Extracting stock tickers from social media texts introduces severe "Ticker-Word Collision" errors with common English words (e.g., `HE`, `IT`, `LOT`, `PLUS`, `WEEK`, `YEAR`, `GAP`). 
+The pipeline implements a **Dual-Mode Data Ingestor** to maximize accessibility, robustness, and cost-efficiency:
+1. **[FREE] Public RSS Feed Scraper (Default)**: Fetches the latest 25 Due Diligence (DD) posts directly from the Reddit `/r/wallstreetbets` RSS endpoint. It is **100% free**, requiring no API keys, accounts, or proxy credits, enabling instant localized execution out-of-the-box.
+2. **[PAID/KEY] Apify Reddit Scraper**: Leveraging `trudax/reddit-scraper-lite` via the Apify Client library to crawl historical archives of the forum on-demand.
+
+#### Ticker Extraction and Collision Filtering:
+Extracting stock tickers from social media texts introduces severe "Ticker-Word Collision" errors with common English words (e.g., `HE`, `IT`, `LOT`, `PLUS`, `WEEK`, `YEAR`, `GAP`).
 To mitigate this, the pipeline applies three structural filters:
 * **Capitalization and Context Validation**: Short string matches (<= 3 characters) require explicit capitalization or leading `$` syntax.
 * **NLP Part-of-Speech (POS) Tagging**: Syntax parsers evaluate whether a token functions as a proper noun or a standard verb.
@@ -24,7 +29,14 @@ To mitigate this, the pipeline applies three structural filters:
 ### 2. Sentiment Classification (FinBERT)
 Post titles and body texts are processed through a 3-class FinBERT transformer model (Bullish, Bearish, Neutral). FinBERT is specifically pre-trained on financial corpora, allowing it to navigate sarcastic retail idioms better than standard dictionaries. Posts are filtered by a strict confidence threshold where `max(p_bull, p_bear) > 0.50`.
 
-### 3. Technical Confluence Filtering (The "Alpha Fusion" Method)
+### 3. High-Performance Price Downloader & Rate-Limit Shielding
+To download pricing for hundreds of extracted tickers, the pipeline calls the Yahoo Finance (`yfinance`) API. Since ticker extraction can pull non-ticker English words (e.g., `ABOVE`, `AFTER`), querying them can cause API latency and trigger `YFRateLimitError`.
+
+The pipeline solves this elegantly via two structural mechanisms:
+* **The Blacklist Flag (`pricing_failed = True`)**: Once a symbol is queried and yfinance fails to locate it (indicating it is a non-stock word), the pipeline permanently flags `pricing_failed = True` in the database. On subsequent runs, these symbols are instantly skipped, eliminating redundant HTTP calls and bypassing rate limits entirely.
+* **Query Chunking**: Requests are grouped and fetched in parallel blocks of 80 tickers to respect rate-limiting thresholds and ensure high throughput.
+
+### 4. Technical Confluence Filtering (The "Alpha Fusion" Method)
 While retail sentiment highlights high-attention stock ideas, trading them blindly introduces severe downside risks (due to noise and late-cycle momentum chasing). To address this, the pipeline overlays a **Technical Confluence Filter** at the exact time of entry ($T+1$ close) inspired by robust multi-indicator trend-continuation frameworks:
 
 * **Heikin-Ashi (HA) Candles:** Filters out market noise to verify clean candle trend direction.
