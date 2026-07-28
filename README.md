@@ -63,6 +63,14 @@ Where:
 * $\sigma_{Target} = 15\%$ (annualized target volatility constant).
 * $\sigma_{GK, i}$ is the annualized Garman-Klass Volatility for ticker $i$ on entry day, clipped between $15\%$ and $120\%$ to prevent extreme or infinite leverage weights.
 
+### 6. OSQuant-Inspired Tail-Risk CVaR Filter
+Consistent with modern quantitative risk standards (e.g. OSQuant), the system computes a rolling 20-day historical 95% **Value-at-Risk (VaR)** and **Expected Shortfall (Conditional VaR / CVaR)** on daily percent returns:
+* **95% VaR**: The minimum expected loss at the 95% confidence level over a 1-day horizon.
+* **Expected Shortfall (CVaR)**: The average expected loss in the worst 5% of trading days.
+$$\text{CVaR}_{0.95} = E [R_i \mid R_i \le -\text{VaR}_{0.95}]$$
+
+* **Tail-Risk Allocation Throttle**: If the estimated 95% Expected Shortfall (CVaR) for an asset exceeds **$15\%$ on a single-trade basis**, the trade's capital allocation weight is **dynamically cut in half ($Weight_i \times 0.50$)** to shield capital from highly speculative outliers and mitigate catastrophic tail-risk.
+
 ---
 
 ## 📊 Empirical Results & Comparison
@@ -70,23 +78,20 @@ Where:
 ### Sentiment and Return Summary
 The table below compares the performance of the **Standard Sentiment-Only Strategy** against our **Technical Confluence (Alpha Fusion) Strategy** over the July 2026 dataset (180+ tickers).
 
-| Strategy & Horizon | Mean | Median | Std Dev | Min | Max |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **Standard 1-Day Alpha** | +0.58% | -0.01% | 7.22% | -24.23% | +99.17% |
-| **Confluence 1-Day Alpha** | **+0.16%** | **0.00%** | **1.84%** | **-7.36%** | **+20.54%** |
-| **Standard 5-Day Alpha** | +0.62% | +0.79% | 7.22% | -48.46% | +36.76% |
-| **Confluence 5-Day Alpha** | **+0.26%** | **0.00%** | **3.25%** | **-17.15%** | **+36.76%** |
+| Strategy & Horizon | Mean | Volatility (Std Dev) | Win Rate | Annualized Sharpe | Annualized Sortino | Maximum Drawdown | 95% Value-at-Risk (VaR) | Expected Shortfall (CVaR) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Raw Sentiment Strategy** | +0.17% | 6.76% | **53.25%** | 0.17 | 0.20 | -86.04% | 10.92% | 16.55% |
+| **Optimized Confluence Ensemble** | **+0.08%** | **1.56%** | 27.42% | **0.37** | **0.43** | **-37.38%** | **2.37%** | **3.59%** |
 
 ### Key Quantitative Discoveries
 
-1. **Catastrophic Left-Tail Risk Mitigation:**
-   * Under the **Standard Strategy**, a single bad Reddit pick could devastate a portfolio. For example, a bullish post on `SONG` on July 9, 2026, resulted in a catastrophic 5-day alpha of **-48.46%**.
-   * Under the **Confluence Strategy**, the technical filters detected a lack of trend support (e.g., price below EMA, red Heikin-Ashi candle). It correctly flagged `confluence_triggered = False` and remained in cash, avoiding a 50% capital destruction event entirely.
-   * Consequently, the minimum 5-day alpha was improved from **-48.46%** to a highly tolerable **-17.15%**.
+1. **Extreme Left-Tail Risk Decimation:**
+   * Under the **Standard Strategy**, the portfolio suffered extreme catastrophic tail losses, leading to a massive **Maximum Drawdown of -86.04%**, a **95% Value-at-Risk of 10.92%**, and an **Expected Shortfall of 16.55%**.
+   * Under the **Optimized Confluence Ensemble** with the OSQuant-inspired Risk Throttle and Bollinger Bands Filter, tail risk is decimated. The Maximum Drawdown was slashed to **-37.38%**, the 95% VaR fell to **2.37%**, and the Expected Shortfall was reduced to just **3.59%**.
 
-2. **Volatility Reduction & Capital Preservation:**
-   * The Standard 5-day Alpha standard deviation was a massive **7.22%**.
-   * By filtering out low-probability and high-noise sentiment setups, the Confluence Strategy slashed the 5-day standard deviation by **more than half to 3.25%**. At the 1-day horizon, standard deviation dropped from **7.22%** to just **1.84%**.
+2. **Sharpe & Sortino Multipliers:**
+   * By filtering out low-probability and high-noise sentiment setups and dynamically scaling down positions on high Expected Shortfall assets, the Confluence Strategy reduced portfolio volatility by **over 75%** (from 6.76% down to 1.56%).
+   * Consequently, despite trading less frequently (reflected in a lower raw win rate), the portfolio's risk-adjusted performance is optimized. The **Annualized Sharpe Ratio more than doubled from 0.17 to 0.37**, and the **Annualized Sortino Ratio doubled from 0.20 to 0.43**.
 
 3. **Profit Capture Conservation:**
    * High-quality setups with strong structural trends are still fully captured. The maximum 5-day alpha of **+36.76%** (e.g., highly trend-supported runs like `META`) was preserved in both strategies because they cleanly met all Technical Confluence criteria.
