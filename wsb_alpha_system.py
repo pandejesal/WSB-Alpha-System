@@ -580,12 +580,40 @@ def run_sentiment_pipeline():
                     sharpe_multiplier = 1.25 if ensemble_score == 4 else 1.0
                     risk_parity_weight = (0.15 / clipped_vol) * sharpe_multiplier
 
-                    # 3. OSQuant Tail-Risk Risk Limit (Expected Shortfall / CVaR Risk Filter):
+                    # 3. Localized Statistical Multi-Factor Forecaster (Top Stock Prediction Repo Feature):
+                    # Fusing a weighted momentum and indicator-based statistical forecaster to project the 5-day return.
+                    # Based on rolling indicators (RSI position relative to bounds, BB position, and momentum).
+                    bb_pos = (entry_row["Close"] - entry_row["BB_Lower"]) / (entry_row["BB_Upper"] - entry_row["BB_Lower"] + 1e-10)
+                    rsi_mom = (entry_row["RSI_14"] - 50.0) / 50.0
+                    macd_mom = entry_row["MACD_Hist"] / (entry_row["Close"] + 1e-10)
+                    # Historical 5-day return momentum
+                    hist_5d_ret = (entry_row["Close"] - ind_df["Close"].iloc[max(0, entry_idx-5)]) / (ind_df["Close"].iloc[max(0, entry_idx-5)] + 1e-10)
+
+                    # Compute directional forecast expectation (weighted multi-factor projection)
+                    projected_5d_return = 0.40 * hist_5d_ret + 0.30 * macd_mom + 0.15 * rsi_mom + 0.15 * (bb_pos - 0.50)
+
+                    # Consensus Filter: Bullish trades require positive forecast; Bearish require negative forecast
+                    forecast_passed = False
+                    if sentiment_score > 0 and projected_5d_return > 0.005: # At least +0.50% projected return
+                        forecast_passed = True
+                    elif sentiment_score < 0 and projected_5d_return < -0.005: # At least -0.50% projected return
+                        forecast_passed = True
+
+                    # Final Trigger Confluence: Vote-Ensemble trigger must agree with our statistical Forecast
+                    confluence_triggered = confluence_triggered and forecast_passed
+
+                    # 4. OSQuant Tail-Risk Risk Limit (Expected Shortfall / CVaR Risk Filter):
                     # If estimated 95% Expected Shortfall (CVaR) exceeds 15% on a single-trade basis,
                     # we dynamically throttle/halve the position size to limit tail-loss risk exposure.
                     entry_cvar = entry_row.get("CVaR_95", 0.04)
                     if entry_cvar > 0.15:
                         risk_parity_weight *= 0.50
+
+                    # 5. Conviction-Based Sizing Booster (Stock Prediction Repo Sizing):
+                    # If our localized statistical forecaster has extremely high conviction (projected return > 2%),
+                    # we boost position size by 1.5x to capture the maximum profit in the least amount of time!
+                    if confluence_triggered and abs(projected_5d_return) > 0.02:
+                        risk_parity_weight *= 1.50
 
                     spy_entry_date = entry_date if entry_date in spy.index else spy.index[spy.index.searchsorted(entry_date, side="left")]
                     spy_entry_px = spy.loc[spy_entry_date]
@@ -596,6 +624,7 @@ def run_sentiment_pipeline():
                     base_dict["risk_parity_weight"] = risk_parity_weight
                     base_dict["VaR_95"] = entry_row.get("VaR_95", 0.02)
                     base_dict["CVaR_95"] = entry_cvar
+                    base_dict["projected_5d_return"] = projected_5d_return
 
                     for d in FORWARD_DAYS:
                         target_idx = entry_idx + d

@@ -71,6 +71,12 @@ $$\text{CVaR}_{0.95} = E [R_i \mid R_i \le -\text{VaR}_{0.95}]$$
 
 * **Tail-Risk Allocation Throttle**: If the estimated 95% Expected Shortfall (CVaR) for an asset exceeds **$15\%$ on a single-trade basis**, the trade's capital allocation weight is **dynamically cut in half ($Weight_i \times 0.50$)** to shield capital from highly speculative outliers and mitigate catastrophic tail-risk.
 
+### 7. Localized Statistical Multi-Factor Forecaster & Conviction Sizing
+Inspired by state-of-the-art predictive algorithms found in leading stock-prediction repositories (which utilize LSTMs, GRUs, and multi-factor regression models), the system integrates a localized statistical **forecast projector** ($projected\_5d\_return$):
+* Uses historical daily momentum, MACD histograms, RSI position relative to thresholds, and Bollinger Band width over a rolling period to compute a directional forward expectation.
+* **Consensus Filter**: Bullish sentiment setups require a positive forecast ($> +0.50\%$ projected gain), and bearish setups require a negative forecast ($< -0.50\%$ projected gain) to be authorized.
+* **Conviction Sizing Booster**: If the localized statistical forecaster signals high conviction (absolute projected return $> 2.0\%$), the allocation weight is boosted by **$1.5\text{x}$** to capture maximum alpha in the minimum amount of time.
+
 ---
 
 ## 📊 Empirical Results & Comparison
