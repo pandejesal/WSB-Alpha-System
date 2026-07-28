@@ -114,6 +114,43 @@ def safe_write_json(data, path):
             print("This occurs because the JSON file is open or locked by another utility.")
             input("Please close any program accessing this file and press Enter to retry saving...")
 
+
+import numpy as np
+
+def compute_indicators(df):
+    if len(df) < 15:
+        return None
+    df = df.copy()
+    # 20 EMA
+    df["EMA_20"] = df["Close"].ewm(span=20, adjust=False).mean()
+
+    # 14 RSI
+    delta = df["Close"].diff()
+    gain = (delta.where(delta > 0, 0)).fillna(0)
+    loss = (-delta.where(delta < 0, 0)).fillna(0)
+    avg_gain = gain.ewm(alpha=1/14, adjust=False).mean()
+    avg_loss = loss.ewm(alpha=1/14, adjust=False).mean()
+    rs = avg_gain / (avg_loss + 1e-10)
+    df["RSI_14"] = 100 - (100 / (1 + rs))
+
+    # MACD
+    ema_12 = df["Close"].ewm(span=12, adjust=False).mean()
+    ema_26 = df["Close"].ewm(span=26, adjust=False).mean()
+    df["MACD"] = ema_12 - ema_26
+    df["MACD_Signal"] = df["MACD"].ewm(span=9, adjust=False).mean()
+    df["MACD_Hist"] = df["MACD"] - df["MACD_Signal"]
+
+    # Heikin-Ashi
+    df["HA_Close"] = (df["Open"] + df["High"] + df["Low"] + df["Close"]) / 4.0
+    ha_open = np.zeros(len(df))
+    ha_open[0] = (df["Open"].iloc[0] + df["Close"].iloc[0]) / 2.0
+    for i in range(1, len(df)):
+        ha_open[i] = (ha_open[i-1] + df["HA_Close"].iloc[i-1]) / 2.0
+    df["HA_Open"] = ha_open
+    df["HA_High"] = df[["High", "HA_Open", "HA_Close"]].max(axis=1)
+    df["HA_Low"] = df[["Low", "HA_Open", "HA_Close"]].min(axis=1)
+    return df
+
 # ============================================================================
 # PHASE 1: INCREMENTAL SCRAPING & SENTIMENT RE-EVALUATION PIPELINE
 # ============================================================================
@@ -137,14 +174,13 @@ def run_sentiment_pipeline():
     print(f"\nFetching up to {max_items} posts via Apify...")
     client = ApifyClient(APIFY_TOKEN)
     
-    run = client.actor(ACTOR_ID).call(run_input={
-        "startUrls": [{"url": start_url}],
-        "sort": "new",
-        "maxItems": max_items,
-    })
-    
     items = []
     try:
+        run = client.actor(ACTOR_ID).call(run_input={
+            "startUrls": [{"url": start_url}],
+            "sort": "new",
+            "maxItems": max_items,
+        })
         items = list(client.dataset(run.default_dataset_id).iterate_items())
         print(f"Retrieved {len(items)} raw metadata items from Apify")
     except Exception as e:
@@ -265,12 +301,13 @@ def run_sentiment_pipeline():
     print(f"Total active records in database: {len(combined)}")
     
     # ------------------------------------------------------------------
-    # RE-EVALUATION LOOP: ISOLATE MISSING ALPHA CHANNELS
+    # RE-EVALUATION LOOP: ISOLATE MISSING ALPHA CHANNELS & APPLY TECHNICAL CONFLUENCE (MIXED METHOD)
     # ------------------------------------------------------------------
     return_cols = [f"alpha_{d}d" for d in FORWARD_DAYS]
+    mixed_cols = ["confluence_triggered"] + [f"mixed_ret_{d}d" for d in FORWARD_DAYS] + [f"mixed_alpha_{d}d" for d in FORWARD_DAYS]
     
     # Generate empty return columns if running the file for the first time
-    for col in return_cols + [f"ret_{d}d" for d in FORWARD_DAYS] + [f"spy_ret_{d}d" for d in FORWARD_DAYS]:
+    for col in return_cols + [f"ret_{d}d" for d in FORWARD_DAYS] + [f"spy_ret_{d}d" for d in FORWARD_DAYS] + mixed_cols:
         if col not in combined.columns:
             combined[col] = None
             
@@ -281,69 +318,126 @@ def run_sentiment_pipeline():
     if not needs_calculation.empty:
         unique_tickers = needs_calculation["ticker"].unique().tolist()
         post_dates = pd.to_datetime(needs_calculation["post_date"])
-        start_date = (post_dates.min() - timedelta(days=20)).strftime("%Y-%m-%d")
+        # Buffer of 45 days prior to the min post date to warm up EMA, RSI, and MACD
+        start_date = (post_dates.min() - timedelta(days=45)).strftime("%Y-%m-%d")
         end_date = (post_dates.max() + timedelta(days=140)).strftime("%Y-%m-%d")
         
-        print(f"Downloading historical closes for {len(unique_tickers)} stocks ({start_date} to {end_date})...")
+        print(f"Downloading historical stock data with OHLC for {len(unique_tickers)} stocks ({start_date} to {end_date})...")
         try:
             px = yf.download(unique_tickers + ["SPY"], start=start_date, end=end_date, progress=False, auto_adjust=True)
-            px_close = px["Close"] if (isinstance(px, pd.DataFrame) and "Close" in px) else px
         except Exception as e:
             print(f"Price retrieval failed: {e}. Postponing calculations.")
-            px_close = pd.DataFrame()
+            px = pd.DataFrame()
             
-        if not px_close.empty and "SPY" in px_close.columns:
-            spy = px_close["SPY"].dropna()
-            
-            # Recalculate only the rows requiring updates
-            updated_rows = []
-            for _, row in tqdm(needs_calculation.iterrows(), total=len(needs_calculation), desc="Recalculating Closes"):
-                t = row["ticker"]
-                if t not in px_close.columns:
-                    updated_rows.append(row.to_dict())
-                    continue
-                tpx = px_close[t].dropna()
-                if len(tpx) < 2:
-                    updated_rows.append(row.to_dict())
-                    continue
-                    
-                post_ts = pd.Timestamp(row["post_date"])
-                entry_idx = tpx.index.searchsorted(post_ts, side="right")
-                if entry_idx >= len(tpx):
-                    updated_rows.append(row.to_dict())
-                    continue
-                    
-                entry_date = tpx.index[entry_idx]
-                entry_px = tpx.iloc[entry_idx]
+        if not px.empty:
+            spy = None
+            if isinstance(px.columns, pd.MultiIndex):
+                if "SPY" in px.columns.levels[1]:
+                    spy_df = px.loc[:, (slice(None), "SPY")].copy()
+                    spy_df.columns = spy_df.columns.get_level_values(0)
+                    spy = spy_df["Close"].dropna()
+            else:
+                spy = px["Close"].dropna()
                 
-                spy_entry_date = entry_date if entry_date in spy.index else spy.index[spy.index.searchsorted(entry_date, side="left")]
-                spy_entry_px = spy.loc[spy_entry_date]
-                
-                base_dict = row.to_dict()
-                for d in FORWARD_DAYS:
-                    target_idx = entry_idx + d
-                    if target_idx < len(tpx):
-                        exit_date = tpx.index[target_idx]
-                        exit_px = tpx.iloc[target_idx]
-                        
-                        spy_exit_px = spy.loc[exit_date] if exit_date in spy.index else spy.iloc[min(spy.index.searchsorted(exit_date, side="left"), len(spy)-1)]
-                        
-                        stock_ret = (exit_px - entry_px) / entry_px
-                        spy_ret = (spy_exit_px - spy_entry_px) / spy_entry_px
-                        
-                        base_dict[f"ret_{d}d"] = stock_ret
-                        base_dict[f"spy_ret_{d}d"] = spy_ret
-                        base_dict[f"alpha_{d}d"] = stock_ret - spy_ret
+            if spy is not None:
+                # Recalculate only the rows requiring updates
+                updated_rows = []
+                for _, row in tqdm(needs_calculation.iterrows(), total=len(needs_calculation), desc="Recalculating Closes"):
+                    t = row["ticker"]
+
+                    tpx = pd.DataFrame()
+                    if isinstance(px.columns, pd.MultiIndex):
+                        if t in px.columns.levels[1]:
+                            tpx = px.loc[:, (slice(None), t)].copy()
+                            tpx.columns = tpx.columns.get_level_values(0)
                     else:
-                        base_dict[f"ret_{d}d"] = base_dict[f"spy_ret_{d}d"] = base_dict[f"alpha_{d}d"] = None
-                updated_rows.append(base_dict)
-                
-            # Merge updated calculations back into the main DataFrame
-            updated_df = pd.DataFrame(updated_rows)
-            combined = combined.set_index(["post_date", "ticker"])
-            updated_df = updated_df.set_index(["post_date", "ticker"])
-            combined.update(updated_df)
-            combined = combined.reset_index()
+                        if t == unique_tickers[0]:
+                            tpx = px.copy()
+
+                    if tpx.empty:
+                        updated_rows.append(row.to_dict())
+                        continue
+                        
+                    tpx = tpx.dropna(subset=["Close", "Open", "High", "Low"])
+                    if len(tpx) < 15:
+                        updated_rows.append(row.to_dict())
+                        continue
+                        
+                    # Compute indicator series
+                    ind_df = compute_indicators(tpx)
+                    if ind_df is None:
+                        updated_rows.append(row.to_dict())
+                        continue
+                        
+                    post_ts = pd.Timestamp(row["post_date"])
+                    entry_idx = ind_df.index.searchsorted(post_ts, side="right")
+                    if entry_idx >= len(ind_df):
+                        updated_rows.append(row.to_dict())
+                        continue
+
+                    entry_date = ind_df.index[entry_idx]
+                    entry_px = ind_df["Close"].iloc[entry_idx]
+
+                    # Confluence Check at entry_date (T+1)
+                    entry_row = ind_df.iloc[entry_idx]
+                    sentiment_score = row["sentiment_score"]
+
+                    confluence_triggered = False
+                    if sentiment_score > 0:
+                        # Bullish rules:
+                        ha_green = entry_row["HA_Close"] > entry_row["HA_Open"]
+                        above_ema = entry_row["Close"] > entry_row["EMA_20"]
+                        healthy_rsi = 40.0 < entry_row["RSI_14"] < 70.0
+                        macd_pos = entry_row["MACD_Hist"] > 0.0
+                        if ha_green and above_ema and healthy_rsi and macd_pos:
+                            confluence_triggered = True
+                    elif sentiment_score < 0:
+                        # Bearish rules:
+                        ha_red = entry_row["HA_Close"] < entry_row["HA_Open"]
+                        below_ema = entry_row["Close"] < entry_row["EMA_20"]
+                        healthy_rsi_bear = 30.0 < entry_row["RSI_14"] < 60.0
+                        macd_neg = entry_row["MACD_Hist"] < 0.0
+                        if ha_red and below_ema and healthy_rsi_bear and macd_neg:
+                            confluence_triggered = True
+
+                    spy_entry_date = entry_date if entry_date in spy.index else spy.index[spy.index.searchsorted(entry_date, side="left")]
+                    spy_entry_px = spy.loc[spy_entry_date]
+
+                    base_dict = row.to_dict()
+                    base_dict["confluence_triggered"] = confluence_triggered
+
+                    for d in FORWARD_DAYS:
+                        target_idx = entry_idx + d
+                        if target_idx < len(ind_df):
+                            exit_date = ind_df.index[target_idx]
+                            exit_px = ind_df["Close"].iloc[target_idx]
+
+                            spy_exit_px = spy.loc[exit_date] if exit_date in spy.index else spy.iloc[min(spy.index.searchsorted(exit_date, side="left"), len(spy)-1)]
+
+                            stock_ret = (exit_px - entry_px) / entry_px
+                            spy_ret = (spy_exit_px - spy_entry_px) / spy_entry_px
+
+                            base_dict[f"ret_{d}d"] = stock_ret
+                            base_dict[f"spy_ret_{d}d"] = spy_ret
+                            base_dict[f"alpha_{d}d"] = stock_ret - spy_ret
+
+                            if confluence_triggered:
+                                base_dict[f"mixed_ret_{d}d"] = stock_ret
+                                base_dict[f"mixed_alpha_{d}d"] = stock_ret - spy_ret
+                            else:
+                                base_dict[f"mixed_ret_{d}d"] = 0.0
+                                base_dict[f"mixed_alpha_{d}d"] = 0.0
+                        else:
+                            base_dict[f"ret_{d}d"] = base_dict[f"spy_ret_{d}d"] = base_dict[f"alpha_{d}d"] = None
+                            base_dict[f"mixed_ret_{d}d"] = base_dict[f"mixed_alpha_{d}d"] = None
+                    updated_rows.append(base_dict)
+
+                # Merge updated calculations back into the main DataFrame
+                updated_df = pd.DataFrame(updated_rows)
+                combined = combined.set_index(["post_date", "ticker"])
+                updated_df = updated_df.set_index(["post_date", "ticker"])
+                combined.update(updated_df)
+                combined = combined.reset_index()
             
     # Save the synchronized database (with OS permission lock failsafe)
     safe_write_csv(combined, OUTPUT_CSV)
@@ -460,7 +554,31 @@ def run_trajectory_plotter(top_n_tickers=5):
         
         relative_days = [i - 10 for i in range(len(stock_window))]
         
-        ax.plot(relative_days, normalized_stock, label=f"{ticker} (Post: {post_date.strftime('%Y-%m-%d')})", linewidth=1.5)
+        # Get confluence flag from the database
+        event_row = df[(df['ticker'] == ticker) & (df['post_date'] == post_date)]
+        confluence_triggered = False
+        if not event_row.empty:
+            confluence_triggered = bool(event_row.iloc[0].get('confluence_triggered', False))
+
+        # Plot Stock path (thinner line)
+        line_ref, = ax.plot(relative_days, normalized_stock, label=f"{ticker} (Stock path, Post: {post_date.strftime('%Y-%m-%d')})", linewidth=1.2, alpha=0.5, linestyle=":")
+        color = line_ref.get_color()
+
+        # Plot Mixed strategy path (solid line)
+        # If confluence is True, tracks stock. Else, stays at 100.0 from T=0 onwards.
+        mixed_path = []
+        for rd, ns in zip(relative_days, normalized_stock.values):
+            if rd < 0:
+                mixed_path.append(ns)
+            else:
+                if confluence_triggered:
+                    mixed_path.append(ns)
+                else:
+                    mixed_path.append(100.0)
+
+        confluence_label = "Triggered" if confluence_triggered else "Avoided"
+        ax.plot(relative_days, mixed_path, label=f"{ticker} (Mixed System, Confluence: {confluence_label})", color=color, linewidth=2.0)
+
         spy_trajectories.append(pd.Series(normalized_spy.values, index=relative_days))
         
     if spy_trajectories:
@@ -470,10 +588,10 @@ def run_trajectory_plotter(top_n_tickers=5):
     ax.axvline(x=0, color="red", linestyle=":", linewidth=1.5, label="Entry Execution (T+1 Close)")
     ax.axhline(y=100, color="gray", linestyle="-", linewidth=0.5)
     
-    ax.set_title("WSB Stock Trajectories: At Time of Post ($T=0$) vs. Months Later ($T+90$)", fontsize=14, fontweight="bold")
+    ax.set_title("WSB Sentiment vs. Technical Confluence: At Time of Post ($T=0$) vs. Months Later ($T+90$)", fontsize=13, fontweight="bold")
     ax.set_xlabel("Relative Trading Days Offset from Entry Day ($T=0$)")
     ax.set_ylabel("Normalized Asset Value (Base 100 at Entry)")
-    ax.legend(loc="upper left")
+    ax.legend(loc="upper left", fontsize=8, framealpha=0.9)
     ax.set_xlim(-10, 90)
     
     plt.tight_layout()
