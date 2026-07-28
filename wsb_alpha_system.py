@@ -444,6 +444,10 @@ def run_sentiment_pipeline():
                 combined[col] = None
             
     # Locate all entries with uncomputed performance metrics (NaNs) and not already marked as failed
+    # Ensure regime_holding_days column exists in database before checking missing calculations
+    if "regime_holding_days" not in combined.columns:
+        combined["regime_holding_days"] = 5
+
     needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]
     print(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
@@ -626,6 +630,23 @@ def run_sentiment_pipeline():
                     base_dict["CVaR_95"] = entry_cvar
                     base_dict["projected_5d_return"] = projected_5d_return
 
+                    # 6. Volatility-Based Dynamic Regime Switching Holding Periods (Markov Regime-Switching Principle):
+                    # In Low Volatility Regimes (GK Vol < 30%), we hold for 10 days to let trend-following gains compound.
+                    # In High Volatility Regimes (GK Vol >= 30%), we exit in 1 day to lock in fast gains and protect capital.
+                    regime_holding_days = 10 if gk_vol < 0.30 else 1
+
+                    # Precompute the returns for the target exit day (H)
+                    target_regime_idx = entry_idx + regime_holding_days
+                    if target_regime_idx < len(ind_df):
+                        regime_exit_date = ind_df.index[target_regime_idx]
+                        regime_exit_px = ind_df["Close"].iloc[target_regime_idx]
+                        regime_spy_exit_px = spy.loc[regime_exit_date] if regime_exit_date in spy.index else spy.iloc[min(spy.index.searchsorted(regime_exit_date, side="left"), len(spy)-1)]
+                        regime_stock_ret = (regime_exit_px - entry_px) / entry_px
+                        regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px
+                    else:
+                        regime_stock_ret = None
+                        regime_spy_ret = None
+
                     for d in FORWARD_DAYS:
                         target_idx = entry_idx + d
                         if target_idx < len(ind_df):
@@ -641,10 +662,21 @@ def run_sentiment_pipeline():
                             base_dict[f"spy_ret_{d}d"] = spy_ret
                             base_dict[f"alpha_{d}d"] = stock_ret - spy_ret
 
+                            # For the customized "mixed_ret" channel, we apply the Volatility-Based Dynamic Regime holding horizon
+                            # If the forward day is before or at our dynamic regime holding horizon, the trade is still open or exiting
+                            # If the forward day is after our dynamic regime holding horizon, the trade is closed, so the realized return is fixed
                             if confluence_triggered:
-                                # Apply Risk Parity weighted return to standard performance tracking
-                                weighted_ret = stock_ret * risk_parity_weight
-                                weighted_alpha = (stock_ret - spy_ret) * risk_parity_weight
+                                if d <= regime_holding_days:
+                                    weighted_ret = stock_ret * risk_parity_weight
+                                    weighted_alpha = (stock_ret - spy_ret) * risk_parity_weight
+                                else:
+                                    if regime_stock_ret is not None:
+                                        weighted_ret = regime_stock_ret * risk_parity_weight
+                                        weighted_alpha = (regime_stock_ret - regime_spy_ret) * risk_parity_weight
+                                    else:
+                                        weighted_ret = None
+                                        weighted_alpha = None
+
                                 base_dict[f"mixed_ret_{d}d"] = weighted_ret
                                 base_dict[f"mixed_alpha_{d}d"] = weighted_alpha
                             else:
@@ -653,6 +685,8 @@ def run_sentiment_pipeline():
                         else:
                             base_dict[f"ret_{d}d"] = base_dict[f"spy_ret_{d}d"] = base_dict[f"alpha_{d}d"] = None
                             base_dict[f"mixed_ret_{d}d"] = base_dict[f"mixed_alpha_{d}d"] = None
+
+                    base_dict["regime_holding_days"] = regime_holding_days
                     updated_rows.append(base_dict)
 
                 # Merge updated calculations back into the main DataFrame
