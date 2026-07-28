@@ -379,15 +379,18 @@ def run_sentiment_pipeline():
     # RE-EVALUATION LOOP: ISOLATE MISSING ALPHA CHANNELS & APPLY TECHNICAL CONFLUENCE (MIXED METHOD)
     # ------------------------------------------------------------------
     return_cols = [f"alpha_{d}d" for d in FORWARD_DAYS]
-    mixed_cols = ["confluence_triggered"] + [f"mixed_ret_{d}d" for d in FORWARD_DAYS] + [f"mixed_alpha_{d}d" for d in FORWARD_DAYS]
+    mixed_cols = ["confluence_triggered", "pricing_failed"] + [f"mixed_ret_{d}d" for d in FORWARD_DAYS] + [f"mixed_alpha_{d}d" for d in FORWARD_DAYS]
     
     # Generate empty return columns if running the file for the first time
     for col in return_cols + [f"ret_{d}d" for d in FORWARD_DAYS] + [f"spy_ret_{d}d" for d in FORWARD_DAYS] + mixed_cols:
         if col not in combined.columns:
-            combined[col] = None
+            if col in ["pricing_failed", "confluence_triggered"]:
+                combined[col] = False
+            else:
+                combined[col] = None
             
-    # Locate all entries with uncomputed performance metrics (NaNs)
-    needs_calculation = combined[combined[return_cols].isna().any(axis=1)]
+    # Locate all entries with uncomputed performance metrics (NaNs) and not already marked as failed
+    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]
     print(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
     if not needs_calculation.empty:
@@ -397,11 +400,24 @@ def run_sentiment_pipeline():
         start_date = (post_dates.min() - timedelta(days=45)).strftime("%Y-%m-%d")
         end_date = (post_dates.max() + timedelta(days=140)).strftime("%Y-%m-%d")
         
+        # Split into smaller chunks to avoid rate limits if we have many tickers to query
+        chunk_size = 80
+        all_px = []
         print(f"Downloading historical stock data with OHLC for {len(unique_tickers)} stocks ({start_date} to {end_date})...")
-        try:
-            px = yf.download(unique_tickers + ["SPY"], start=start_date, end=end_date, progress=False, auto_adjust=True)
-        except Exception as e:
-            print(f"Price retrieval failed: {e}. Postponing calculations.")
+        for chunk_idx in range(0, len(unique_tickers), chunk_size):
+            chunk_tickers = unique_tickers[chunk_idx:chunk_idx + chunk_size]
+            try:
+                chunk_px = yf.download(chunk_tickers + ["SPY"], start=start_date, end=end_date, progress=False, auto_adjust=True)
+                if not chunk_px.empty:
+                    all_px.append(chunk_px)
+            except Exception as e:
+                print(f"Warning: Price retrieval chunk failed: {e}.")
+
+        if all_px:
+            px = pd.concat(all_px, axis=1) if len(all_px) > 1 else all_px[0]
+            # Deduplicate columns if any duplicate headers exist across chunks
+            px = px.loc[:, ~px.columns.duplicated()]
+        else:
             px = pd.DataFrame()
             
         if not px.empty:
@@ -430,18 +446,24 @@ def run_sentiment_pipeline():
                             tpx = px.copy()
 
                     if tpx.empty:
-                        updated_rows.append(row.to_dict())
+                        base_dict = row.to_dict()
+                        base_dict["pricing_failed"] = True
+                        updated_rows.append(base_dict)
                         continue
                         
                     tpx = tpx.dropna(subset=["Close", "Open", "High", "Low"])
                     if len(tpx) < 15:
-                        updated_rows.append(row.to_dict())
+                        base_dict = row.to_dict()
+                        base_dict["pricing_failed"] = True
+                        updated_rows.append(base_dict)
                         continue
                         
                     # Compute indicator series
                     ind_df = compute_indicators(tpx)
                     if ind_df is None:
-                        updated_rows.append(row.to_dict())
+                        base_dict = row.to_dict()
+                        base_dict["pricing_failed"] = True
+                        updated_rows.append(base_dict)
                         continue
                         
                     post_ts = pd.Timestamp(row["post_date"])
@@ -683,7 +705,7 @@ def run_trajectory_plotter(top_n_tickers=5):
             
     print("Trajectory plot saved successfully:")
     print(f" -> Visualization PNG: {OUTPUT_PNG}")
-    plt.show()
+    # plt.show() deleted to avoid blocking non-interactive terminals
 
 # ============================================================================
 # MASTER CONTROLLER
