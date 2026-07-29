@@ -1,10 +1,8 @@
 import pandas as pd
 import numpy as np
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import timedelta
 import matplotlib.pyplot as plt
-import seaborn as sns
-import os
 
 def compute_indicators(df):
     if len(df) < 20:
@@ -86,6 +84,22 @@ def compute_indicators(df):
     df["CVaR_95"] = rolling_cvar
     return df
 
+def compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, holding_days):
+    target_regime_idx = entry_idx + holding_days
+    if target_regime_idx < len(ind_df):
+        regime_exit_date = ind_df.index[target_regime_idx]
+        regime_exit_px = ind_df["Close"].iloc[target_regime_idx]
+        regime_spy_exit_px = spy_close.loc[regime_exit_date] if regime_exit_date in spy_close.index else spy_close.iloc[min(spy_close.index.searchsorted(regime_exit_date, side="left"), len(spy_close)-1)]
+
+        regime_stock_ret = (regime_exit_px - entry_px) / entry_px if sentiment_score > 0 else (entry_px - regime_exit_px) / entry_px
+        regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - regime_spy_exit_px) / spy_entry_px
+    else:
+        # Fallback if history ends before holding period exits
+        regime_stock_ret = (ind_df["Close"].iloc[-1] - entry_px) / entry_px if sentiment_score > 0 else (entry_px - ind_df["Close"].iloc[-1]) / entry_px
+        regime_spy_ret = (spy_close.iloc[-1] - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - spy_close.iloc[-1]) / spy_entry_px
+
+    return regime_stock_ret, regime_spy_ret
+
 def run_backtest():
     print("=" * 70)
     print("RUNNING HISTORICAL BACKTEST & PERFORMANCE OPTIMIZATION (2020 - 2026)")
@@ -97,9 +111,9 @@ def run_backtest():
 
     unique_tickers = posts_df["ticker"].unique().tolist()
 
-    # Download pricing data
+    # Download pricing data - extended download window to cover 1-1.2 years holding periods
     min_date = posts_df["post_date"].min() - timedelta(days=60)
-    max_date = posts_df["post_date"].max() + timedelta(days=140)
+    max_date = posts_df["post_date"].max() + timedelta(days=450)
 
     print(f"Downloading historical stock data for {len(unique_tickers)} tickers + SPY from {min_date.strftime('%Y-%m-%d')} to {max_date.strftime('%Y-%m-%d')}...")
     px_data = yf.download(unique_tickers + ["SPY"], start=min_date, end=max_date, progress=False, auto_adjust=True)
@@ -117,12 +131,14 @@ def run_backtest():
         if len(t_px) >= 20:
             stock_dfs[ticker] = compute_indicators(t_px)
 
-    FORWARD_DAYS = [1, 5, 10, 20, 30, 60, 90]
+    FORWARD_DAYS = [1, 5, 10, 20, 30, 60, 90, 120, 252, 300]
 
-    # We will compute the returns for three strategies:
+    # We will compute the returns for five strategies:
     # 1. Raw Sentiment (Static 5-day holding period)
-    # 2. Tech Confluence Ensemble (Static 5-day holding period)
-    # 3. Dynamic Volatility Regime Switching Confluence Strategy
+    # 2. Short-Term Adaptive Confluence Strategy (Dynamic 10d/1d holding period)
+    # 3. Mid-Long Term Adaptive Confluence Strategy (Dynamic 60d/5d holding period)
+    # 4. Long-Term Adaptive Confluence Strategy (Dynamic 252d/10d holding period)
+    # 5. S&P 500 Adaptive Auto-Regime Switcher (dynamically selects optimal strategy based on SPY trend & volatility)
 
     trades = []
 
@@ -143,8 +159,10 @@ def run_backtest():
         entry_px = ind_df["Close"].iloc[entry_idx]
         entry_row = ind_df.iloc[entry_idx]
 
-        spy_entry_date = entry_date if entry_date in spy_close.index else spy_close.index[spy_close.index.searchsorted(entry_date, side="left")]
-        spy_entry_px = spy_close.loc[spy_entry_date]
+        spy_entry_idx = spy_close.index.searchsorted(entry_date, side="left")
+        if spy_entry_idx >= len(spy_close):
+            spy_entry_idx = len(spy_close) - 1
+        spy_entry_px = spy_close.iloc[spy_entry_idx]
 
         gk_vol = entry_row.get("GK_Vol", 0.50)
         entry_cvar = entry_row.get("CVaR_95", 0.04)
@@ -198,28 +216,55 @@ def run_backtest():
 
         confluence_triggered_full = confluence_triggered_ensemble_only and forecast_passed
 
-        # Volatility holding period regime
-        regime_holding_days = 10 if gk_vol < 0.30 else 1
+        # Compute holding periods for each Term Horizon
+        short_holding_days = 10 if gk_vol < 0.30 else 1
+        midlong_holding_days = 60 if gk_vol < 0.30 else 5
+        longterm_holding_days = 252 if gk_vol < 0.30 else 10
 
-        # Precompute target exit returns for dynamic regime switching
-        target_regime_idx = entry_idx + regime_holding_days
-        if target_regime_idx < len(ind_df):
-            regime_exit_date = ind_df.index[target_regime_idx]
-            regime_exit_px = ind_df["Close"].iloc[target_regime_idx]
-            regime_spy_exit_px = spy_close.loc[regime_exit_date] if regime_exit_date in spy_close.index else spy_close.iloc[min(spy_close.index.searchsorted(regime_exit_date, side="left"), len(spy_close)-1)]
-            regime_stock_ret = (regime_exit_px - entry_px) / entry_px if sentiment_score > 0 else (entry_px - regime_exit_px) / entry_px
-            regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - regime_spy_exit_px) / spy_entry_px
+        # S&P 500 Market Regime Detection for Auto-Regime Switching
+        spy_window = spy_close.iloc[max(0, spy_entry_idx-19):spy_entry_idx+1]
+        if spy_entry_idx >= 20:
+            spy_ret_20d = (spy_entry_px - spy_close.iloc[spy_entry_idx-20]) / spy_close.iloc[spy_entry_idx-20]
+            spy_pct_rets = spy_window.pct_change().dropna()
+            spy_vol_20d = spy_pct_rets.std() * np.sqrt(252)
         else:
-            regime_stock_ret = None
-            regime_spy_ret = None
+            spy_ret_20d = 0.05
+            spy_vol_20d = 0.12
 
-        # Compile trade forward returns
+        # Assign optimal regime based on market rules
+        if spy_ret_20d > 0 and spy_vol_20d < 0.15:
+            adaptive_mode = "long_term"
+            adaptive_holding_days = longterm_holding_days
+        elif spy_ret_20d > 0 and 0.15 <= spy_vol_20d < 0.25:
+            adaptive_mode = "mid_long_term"
+            adaptive_holding_days = midlong_holding_days
+        else:
+            adaptive_mode = "short_term"
+            adaptive_holding_days = short_holding_days
+
+        # Precompute target exit returns for each strategy
+        ret_stock_short, ret_spy_short = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, short_holding_days)
+        ret_stock_midlong, ret_spy_midlong = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, midlong_holding_days)
+        ret_stock_longterm, ret_spy_longterm = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, longterm_holding_days)
+
+        if adaptive_mode == "long_term":
+            ret_stock_adaptive = ret_stock_longterm
+        elif adaptive_mode == "mid_long_term":
+            ret_stock_adaptive = ret_stock_midlong
+        else:
+            ret_stock_adaptive = ret_stock_short
+
+        # Compile trade metrics
         trade_metrics = {
             "post_date": post_date,
             "ticker": ticker,
             "sentiment_score": sentiment_score,
             "risk_parity_weight": risk_parity_weight,
-            "regime_holding_days": regime_holding_days
+            "short_holding_days": short_holding_days,
+            "midlong_holding_days": midlong_holding_days,
+            "longterm_holding_days": longterm_holding_days,
+            "adaptive_holding_days": adaptive_holding_days,
+            "adaptive_mode": adaptive_mode
         }
 
         for d in FORWARD_DAYS:
@@ -229,41 +274,28 @@ def run_backtest():
                 exit_px = ind_df["Close"].iloc[target_idx]
                 spy_exit_px = spy_close.loc[exit_date] if exit_date in spy_close.index else spy_close.iloc[min(spy_close.index.searchsorted(exit_date, side="left"), len(spy_close)-1)]
 
-                # Actual stock and SPY returns (directional)
+                # Directional stock & S&P 500 returns
                 stock_ret = (exit_px - entry_px) / entry_px if sentiment_score > 0 else (entry_px - exit_px) / entry_px
                 spy_ret = (spy_exit_px - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - spy_exit_px) / spy_entry_px
 
                 trade_metrics[f"ret_{d}d"] = stock_ret
                 trade_metrics[f"spy_ret_{d}d"] = spy_ret
 
-                # Dynamic Regime Switching Strategy Return
+                # Calculate returns under each Strategy Mode (cash preservation if confluence is not met)
                 if confluence_triggered_full:
-                    if d <= regime_holding_days:
-                        trade_metrics[f"dynamic_ret_{d}d"] = stock_ret * risk_parity_weight
-                    else:
-                        if regime_stock_ret is not None:
-                            trade_metrics[f"dynamic_ret_{d}d"] = regime_stock_ret * risk_parity_weight
-                        else:
-                            trade_metrics[f"dynamic_ret_{d}d"] = None
+                    # Short-Term Mode
+                    trade_metrics[f"short_ret_{d}d"] = stock_ret * risk_parity_weight if d <= short_holding_days else ret_stock_short * risk_parity_weight
+                    # Mid-Long Term Mode
+                    trade_metrics[f"midlong_ret_{d}d"] = stock_ret * risk_parity_weight if d <= midlong_holding_days else ret_stock_midlong * risk_parity_weight
+                    # Long-Term Mode
+                    trade_metrics[f"longterm_ret_{d}d"] = stock_ret * risk_parity_weight if d <= longterm_holding_days else ret_stock_longterm * risk_parity_weight
+                    # Adaptive Switcher Mode
+                    trade_metrics[f"adaptive_ret_{d}d"] = stock_ret * risk_parity_weight if d <= adaptive_holding_days else ret_stock_adaptive * risk_parity_weight
                 else:
-                    trade_metrics[f"dynamic_ret_{d}d"] = 0.0
-
-                # Ensemble Only Return (Static 5-day holding period default)
-                if confluence_triggered_ensemble_only:
-                    # For static 5-day holding, if d <= 5 we take the return, else it locks at 5-day return
-                    static_holding = 5
-                    if d <= static_holding:
-                        trade_metrics[f"ensemble_ret_{d}d"] = stock_ret * risk_parity_weight
-                    else:
-                        # 5-day return
-                        idx_5 = entry_idx + 5
-                        if idx_5 < len(ind_df):
-                            ret_5 = (ind_df["Close"].iloc[idx_5] - entry_px) / entry_px if sentiment_score > 0 else (entry_px - ind_df["Close"].iloc[idx_5]) / entry_px
-                            trade_metrics[f"ensemble_ret_{d}d"] = ret_5 * risk_parity_weight
-                        else:
-                            trade_metrics[f"ensemble_ret_{d}d"] = None
-                else:
-                    trade_metrics[f"ensemble_ret_{d}d"] = 0.0
+                    trade_metrics[f"short_ret_{d}d"] = 0.0
+                    trade_metrics[f"midlong_ret_{d}d"] = 0.0
+                    trade_metrics[f"longterm_ret_{d}d"] = 0.0
+                    trade_metrics[f"adaptive_ret_{d}d"] = 0.0
 
                 # Raw Sentiment Strategy (Static 5-day holding, no filters)
                 static_holding = 5
@@ -279,8 +311,10 @@ def run_backtest():
             else:
                 trade_metrics[f"ret_{d}d"] = None
                 trade_metrics[f"spy_ret_{d}d"] = None
-                trade_metrics[f"dynamic_ret_{d}d"] = None
-                trade_metrics[f"ensemble_ret_{d}d"] = None
+                trade_metrics[f"short_ret_{d}d"] = None
+                trade_metrics[f"midlong_ret_{d}d"] = None
+                trade_metrics[f"longterm_ret_{d}d"] = None
+                trade_metrics[f"adaptive_ret_{d}d"] = None
                 trade_metrics[f"raw_ret_{d}d"] = None
 
         trades.append(trade_metrics)
@@ -295,87 +329,74 @@ def run_backtest():
     print("STRATEGY PERFORMANCE COMPARISON")
     print("=" * 70)
 
+    # Horizons to display
     horizons = {
-        "Short-Term (1d)": ("raw_ret_1d", "ensemble_ret_1d", "dynamic_ret_1d"),
-        "Short-Term (5d)": ("raw_ret_5d", "ensemble_ret_5d", "dynamic_ret_5d"),
-        "Mid-Long Term (10d)": ("raw_ret_10d", "ensemble_ret_10d", "dynamic_ret_10d"),
-        "Mid-Long Term (20d)": ("raw_ret_20d", "ensemble_ret_20d", "dynamic_ret_20d"),
-        "Long-Term (30d)": ("raw_ret_30d", "ensemble_ret_30d", "dynamic_ret_30d"),
-        "Long-Term (60d)": ("raw_ret_60d", "ensemble_ret_60d", "dynamic_ret_60d"),
-        "Long-Term (90d)": ("raw_ret_90d", "ensemble_ret_90d", "dynamic_ret_90d"),
+        "Short-Term Horizon (5d)": ("raw_ret_5d", "short_ret_5d", "midlong_ret_5d", "longterm_ret_5d", "adaptive_ret_5d"),
+        "Mid-Long Horizon (60d)": ("raw_ret_60d", "short_ret_60d", "midlong_ret_60d", "longterm_ret_60d", "adaptive_ret_60d"),
+        "Long-Term Horizon (252d)": ("raw_ret_252d", "short_ret_252d", "midlong_ret_252d", "longterm_ret_252d", "adaptive_ret_252d"),
     }
 
     report_data = []
 
-    for term, (raw_col, ens_col, dyn_col) in horizons.items():
+    for term, (raw_col, s_col, m_col, l_col, a_col) in horizons.items():
         raw_mean = trades_df[raw_col].mean() * 100
-        ens_mean = trades_df[ens_col].mean() * 100
-        dyn_mean = trades_df[dyn_col].mean() * 100
+        s_mean = trades_df[s_col].mean() * 100
+        m_mean = trades_df[m_col].mean() * 100
+        l_mean = trades_df[l_col].mean() * 100
+        a_mean = trades_df[a_col].mean() * 100
 
         raw_win = (trades_df[raw_col] > 0).sum() / len(trades_df[raw_col].dropna()) * 100
-        ens_win = (trades_df[ens_col] > 0).sum() / len(trades_df[ens_col].dropna()) * 100
-        dyn_win = (trades_df[dyn_col] > 0).sum() / len(trades_df[dyn_col].dropna()) * 100
+        s_win = (trades_df[s_col] > 0).sum() / len(trades_df[s_col].dropna()) * 100
+        m_win = (trades_df[m_col] > 0).sum() / len(trades_df[m_col].dropna()) * 100
+        l_win = (trades_df[l_col] > 0).sum() / len(trades_df[l_col].dropna()) * 100
+        a_win = (trades_df[a_col] > 0).sum() / len(trades_df[a_col].dropna()) * 100
 
-        # Annualized Sharpe (assuming ~100 trades a year)
         def sharpe(rets):
             std = rets.std()
             return (rets.mean() / (std + 1e-10)) * np.sqrt(100) if std > 0 else 0.0
 
         raw_sharpe = sharpe(trades_df[raw_col])
-        ens_sharpe = sharpe(trades_df[ens_col])
-        dyn_sharpe = sharpe(trades_df[dyn_col])
+        s_sharpe = sharpe(trades_df[s_col])
+        m_sharpe = sharpe(trades_df[m_col])
+        l_sharpe = sharpe(trades_df[l_col])
+        a_sharpe = sharpe(trades_df[a_col])
 
         report_data.append({
-            "Term": term,
-            "Raw Mean (%)": raw_mean,
-            "Raw Win (%)": raw_win,
-            "Raw Sharpe": raw_sharpe,
-            "Ensemble Mean (%)": ens_mean,
-            "Ensemble Win (%)": ens_win,
-            "Ensemble Sharpe": ens_sharpe,
-            "Dynamic Mean (%)": dyn_mean,
-            "Dynamic Win (%)": dyn_win,
-            "Dynamic Sharpe": dyn_sharpe,
+            "Horizon": term,
+            "Raw Return": f"{raw_mean:.2f}% (WR: {raw_win:.1f}%, SR: {raw_sharpe:.2f})",
+            "Short-Term": f"{s_mean:.2f}% (WR: {s_win:.1f}%, SR: {s_sharpe:.2f})",
+            "Mid-Long": f"{m_mean:.2f}% (WR: {m_win:.1f}%, SR: {m_sharpe:.2f})",
+            "Long-Term": f"{l_mean:.2f}% (WR: {l_win:.1f}%, SR: {l_sharpe:.2f})",
+            "Adaptive Switcher": f"{a_mean:.2f}% (WR: {a_win:.1f}%, SR: {a_sharpe:.2f})",
         })
 
     report_df = pd.DataFrame(report_data)
-    print(report_df.to_string(index=False, formatters={
-        "Raw Mean (%)": "{:.2f}%".format,
-        "Raw Win (%)": "{:.1f}%".format,
-        "Raw Sharpe": "{:.2f}".format,
-        "Ensemble Mean (%)": "{:.2f}%".format,
-        "Ensemble Win (%)": "{:.1f}%".format,
-        "Ensemble Sharpe": "{:.2f}".format,
-        "Dynamic Mean (%)": "{:.2f}%".format,
-        "Dynamic Win (%)": "{:.1f}%".format,
-        "Dynamic Sharpe": "{:.2f}".format,
-    }))
+    print(report_df.to_string(index=False))
 
     # Cumulative Performance curves over time
     trades_sorted = trades_df.sort_values(by="post_date").reset_index(drop=True)
 
-    # We choose the 5d return to represent Short-Term, 20d to represent Mid-Long Term, and 90d to represent Long-Term
     fig, axes = plt.subplots(3, 1, figsize=(12, 16))
 
     terms_to_plot = [
-        ("Short-Term (5d)", "raw_ret_5d", "ensemble_ret_5d", "dynamic_ret_5d", 0),
-        ("Mid-Long Term (20d)", "raw_ret_20d", "ensemble_ret_20d", "dynamic_ret_20d", 1),
-        ("Long-Term (90d)", "raw_ret_90d", "ensemble_ret_90d", "dynamic_ret_90d", 2),
+        ("Short-Term (5d) Horizon", "raw_ret_5d", "short_ret_5d", "adaptive_ret_5d", "Short-Term Strategy", 0),
+        ("Mid-Long (60d) Horizon", "raw_ret_60d", "midlong_ret_60d", "adaptive_ret_60d", "Mid-Long Strategy", 1),
+        ("Long-Term (252d) Horizon", "raw_ret_252d", "longterm_ret_252d", "adaptive_ret_252d", "Long-Term Strategy", 2),
     ]
 
-    for term, r_col, e_col, d_col, ax_idx in terms_to_plot:
+    for term, r_col, spec_col, a_col, spec_name, ax_idx in terms_to_plot:
         ax = axes[ax_idx]
 
         # Cumulative returns
         raw_cum = (1 + trades_sorted[r_col].fillna(0)).cumprod() - 1
-        ens_cum = (1 + trades_sorted[e_col].fillna(0)).cumprod() - 1
-        dyn_cum = (1 + trades_sorted[d_col].fillna(0)).cumprod() - 1
+        spec_cum = (1 + trades_sorted[spec_col].fillna(0)).cumprod() - 1
+        a_cum = (1 + trades_sorted[a_col].fillna(0)).cumprod() - 1
 
-        ax.plot(trades_sorted["post_date"], raw_cum * 100, label=f"Raw Sentiment Strategy (Static 5d)", alpha=0.7, color="red")
-        ax.plot(trades_sorted["post_date"], ens_cum * 100, label=f"Technical Confluence Strategy (Static 5d)", alpha=0.8, color="blue")
-        ax.plot(trades_sorted["post_date"], dyn_cum * 100, label=f"Dynamic Volatility Regime Strategy", linewidth=2.5, color="green")
+        ax.plot(trades_sorted["post_date"], raw_cum * 100, label="Raw Sentiment Strategy (Static 5d)", alpha=0.6, color="red")
+        ax.plot(trades_sorted["post_date"], spec_cum * 100, label=f"{spec_name} (Dynamic Volatility Regime)", alpha=0.8, color="blue")
+        ax.plot(trades_sorted["post_date"], a_cum * 100, label="S&P 500 Adaptive Auto-Regime Switcher", linewidth=2.5, color="green")
 
-        ax.set_title(f"Cumulative Performance - {term} Horizon (2020-2026)", fontsize=12, fontweight="bold")
+        ax.set_title(f"Cumulative Performance - {term} (2020-2026)", fontsize=12, fontweight="bold")
         ax.set_xlabel("Date")
         ax.set_ylabel("Cumulative Return (%)")
         ax.legend(loc="upper left")
@@ -388,12 +409,12 @@ def run_backtest():
     print("\n" + "=" * 70)
     print("MOST PROFITABLE ALGORITHM FINDINGS")
     print("=" * 70)
-    for term, r_col, e_col, d_col, _ in terms_to_plot:
+    for term, r_col, spec_col, a_col, spec_name, _ in terms_to_plot:
         r_tot = (1 + trades_sorted[r_col].fillna(0)).prod() - 1
-        e_tot = (1 + trades_sorted[e_col].fillna(0)).prod() - 1
-        d_tot = (1 + trades_sorted[d_col].fillna(0)).prod() - 1
+        spec_tot = (1 + trades_sorted[spec_col].fillna(0)).prod() - 1
+        a_tot = (1 + trades_sorted[a_col].fillna(0)).prod() - 1
 
-        results = [("Raw Sentiment", r_tot), ("Technical Confluence", e_tot), ("Dynamic Volatility Regime", d_tot)]
+        results = [("Raw Sentiment", r_tot), (spec_name, spec_tot), ("Adaptive Switcher", a_tot)]
         results.sort(key=lambda x: x[1], reverse=True)
 
         print(f"\nFor {term}:")
