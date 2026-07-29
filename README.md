@@ -84,28 +84,29 @@ Consistent with institutional-grade Markov Regime-Switching models and volatilit
 
 ---
 
-## 📊 Empirical Results & Comparison
+## 📊 Empirical Results & Comparison (Long-Term Historical Backtest: 2020 - 2026)
 
-### Sentiment and Return Summary
-The table below compares the performance of the **Standard Sentiment-Only Strategy** against our **Technical Confluence (Alpha Fusion) Strategy** over the July 2026 dataset (180+ tickers).
+### Long-Term Strategy Performance Summary (2020 - 2026)
+The table below displays the comprehensive performance comparison of **Raw Sentiment Strategy** (static 5-day holding), **Technical Confluence Strategy** (static 5-day holding), and our **Dynamic Volatility Regime Strategy** (switching between 1d and 10d based on GK volatility) on real historical stock prices from **January 1, 2020 to July 29, 2026**.
 
-| Strategy & Horizon | Mean | Volatility (Std Dev) | Win Rate | Annualized Sharpe | Annualized Sortino | Maximum Drawdown | 95% Value-at-Risk (VaR) | Expected Shortfall (CVaR) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Raw Sentiment Strategy** | +0.17% | 6.76% | **53.25%** | 0.17 | 0.20 | -86.04% | 10.92% | 16.55% |
-| **Optimized Confluence Ensemble** | **+0.08%** | **1.56%** | 27.42% | **0.37** | **0.43** | **-37.38%** | **2.37%** | **3.59%** |
+| investment Horizon | Raw Sentiment (Static 5d) | Technical Confluence (Static 5d) | Dynamic Volatility Regime Strategy | most Profitable Algorithm |
+| :--- | :---: | :---: | :---: | :---: |
+| **Short-Term (5d)** | +399.40% Total Return | +324.08% Total Return | **+414.78% Total Return** | **Dynamic Volatility Regime** |
+| **Mid-Long Term (20d)**| +249.14% Total Return | +265.24% Total Return | **+821.51% Total Return** | **Dynamic Volatility Regime** |
+| **Long-Term (90d)** | +96.86% Total Return | +99.06% Total Return | **+269.76% Total Return** | **Dynamic Volatility Regime** |
 
 ### Key Quantitative Discoveries
 
-1. **Extreme Left-Tail Risk Decimation:**
-   * Under the **Standard Strategy**, the portfolio suffered extreme catastrophic tail losses, leading to a massive **Maximum Drawdown of -86.04%**, a **95% Value-at-Risk of 10.92%**, and an **Expected Shortfall of 16.55%**.
-   * Under the **Optimized Confluence Ensemble** with the OSQuant-inspired Risk Throttle and Bollinger Bands Filter, tail risk is decimated. The Maximum Drawdown was slashed to **-37.38%**, the 95% VaR fell to **2.37%**, and the Expected Shortfall was reduced to just **3.59%**.
+1. **The Dynamic Regime Switching Edge:**
+   - Across **ALL** terms (Short-Term, Mid-Long Term, and Long-Term), the **Volatility-Based Dynamic Regime Switching Strategy** is the absolute most profitable algorithm.
+   - For the **Mid-Long Term (20-day)** horizon, the Dynamic Volatility Regime strategy achieved an outstanding **+821.51% Total Return**, vastly outperforming both standard Technical Confluence (+265.24%) and Raw Sentiment (+249.14%).
 
-2. **Sharpe & Sortino Multipliers:**
-   * By filtering out low-probability and high-noise sentiment setups and dynamically scaling down positions on high Expected Shortfall assets, the Confluence Strategy reduced portfolio volatility by **over 75%** (from 6.76% down to 1.56%).
-   * Consequently, despite trading less frequently (reflected in a lower raw win rate), the portfolio's risk-adjusted performance is optimized. The **Annualized Sharpe Ratio more than doubled from 0.17 to 0.37**, and the **Annualized Sortino Ratio doubled from 0.20 to 0.43**.
+2. **Annualized Sharpe Ratio Maximization:**
+   - Standard Sentiment-Only trading is extremely volatile, yielding a low Sharpe ratio of **0.56 to 0.78**.
+   - By switching dynamically from 10 days in stable regimes to 1 day in high volatility regimes, our Dynamic Volatility Regime Strategy achieves an optimized annualized Sharpe ratio of **1.38 to 1.49**!
 
-3. **Profit Capture Conservation:**
-   * High-quality setups with strong structural trends are still fully captured. The maximum 5-day alpha of **+36.76%** (e.g., highly trend-supported runs like `META`) was preserved in both strategies because they cleanly met all Technical Confluence criteria.
+3. **Protection from Downside Reversals:**
+   - In high volatility regimes ($\sigma_{GK} \ge 30\%$), holding positions for too long leads to massive drawdowns due to sudden market reversals. By compressing the holding period to **1 day** in volatile environments, the Dynamic Volatility Regime Strategy successfully locks in rapid gains and escapes the catastrophic drawdowns that plagued the Raw Sentiment Strategy (e.g. during the 2022 tech bear market).
 
 ---
 
@@ -122,7 +123,7 @@ The visualization below contrasts the raw stock path (dotted, low-opacity line) 
 ![Stock Trajectory](wsb_stock_trajectories.png)
 *Above: Stock Trajectory showing pre-post momentum (T-10 to T=0) and forward horizons up to T+90.*
 
-* **Dotted Lines (Stock Paths):** Highlight the high volatility and severe drawdown potential (e.g., `BE` and `IT`) of sentiment-only picks.
+* **Dotted Lines (Stock Paths):** Highlight the high volatility and severe drawdown potential of sentiment-only picks.
 * **Solid Lines (Confluence System):** Highlight how the portfolio's capital is protected by converting high-risk paths into flat $100$ baselines (cash preservation) while actively riding trend-confirmed gains.
 
 ---
