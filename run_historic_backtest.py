@@ -376,21 +376,19 @@ def run_backtest():
     # Cumulative Performance curves over time
     trades_sorted = trades_df.sort_values(by="post_date").reset_index(drop=True)
 
-    fig, axes = plt.subplots(3, 1, figsize=(12, 16))
+    fig, axes = plt.subplots(2, 2, figsize=(18, 14))
 
     terms_to_plot = [
-        ("Short-Term (5d) Horizon", "raw_ret_5d", "short_ret_5d", "adaptive_ret_5d", "Short-Term Strategy", 0),
-        ("Mid-Long (60d) Horizon", "raw_ret_60d", "midlong_ret_60d", "adaptive_ret_60d", "Mid-Long Strategy", 1),
-        ("Long-Term (252d) Horizon", "raw_ret_252d", "longterm_ret_252d", "adaptive_ret_252d", "Long-Term Strategy", 2),
+        ("Short-Term (5d) Horizon", "raw_ret_5d", "short_ret_5d", "adaptive_ret_5d", "Short-Term Strategy", axes[0, 0]),
+        ("Mid-Long (60d) Horizon", "raw_ret_60d", "midlong_ret_60d", "adaptive_ret_60d", "Mid-Long Strategy", axes[0, 1]),
+        ("Long-Term (252d) Horizon", "raw_ret_252d", "longterm_ret_252d", "adaptive_ret_252d", "Long-Term Strategy", axes[1, 0]),
     ]
 
-    for term, r_col, spec_col, a_col, spec_name, ax_idx in terms_to_plot:
-        ax = axes[ax_idx]
-
-        # Cumulative returns
-        raw_cum = (1 + trades_sorted[r_col].fillna(0)).cumprod() - 1
-        spec_cum = (1 + trades_sorted[spec_col].fillna(0)).cumprod() - 1
-        a_cum = (1 + trades_sorted[a_col].fillna(0)).cumprod() - 1
+    for term, r_col, spec_col, a_col, spec_name, ax in terms_to_plot:
+        # Cumulative returns (Simple sum portfolio model)
+        raw_cum = trades_sorted[r_col].fillna(0).cumsum()
+        spec_cum = trades_sorted[spec_col].fillna(0).cumsum()
+        a_cum = trades_sorted[a_col].fillna(0).cumsum()
 
         ax.plot(trades_sorted["post_date"], raw_cum * 100, label="Raw Sentiment Strategy (Static 5d)", alpha=0.6, color="red")
         ax.plot(trades_sorted["post_date"], spec_cum * 100, label=f"{spec_name} (Dynamic Volatility Regime)", alpha=0.8, color="blue")
@@ -402,6 +400,37 @@ def run_backtest():
         ax.legend(loc="upper left")
         ax.grid(True, linestyle="--", alpha=0.5)
 
+    # 4th Subplot: Growth of a $100 Initial Investment over Forward Intervals (1d to 300d)
+    ax_grow = axes[1, 1]
+    horizons_grow = [0] + FORWARD_DAYS
+    raw_vals = [100.0]
+    short_vals = [100.0]
+    midlong_vals = [100.0]
+    longterm_vals = [100.0]
+    adaptive_vals = [100.0]
+    spy_vals = [100.0]
+
+    for d in FORWARD_DAYS:
+        raw_vals.append(100.0 * (1 + trades_sorted[f"raw_ret_{d}d"].fillna(0).mean()))
+        short_vals.append(100.0 * (1 + trades_sorted[f"short_ret_{d}d"].fillna(0).mean()))
+        midlong_vals.append(100.0 * (1 + trades_sorted[f"midlong_ret_{d}d"].fillna(0).mean()))
+        longterm_vals.append(100.0 * (1 + trades_sorted[f"longterm_ret_{d}d"].fillna(0).mean()))
+        adaptive_vals.append(100.0 * (1 + trades_sorted[f"adaptive_ret_{d}d"].fillna(0).mean()))
+        spy_vals.append(100.0 * (1 + trades_sorted[f"spy_ret_{d}d"].fillna(0).mean()))
+
+    ax_grow.plot(horizons_grow, raw_vals, label="Raw Sentiment (Static 5d)", color="red", marker="o", linestyle="-", alpha=0.7)
+    ax_grow.plot(horizons_grow, short_vals, label="Short-Term (Dynamic 10d/1d)", color="orange", marker="s", linestyle="-", alpha=0.7)
+    ax_grow.plot(horizons_grow, midlong_vals, label="Mid-Long (Dynamic 60d/5d)", color="blue", marker="v", linestyle="-", alpha=0.7)
+    ax_grow.plot(horizons_grow, longterm_vals, label="Long-Term (Dynamic 252d/10d)", color="purple", marker="^", linestyle="-", alpha=0.7)
+    ax_grow.plot(horizons_grow, adaptive_vals, label="S&P 500 Adaptive Auto-Regime Switcher", color="green", marker="D", linewidth=2.5)
+    ax_grow.plot(horizons_grow, spy_vals, label="S&P 500 Benchmark (SPY)", color="black", marker="x", linestyle="--")
+
+    ax_grow.set_title("Growth of a $100 Initial Investment over Forward Intervals", fontsize=12, fontweight="bold")
+    ax_grow.set_xlabel("Holding Period Days Offset (Intervals)")
+    ax_grow.set_ylabel("Expected Portfolio Value ($)")
+    ax_grow.legend(loc="upper left", fontsize=8)
+    ax_grow.grid(True, linestyle="--", alpha=0.5)
+
     plt.tight_layout()
     plt.savefig("wsb_stock_trajectories.png", dpi=300)
     print("\nVisualization plot successfully generated & saved to: wsb_stock_trajectories.png")
@@ -410,9 +439,9 @@ def run_backtest():
     print("MOST PROFITABLE ALGORITHM FINDINGS")
     print("=" * 70)
     for term, r_col, spec_col, a_col, spec_name, _ in terms_to_plot:
-        r_tot = (1 + trades_sorted[r_col].fillna(0)).prod() - 1
-        spec_tot = (1 + trades_sorted[spec_col].fillna(0)).prod() - 1
-        a_tot = (1 + trades_sorted[a_col].fillna(0)).prod() - 1
+        r_tot = trades_sorted[r_col].fillna(0).sum()
+        spec_tot = trades_sorted[spec_col].fillna(0).sum()
+        a_tot = trades_sorted[a_col].fillna(0).sum()
 
         results = [("Raw Sentiment", r_tot), (spec_name, spec_tot), ("Adaptive Switcher", a_tot)]
         results.sort(key=lambda x: x[1], reverse=True)
