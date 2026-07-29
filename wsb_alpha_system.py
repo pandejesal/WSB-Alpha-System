@@ -29,7 +29,7 @@ CO_MENTION_JSON = os.path.join(SCRIPT_DIR, "co_mentions.json")
 OUTPUT_PNG = os.path.join(SCRIPT_DIR, "wsb_stock_trajectories.png")
 
 # Global Configuration Parameters
-APIFY_TOKEN = "API_Key"
+APIFY_TOKEN = os.getenv("APIFY_TOKEN", "")
 ACTOR_ID = "trudax/reddit-scraper-lite"
 
 FINBERT_MODEL = "ProsusAI/finbert"
