@@ -641,8 +641,12 @@ def run_sentiment_pipeline():
                         regime_exit_date = ind_df.index[target_regime_idx]
                         regime_exit_px = ind_df["Close"].iloc[target_regime_idx]
                         regime_spy_exit_px = spy.loc[regime_exit_date] if regime_exit_date in spy.index else spy.iloc[min(spy.index.searchsorted(regime_exit_date, side="left"), len(spy)-1)]
-                        regime_stock_ret = (regime_exit_px - entry_px) / entry_px
-                        regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px
+                        if sentiment_score > 0:
+                            regime_stock_ret = (regime_exit_px - entry_px) / entry_px
+                            regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px
+                        else:
+                            regime_stock_ret = (entry_px - regime_exit_px) / entry_px
+                            regime_spy_ret = (spy_entry_px - regime_spy_exit_px) / spy_entry_px
                     else:
                         regime_stock_ret = None
                         regime_spy_ret = None
@@ -655,8 +659,12 @@ def run_sentiment_pipeline():
 
                             spy_exit_px = spy.loc[exit_date] if exit_date in spy.index else spy.iloc[min(spy.index.searchsorted(exit_date, side="left"), len(spy)-1)]
 
-                            stock_ret = (exit_px - entry_px) / entry_px
-                            spy_ret = (spy_exit_px - spy_entry_px) / spy_entry_px
+                            if sentiment_score > 0:
+                                stock_ret = (exit_px - entry_px) / entry_px
+                                spy_ret = (spy_exit_px - spy_entry_px) / spy_entry_px
+                            else:
+                                stock_ret = (entry_px - exit_px) / entry_px
+                                spy_ret = (spy_entry_px - spy_exit_px) / spy_entry_px
 
                             base_dict[f"ret_{d}d"] = stock_ret
                             base_dict[f"spy_ret_{d}d"] = spy_ret
