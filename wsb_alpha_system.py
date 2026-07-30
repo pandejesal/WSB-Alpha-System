@@ -8,6 +8,9 @@ import re
 import json
 import torch
 import pandas as pd
+import numpy as np
+import requests
+import xml.etree.ElementTree as ET
 import yfinance as yf
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -36,7 +39,7 @@ FINBERT_MODEL = "ProsusAI/finbert"
 FINBERT_LABELS = ["bearish", "neutral", "bullish"]
 CONFIDENCE_THRESHOLD = 0.5
 
-FORWARD_DAYS = [1, 5, 10, 20, 30, 60, 90]
+FORWARD_DAYS = [1, 5, 10, 20, 30, 60, 90, 120, 252, 300]
 TICKER_RE = re.compile(r'\b[A-Z]{2,5}\b')
 
 BLACKLIST = {
@@ -84,7 +87,7 @@ def finbert_sentiment(text: str, tokenizer, model, device) -> dict:
     with torch.no_grad():
         outputs = model(**inputs)
     probs = torch.nn.functional.softmax(outputs.logits, dim=-1)[0]
-    return {l: float(p) for l, p in zip(FINBERT_LABELS, probs)}
+    return {lbl: float(p) for lbl, p in zip(FINBERT_LABELS, probs)}
 
 def safe_write_csv(df, path):
     """
@@ -114,8 +117,6 @@ def safe_write_json(data, path):
             print("This occurs because the JSON file is open or locked by another utility.")
             input("Please close any program accessing this file and press Enter to retry saving...")
 
-
-import numpy as np
 
 def compute_indicators(df):
     if len(df) < 15:
@@ -205,8 +206,20 @@ def compute_indicators(df):
     df["CVaR_95"] = rolling_cvar
     return df
 
-import xml.etree.ElementTree as ET
-import requests
+def compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, holding_days):
+    target_regime_idx = entry_idx + holding_days
+    if target_regime_idx < len(ind_df):
+        regime_exit_date = ind_df.index[target_regime_idx]
+        regime_exit_px = ind_df["Close"].iloc[target_regime_idx]
+        regime_spy_exit_px = spy_close.loc[regime_exit_date] if regime_exit_date in spy_close.index else spy_close.iloc[min(spy_close.index.searchsorted(regime_exit_date, side="left"), len(spy_close)-1)]
+
+        regime_stock_ret = (regime_exit_px - entry_px) / entry_px if sentiment_score > 0 else (entry_px - regime_exit_px) / entry_px
+        regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - regime_spy_exit_px) / spy_entry_px
+    else:
+        regime_stock_ret = (ind_df["Close"].iloc[-1] - entry_px) / entry_px if sentiment_score > 0 else (entry_px - ind_df["Close"].iloc[-1]) / entry_px
+        regime_spy_ret = (spy_close.iloc[-1] - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - spy_close.iloc[-1]) / spy_entry_px
+
+    return regime_stock_ret, regime_spy_ret
 
 def fetch_rss_feed() -> list[dict]:
     """
@@ -433,7 +446,19 @@ def run_sentiment_pipeline():
     # RE-EVALUATION LOOP: ISOLATE MISSING ALPHA CHANNELS & APPLY TECHNICAL CONFLUENCE (MIXED METHOD)
     # ------------------------------------------------------------------
     return_cols = [f"alpha_{d}d" for d in FORWARD_DAYS]
-    mixed_cols = ["confluence_triggered", "pricing_failed"] + [f"mixed_ret_{d}d" for d in FORWARD_DAYS] + [f"mixed_alpha_{d}d" for d in FORWARD_DAYS]
+
+    # Set up our expanded strategy mode columns
+    expanded_strategy_cols = []
+    for d in FORWARD_DAYS:
+        expanded_strategy_cols += [
+            f"short_ret_{d}d", f"short_alpha_{d}d",
+            f"midlong_ret_{d}d", f"midlong_alpha_{d}d",
+            f"longterm_ret_{d}d", f"longterm_alpha_{d}d",
+            f"adaptive_ret_{d}d", f"adaptive_alpha_{d}d",
+            f"mixed_ret_{d}d", f"mixed_alpha_{d}d"  # legacy compatibility
+        ]
+
+    mixed_cols = ["confluence_triggered", "pricing_failed"] + expanded_strategy_cols
     
     # Generate empty return columns if running the file for the first time
     for col in return_cols + [f"ret_{d}d" for d in FORWARD_DAYS] + [f"spy_ret_{d}d" for d in FORWARD_DAYS] + mixed_cols:
@@ -448,7 +473,7 @@ def run_sentiment_pipeline():
     if "regime_holding_days" not in combined.columns:
         combined["regime_holding_days"] = 5
 
-    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]
+    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]  # noqa: E712
     print(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
     if not needs_calculation.empty:
@@ -456,7 +481,7 @@ def run_sentiment_pipeline():
         post_dates = pd.to_datetime(needs_calculation["post_date"])
         # Buffer of 45 days prior to the min post date to warm up EMA, RSI, and MACD
         start_date = (post_dates.min() - timedelta(days=45)).strftime("%Y-%m-%d")
-        end_date = (post_dates.max() + timedelta(days=140)).strftime("%Y-%m-%d")
+        end_date = (post_dates.max() + timedelta(days=450)).strftime("%Y-%m-%d")
         
         # Split into smaller chunks to avoid rate limits if we have many tickers to query
         chunk_size = 80
@@ -630,26 +655,46 @@ def run_sentiment_pipeline():
                     base_dict["CVaR_95"] = entry_cvar
                     base_dict["projected_5d_return"] = projected_5d_return
 
-                    # 6. Volatility-Based Dynamic Regime Switching Holding Periods (Markov Regime-Switching Principle):
-                    # In Low Volatility Regimes (GK Vol < 30%), we hold for 10 days to let trend-following gains compound.
-                    # In High Volatility Regimes (GK Vol >= 30%), we exit in 1 day to lock in fast gains and protect capital.
-                    regime_holding_days = 10 if gk_vol < 0.30 else 1
+                    # 6. Volatility-Based Dynamic Regime Switching Holding Periods for different horizons:
+                    short_holding_days = 10 if gk_vol < 0.30 else 1
+                    midlong_holding_days = 60 if gk_vol < 0.30 else 5
+                    longterm_holding_days = 252 if gk_vol < 0.30 else 10
 
-                    # Precompute the returns for the target exit day (H)
-                    target_regime_idx = entry_idx + regime_holding_days
-                    if target_regime_idx < len(ind_df):
-                        regime_exit_date = ind_df.index[target_regime_idx]
-                        regime_exit_px = ind_df["Close"].iloc[target_regime_idx]
-                        regime_spy_exit_px = spy.loc[regime_exit_date] if regime_exit_date in spy.index else spy.iloc[min(spy.index.searchsorted(regime_exit_date, side="left"), len(spy)-1)]
-                        if sentiment_score > 0:
-                            regime_stock_ret = (regime_exit_px - entry_px) / entry_px
-                            regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px
-                        else:
-                            regime_stock_ret = (entry_px - regime_exit_px) / entry_px
-                            regime_spy_ret = (spy_entry_px - regime_spy_exit_px) / spy_entry_px
+                    # S&P 500 Market Regime Detection for Auto-Regime Switching
+                    spy_entry_idx = spy.index.searchsorted(entry_date, side="left")
+                    if spy_entry_idx >= len(spy):
+                        spy_entry_idx = len(spy) - 1
+
+                    spy_window = spy.iloc[max(0, spy_entry_idx-19):spy_entry_idx+1]
+                    if spy_entry_idx >= 20:
+                        spy_ret_20d = (spy_entry_px - spy.iloc[spy_entry_idx-20]) / spy.iloc[spy_entry_idx-20]
+                        spy_pct_rets = spy_window.pct_change().dropna()
+                        spy_vol_20d = spy_pct_rets.std() * np.sqrt(252)
                     else:
-                        regime_stock_ret = None
-                        regime_spy_ret = None
+                        spy_ret_20d = 0.05
+                        spy_vol_20d = 0.12
+
+                    if spy_ret_20d > 0 and spy_vol_20d < 0.15:
+                        adaptive_mode = "long_term"
+                        adaptive_holding_days = longterm_holding_days
+                    elif spy_ret_20d > 0 and 0.15 <= spy_vol_20d < 0.25:
+                        adaptive_mode = "mid_long_term"
+                        adaptive_holding_days = midlong_holding_days
+                    else:
+                        adaptive_mode = "short_term"
+                        adaptive_holding_days = short_holding_days
+
+                    # Precompute target exit returns for each strategy
+                    ret_stock_short, ret_spy_short = compute_regime_returns(ind_df, spy, entry_idx, entry_px, spy_entry_px, sentiment_score, short_holding_days)
+                    ret_stock_midlong, ret_spy_midlong = compute_regime_returns(ind_df, spy, entry_idx, entry_px, spy_entry_px, sentiment_score, midlong_holding_days)
+                    ret_stock_longterm, ret_spy_longterm = compute_regime_returns(ind_df, spy, entry_idx, entry_px, spy_entry_px, sentiment_score, longterm_holding_days)
+
+                    if adaptive_mode == "long_term":
+                        ret_stock_adaptive, ret_spy_adaptive = ret_stock_longterm, ret_spy_longterm
+                    elif adaptive_mode == "mid_long_term":
+                        ret_stock_adaptive, ret_spy_adaptive = ret_stock_midlong, ret_spy_midlong
+                    else:
+                        ret_stock_adaptive, ret_spy_adaptive = ret_stock_short, ret_spy_short
 
                     for d in FORWARD_DAYS:
                         target_idx = entry_idx + d
@@ -670,31 +715,46 @@ def run_sentiment_pipeline():
                             base_dict[f"spy_ret_{d}d"] = spy_ret
                             base_dict[f"alpha_{d}d"] = stock_ret - spy_ret
 
-                            # For the customized "mixed_ret" channel, we apply the Volatility-Based Dynamic Regime holding horizon
-                            # If the forward day is before or at our dynamic regime holding horizon, the trade is still open or exiting
-                            # If the forward day is after our dynamic regime holding horizon, the trade is closed, so the realized return is fixed
                             if confluence_triggered:
-                                if d <= regime_holding_days:
-                                    weighted_ret = stock_ret * risk_parity_weight
-                                    weighted_alpha = (stock_ret - spy_ret) * risk_parity_weight
-                                else:
-                                    if regime_stock_ret is not None:
-                                        weighted_ret = regime_stock_ret * risk_parity_weight
-                                        weighted_alpha = (regime_stock_ret - regime_spy_ret) * risk_parity_weight
-                                    else:
-                                        weighted_ret = None
-                                        weighted_alpha = None
+                                # Short-Term Strategy
+                                base_dict[f"short_ret_{d}d"] = stock_ret * risk_parity_weight if d <= short_holding_days else ret_stock_short * risk_parity_weight
+                                base_dict[f"short_alpha_{d}d"] = (stock_ret - spy_ret) * risk_parity_weight if d <= short_holding_days else (ret_stock_short - ret_spy_short) * risk_parity_weight
 
-                                base_dict[f"mixed_ret_{d}d"] = weighted_ret
-                                base_dict[f"mixed_alpha_{d}d"] = weighted_alpha
+                                # Mid-Long Strategy
+                                base_dict[f"midlong_ret_{d}d"] = stock_ret * risk_parity_weight if d <= midlong_holding_days else ret_stock_midlong * risk_parity_weight
+                                base_dict[f"midlong_alpha_{d}d"] = (stock_ret - spy_ret) * risk_parity_weight if d <= midlong_holding_days else (ret_stock_midlong - ret_spy_midlong) * risk_parity_weight
+
+                                # Long-Term Strategy
+                                base_dict[f"longterm_ret_{d}d"] = stock_ret * risk_parity_weight if d <= longterm_holding_days else ret_stock_longterm * risk_parity_weight
+                                base_dict[f"longterm_alpha_{d}d"] = (stock_ret - spy_ret) * risk_parity_weight if d <= longterm_holding_days else (ret_stock_longterm - ret_spy_longterm) * risk_parity_weight
+
+                                # S&P 500 Adaptive Auto-Regime Switcher
+                                base_dict[f"adaptive_ret_{d}d"] = stock_ret * risk_parity_weight if d <= adaptive_holding_days else ret_stock_adaptive * risk_parity_weight
+                                base_dict[f"adaptive_alpha_{d}d"] = (stock_ret - spy_ret) * risk_parity_weight if d <= adaptive_holding_days else (ret_stock_adaptive - ret_spy_adaptive) * risk_parity_weight
+
+                                # Legacy compatibility mapping to adaptive switcher
+                                base_dict[f"mixed_ret_{d}d"] = base_dict[f"adaptive_ret_{d}d"]
+                                base_dict[f"mixed_alpha_{d}d"] = base_dict[f"adaptive_alpha_{d}d"]
                             else:
+                                base_dict[f"short_ret_{d}d"] = 0.0
+                                base_dict[f"short_alpha_{d}d"] = 0.0
+                                base_dict[f"midlong_ret_{d}d"] = 0.0
+                                base_dict[f"midlong_alpha_{d}d"] = 0.0
+                                base_dict[f"longterm_ret_{d}d"] = 0.0
+                                base_dict[f"longterm_alpha_{d}d"] = 0.0
+                                base_dict[f"adaptive_ret_{d}d"] = 0.0
+                                base_dict[f"adaptive_alpha_{d}d"] = 0.0
                                 base_dict[f"mixed_ret_{d}d"] = 0.0
                                 base_dict[f"mixed_alpha_{d}d"] = 0.0
                         else:
                             base_dict[f"ret_{d}d"] = base_dict[f"spy_ret_{d}d"] = base_dict[f"alpha_{d}d"] = None
+                            base_dict[f"short_ret_{d}d"] = base_dict[f"short_alpha_{d}d"] = None
+                            base_dict[f"midlong_ret_{d}d"] = base_dict[f"midlong_alpha_{d}d"] = None
+                            base_dict[f"longterm_ret_{d}d"] = base_dict[f"longterm_alpha_{d}d"] = None
+                            base_dict[f"adaptive_ret_{d}d"] = base_dict[f"adaptive_alpha_{d}d"] = None
                             base_dict[f"mixed_ret_{d}d"] = base_dict[f"mixed_alpha_{d}d"] = None
 
-                    base_dict["regime_holding_days"] = regime_holding_days
+                    base_dict["regime_holding_days"] = adaptive_holding_days
                     updated_rows.append(base_dict)
 
                 # Merge updated calculations back into the main DataFrame
@@ -763,7 +823,7 @@ def run_trajectory_plotter(top_n_tickers=5):
     df['post_date'] = pd.to_datetime(df['post_date'])
     
     # Filter out tickers that are marked as pricing_failed to ensure we only select tickers with valid price data for plotting
-    valid_df = df[df['pricing_failed'] != True]
+    valid_df = df[df['pricing_failed'] != True]  # noqa: E712
     top_tickers = valid_df['ticker'].value_counts().head(top_n_tickers).index.tolist()
     print(f"Selected top {top_n_tickers} tickers for plotting: {top_tickers}")
     
@@ -791,7 +851,7 @@ def run_trajectory_plotter(top_n_tickers=5):
         try:
             px = yf.download([ticker, "SPY"], start=start_dl, end=end_dl, progress=False, auto_adjust=True)
             px_close = px["Close"] if (isinstance(px, pd.DataFrame) and "Close" in px) else px
-        except Exception as e:
+        except Exception:
             continue
             
         if ticker not in px_close.columns or "SPY" not in px_close.columns:
@@ -851,7 +911,7 @@ def run_trajectory_plotter(top_n_tickers=5):
                     mixed_path.append(100.0)
 
         confluence_label = "Triggered" if confluence_triggered else "Avoided"
-        ax.plot(relative_days, mixed_path, label=f"{ticker} (Mixed System, Confluence: {confluence_label})", color=color, linewidth=2.0)
+        ax.plot(relative_days, mixed_path, label=f"{ticker} (Adaptive Switcher, Confluence: {confluence_label})", color=color, linewidth=2.0)
 
         spy_trajectories.append(pd.Series(normalized_spy.values, index=relative_days))
         
@@ -862,7 +922,7 @@ def run_trajectory_plotter(top_n_tickers=5):
     ax.axvline(x=0, color="red", linestyle=":", linewidth=1.5, label="Entry Execution (T+1 Close)")
     ax.axhline(y=100, color="gray", linestyle="-", linewidth=0.5)
     
-    ax.set_title("WSB Sentiment vs. Technical Confluence: At Time of Post ($T=0$) vs. Months Later ($T+90$)", fontsize=13, fontweight="bold")
+    ax.set_title("WSB Sentiment vs. Adaptive Auto-Regime Switcher: At Time of Post ($T=0$) vs. Months Later ($T+90$)", fontsize=13, fontweight="bold")
     ax.set_xlabel("Relative Trading Days Offset from Entry Day ($T=0$)")
     ax.set_ylabel("Normalized Asset Value (Base 100 at Entry)")
     ax.legend(loc="upper left", fontsize=8, framealpha=0.9)
@@ -902,9 +962,9 @@ def print_quant_statistics():
 
     # Analyze 5-day horizon (standard medium-term horizon)
     raw_rets = df["ret_5d"].dropna()
-    mixed_rets = df["mixed_ret_5d"].dropna()
+    adaptive_rets = df["adaptive_ret_5d"].dropna()
 
-    if len(raw_rets) == 0 or len(mixed_rets) == 0:
+    if len(raw_rets) == 0 or len(adaptive_rets) == 0:
         print("Not enough backtest data available to generate statistics.")
         return
 
@@ -934,9 +994,9 @@ def print_quant_statistics():
         return mean_ret * 100, std_ret * 100, win_rate * 100, sharpe, sortino, max_dd * 100, hist_var * 100, hist_cvar * 100
 
     raw_mean, raw_std, raw_win, raw_sharpe, raw_sortino, raw_mdd, raw_var, raw_cvar = compute_stats(raw_rets)
-    mix_mean, mix_std, mix_win, mix_sharpe, mix_sortino, mix_mdd, mix_var, mix_cvar = compute_stats(mixed_rets)
+    mix_mean, mix_std, mix_win, mix_sharpe, mix_sortino, mix_mdd, mix_var, mix_cvar = compute_stats(adaptive_rets)
 
-    print(f"{'Metric':<25} | {'Raw Sentiment Strategy':<25} | {'Optimized Confluence Ensemble':<25}")
+    print(f"{'Metric':<25} | {'Raw Sentiment Strategy':<25} | {'Adaptive Auto-Regime Switcher':<25}")
     print("-" * 81)
     print(f"{'Mean Trade Return':<25} | {raw_mean:>22.2f}% | {mix_mean:>22.2f}%")
     print(f"{'Volatility (Std Dev)':<25} | {raw_std:>22.2f}% | {mix_std:>22.2f}%")
@@ -947,7 +1007,7 @@ def print_quant_statistics():
     print(f"{'Value-at-Risk (95% VaR)':<25} | {raw_var:>22.2f}% | {mix_var:>22.2f}%")
     print(f"{'Expected Shortfall (CVaR)':<25} | {raw_cvar:>22.2f}% | {mix_cvar:>22.2f}%")
     print("-" * 81)
-    print("Interpretation: The Optimized Confluence Ensemble with the Bollinger Bands Filter,")
+    print("Interpretation: The Adaptive Auto-Regime Switcher with the Bollinger Bands Filter,")
     print("Garman-Klass Volatility Shield, and Max-Sharpe asset allocation vastly reduces volatility")
     print("and tail risk while preserving win rate and protecting investment capital.")
     print("=" * 60)
