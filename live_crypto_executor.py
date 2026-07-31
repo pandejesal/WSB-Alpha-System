@@ -19,6 +19,8 @@ import os
 import ccxt
 import pandas as pd
 from dotenv import load_dotenv
+import risk_config
+import json
 
 from strategy_man_ahl import (
     calculate_momentum_score,
@@ -35,7 +37,7 @@ load_dotenv()
 # ============================================================================
 BYBIT_API_KEY = os.getenv("BYBIT_API_KEY", "")
 BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET", "")
-USE_SANDBOX = os.getenv("BYBIT_USE_SANDBOX", "true").lower() == "true"
+USE_SANDBOX = not risk_config.LIVE_TRADING_ENABLED
 
 TICKERS = ["BTC-USD", "ETH-USD", "SOL-USD"]
 # Map yfinance-style tickers to Bybit Perpetual linear symbols
@@ -46,9 +48,9 @@ BYBIT_SYMBOLS = {
 }
 
 # Target risk parameters matching backtest
-TARGET_RISK = 0.35
+TARGET_RISK = risk_config.MAX_POSITION_SIZE_PCT
 HALF_KELLY = 0.5
-LEVERAGE_CAP = 3.0
+LEVERAGE_CAP = 1.0 # Force leverage cap for safety
 MIN_ORDER_SIZE = 10.0  # Bybit floor minimum position size $10
 
 def init_bybit_exchange() -> ccxt.bybit:
@@ -223,6 +225,11 @@ def execute_bybit_order(exchange: ccxt.bybit, symbol: str, target_size: float, c
         print(f"  [!] Uncaught broker exception placing order: {e}")
 
 def main():
+    STATE_FILE = 'crypto_state.json'
+    if USE_SANDBOX == False and risk_config.LIVE_TRADING_ENABLED == False:
+        print("[!] ERROR: LIVE_TRADING_ENABLED is False but sandbox is false. Aborting for safety.")
+        return
+
     print("=" * 60)
     print("BYBIT SYSTEMATIC CRYPTO MOMENTUM EXECUTIVE CYCLE")
     print("=" * 60)
@@ -244,6 +251,45 @@ def main():
     # 3. Fetch active positions, scores, and volatilities
     print("[*] Retrieving live positions, daily close candles, and volatilities...")
     current_positions, today_scores, today_vols = get_current_positions_and_scores(exchange)
+
+
+
+
+
+    # Fetch circuit breaker state / high water mark
+    # For crypto, since we don't have alpaca's 1-week API endpoint easily, we track equity in state.
+    state_equity = equity
+    high_water_mark = equity
+    last_equity = equity
+    if os.path.exists(STATE_FILE):
+        try:
+            with open(STATE_FILE, "r") as f:
+                state_data = json.load(f)
+                last_equity = state_data.get("last_equity", equity)
+                high_water_mark = state_data.get("high_water_mark", equity)
+        except Exception:
+            pass
+
+    # Update high water mark
+    if equity > high_water_mark:
+        high_water_mark = equity
+
+    # Check Circuit Breakers
+    if last_equity > 0:
+        daily_loss_pct = (last_equity - equity) / last_equity
+        if daily_loss_pct > risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT:
+            print(f"[!!!] DAILY CIRCUIT BREAKER TRIPPED. Loss ({daily_loss_pct*100:.2f}%) exceeds limit ({risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT*100:.2f}%). Trading halted.")
+            return
+
+    if high_water_mark > 0:
+        weekly_drawdown = (high_water_mark - equity) / high_water_mark
+        if weekly_drawdown > risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT:
+            print(f"[!!!] WEEKLY/MAX CIRCUIT BREAKER TRIPPED. Drawdown ({weekly_drawdown*100:.2f}%) exceeds limit ({risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT*100:.2f}%). Trading halted.")
+            return
+
+    active_pos_count = sum(1 for p in current_positions.values() if abs(p) > 0)
+    if active_pos_count >= risk_config.MAX_CONCURRENT_POSITIONS:
+        print(f"[*] Max positions ({risk_config.MAX_CONCURRENT_POSITIONS}) reached or exceeded.")
 
     print("\n[*] Current Live Positions (Dollar Values):")
     for ticker, pos in current_positions.items():
@@ -274,7 +320,20 @@ def main():
     # In live execution, we can use 0 or load historical score from previous run.
     # To be conservative, we pass today's score as previous score if it's the first run,
     # or let the rebalance engine analyze size drifts.
-    prev_scores = {ticker: 0.0 for ticker in TICKERS} # Conservative assumption
+
+
+    prev_scores = {ticker: 0.0 for ticker in TICKERS}
+    if os.path.exists(STATE_FILE):
+        try:
+            with open(STATE_FILE, "r") as f:
+                loaded = json.load(f)
+                if isinstance(loaded, dict) and "scores" in loaded:
+                    prev_scores = loaded["scores"]
+                elif isinstance(loaded, dict):
+                    prev_scores = loaded # fallback for old schema
+        except Exception:
+            pass
+
     rebalance_required = check_rebalance_required(
         current_positions=current_positions,
         target_sizes=target_sizes,
@@ -295,6 +354,18 @@ def main():
             execute_bybit_order(exchange, symbol, target_size, current_pos)
         else:
             print(f"  -> {ticker}: Stay at current position (${current_pos:.2f}), drift is within tolerance.")
+
+    # Save today's state and scores for next run
+    try:
+        state_out = {
+            "scores": today_scores,
+            "last_equity": equity,
+            "high_water_mark": equity if 'high_water_mark' not in locals() else max(equity, high_water_mark)
+        }
+        with open(STATE_FILE, "w") as f:
+            json.dump(state_out, f)
+    except Exception as e:
+        print(f"Error saving state: {e}")
 
     print("\n" + "=" * 60)
     print("LIVE EXECUTIVE CYCLE COMPLETED")
