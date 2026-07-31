@@ -1,0 +1,2 @@
+2026-07-31 05:01:04,660 - Failed to create TzCache, reason: Error creating TzCache folder: '/home/jules/.cache/py-yfinance' reason: [Errno 17] File exists: '/home/jules/.cache/py-yfinance'. TzCache will not be used. Tip: You can direct cache to use a different location with 'set_tz_cache_location(mylocation)'
+2026-07-31 05:23:51,556 - Strategy Alpha Fusion Rejected: Walk-forward p-value > 1% (1.0000)

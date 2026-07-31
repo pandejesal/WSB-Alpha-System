@@ -1,0 +1,45 @@
+name: Paper Trading Loop
+
+on:
+  schedule:
+    - cron: '30 13 * * 1-5' # 9:30 AM EST (13:30 UTC) Monday-Friday
+  workflow_dispatch:
+
+jobs:
+  paper_trade:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt || pip install pandas numpy yfinance alpaca-trade-api
+
+      - name: Execute Paper Trading
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+        run: |
+          mkdir -p paper_trading_logs
+          python live_alpaca_executor.py
+
+      - name: Commit Logs to paper_trading_logs branch
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin paper_trading_logs || git branch paper_trading_logs
+          git checkout paper_trading_logs || git checkout -b paper_trading_logs
+          git checkout main -- paper_trading_logs/
+          git add paper_trading_logs/
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Automated paper trading log update"
+            git push origin paper_trading_logs
+          fi

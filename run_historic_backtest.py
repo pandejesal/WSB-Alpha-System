@@ -100,47 +100,10 @@ def compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px,
 
     return regime_stock_ret, regime_spy_ret
 
-def run_backtest():
-    print("=" * 70)
-    print("RUNNING HISTORICAL BACKTEST & PERFORMANCE OPTIMIZATION (2020 - 2026)")
-    print("=" * 70)
 
-    # Load generated historical posts
-    posts_df = pd.read_csv("wsb_factual_research_data.csv")
-    posts_df["post_date"] = pd.to_datetime(posts_df["post_date"])
-
-    unique_tickers = posts_df["ticker"].unique().tolist()
-
-    # Download pricing data - extended download window to cover 1-1.2 years holding periods
-    min_date = posts_df["post_date"].min() - timedelta(days=60)
-    max_date = posts_df["post_date"].max() + timedelta(days=450)
-
-    print(f"Downloading historical stock data for {len(unique_tickers)} tickers + SPY from {min_date.strftime('%Y-%m-%d')} to {max_date.strftime('%Y-%m-%d')}...")
-    px_data = yf.download(unique_tickers + ["SPY"], start=min_date, end=max_date, progress=False, auto_adjust=True)
-
-    # Handle multi-index columns from yfinance
-    spy = px_data.loc[:, (slice(None), "SPY")].copy()
-    spy.columns = spy.columns.get_level_values(0)
-    spy_close = spy["Close"].dropna()
-
-    stock_dfs = {}
-    for ticker in unique_tickers:
-        t_px = px_data.loc[:, (slice(None), ticker)].copy()
-        t_px.columns = t_px.columns.get_level_values(0)
-        t_px = t_px.dropna(subset=["Close", "Open", "High", "Low"])
-        if len(t_px) >= 20:
-            stock_dfs[ticker] = compute_indicators(t_px)
-
-    FORWARD_DAYS = [1, 5, 10, 20, 30, 60, 90, 120, 252, 300]
-
-    # We will compute the returns for five strategies:
-    # 1. Raw Sentiment (Static 5-day holding period)
-    # 2. Short-Term Adaptive Confluence Strategy (Dynamic 10d/1d holding period)
-    # 3. Mid-Long Term Adaptive Confluence Strategy (Dynamic 60d/5d holding period)
-    # 4. Long-Term Adaptive Confluence Strategy (Dynamic 252d/10d holding period)
-    # 5. S&P 500 Adaptive Auto-Regime Switcher (dynamically selects optimal strategy based on SPY trend & volatility)
-
+def evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="total_return"):
     trades = []
+    FORWARD_DAYS = [1, 5, 10, 20, 30, 60, 90, 120, 252, 300]
 
     for idx, row in posts_df.iterrows():
         ticker = row["ticker"]
@@ -319,7 +282,58 @@ def run_backtest():
 
         trades.append(trade_metrics)
 
+
     trades_df = pd.DataFrame(trades)
+
+    if return_type == "full_df":
+        return trades_df
+    elif return_type == "total_return":
+        return trades_df["adaptive_ret_5d"].fillna(0).sum() if "adaptive_ret_5d" in trades_df else 0.0
+
+
+def run_backtest():
+    print("=" * 70)
+    print("RUNNING HISTORICAL BACKTEST & PERFORMANCE OPTIMIZATION (2020 - 2026)")
+    print("=" * 70)
+
+    # Load generated historical posts
+    posts_df = pd.read_csv("wsb_factual_research_data.csv")
+    posts_df["post_date"] = pd.to_datetime(posts_df["post_date"])
+
+    unique_tickers = posts_df["ticker"].unique().tolist()
+
+    # Download pricing data - extended download window to cover 1-1.2 years holding periods
+    min_date = posts_df["post_date"].min() - timedelta(days=60)
+    max_date = posts_df["post_date"].max() + timedelta(days=450)
+
+    print(f"Downloading historical stock data for {len(unique_tickers)} tickers + SPY from {min_date.strftime('%Y-%m-%d')} to {max_date.strftime('%Y-%m-%d')}...")
+    px_data = yf.download(unique_tickers + ["SPY"], start=min_date, end=max_date, progress=False, auto_adjust=True)
+
+    # Handle multi-index columns from yfinance
+    spy = px_data.loc[:, (slice(None), "SPY")].copy()
+    spy.columns = spy.columns.get_level_values(0)
+    spy_close = spy["Close"].dropna()
+
+    stock_dfs = {}
+    for ticker in unique_tickers:
+        t_px = px_data.loc[:, (slice(None), ticker)].copy()
+        t_px.columns = t_px.columns.get_level_values(0)
+        t_px = t_px.dropna(subset=["Close", "Open", "High", "Low"])
+        if len(t_px) >= 20:
+            stock_dfs[ticker] = compute_indicators(t_px)
+
+    FORWARD_DAYS = [1, 5, 10, 20, 30, 60, 90, 120, 252, 300]
+
+    # We will compute the returns for five strategies:
+    # 1. Raw Sentiment (Static 5-day holding period)
+    # 2. Short-Term Adaptive Confluence Strategy (Dynamic 10d/1d holding period)
+    # 3. Mid-Long Term Adaptive Confluence Strategy (Dynamic 60d/5d holding period)
+    # 4. Long-Term Adaptive Confluence Strategy (Dynamic 252d/10d holding period)
+    # 5. S&P 500 Adaptive Auto-Regime Switcher (dynamically selects optimal strategy based on SPY trend & volatility)
+
+
+    trades_df = evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="full_df")
+
 
     # Save the synchronized database
     posts_with_pricing = posts_df.merge(trades_df, on=["post_date", "ticker", "sentiment_score"], how="inner")
