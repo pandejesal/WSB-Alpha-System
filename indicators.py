@@ -9,6 +9,14 @@ def compute_indicators(df):
     # 20 EMA
     df["EMA_20"] = df["Close"].ewm(span=20, adjust=False).mean()
 
+    # 14 ATR (Average True Range)
+    high_low = df['High'] - df['Low']
+    high_close = np.abs(df['High'] - df['Close'].shift())
+    low_close = np.abs(df['Low'] - df['Close'].shift())
+    ranges = pd.concat([high_low, high_close, low_close], axis=1)
+    true_range = np.max(ranges, axis=1)
+    df['ATR_14'] = true_range.rolling(14).mean()
+
     # 14 RSI
     delta = df["Close"].diff()
     gain = (delta.where(delta > 0, 0)).fillna(0)
@@ -83,16 +91,48 @@ def compute_indicators(df):
 
 def compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, holding_days):
     target_regime_idx = entry_idx + holding_days
+
+    # Calculate slippage based on ATR at entry
+    atr_val = ind_df["ATR_14"].iloc[entry_idx] if "ATR_14" in ind_df.columns and not pd.isna(ind_df["ATR_14"].iloc[entry_idx]) else entry_px * 0.01
+
+    # Base slippage is 5% of 14-day ATR
+    raw_slippage = atr_val * 0.05
+
+    # Clamp slippage between 0.1% and 2.5% of stock price
+    min_slippage = entry_px * 0.001
+    max_slippage = entry_px * 0.025
+    slippage_penalty = max(min_slippage, min(max_slippage, raw_slippage))
+
+    # Apply penalty adversely to entry price
+    if sentiment_score > 0:
+        actual_entry_px = entry_px + slippage_penalty
+    else:
+        actual_entry_px = entry_px - slippage_penalty
+
     if target_regime_idx < len(ind_df):
         regime_exit_date = ind_df.index[target_regime_idx]
         regime_exit_px = ind_df["Close"].iloc[target_regime_idx]
         regime_spy_exit_px = spy_close.loc[regime_exit_date] if regime_exit_date in spy_close.index else spy_close.iloc[min(spy_close.index.searchsorted(regime_exit_date, side="left"), len(spy_close)-1)]
 
-        regime_stock_ret = (regime_exit_px - entry_px) / entry_px if sentiment_score > 0 else (entry_px - regime_exit_px) / entry_px
+        # Apply slippage on exit as well
+        if sentiment_score > 0:
+            actual_exit_px = regime_exit_px - slippage_penalty
+        else:
+            actual_exit_px = regime_exit_px + slippage_penalty
+
+        regime_stock_ret = (actual_exit_px - actual_entry_px) / actual_entry_px if sentiment_score > 0 else (actual_entry_px - actual_exit_px) / actual_entry_px
         regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - regime_spy_exit_px) / spy_entry_px
     else:
         # Fallback if history ends before holding period exits
-        regime_stock_ret = (ind_df["Close"].iloc[-1] - entry_px) / entry_px if sentiment_score > 0 else (entry_px - ind_df["Close"].iloc[-1]) / entry_px
+        regime_exit_px = ind_df["Close"].iloc[-1]
+
+        # Apply slippage on exit
+        if sentiment_score > 0:
+            actual_exit_px = regime_exit_px - slippage_penalty
+        else:
+            actual_exit_px = regime_exit_px + slippage_penalty
+
+        regime_stock_ret = (actual_exit_px - actual_entry_px) / actual_entry_px if sentiment_score > 0 else (actual_entry_px - actual_exit_px) / actual_entry_px
         regime_spy_ret = (spy_close.iloc[-1] - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - spy_close.iloc[-1]) / spy_entry_px
 
     return regime_stock_ret, regime_spy_ret
