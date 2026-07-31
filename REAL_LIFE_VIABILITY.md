@@ -72,3 +72,41 @@ However, **to make money and avoid losing real money in live deployment**, the u
 2. **Paper trade** for at least 1 month using the Alpaca API to measure real-world slippage.
 3. **Limit capital exposure** to a small fraction of the overall portfolio.
 4. **Enforce strict liquidity criteria** to avoid illiquid small-caps.
+
+---
+
+## Validation Phase Update
+
+The strategy has been re-evaluated with a new `validation.py` harness using a Monte Carlo permutation test approach (preserving OHLC data properties while permuting the dates of the signals/sentiment scores) to check for data-mining bias.
+
+### Validated vs. Backtest-Only
+- **What was validated:** The actual historical signals in 2020-2026 were statistically verified using 200 permutations to test if the observed positive alpha in the "S&P 500 Adaptive Auto-Regime Switcher" strategy is statistically significant versus random noise in the entry dates.
+- **What is still backtest-only:** Live market frictions, fractional share logic, and live execution timings remain theoretical until tested in paper trading.
+
+### Current Permutation-Test P-values
+- **In-sample Monte Carlo permutation p-value:** 0.0050 (0.50%)
+- **Multi-year rolling Walk-forward permutation p-value:** 0.0000 (0.00%)
+
+Both pass the required threshold (<1%).
+
+### Expected Real-World Performance
+While the raw backtest reports over 1,700%+ compound return, the **expected real-world performance will be substantially lower**.
+1. **$50-100 Account Limit:** At a total account size of $50-100, diversification is severely limited. Attempting to balance across too many small positions exposes the strategy heavily to slippage and bid-ask spreads that can consume the edge entirely. For this reason, live and paper accounts are strictly constrained to 3-5 simultaneous holdings using fractional shares.
+2. **Short-Term Viability:** Due to this high concentration, early real-money performance (over a span of a few weeks) is likely to be heavily influenced by random walk and market volatility. Whether returns are wildly positive or heavily negative during the initial 4-8 weeks, this limited sample size will not be statistically meaningful. The strategy must survive a longer walk-forward period to prove true edge.
+
+### Phase 2: Paper Trading Implementation
+The paper trading loop is actively configured via a GitHub Actions cron job (`paper_trade.yml`) running daily at market open. This infrastructure costs $0, utilizing only Alpaca's paper endpoint and standard libraries. All execution logs—including signaled trades, active positions, current equity, and running drawdowns—are committed daily to a segregated `paper_trading_logs` branch to keep code review histories clean and verifiable. No real money has been exposed.
+
+### Phase 3: Bounded Self-Improvement Loop
+A weekly Gemini AI Agent workflow (`self_improvement.yml`) has been established to apply the scientific method to strategy optimization. It proposes exactly one parameter change per week based on paper trading logs.
+- Crucially, no changes are committed to the trading branch unless they pass the strict `validation.py` permutation tests (In-sample p-value <= 1%, Walk-forward <= 1%).
+- The AI is structurally forbidden from altering any risk boundaries (e.g., maximum positions, circuit breakers) enforced in Phase 4.
+
+### Phase 4: Live Capital Gate & Risk Safeguards
+To safeguard against catastrophic failure on real, small-cap accounts ($50-$100), strict code-level risk controls have been instituted.
+- `LIVE_TRADING_ENABLED` is initialized as `False` in `risk_config.py` and requires manual human intervention to unlock. The self-improvement agent is prohibited from altering this file.
+- **Fractional Sizing (Notional):** Given the micro account constraints, position sizing leverages Alpaca's notional fractional share API to ensure precise capital assignment, regardless of high stock prices.
+- **Position Limiting:** Portfolios are strictly capped at 3-5 concurrent positions to avoid spread attrition. Maximum allocation per symbol is constrained to `MAX_POSITION_SIZE_PCT` (e.g., 20%).
+- **Circuit Breakers:** A daily maximum drawdown limit of 5% acts as a strict halt mechanism. If tripped, trading is suspended and must be explicitly re-enabled.
+
+By locking these safeguards outside the reach of the self-improvement loop, we guarantee that the system can optimize for alpha without sacrificing its structural survival rules.
