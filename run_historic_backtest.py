@@ -291,36 +291,43 @@ def evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="total
         return trades_df["adaptive_ret_5d"].fillna(0).sum() if "adaptive_ret_5d" in trades_df else 0.0
 
 
-def run_backtest():
-    print("=" * 70)
-    print("RUNNING HISTORICAL BACKTEST & PERFORMANCE OPTIMIZATION (2020 - 2026)")
-    print("=" * 70)
+def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_preloaded=None):
+    if custom_posts_df is None:
+        print("=" * 70)
+        print("RUNNING HISTORICAL BACKTEST & PERFORMANCE OPTIMIZATION (2020 - 2026)")
+        print("=" * 70)
 
-    # Load generated historical posts
-    posts_df = pd.read_csv("wsb_factual_research_data.csv")
-    posts_df["post_date"] = pd.to_datetime(posts_df["post_date"])
+        # Load generated historical posts
+        posts_df = pd.read_csv("wsb_factual_research_data.csv")
+        posts_df["post_date"] = pd.to_datetime(posts_df["post_date"])
+    else:
+        posts_df = custom_posts_df.copy()
 
     unique_tickers = posts_df["ticker"].unique().tolist()
 
-    # Download pricing data - extended download window to cover 1-1.2 years holding periods
-    min_date = posts_df["post_date"].min() - timedelta(days=60)
-    max_date = posts_df["post_date"].max() + timedelta(days=450)
+    if stock_dfs_preloaded is not None and spy_close_preloaded is not None:
+        stock_dfs = stock_dfs_preloaded
+        spy_close = spy_close_preloaded
+    else:
+        # Download pricing data - extended download window to cover 1-1.2 years holding periods
+        min_date = posts_df["post_date"].min() - timedelta(days=60)
+        max_date = posts_df["post_date"].max() + timedelta(days=450)
 
-    print(f"Downloading historical stock data for {len(unique_tickers)} tickers + SPY from {min_date.strftime('%Y-%m-%d')} to {max_date.strftime('%Y-%m-%d')}...")
-    px_data = yf.download(unique_tickers + ["SPY"], start=min_date, end=max_date, progress=False, auto_adjust=True)
+        print(f"Downloading historical stock data for {len(unique_tickers)} tickers + SPY from {min_date.strftime('%Y-%m-%d')} to {max_date.strftime('%Y-%m-%d')}...")
+        px_data = yf.download(unique_tickers + ["SPY"], start=min_date, end=max_date, progress=False, auto_adjust=True)
 
-    # Handle multi-index columns from yfinance
-    spy = px_data.loc[:, (slice(None), "SPY")].copy()
-    spy.columns = spy.columns.get_level_values(0)
-    spy_close = spy["Close"].dropna()
+        # Handle multi-index columns from yfinance
+        spy = px_data.loc[:, (slice(None), "SPY")].copy()
+        spy.columns = spy.columns.get_level_values(0)
+        spy_close = spy["Close"].dropna()
 
-    stock_dfs = {}
-    for ticker in unique_tickers:
-        t_px = px_data.loc[:, (slice(None), ticker)].copy()
-        t_px.columns = t_px.columns.get_level_values(0)
-        t_px = t_px.dropna(subset=["Close", "Open", "High", "Low"])
-        if len(t_px) >= 20:
-            stock_dfs[ticker] = compute_indicators(t_px)
+        stock_dfs = {}
+        for ticker in unique_tickers:
+            t_px = px_data.loc[:, (slice(None), ticker)].copy()
+            t_px.columns = t_px.columns.get_level_values(0)
+            t_px = t_px.dropna(subset=["Close", "Open", "High", "Low"])
+            if len(t_px) >= 20:
+                stock_dfs[ticker] = compute_indicators(t_px)
 
     FORWARD_DAYS = [1, 5, 10, 20, 30, 60, 90, 120, 252, 300]
 
@@ -334,6 +341,20 @@ def run_backtest():
 
     trades_df = evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="full_df")
 
+    if custom_posts_df is not None:
+        # For validation harness, return only the metrics needed (total return & sharpe of adaptive strategy)
+        if "adaptive_ret_5d" not in trades_df: # arbitrary check for existance
+            return 0.0, 0.0, trades_df
+
+        # Determine which holding period is the primary focus of the aggregate metrics
+        # The adaptive returns dynamically switch between horizons, but the trades_df has daily columns
+        # To make it fair and robust across all horizons, we'll look at the realized returns
+        # Actually, in run_backtest, they sort and cumsum 'adaptive_ret_X'. Let's pick 5d, 60d, 252d.
+        # However, run_backtest's 'return_type="total_return"' returns trades_df["adaptive_ret_5d"].fillna(0).sum()
+        # For the validation harness, we'll compute total return and sharpe using the adaptive strategy.
+        # To avoid being tied to a specific Xd column if it doesn't represent the true holding well,
+        # let's just pick one representative column, or return the full trades_df and compute it in validation.py
+        return trades_df
 
     # Save the synchronized database
     posts_with_pricing = posts_df.merge(trades_df, on=["post_date", "ticker", "sentiment_score"], how="inner")
