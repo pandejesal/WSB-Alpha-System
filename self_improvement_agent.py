@@ -26,7 +26,15 @@ def update_file(filename, old_str, new_str):
         print(f"Warning: '{old_str}' not found in {filename}")
         return False
 
-    content = content.replace(old_str, new_str)
+    if len(old_str) <= 12:
+        print(f"Error: old_str must be longer than 12 characters to prevent accidental replacements. Got: '{old_str}'")
+        return False
+
+    if content.count(old_str) > 1:
+        print(f"Error: '{old_str}' appears multiple times in {filename}. Please provide a more specific string.")
+        return False
+
+    content = content.replace(old_str, new_str, 1)
 
     with open(filename, 'w') as f:
         f.write(content)
@@ -58,7 +66,7 @@ def main():
 
     Rules:
     - Change only one parameter (e.g. RSI threshold, EMA span, Volatility limit).
-    - Provide the exact old string to replace, and the exact new string.
+    - Provide the exact old string to replace, and the exact new string. You MUST provide at least one full, unique line of code (e.g., df['EMA'] = df['Close'].ewm(span=20).mean()) to avoid accidental partial replacements. The `old_code` must be longer than 12 characters and exist exactly once in the file.
     - Do NOT modify position sizing limits or Phase 4 risk configurations.
     - Use the scientific method based on past logs.
 
