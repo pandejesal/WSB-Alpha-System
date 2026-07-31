@@ -84,10 +84,12 @@ The strategy has been re-evaluated with a new `validation.py` harness using a Mo
 - **What is still backtest-only:** Live market frictions, fractional share logic, and live execution timings remain theoretical until tested in paper trading.
 
 ### Current Permutation-Test P-values
-- **In-sample Monte Carlo permutation p-value:** 0.0050 (0.50%)
-- **Multi-year rolling Walk-forward permutation p-value:** 0.0000 (0.00%)
+- **In-sample Monte Carlo permutation p-value:** 0.1100 (11.0%)
+- **Multi-year rolling Walk-forward permutation p-value:** 0.2150 (21.5%)
 
-Both pass the required threshold (<1%).
+**Conclusion:** This strategy has not demonstrated it beats random noise. The true statistical performance fails to meet the strict viability thresholds (In-sample p-value > 1%, Walk-forward p-value > 5%).
+
+![Permutation Histogram](permutation_histogram.png)
 
 ### Expected Real-World Performance
 While the raw backtest reports over 1,700%+ compound return, the **expected real-world performance will be substantially lower**.
