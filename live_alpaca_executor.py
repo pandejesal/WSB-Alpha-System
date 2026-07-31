@@ -17,7 +17,7 @@ import pandas as pd
 from datetime import datetime, timedelta
 import risk_config
 import yfinance as yf
-from run_historic_backtest import compute_indicators
+from indicators import compute_indicators
 
 
 # ============================================================================

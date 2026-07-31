@@ -1,10 +1,24 @@
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
+
 # -*- coding: utf-8 -*-
 # ============================================================================
 # WSB DD SENTIMENT ANALYTICS & PLOTTER - UNIFIED INCREMENTAL SYSTEM
 # ============================================================================
+import nltk
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+    nltk.data.find('taggers/averaged_perceptron_tagger_eng')
+except LookupError:
+    nltk.download('punkt_tab')
+    nltk.download('averaged_perceptron_tagger_eng')
+
 
 import os
 import re
+from indicators import compute_indicators, compute_regime_returns
+
 import json
 import torch
 import pandas as pd
@@ -60,20 +74,40 @@ BLACKLIST = {
     "DELTA","GAMMA","THETA","VEGA","RHO","STRIKE","EXPIRY","EXPIRATION","ITM","OTM","ATM",
     "PREMIUM","INTRINSIC","TIME","VALUE","DECAY","ASSIGNMENT","EXERCISE","COVERED","NAKED",
     "SPREAD","STRADDLE","STRANGLE","IRON","CONDOR","BUTTERFLY","CALENDAR","DIAGONAL",
-    "RATIO","BACKSPREAD","VERTICAL","HORIZONTAL"
+    "RATIO","BACKSPREAD","VERTICAL","HORIZONTAL","HE","IT","LOT","PLUS","WEEK","YEAR","GAP"
 }
 
-# ============================================================================
-# HELPER ROUTINES
 # ============================================================================
 def extract_tickers(text: str) -> list[str]:
     if not text:
         return []
-    raw_matches = TICKER_RE.findall(text.upper())
-    return list(set([m for m in raw_matches if m not in BLACKLIST]))
+    raw_matches = TICKER_RE.findall(text)
+    valid_casing_matches = [m for m in raw_matches if m.isupper()]
+    pre_filtered = [m for m in valid_casing_matches if m not in BLACKLIST]
+    if not pre_filtered:
+        return []
+    try:
+        tokens = nltk.word_tokenize(text)
+        pos_tags = nltk.pos_tag(tokens)
+        word_tags = {}
+        for word, tag in pos_tags:
+            if word in pre_filtered:
+                if word not in word_tags:
+                    word_tags[word] = set()
+                word_tags[word].add(tag)
+        final_tickers = set()
+        for token in pre_filtered:
+            tags = word_tags.get(token, set())
+            rejected_tags = {"PRP", "PRP$", "IN", "DT", "CC", "UH", "MD"}
+            if not tags or any(t not in rejected_tags for t in tags):
+                final_tickers.add(token)
+        return list(final_tickers)
+    except Exception:
+        return list(set(pre_filtered))
+
 
 def load_finbert():
-    print("Loading FinBERT pre-trained model resources...")
+    logger.info("Loading FinBERT pre-trained model resources...")
     tokenizer = AutoTokenizer.from_pretrained(FINBERT_MODEL)
     model = AutoModelForSequenceClassification.from_pretrained(FINBERT_MODEL)
     
@@ -99,8 +133,8 @@ def safe_write_csv(df, path):
             df.to_csv(path, index=False)
             break
         except PermissionError:
-            print(f"\n[!] OS Permission Denied: Cannot write to {path}")
-            print("This occurs because the CSV file is open in Microsoft Excel or another program.")
+            logger.info(f"\n[!] OS Permission Denied: Cannot write to {path}")
+            logger.info("This occurs because the CSV file is open in Microsoft Excel or another program.")
             input("Please CLOSE the spreadsheet in Excel/editor and press Enter to retry saving...")
 
 def safe_write_json(data, path):
@@ -113,113 +147,10 @@ def safe_write_json(data, path):
                 json.dump(data, f)
             break
         except PermissionError:
-            print(f"\n[!] OS Permission Denied: Cannot write to {path}")
-            print("This occurs because the JSON file is open or locked by another utility.")
+            logger.info(f"\n[!] OS Permission Denied: Cannot write to {path}")
+            logger.info("This occurs because the JSON file is open or locked by another utility.")
             input("Please close any program accessing this file and press Enter to retry saving...")
 
-
-def compute_indicators(df):
-    if len(df) < 15:
-        return None
-    df = df.copy()
-    # 20 EMA
-    df["EMA_20"] = df["Close"].ewm(span=20, adjust=False).mean()
-
-    # 14 RSI
-    delta = df["Close"].diff()
-    gain = (delta.where(delta > 0, 0)).fillna(0)
-    loss = (-delta.where(delta < 0, 0)).fillna(0)
-    avg_gain = gain.ewm(alpha=1/14, adjust=False).mean()
-    avg_loss = loss.ewm(alpha=1/14, adjust=False).mean()
-    rs = avg_gain / (avg_loss + 1e-10)
-    df["RSI_14"] = 100 - (100 / (1 + rs))
-
-    # MACD
-    ema_12 = df["Close"].ewm(span=12, adjust=False).mean()
-    ema_26 = df["Close"].ewm(span=26, adjust=False).mean()
-    df["MACD"] = ema_12 - ema_26
-    df["MACD_Signal"] = df["MACD"].ewm(span=9, adjust=False).mean()
-    df["MACD_Hist"] = df["MACD"] - df["MACD_Signal"]
-
-    # Heikin-Ashi
-    df["HA_Close"] = (df["Open"] + df["High"] + df["Low"] + df["Close"]) / 4.0
-    ha_open = np.zeros(len(df))
-    ha_open[0] = (df["Open"].iloc[0] + df["Close"].iloc[0]) / 2.0
-    for i in range(1, len(df)):
-        ha_open[i] = (ha_open[i-1] + df["HA_Close"].iloc[i-1]) / 2.0
-    df["HA_Open"] = ha_open
-    df["HA_High"] = df[["High", "HA_Open", "HA_Close"]].max(axis=1)
-    df["HA_Low"] = df[["Low", "HA_Open", "HA_Close"]].min(axis=1)
-
-    # Bollinger Bands (20-period, 2-standard deviations)
-    df["BB_Middle"] = df["Close"].rolling(window=20).mean()
-    df["BB_Std"] = df["Close"].rolling(window=20).std().fillna(1e-4)
-    df["BB_Upper"] = df["BB_Middle"] + 2.0 * df["BB_Std"]
-    df["BB_Lower"] = df["BB_Middle"] - 2.0 * df["BB_Std"]
-
-    # Fill standard Bollinger Bands boundaries if there are NaNs at the beginning
-    df["BB_Middle"] = df["BB_Middle"].fillna(df["Close"])
-    df["BB_Upper"] = df["BB_Upper"].fillna(df["Close"] * 1.05)
-    df["BB_Lower"] = df["BB_Lower"].fillna(df["Close"] * 0.95)
-
-    # Garman-Klass Volatility (20-day rolling window, annualized)
-    # Formula: 0.5 * [ln(H/L)]^2 - (2*ln(2) - 1) * [ln(C/O)]^2
-    # Handled carefully to avoid dividing or logging zero values
-    safe_high = df["High"].replace(0, 0.01)
-    safe_low = df["Low"].replace(0, 0.01)
-    safe_close = df["Close"].replace(0, 0.01)
-    safe_open = df["Open"].replace(0, 0.01)
-
-    log_hl = np.log(safe_high / safe_low)
-    log_co = np.log(safe_close / safe_open)
-    gk_element = 0.5 * (log_hl ** 2) - (2 * np.log(2) - 1) * (log_co ** 2)
-    gk_variance = gk_element.rolling(window=20).mean()
-    gk_variance = gk_variance.clip(lower=1e-10)
-    df["GK_Vol"] = np.sqrt(252 * gk_variance)
-
-    first_valid = df["GK_Vol"].dropna().iloc[0] if len(df["GK_Vol"].dropna()) > 0 else 0.50
-    df["GK_Vol"] = df["GK_Vol"].fillna(first_valid)
-
-    # OSQuant Risk Metrics: Rolling 20-day 95% historical Value-at-Risk (VaR) and Expected Shortfall (CVaR)
-    # Computed on daily percent returns
-    daily_pct_returns = df["Close"].pct_change().fillna(0)
-    rolling_var = []
-    rolling_cvar = []
-    for i in range(len(df)):
-        if i < 20:
-            rolling_var.append(0.02)
-            rolling_cvar.append(0.04)
-        else:
-            window_rets = daily_pct_returns.iloc[i-19:i+1]
-            sorted_rets = np.sort(window_rets.values)
-            # 95% historical VaR index
-            var_idx = int(0.05 * len(sorted_rets))
-            var_val = -sorted_rets[var_idx] if var_idx < len(sorted_rets) else 0.02
-            # 95% Expected Shortfall (CVaR is the mean of returns below the 95% VaR threshold)
-            losses_below_var = sorted_rets[:var_idx+1]
-            cvar_val = -losses_below_var.mean() if len(losses_below_var) > 0 else 0.04
-
-            rolling_var.append(max(var_val, 0.0))
-            rolling_cvar.append(max(cvar_val, 0.0))
-
-    df["VaR_95"] = rolling_var
-    df["CVaR_95"] = rolling_cvar
-    return df
-
-def compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, holding_days):
-    target_regime_idx = entry_idx + holding_days
-    if target_regime_idx < len(ind_df):
-        regime_exit_date = ind_df.index[target_regime_idx]
-        regime_exit_px = ind_df["Close"].iloc[target_regime_idx]
-        regime_spy_exit_px = spy_close.loc[regime_exit_date] if regime_exit_date in spy_close.index else spy_close.iloc[min(spy_close.index.searchsorted(regime_exit_date, side="left"), len(spy_close)-1)]
-
-        regime_stock_ret = (regime_exit_px - entry_px) / entry_px if sentiment_score > 0 else (entry_px - regime_exit_px) / entry_px
-        regime_spy_ret = (regime_spy_exit_px - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - regime_spy_exit_px) / spy_entry_px
-    else:
-        regime_stock_ret = (ind_df["Close"].iloc[-1] - entry_px) / entry_px if sentiment_score > 0 else (entry_px - ind_df["Close"].iloc[-1]) / entry_px
-        regime_spy_ret = (spy_close.iloc[-1] - spy_entry_px) / spy_entry_px if sentiment_score > 0 else (spy_entry_px - spy_close.iloc[-1]) / spy_entry_px
-
-    return regime_stock_ret, regime_spy_ret
 
 def fetch_rss_feed() -> list[dict]:
     """
@@ -232,10 +163,10 @@ def fetch_rss_feed() -> list[dict]:
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
     }
     try:
-        print(f"Requesting public RSS feed from: {url_rss}")
+        logger.info(f"Requesting public RSS feed from: {url_rss}")
         r = requests.get(url_rss, headers=headers, timeout=15)
         if r.status_code != 200:
-            print(f"Warning: RSS feed returned status code {r.status_code}")
+            logger.info(f"Warning: RSS feed returned status code {r.status_code}")
             return []
 
         root = ET.fromstring(r.text)
@@ -268,26 +199,26 @@ def fetch_rss_feed() -> list[dict]:
                 "score": 100,  # Proxy default values as RSS contains basic post metadata
                 "num_comments": 20
             })
-        print(f"Successfully parsed {len(items)} posts from the public RSS Feed.")
+        logger.info(f"Successfully parsed {len(items)} posts from the public RSS Feed.")
         return items
     except Exception as e:
-        print(f"Error fetching RSS feed: {e}")
+        logger.info(f"Error fetching RSS feed: {e}")
         return []
 
 # ============================================================================
 # PHASE 1: INCREMENTAL SCRAPING & SENTIMENT RE-EVALUATION PIPELINE
 # ============================================================================
 def run_sentiment_pipeline():
-    print("=" * 60)
-    print("PHASE 1: SCRAPING AND SENTIMENT CLASSIFICATION")
-    print("=" * 60)
+    logger.info("=" * 60)
+    logger.info("PHASE 1: SCRAPING AND SENTIMENT CLASSIFICATION")
+    logger.info("=" * 60)
     
     # ------------------------------------------------------------------
     # INPUT PROMPTS
     # ------------------------------------------------------------------
-    print("Select Reddit data collection mode:")
-    print("1. [FREE] Public RSS Feed Scraper (No API Keys / Accounts / Costs, fetches latest 25 posts)")
-    print("2. [PAID/KEY] Apify Reddit Scraper (Requires Apify API Token)")
+    logger.info("Select Reddit data collection mode:")
+    logger.info("1. [FREE] Public RSS Feed Scraper (No API Keys / Accounts / Costs, fetches latest 25 posts)")
+    logger.info("2. [PAID/KEY] Apify Reddit Scraper (Requires Apify API Token)")
     mode_input = input("Enter option (1 or 2, default 1): ").strip()
     
     use_rss = mode_input != "2"
@@ -309,7 +240,7 @@ def run_sentiment_pipeline():
         # Use block-safe URL for all runs to avoid Reddit 403 Forbidden limits
         start_url = "https://www.reddit.com/r/wallstreetbets/search/?q=flair%3ADD&restrict_sr=1&sort=new"
 
-        print(f"\nFetching up to {max_items} posts via Apify...")
+        logger.info(f"\nFetching up to {max_items} posts via Apify...")
         client = ApifyClient(APIFY_TOKEN)
         try:
             run = client.actor(ACTOR_ID).call(run_input={
@@ -318,16 +249,16 @@ def run_sentiment_pipeline():
                 "maxItems": max_items,
             })
             items = list(client.dataset(run.default_dataset_id).iterate_items())
-            print(f"Retrieved {len(items)} raw metadata items from Apify")
+            logger.info(f"Retrieved {len(items)} raw metadata items from Apify")
         except Exception as e:
-            print(f"Warning: Failed to fetch items from Apify: {e}")
+            logger.info(f"Warning: Failed to fetch items from Apify: {e}")
         
     # ------------------------------------------------------------------
     # ROBUST FALLBACK HANDLING FOR SCRAPER FAILURE
     # ------------------------------------------------------------------
     if not items:
         if os.path.exists(OUTPUT_CSV):
-            print("No new items returned or scraper could not fetch data.")
+            logger.info("No new items returned or scraper could not fetch data.")
             user_choice = input("Would you like to re-evaluate and update returns for your existing CSV database? (y/n): ").strip().lower()
             if user_choice != 'y':
                 return False
@@ -335,12 +266,12 @@ def run_sentiment_pipeline():
             df = pd.DataFrame()
             new_daily = pd.DataFrame()
         else:
-            print("Error: Empty dataset returned and no existing database found.")
+            logger.info("Error: Empty dataset returned and no existing database found.")
             return False
     else:
         tokenizer, model, device = load_finbert()
         
-        print("\nRunning NLP analysis pipeline on newly fetched posts...")
+        logger.info("\nRunning NLP analysis pipeline on newly fetched posts...")
         rows = []
         for item in tqdm(items, desc="Processing Posts"):
             full_text = f"{item.get('title','')} {item.get('body','') or item.get('text','') or item.get('selftext','')}"
@@ -399,10 +330,10 @@ def run_sentiment_pipeline():
                 
         df = pd.DataFrame(rows)
         if df.empty:
-            print("Warning: No newly fetched posts matched your filter constraints.")
+            logger.info("Warning: No newly fetched posts matched your filter constraints.")
             new_daily = pd.DataFrame()
         else:
-            print("\nComputing daily aggregates and normalized sentiment...")
+            logger.info("\nComputing daily aggregates and normalized sentiment...")
             forum_daily_volume = df.groupby("post_date")["post_id"].nunique().to_dict()
             
             new_daily = df.groupby(["post_date", "ticker"]).agg(
@@ -424,7 +355,7 @@ def run_sentiment_pipeline():
     # ------------------------------------------------------------------
     # INCREMENTAL DATABASE MERGING & DEDUPLICATION
     # ------------------------------------------------------------------
-    print("\nMerging results with existing database...")
+    logger.info("\nMerging results with existing database...")
     if os.path.exists(OUTPUT_CSV):
         existing_df = pd.read_csv(OUTPUT_CSV)
         existing_df["post_date"] = existing_df["post_date"].astype(str)
@@ -440,7 +371,7 @@ def run_sentiment_pipeline():
         
     # Deduplicate strictly on the key pair to avoid any duplicate rows
     combined = combined.drop_duplicates(subset=["post_date", "ticker"], keep="first")
-    print(f"Total active records in database: {len(combined)}")
+    logger.info(f"Total active records in database: {len(combined)}")
     
     # ------------------------------------------------------------------
     # RE-EVALUATION LOOP: ISOLATE MISSING ALPHA CHANNELS & APPLY TECHNICAL CONFLUENCE (MIXED METHOD)
@@ -474,7 +405,7 @@ def run_sentiment_pipeline():
         combined["regime_holding_days"] = 5
 
     needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]  # noqa: E712
-    print(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
+    logger.info(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
     if not needs_calculation.empty:
         unique_tickers = needs_calculation["ticker"].unique().tolist()
@@ -486,7 +417,7 @@ def run_sentiment_pipeline():
         # Split into smaller chunks to avoid rate limits if we have many tickers to query
         chunk_size = 80
         all_px = []
-        print(f"Downloading historical stock data with OHLC for {len(unique_tickers)} stocks ({start_date} to {end_date})...")
+        logger.info(f"Downloading historical stock data with OHLC for {len(unique_tickers)} stocks ({start_date} to {end_date})...")
         for chunk_idx in range(0, len(unique_tickers), chunk_size):
             chunk_tickers = unique_tickers[chunk_idx:chunk_idx + chunk_size]
             try:
@@ -494,7 +425,7 @@ def run_sentiment_pipeline():
                 if not chunk_px.empty:
                     all_px.append(chunk_px)
             except Exception as e:
-                print(f"Warning: Price retrieval chunk failed: {e}.")
+                logger.info(f"Warning: Price retrieval chunk failed: {e}.")
 
         if all_px:
             px = pd.concat(all_px, axis=1) if len(all_px) > 1 else all_px[0]
@@ -770,7 +701,7 @@ def run_sentiment_pipeline():
     # ------------------------------------------------------------------
     # SAFELY MERGE CO-MENTIONS WITHOUT DOUBLE COUNTING
     # ------------------------------------------------------------------
-    print("\nMerging co-mention graphs...")
+    logger.info("\nMerging co-mention graphs...")
     new_co_mentions = defaultdict(lambda: defaultdict(int))
     if not items or df.empty:
         pass
@@ -802,21 +733,21 @@ def run_sentiment_pipeline():
                 
     safe_write_json(existing_co, CO_MENTION_JSON)
         
-    print("\nData collections successfully synchronized:")
-    print(f" -> CSV dataset: {OUTPUT_CSV}")
-    print(f" -> Co-mention graph: {CO_MENTION_JSON}")
+    logger.info("\nData collections successfully synchronized:")
+    logger.info(f" -> CSV dataset: {OUTPUT_CSV}")
+    logger.info(f" -> Co-mention graph: {CO_MENTION_JSON}")
     return True
 
 # ============================================================================
 # PHASE 2: TRAJECTORY PLOTTER
 # ============================================================================
 def run_trajectory_plotter(top_n_tickers=5):
-    print("\n" + "=" * 60)
-    print("PHASE 2: GENERATING PERFORMANCE TRAJECTORY GRAPHS")
-    print("=" * 60)
+    logger.info("\n" + "=" * 60)
+    logger.info("PHASE 2: GENERATING PERFORMANCE TRAJECTORY GRAPHS")
+    logger.info("=" * 60)
     
     if not os.path.exists(OUTPUT_CSV):
-        print(f"Error: Could not locate the database CSV at {OUTPUT_CSV}")
+        logger.info(f"Error: Could not locate the database CSV at {OUTPUT_CSV}")
         return
         
     df = pd.read_csv(OUTPUT_CSV)
@@ -825,7 +756,7 @@ def run_trajectory_plotter(top_n_tickers=5):
     # Filter out tickers that are marked as pricing_failed to ensure we only select tickers with valid price data for plotting
     valid_df = df[df['pricing_failed'] != True]  # noqa: E712
     top_tickers = valid_df['ticker'].value_counts().head(top_n_tickers).index.tolist()
-    print(f"Selected top {top_n_tickers} tickers for plotting: {top_tickers}")
+    logger.info(f"Selected top {top_n_tickers} tickers for plotting: {top_tickers}")
     
     events_to_plot = []
     for ticker in top_tickers:
@@ -936,12 +867,12 @@ def run_trajectory_plotter(top_n_tickers=5):
             plt.savefig(OUTPUT_PNG, dpi=300)
             break
         except PermissionError:
-            print(f"\n[!] OS Permission Denied: Cannot write to {OUTPUT_PNG}")
-            print("This occurs because the PNG plot is currently open or locked by another utility.")
+            logger.info(f"\n[!] OS Permission Denied: Cannot write to {OUTPUT_PNG}")
+            logger.info("This occurs because the PNG plot is currently open or locked by another utility.")
             input("Please close any image viewer accessing this file and press Enter to retry saving...")
             
-    print("Trajectory plot saved successfully:")
-    print(f" -> Visualization PNG: {OUTPUT_PNG}")
+    logger.info("Trajectory plot saved successfully:")
+    logger.info(f" -> Visualization PNG: {OUTPUT_PNG}")
     # plt.show() deleted to avoid blocking non-interactive terminals
 
 # ============================================================================
@@ -956,16 +887,16 @@ def print_quant_statistics():
         return
     df = pd.read_csv(OUTPUT_CSV)
 
-    print("\n" + "=" * 60)
-    print("PORTFOLIO PERFORMANCE & RISK METRICS REPORT (QuantStats-Style)")
-    print("=" * 60)
+    logger.info("\n" + "=" * 60)
+    logger.info("PORTFOLIO PERFORMANCE & RISK METRICS REPORT (QuantStats-Style)")
+    logger.info("=" * 60)
 
     # Analyze 5-day horizon (standard medium-term horizon)
     raw_rets = df["ret_5d"].dropna()
     adaptive_rets = df["adaptive_ret_5d"].dropna()
 
     if len(raw_rets) == 0 or len(adaptive_rets) == 0:
-        print("Not enough backtest data available to generate statistics.")
+        logger.info("Not enough backtest data available to generate statistics.")
         return
 
     def compute_stats(rets):
@@ -996,36 +927,36 @@ def print_quant_statistics():
     raw_mean, raw_std, raw_win, raw_sharpe, raw_sortino, raw_mdd, raw_var, raw_cvar = compute_stats(raw_rets)
     mix_mean, mix_std, mix_win, mix_sharpe, mix_sortino, mix_mdd, mix_var, mix_cvar = compute_stats(adaptive_rets)
 
-    print(f"{'Metric':<25} | {'Raw Sentiment Strategy':<25} | {'Adaptive Auto-Regime Switcher':<25}")
-    print("-" * 81)
-    print(f"{'Mean Trade Return':<25} | {raw_mean:>22.2f}% | {mix_mean:>22.2f}%")
-    print(f"{'Volatility (Std Dev)':<25} | {raw_std:>22.2f}% | {mix_std:>22.2f}%")
-    print(f"{'Win Rate':<25} | {raw_win:>22.2f}% | {mix_win:>22.2f}%")
-    print(f"{'Annualized Sharpe Ratio':<25} | {raw_sharpe:>24.2f} | {mix_sharpe:>24.2f}")
-    print(f"{'Annualized Sortino Ratio':<25} | {raw_sortino:>24.2f} | {mix_sortino:>24.2f}")
-    print(f"{'Maximum Drawdown':<25} | {raw_mdd:>22.2f}% | {mix_mdd:>22.2f}%")
-    print(f"{'Value-at-Risk (95% VaR)':<25} | {raw_var:>22.2f}% | {mix_var:>22.2f}%")
-    print(f"{'Expected Shortfall (CVaR)':<25} | {raw_cvar:>22.2f}% | {mix_cvar:>22.2f}%")
-    print("-" * 81)
-    print("Interpretation: The Adaptive Auto-Regime Switcher with the Bollinger Bands Filter,")
-    print("Garman-Klass Volatility Shield, and Max-Sharpe asset allocation vastly reduces volatility")
-    print("and tail risk while preserving win rate and protecting investment capital.")
-    print("=" * 60)
+    logger.info(f"{'Metric':<25} | {'Raw Sentiment Strategy':<25} | {'Adaptive Auto-Regime Switcher':<25}")
+    logger.info("-" * 81)
+    logger.info(f"{'Mean Trade Return':<25} | {raw_mean:>22.2f}% | {mix_mean:>22.2f}%")
+    logger.info(f"{'Volatility (Std Dev)':<25} | {raw_std:>22.2f}% | {mix_std:>22.2f}%")
+    logger.info(f"{'Win Rate':<25} | {raw_win:>22.2f}% | {mix_win:>22.2f}%")
+    logger.info(f"{'Annualized Sharpe Ratio':<25} | {raw_sharpe:>24.2f} | {mix_sharpe:>24.2f}")
+    logger.info(f"{'Annualized Sortino Ratio':<25} | {raw_sortino:>24.2f} | {mix_sortino:>24.2f}")
+    logger.info(f"{'Maximum Drawdown':<25} | {raw_mdd:>22.2f}% | {mix_mdd:>22.2f}%")
+    logger.info(f"{'Value-at-Risk (95% VaR)':<25} | {raw_var:>22.2f}% | {mix_var:>22.2f}%")
+    logger.info(f"{'Expected Shortfall (CVaR)':<25} | {raw_cvar:>22.2f}% | {mix_cvar:>22.2f}%")
+    logger.info("-" * 81)
+    logger.info("Interpretation: The Adaptive Auto-Regime Switcher with the Bollinger Bands Filter,")
+    logger.info("Garman-Klass Volatility Shield, and Max-Sharpe asset allocation vastly reduces volatility")
+    logger.info("and tail risk while preserving win rate and protecting investment capital.")
+    logger.info("=" * 60)
 
 def main():
     success = run_sentiment_pipeline()
     if success:
         run_trajectory_plotter(top_n_tickers=5)
         print_quant_statistics()
-        print("\n" + "=" * 60)
-        print("SYSTEM EXECUTION COMPLETED")
-        print("=" * 60)
-        print(f"1. Raw Sentiment Data & Alpha Calculations:\n   {os.path.abspath(OUTPUT_CSV)}")
-        print(f"2. Safe Co-mention Network JSON File:\n   {os.path.abspath(CO_MENTION_JSON)}")
-        print(f"3. Forward-Looking Normalized Trajectory Plot:\n   {os.path.abspath(OUTPUT_PNG)}")
-        print("=" * 60)
+        logger.info("\n" + "=" * 60)
+        logger.info("SYSTEM EXECUTION COMPLETED")
+        logger.info("=" * 60)
+        logger.info(f"1. Raw Sentiment Data & Alpha Calculations:\n   {os.path.abspath(OUTPUT_CSV)}")
+        logger.info(f"2. Safe Co-mention Network JSON File:\n   {os.path.abspath(CO_MENTION_JSON)}")
+        logger.info(f"3. Forward-Looking Normalized Trajectory Plot:\n   {os.path.abspath(OUTPUT_PNG)}")
+        logger.info("=" * 60)
     else:
-        print("\nPipeline stopped: No valid post data retrieved or parsed.")
+        logger.info("\nPipeline stopped: No valid post data retrieved or parsed.")
 
 if __name__ == "__main__":
     main()
