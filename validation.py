@@ -3,6 +3,7 @@ import numpy as np
 import yfinance as yf
 from datetime import timedelta
 import matplotlib.pyplot as plt
+import indicators
 import run_historic_backtest as rb
 from tqdm import tqdm
 
@@ -29,7 +30,7 @@ def load_base_data():
         t_px.columns = t_px.columns.get_level_values(0)
         t_px = t_px.dropna(subset=["Close", "Open", "High", "Low"])
         if len(t_px) >= 20:
-            stock_dfs[ticker] = rb.compute_indicators(t_px)
+            stock_dfs[ticker] = indicators.compute_indicators(t_px)
 
     return posts_df, stock_dfs, spy_close
 
