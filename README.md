@@ -107,19 +107,19 @@ The table below displays the comprehensive performance comparison of **Raw Senti
 | Investment Horizon | Raw Sentiment | Short-Term Strategy | Mid-Long Strategy | Long-Term Strategy | Adaptive Switcher Strategy | Most Profitable Algorithm |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
 | **Short-Term (5d)** | **+303.66%** | +180.74% | +182.53% | +182.53% | +182.53% | **Raw Sentiment** |
-| **Mid-Long Term (60d)**| +243.63% | +108.35% | **+649.62%** | +604.89% | +604.89% | **Mid-Long Strategy** |
+| **Mid-Long Term (60d)**| +241.74% | +108.35% | **+649.62%** | +604.89% | +604.89% | **Mid-Long Strategy** |
 | **Long-Term (252d)** | +204.51% | +114.72% | +649.62% | **+1798.07%** | +1479.92% | **Long-Term Strategy** |
 
 ### Key Quantitative Discoveries
 
 1. **The Power of Multi-Horizon Dynamic Regime Switching:**
    - By switching dynamically from low-volatility holding periods to high-volatility exit buffers, the strategies achieve solid, positive return profiles across all durations.
-   - For example, the **Mid-Long Term (60d)** strategy achieves a highly impressive **+649.62% Total Return**, significantly beating the raw sentiment benchmark (+243.63%).
+   - For example, the **Mid-Long Term (60d)** strategy achieves a highly impressive **+649.62% Total Return**, significantly beating the raw sentiment benchmark (+241.74%).
    - The **Long-Term (252d)** strategy yields **+1,798.07% Total Return**, and the **S&P 500 Adaptive Auto-Regime Switcher** achieves a very strong and robust **+1,479.92% Total Return** with high risk-adjusted Sharpe ratios.
 
 2. **Annualized Sharpe Ratio Maximization:**
-   - Standard Sentiment-Only trading is extremely volatile, yielding low Sharpe ratios of **0.56 to 0.78**.
-   - By utilizing our Adaptive Switcher Strategy, we achieve optimized annualized Sharpe ratios of **1.38 to 1.80**!
+   - Standard Sentiment-Only trading is extremely volatile, yielding low Sharpe ratios of **0.63 to 0.78**.
+   - By utilizing our Adaptive Switcher Strategy, we achieve optimized annualized Sharpe ratios of **1.11 to 1.80**!
 
 3. **Automation & Hands-free Optimization:**
    - The S&P 500 Adaptive Auto-Regime Switcher executes completely automatically without any human input, dynamically switching between short, mid-long, and long-term allocations as soon as market indicators signal regime shifts.
