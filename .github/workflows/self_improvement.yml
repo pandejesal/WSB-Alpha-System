@@ -1,0 +1,43 @@
+name: Bounded Self-Improvement Loop
+
+on:
+  schedule:
+    - cron: '0 12 * * 6' # 12:00 PM UTC every Saturday
+  workflow_dispatch:
+
+jobs:
+  self_improve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Fetch paper trading logs branch
+        run: git fetch origin paper_trading_logs || true
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pandas numpy yfinance google-generativeai
+
+      - name: Run Self-Improvement Agent
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python self_improvement_agent.py
+
+      - name: Create Pull Request or Commit Change
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add run_historic_backtest.py self_improvement_log.md
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "Self-Improvement: Applied proposed strategy change"
+            git push origin main
+          fi
