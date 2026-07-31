@@ -1,7 +1,7 @@
 import os
 import re
-import google.generativeai as genai
-from validation import run_permutation_test
+from google import genai
+from validation import run_in_sample_test, run_walk_forward_test, load_base_data, NUM_PERMUTATIONS
 from datetime import datetime
 
 
@@ -39,8 +39,8 @@ def main():
         print("No GEMINI_API_KEY found, skipping self improvement.")
         return
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    client = genai.Client(api_key=api_key)
+
 
     logs = read_logs()
 
@@ -78,10 +78,10 @@ def main():
     """
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(model='gemini-2.5-flash', contents=prompt)
         # Parse JSON from response
         import json
-        match = re.search(r'\{.*\}', response.text, re.DOTALL)
+        match = re.search(r'\{.*?\}', response.text, re.DOTALL)
         if match:
             data = json.loads(match.group(0))
 
@@ -94,7 +94,17 @@ def main():
 
             if success:
                 print("Applied change. Running validation harness...")
-                passed = run_permutation_test()
+                try:
+                    posts_df, stock_dfs, spy_close = load_base_data()
+                    in_sample_passed, p1 = run_in_sample_test(posts_df, stock_dfs, spy_close)
+                    if in_sample_passed:
+                        wf_passed, p2 = run_walk_forward_test(posts_df, stock_dfs, spy_close)
+                        passed = wf_passed
+                    else:
+                        passed = False
+                except Exception as e:
+                    print(f"Validation harness crashed: {e}")
+                    passed = False
 
                 log_entry = f"\n## {datetime.now().strftime('%Y-%m-%d')}\n"
                 log_entry += f"**Hypothesis:** {data['hypothesis']}\n"
