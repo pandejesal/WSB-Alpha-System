@@ -70,7 +70,7 @@ def compute_indicators(df):
         else:
             window_rets = daily_pct_returns.iloc[i-19:i+1]
             sorted_rets = np.sort(window_rets.values)
-            var_idx = int(0.05 * len(sorted_rets))
+            var_idx = max(0, int(0.05 * len(sorted_rets)) - 1) if len(sorted_rets) == 20 else int(0.05 * len(sorted_rets))
             var_val = -sorted_rets[var_idx] if var_idx < len(sorted_rets) else 0.02
             losses_below_var = sorted_rets[:var_idx+1]
             cvar_val = -losses_below_var.mean() if len(losses_below_var) > 0 else 0.04
