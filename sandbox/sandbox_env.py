@@ -83,7 +83,7 @@ try:
         safe_builtins.pop(b, None)
 
     namespace = {{"__builtins__": safe_builtins}}
-    with open('{code_path}', 'r') as f:
+    with open({repr(code_path)}, 'r') as f:
         exec(f.read(), namespace)
 
     # We expect the strategy to define a 'run_strategy' function or similar.
@@ -92,7 +92,7 @@ try:
 except Exception as e:
     result = {{"status": "error", "message": str(e)}}
 
-with open('{result_path}', 'w') as f:
+with open({repr(result_path)}, 'w') as f:
     json.dump(result, f)
 """
         return script
