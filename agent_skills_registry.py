@@ -134,8 +134,9 @@ def skill_run_sandbox_backtest(cvar_threshold: float, stop_loss_atr: float, take
         # Take the last 60 days for actual backtest simulation
         bt_df = df.tail(60).copy()
 
+        from risk_config import RISK_PER_TRADE_PCT
         account_balance = 100.00
-        max_risk = 1.00
+        max_risk = account_balance * RISK_PER_TRADE_PCT
         equity_curve = [account_balance]
         trades = []
 
@@ -163,7 +164,8 @@ def skill_run_sandbox_backtest(cvar_threshold: float, stop_loss_atr: float, take
                 entry_price = float(bt_df['Close'].iloc[i])
                 atr = float(bt_df['ATR'].iloc[i])
 
-                # Position Sizing: Risk exactly $1.00
+                # Position Sizing: Risk based on RISK_PER_TRADE_PCT
+                max_risk = account_balance * RISK_PER_TRADE_PCT
                 qty = max_risk / (stop_loss_atr * atr)
 
                 # Guardrail: Check purchasing power
@@ -258,7 +260,7 @@ analyze_ledger_declaration = types.FunctionDeclaration(
 
 run_sandbox_backtest_declaration = types.FunctionDeclaration(
     name="skill_run_sandbox_backtest",
-    description="Runs a fast, vectorized backtest on the last 60 days of data using proposed parameters. Enforces $100 starting equity and maximum $1.00 risk per trade.",
+    description="Runs a fast, vectorized backtest on the last 60 days of data using proposed parameters. Enforces $100 starting equity and maximum risk based on RISK_PER_TRADE_PCT.",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
