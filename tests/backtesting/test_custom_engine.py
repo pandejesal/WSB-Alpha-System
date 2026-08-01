@@ -1,7 +1,7 @@
 import unittest
 import pandas as pd
 import numpy as np
-from backtesting.custom_engine import CustomEngine
+from src.backtest.custom_engine import CustomEngine
 
 class MockStrategy:
     def generate_signals(self, df: pd.DataFrame) -> pd.DataFrame:

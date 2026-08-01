@@ -1,6 +1,6 @@
 import unittest
-from strategy_generation.schemas import StrategySpecification, Parameter
-from strategy_generation.generator import PythonGenerator
+from src.alpha.schemas import StrategySpecification, Parameter
+from src.alpha.generator import PythonGenerator
 
 class TestGenerator(unittest.TestCase):
     def test_python_generation(self):

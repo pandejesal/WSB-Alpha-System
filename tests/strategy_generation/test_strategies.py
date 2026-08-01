@@ -1,8 +1,8 @@
 import unittest
 import pandas as pd
 import numpy as np
-from strategy_generation.strategy_man_ahl import ManAHLStrategy
-from strategy_generation.strategy_wsb_alpha import WSBAlphaStrategy
+from src.alpha.strategy_man_ahl import ManAHLStrategy
+from src.alpha.strategy_wsb_alpha import WSBAlphaStrategy
 
 class TestStrategies(unittest.TestCase):
     def setUp(self):

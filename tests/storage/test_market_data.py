@@ -1,8 +1,8 @@
 import unittest
 import pandas as pd
 import numpy as np
-from storage.market_data import MarketDataManager
-from storage.base_provider import MarketDataProvider
+from src.data.market_data import MarketDataManager
+from src.data.base_provider import MarketDataProvider
 import shutil
 import os
 

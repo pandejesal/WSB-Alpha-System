@@ -1,6 +1,6 @@
 import os
 import unittest
-from configuration.config import config
+from src.utils.config import config
 
 class TestConfig(unittest.TestCase):
     def test_live_trading_disabled_by_default(self):
