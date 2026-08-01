@@ -5,7 +5,7 @@ import yaml
 import json
 from google import genai
 from google.genai import types
-from agent_skills_registry import skills_tool, skills_registry
+from experiments.agent_skills_registry import skills_tool, skills_registry
 
 class GeminiSkillEngine:
     def __init__(self):

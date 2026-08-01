@@ -3,7 +3,7 @@ import numpy as np
 import yfinance as yf
 from datetime import timedelta
 import matplotlib.pyplot as plt
-from indicators import compute_indicators, compute_regime_returns
+from analytics.indicators import compute_indicators, compute_regime_returns
 
 
 
