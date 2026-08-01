@@ -557,11 +557,12 @@ def run_sentiment_pipeline():
                     if entry_cvar > 0.15:
                         risk_parity_weight *= 0.50
 
-                    # 5. Conviction-Based Sizing Booster (Stock Prediction Repo Sizing):
+                    # 5. Conviction-Based Sizing Booster (Dynamic Growth Engine):
                     # If our localized statistical forecaster has extremely high conviction (projected return > 2%),
-                    # we boost position size by 1.5x to capture the maximum profit in the least amount of time!
+                    # we safely boost position size by up to 2.0x (capped by risk_config maximums)
+                    # to aggressively compound profits on the $100 -> $500 journey!
                     if confluence_triggered and abs(projected_5d_return) > 0.02:
-                        risk_parity_weight *= 1.50
+                        risk_parity_weight *= 2.00
 
                     spy_entry_date = entry_date if entry_date in spy.index else spy.index[spy.index.searchsorted(entry_date, side="left")]
                     spy_entry_px = spy.loc[spy_entry_date]
