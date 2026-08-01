@@ -80,8 +80,15 @@ def calculate_target_position_sizes(
             theoretical_sizes[ticker] = 0.0
             continue
         vol = volatilities.get(ticker, 0.5)
-        # Target Position Size = Half-Kelly * (Score * Account_Equity * Target_Risk) / Volatility
-        theoretical = half_kelly * (score * equity * target_risk) / vol
+
+        # Conviction-Based Sizing Booster (Dynamic Growth Engine)
+        # Max score is 4.0 or -4.0 (confluence of all 4 lookbacks)
+        conviction_multiplier = 1.0
+        if abs(score) == 4.0:
+            conviction_multiplier = 2.0  # Safe aggressive sizing for $100 -> $500 target
+
+        # Target Position Size = Half-Kelly * (Score * Account_Equity * Target_Risk) / Volatility * Conviction
+        theoretical = half_kelly * (score * equity * target_risk) / vol * conviction_multiplier
         theoretical_sizes[ticker] = theoretical
 
     # Filter strong signals & apply floor of $10
