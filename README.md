@@ -25,4 +25,5 @@ This is a fully automated, self-optimizing system running on a $100 micro-accoun
    * `GEMINI_API_KEY`: For the self-learning agent and LLM optimization loop.
    * `REDDIT_CLIENT_ID`: Your PRAW / Reddit App client ID.
    * `REDDIT_CLIENT_SECRET`: Your PRAW / Reddit App client secret.
+     * **You MUST create a registered Reddit Developer App (type: 'script') to get OAuth credentials. Do not use unauthenticated requests, or you will be throttled to 10 requests per minute and your IP will be blocked.**
    * `TELEGRAM_BOT_TOKEN`: For system notifications and trade logging.

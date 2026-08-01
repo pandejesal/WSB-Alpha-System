@@ -236,28 +236,9 @@ def run_sentiment_pipeline():
     if use_rss:
         items = fetch_rss_feed()
     else:
-        # Use block-safe URL for all runs to avoid Reddit 403 Forbidden limits
-        logger.info(f"\nFetching up to {max_items} posts via PRAW...")
-        try:
-            reddit = praw.Reddit(
-                client_id=os.getenv("REDDIT_CLIENT_ID"),
-                client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
-                user_agent="WSB-Alpha-System"
-            )
-            submissions = reddit.subreddit("wallstreetbets").search('flair:DD', sort='new', limit=max_items)
-            for submission in submissions:
-                items.append({
-                    "id": submission.id,
-                    "title": submission.title,
-                    "body": submission.selftext,
-                    "createdAt": int(submission.created_utc),
-                    "permalink": submission.permalink,
-                    "score": submission.score,
-                    "num_comments": submission.num_comments
-                })
-            logger.info(f"Retrieved {len(items)} raw metadata items from PRAW")
-        except Exception as e:
-            logger.info(f"Warning: Failed to fetch items from PRAW: {e}")
+        # Use reddit_scraper.py module for anti-ban and deduplication
+        from reddit_scraper import fetch_reddit_data_sync
+        items = fetch_reddit_data_sync(max_items=max_items)
 
         
     # ------------------------------------------------------------------
