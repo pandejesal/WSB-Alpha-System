@@ -1,6 +1,6 @@
 import unittest
-from brokers.alpaca_broker import AlpacaBroker
-from brokers.ccxt_broker import CCXTBroker
+from src.execution.alpaca_broker import AlpacaBroker
+from src.execution.ccxt_broker import CCXTBroker
 
 class TestBrokers(unittest.TestCase):
     def test_alpaca_mock_mode(self):
