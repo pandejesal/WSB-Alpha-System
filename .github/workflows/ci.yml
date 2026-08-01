@@ -21,4 +21,4 @@ jobs:
         pip install -r requirements.txt
     - name: Test with unittest
       run: |
-        python -m unittest test_wsb.py
+        PYTHONPATH=. python -m unittest discover -s tests -t .
