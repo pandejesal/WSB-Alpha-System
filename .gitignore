@@ -12,5 +12,3 @@ crypto_state.json
 wsb_factual_research_data.csv
 co_mentions.json
 wsb_stock_trajectories.png
-database/cache/*
-tests/mock_reports/*

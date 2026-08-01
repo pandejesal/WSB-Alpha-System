@@ -18,4 +18,3 @@ vectorbt
 quantstats
 beautifulsoup4
 duckduckgo-search
-pyarrow
