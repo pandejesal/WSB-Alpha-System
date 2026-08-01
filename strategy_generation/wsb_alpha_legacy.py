@@ -17,7 +17,7 @@ except LookupError:
 
 import os
 import re
-from indicators import compute_indicators, compute_regime_returns
+from analytics.indicators import compute_indicators, compute_regime_returns
 
 import json
 import torch
@@ -237,7 +237,7 @@ def run_sentiment_pipeline():
         items = fetch_rss_feed()
     else:
         # Use reddit_scraper.py module for anti-ban and deduplication
-        from reddit_scraper import fetch_reddit_data_sync
+        from research.reddit_scraper import fetch_reddit_data_sync
         items = fetch_reddit_data_sync(max_items=max_items)
 
         

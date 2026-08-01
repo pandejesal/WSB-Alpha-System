@@ -8,8 +8,8 @@ from datetime import datetime
 from dotenv import load_dotenv
 
 # Import components
-from wsb_alpha_system import run_sentiment_pipeline, OUTPUT_CSV
-from indicators import compute_indicators
+from strategy_generation.wsb_alpha_legacy import run_sentiment_pipeline, OUTPUT_CSV
+from analytics.indicators import compute_indicators
 from src.alpha.macro_regime import MacroRegimeFilter
 from src.alpha.fade_strategy import FadeStrategy
 from src.execution.execution_adapter import PaperbrokerClient, ExecutionAdapter
