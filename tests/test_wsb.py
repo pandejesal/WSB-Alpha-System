@@ -1,8 +1,8 @@
 import unittest
 import pandas as pd
 import numpy as np
-from indicators import compute_indicators
-from wsb_alpha_system import extract_tickers
+from analytics.indicators import compute_indicators
+from research.nlp_utils import extract_tickers
 
 class TestIndicators(unittest.TestCase):
     def test_compute_indicators_less_than_20(self):
