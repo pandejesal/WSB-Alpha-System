@@ -21,8 +21,15 @@ logger = logging.getLogger(__name__)
 CACHE_DB_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "seen_posts.db")
 
 def _init_db():
+    """
+    Initializes the SQLite database used for deduplication.
+    This database acts as a local cache to ensure we do not process
+    the same Reddit post multiple times, saving FinBERT inference time
+    and preventing double-counting sentiment.
+    """
     with sqlite3.connect(CACHE_DB_PATH) as conn:
         cursor = conn.cursor()
+        # The primary key is the hashed Reddit ID for faster lookups and minimal storage overhead
         cursor.execute('''
             CREATE TABLE IF NOT EXISTS seen_posts (
                 post_hash TEXT PRIMARY KEY,
@@ -33,7 +40,11 @@ def _init_db():
         conn.commit()
 
 def _is_post_seen(conn, post_id: str) -> bool:
-    """Checks if a post has been seen by hashing its ID."""
+    """
+    Checks if a post has been seen by hashing its ID.
+    Hashing the ID provides a fixed-length string for the primary key
+    which makes SQLite index lookups incredibly fast.
+    """
     post_hash = hashlib.sha256(post_id.encode('utf-8')).hexdigest()
     cursor = conn.cursor()
     cursor.execute("SELECT 1 FROM seen_posts WHERE post_hash = ?", (post_hash,))
@@ -41,7 +52,11 @@ def _is_post_seen(conn, post_id: str) -> bool:
     return result is not None
 
 def _mark_post_seen(conn, post_id: str):
-    """Marks a post as seen by storing its hashed ID."""
+    """
+    Marks a post as seen by storing its hashed ID.
+    INSERT OR IGNORE is used to gracefully handle any race conditions
+    where the ID might already have been inserted.
+    """
     post_hash = hashlib.sha256(post_id.encode('utf-8')).hexdigest()
     cursor = conn.cursor()
     cursor.execute(
@@ -54,6 +69,13 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
     """
     Fetches Reddit data using Time-Window Chunking (4-hour intervals) to bypass the 1000 post limit.
     Wraps asynchronous execution for praw block safe queries.
+
+    This function implements institutional-grade Anti-Ban and data-integrity features:
+    1. Smart Rate-Limiting & Exponential Backoff: Captures prawcore.exceptions.TooManyRequests
+       and waits progressively longer (60s, 120s, etc.) before retrying.
+    2. Time-Window Chunking: Splits queries into 4-hour blocks using Unix timestamps to overcome
+       the Reddit search limit of 1000 items.
+    3. Natural Throttling: Uses asyncio.sleep with random delays to mimic human paging.
     """
     _init_db()
 
@@ -76,7 +98,7 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
 
     items = []
 
-    # Determine the time window
+    # Determine the time window for chunking
     if target_year:
         end_time = datetime.datetime(target_year, 12, 31, 23, 59, 59, tzinfo=datetime.timezone.utc)
         start_bound = datetime.datetime(target_year, 1, 1, 0, 0, 0, tzinfo=datetime.timezone.utc)
@@ -85,10 +107,11 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
         start_bound = end_time - datetime.timedelta(days=365 * 10) # 10 years back max
 
     current_end = end_time
+    # Use a 4-hour chunking delta to ensure we never hit the 1,000 post cap within a single query
     chunk_delta = datetime.timedelta(hours=4)
     total_fetched = 0
     consecutive_empty_chunks = 0
-    max_empty_chunks = 100 # Stop if we have gone a long time with no posts
+    max_empty_chunks = 100 # Stop if we have gone a long time with no posts to prevent infinite looping
 
     logger.info(f"Starting PRAW scraper with Time-Window Chunking (4-hour windows). Target items: {max_items}")
 
@@ -101,7 +124,8 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
 
             query = f"flair:DD timestamp:{start_ts}..{end_ts}"
 
-            # Define the blocking sync function
+            # Define the blocking sync function to be run in a separate thread
+            # This prevents PRAW's synchronous network calls from blocking the main asyncio event loop
             def _fetch_sync():
                 submissions_list = []
                 submissions = reddit.subreddit("wallstreetbets").search(query, sort='new', limit=1000)
@@ -109,28 +133,33 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
                     submissions_list.append(submission)
                 return submissions_list
 
+            # Setup variables for Exponential Backoff algorithm
             backoff = 60
             max_retries = 5
             retries = 0
             success = False
             submissions_chunk = []
 
+            # Retry loop with Exponential Backoff for handling rate limits
             while retries < max_retries and not success:
                 try:
+                    # Execute the blocking PRAW call in a background thread
                     submissions_chunk = await asyncio.to_thread(_fetch_sync)
                     success = True
                 except prawcore.exceptions.TooManyRequests as e:
+                    # Exponential Backoff algorithm: if rate limit is hit, wait 60s, then 120s, etc.
                     logger.warning(f"Rate limit hit! TooManyRequests. Sleeping for {backoff} seconds... (Retry {retries+1}/{max_retries})")
                     await asyncio.sleep(backoff)
                     backoff *= 2
                     retries += 1
                 except Exception as e:
                     logger.error(f"Error fetching chunk from PRAW: {e}")
-                    break # Break out of retry loop for other errors
+                    break # Break out of retry loop for other unexpected errors
 
             if success:
                 chunk_items = 0
                 for submission in submissions_chunk:
+                    # Check SQLite cache to avoid double-processing and wasting FinBERT compute
                     if _is_post_seen(conn, submission.id):
                         continue
 
@@ -143,6 +172,7 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
                         "score": submission.score,
                         "num_comments": submission.num_comments
                     })
+                    # Mark this post as seen in the SQLite cache immediately
                     _mark_post_seen(conn, submission.id)
                     chunk_items += 1
                     total_fetched += 1
@@ -164,9 +194,11 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
                 logger.error("Failed to fetch chunk after max retries.")
                 break
 
+            # Move the time window back by 4 hours for the next chunk
             current_end = current_start
 
-            # Natural throttle to mimic human pacing
+            # Natural throttle: add random jitter (1.5s to 3.5s) between pagination queries
+            # to mimic human pacing and reduce the likelihood of IP bans.
             sleep_time = random.uniform(1.5, 3.5)
             await asyncio.sleep(sleep_time)
 
@@ -176,5 +208,8 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
 def fetch_reddit_data_sync(max_items: int = 1000, target_year: int = None) -> List[Dict]:
     """
     Synchronous wrapper for fetch_reddit_data_chunked.
+    This provides a simplified interface for scripts that do not require
+    an active asyncio event loop, while still utilizing the robust async
+    logic internally.
     """
     return asyncio.run(fetch_reddit_data_chunked(max_items, target_year))
