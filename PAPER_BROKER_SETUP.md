@@ -13,8 +13,9 @@ Add the following variables to your `.env` file:
 # WSB-ALPHA-SYSTEM CONFIGURATION
 # ==========================================
 
-# 1. APIFY Token (Required for the Reddit scraper)
-APIFY_TOKEN=your_apify_token_here
+# 1. Reddit PRAW Credentials (Required for the Reddit scraper)
+REDDIT_CLIENT_ID=your_client_id
+REDDIT_CLIENT_SECRET=your_client_secret
 
 # ==========================================
 # PAPER TRADING EXECUTION (PAPERBROKER)

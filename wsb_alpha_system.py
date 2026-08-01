@@ -31,7 +31,8 @@ import seaborn as sns
 from datetime import datetime, timedelta
 from tqdm import tqdm
 from collections import defaultdict
-from apify_client import ApifyClient
+import praw
+import os
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 # ============================================================================
@@ -46,8 +47,6 @@ CO_MENTION_JSON = os.path.join(SCRIPT_DIR, "co_mentions.json")
 OUTPUT_PNG = os.path.join(SCRIPT_DIR, "wsb_stock_trajectories.png")
 
 # Global Configuration Parameters
-APIFY_TOKEN = os.getenv("APIFY_TOKEN", "")
-ACTOR_ID = "trudax/reddit-scraper-lite"
 
 FINBERT_MODEL = "ProsusAI/finbert"
 FINBERT_LABELS = ["bearish", "neutral", "bullish"]
@@ -218,7 +217,7 @@ def run_sentiment_pipeline():
     # ------------------------------------------------------------------
     logger.info("Select Reddit data collection mode:")
     logger.info("1. [FREE] Public RSS Feed Scraper (No API Keys / Accounts / Costs, fetches latest 25 posts)")
-    logger.info("2. [PAID/KEY] Apify Reddit Scraper (Requires Apify API Token)")
+    logger.info("2. [PAID/KEY] PRAW Reddit Scraper (Requires Reddit API Keys)")
     mode_input = input("Enter option (1 or 2, default 1): ").strip()
     
     use_rss = mode_input != "2"
@@ -238,20 +237,28 @@ def run_sentiment_pipeline():
         items = fetch_rss_feed()
     else:
         # Use block-safe URL for all runs to avoid Reddit 403 Forbidden limits
-        start_url = "https://www.reddit.com/r/wallstreetbets/search/?q=flair%3ADD&restrict_sr=1&sort=new"
-
-        logger.info(f"\nFetching up to {max_items} posts via Apify...")
-        client = ApifyClient(APIFY_TOKEN)
+        logger.info(f"\nFetching up to {max_items} posts via PRAW...")
         try:
-            run = client.actor(ACTOR_ID).call(run_input={
-                "startUrls": [{"url": start_url}],
-                "sort": "new",
-                "maxItems": max_items,
-            })
-            items = list(client.dataset(run.default_dataset_id).iterate_items())
-            logger.info(f"Retrieved {len(items)} raw metadata items from Apify")
+            reddit = praw.Reddit(
+                client_id=os.getenv("REDDIT_CLIENT_ID"),
+                client_secret=os.getenv("REDDIT_CLIENT_SECRET"),
+                user_agent="WSB-Alpha-System"
+            )
+            submissions = reddit.subreddit("wallstreetbets").search('flair:DD', sort='new', limit=max_items)
+            for submission in submissions:
+                items.append({
+                    "id": submission.id,
+                    "title": submission.title,
+                    "body": submission.selftext,
+                    "createdAt": int(submission.created_utc),
+                    "permalink": submission.permalink,
+                    "score": submission.score,
+                    "num_comments": submission.num_comments
+                })
+            logger.info(f"Retrieved {len(items)} raw metadata items from PRAW")
         except Exception as e:
-            logger.info(f"Warning: Failed to fetch items from Apify: {e}")
+            logger.info(f"Warning: Failed to fetch items from PRAW: {e}")
+
         
     # ------------------------------------------------------------------
     # ROBUST FALLBACK HANDLING FOR SCRAPER FAILURE
