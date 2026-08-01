@@ -16,6 +16,3 @@ class TestBrokers(unittest.TestCase):
         self.assertGreater(bal, 0)
         res = broker.submit_order("BTC/USDT", "buy", 0.01)
         self.assertEqual(res["status"], "success")
-
-if __name__ == '__main__':
-    unittest.main()
