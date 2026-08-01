@@ -1,6 +1,6 @@
 import unittest
-from risk.position_sizer import PositionSizer
-from risk.circuit_breakers import CircuitBreaker
+from src.risk.position_sizer import PositionSizer
+from src.risk.circuit_breakers import CircuitBreaker
 
 class TestRiskEngine(unittest.TestCase):
     def test_position_sizer(self):

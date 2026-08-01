@@ -1,5 +1,5 @@
 import unittest
-from portfolio.portfolio_manager import PortfolioManager
+from src.risk.portfolio_manager import PortfolioManager
 
 class TestPortfolioManager(unittest.TestCase):
     def test_allocation_scaling(self):
