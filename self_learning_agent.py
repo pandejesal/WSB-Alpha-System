@@ -6,7 +6,8 @@ import sqlite3
 import numpy as np
 import pandas as pd
 import yaml
-from anthropic import Anthropic
+from google import genai
+from google.genai import types
 from pydantic import BaseModel, Field, ValidationError
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
@@ -25,11 +26,11 @@ class SelfOptimizer:
         self.db_path = db_path
         self.config_path = config_path
 
-        # Anthropic Client - Key expected from environment variables
-        self.anthropic_api_key = os.getenv("ANTHROPIC_API_KEY")
-        if not self.anthropic_api_key:
-            logger.warning("ANTHROPIC_API_KEY environment variable is not set. LLM optimization will fail.")
-        self.client = Anthropic(api_key=self.anthropic_api_key)
+        # Gemini Client - Key expected from environment variables
+        self.gemini_api_key = os.getenv("GEMINI_API_KEY")
+        if not self.gemini_api_key:
+            logger.warning("GEMINI_API_KEY environment variable is not set. LLM optimization will fail.")
+        self.client = genai.Client(api_key=self.gemini_api_key)
 
         # Performance Goals
         self.TARGET_MAX_DD = -0.15 # 15% Max DD
@@ -125,7 +126,7 @@ class SelfOptimizer:
             yaml.dump(config_data, f, default_flow_style=False)
 
     def ask_llm_for_parameters(self, metrics: dict, df: pd.DataFrame, current_config: dict) -> dict | None:
-        """Queries Claude to propose new parameters using tool calling."""
+        """Queries Gemini to propose new parameters using tool calling."""
 
         # Summarize trades for context to avoid huge payloads
         trade_summary = df.describe().to_dict()
@@ -140,39 +141,46 @@ class SelfOptimizer:
         Provide a JSON output with adjusted strategy parameters to reduce drawdown and increase profit factor.
         """
 
-        tool_schema = {
-            "name": "update_strategy_parameters",
-            "description": "Updates strategy parameters based on performance analysis.",
-            "input_schema": {
-                "type": "object",
-                "properties": {
-                    "cvar_threshold": {"type": "number", "description": "CVaR Threshold (0.05 - 0.20)"},
-                    "order_block_min_atr_mult": {"type": "number", "description": "Order Block Min ATR Mult (0.5 - 3.0)"},
-                    "sentiment_threshold": {"type": "number", "description": "Sentiment Threshold (0.70 - 0.99)"},
-                    "take_profit_atr_mult": {"type": "number", "description": "Take Profit ATR Mult (1.0 - 5.0)"},
-                    "stop_loss_atr_mult": {"type": "number", "description": "Stop Loss ATR Mult (0.5 - 2.5)"}
-                },
-                "required": ["cvar_threshold", "order_block_min_atr_mult", "sentiment_threshold", "take_profit_atr_mult", "stop_loss_atr_mult"]
-            }
-        }
+        tool = types.Tool(
+            function_declarations=[
+                types.FunctionDeclaration(
+                    name="update_strategy_parameters",
+                    description="Updates strategy parameters based on performance analysis.",
+                    parameters=types.Schema(
+                        type=types.Type.OBJECT,
+                        properties={
+                            "cvar_threshold": types.Schema(type=types.Type.NUMBER, description="CVaR Threshold (0.05 - 0.20)"),
+                            "order_block_min_atr_mult": types.Schema(type=types.Type.NUMBER, description="Order Block Min ATR Mult (0.5 - 3.0)"),
+                            "sentiment_threshold": types.Schema(type=types.Type.NUMBER, description="Sentiment Threshold (0.70 - 0.99)"),
+                            "take_profit_atr_mult": types.Schema(type=types.Type.NUMBER, description="Take Profit ATR Mult (1.0 - 5.0)"),
+                            "stop_loss_atr_mult": types.Schema(type=types.Type.NUMBER, description="Stop Loss ATR Mult (0.5 - 2.5)")
+                        },
+                        required=["cvar_threshold", "order_block_min_atr_mult", "sentiment_threshold", "take_profit_atr_mult", "stop_loss_atr_mult"]
+                    )
+                )
+            ]
+        )
 
         try:
-            response = self.client.messages.create(
-                model="claude-3-5-sonnet-20241022",
-                max_tokens=1000,
-                tools=[tool_schema],
-                tool_choice={"type": "tool", "name": "update_strategy_parameters"},
-                messages=[
-                    {"role": "user", "content": prompt}
-                ]
+            response = self.client.models.generate_content(
+                model="gemini-3.1-pro-preview-customtools",
+                contents=prompt,
+                config=types.GenerateContentConfig(
+                    tools=[tool]
+                )
             )
 
-            # Parse tool use
-            for block in response.content:
-                if block.type == "tool_use" and block.name == "update_strategy_parameters":
-                    return block.input
+            if response.candidates and response.candidates[0].content.parts:
+                for part in response.candidates[0].content.parts:
+                    if part.function_call and part.function_call.name == "update_strategy_parameters":
+                        # Convert dict-like structure to dict if needed
+                        return dict(part.function_call.args)
 
             logger.error("LLM did not return the expected tool call.")
+            return None
+
+        except Exception as e:
+            logger.error(f"Error querying LLM: {e}")
             return None
 
         except Exception as e:

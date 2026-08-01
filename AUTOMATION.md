@@ -12,7 +12,7 @@ The automation pipeline consists of five decoupled layers executing sequentially
 [Trigger: Cron / CloudWatch]
        │
        ▼
-1. DATA INGESTION: Scrapes latest WSB DD posts (Free Public RSS / Paid Apify Scraper)
+1. DATA INGESTION: Scrapes latest WSB DD posts (Free Public RSS / PRAW Reddit Scraper)
        │
        ▼
 2. SENTIMENT CLASSIFICATION: Runs FinBERT NLP model to extract bullish/bearish confidence
