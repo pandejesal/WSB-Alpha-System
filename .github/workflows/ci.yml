@@ -11,5 +11,5 @@ jobs:
       uses: actions/setup-python@v4
     - name: Test with pytest
       run: |
-        pip install -r requirements.txt pytest pytest-cov pydantic pydantic-settings pyyaml duckdb pandera nltk praw feedparser openbb arch scipy riskfolio-lib cvxpy nautilus_trader vectorbt
+        pip install -r requirements.txt pytest pytest-cov pydantic pydantic-settings pyyaml duckdb pandera nltk praw feedparser openbb arch scipy riskfolio-lib cvxpy nautilus_trader vectorbt langgraph langchain-core RestrictedPython bandit
         PYTHONPATH=. pytest tests/ -v --cov=src
