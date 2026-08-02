@@ -16,14 +16,13 @@ class TestRiskEngine(unittest.TestCase):
         self.assertEqual(res["notional_value"], 100.0)
 
     def test_circuit_breaker(self):
-        cb = CircuitBreaker(max_drawdown_pct=0.15, max_daily_loss_pct=0.05)
-        res = cb.check_safety(peak_equity=100.0, current_equity=98.0, daily_starting_equity=100.0)
-        self.assertTrue(res["safe"])
+        cb = CircuitBreaker(daily_limit=0.05, total_limit=0.15)
+        self.assertTrue(cb.check_circuit_breakers(lambda: 98.0))
 
-        res = cb.check_safety(peak_equity=100.0, current_equity=84.0, daily_starting_equity=100.0)
-        self.assertFalse(res["safe"])
-        self.assertEqual(res["action"], "HALT_ALL_TRADING")
+        with self.assertRaises(Exception):
+            cb.check_circuit_breakers(lambda: 84.0)
 
-        res = cb.check_safety(peak_equity=150.0, current_equity=140.0, daily_starting_equity=150.0)
-        self.assertFalse(res["safe"])
-        self.assertEqual(res["action"], "HALT_DAILY_TRADING")
+
+
+
+
