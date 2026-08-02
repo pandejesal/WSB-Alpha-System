@@ -7,15 +7,16 @@ from src.risk.circuit_breakers import CircuitBreaker
 class TestExecutionBridge(unittest.TestCase):
     def test_bridge_execution_flow(self):
         broker = AlpacaBroker()
-        broker.get_account_balance = lambda: 1000.0
+        broker.get_account_balance = lambda: {'equity': 1000.0, 'cash': 1000.0}
         bridge = ExecutionBridge(broker, PositionSizer(), CircuitBreaker())
         res = bridge.execute_signal("AAPL", signal=1, entry_price=150.0, atr=5.0)
         self.assertEqual(res["status"], "executed")
 
     def test_bridge_circuit_breaker_halt(self):
         broker = AlpacaBroker()
-        broker.get_account_balance = lambda: 100.0
-        bridge = ExecutionBridge(broker, PositionSizer(), CircuitBreaker(max_drawdown_pct=0.0001))
+        broker.get_account_balance = lambda: {'equity': 100.0, 'cash': 100.0}
+        bridge = ExecutionBridge(broker, PositionSizer(), CircuitBreaker(daily_limit=0.0001))
+        bridge.daily_starting_equity = 200.0
         bridge.peak_equity = 200.0
         res = bridge.execute_signal("AAPL", signal=1, entry_price=150.0, atr=5.0)
         self.assertEqual(res["status"], "rejected")
