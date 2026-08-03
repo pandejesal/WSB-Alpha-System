@@ -27,9 +27,10 @@ jobs:
         env:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           mkdir -p paper_trading_logs
-          python live_alpaca_executor.py
+          python -m src.execution.live_alpaca_executor --mode technical
 
       - name: Commit Logs to paper_trading_logs branch
         run: |

@@ -15,9 +15,47 @@ import sys
 import requests
 import pandas as pd
 from datetime import datetime, timedelta
-import risk_config
+from src.risk import risk_config
 import yfinance as yf
-from indicators import compute_indicators
+from src.alpha.indicators import compute_indicators
+
+TECHNICAL_UNIVERSE = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMD', 'META', 'AMZN',
+                      'GOOGL', 'JPM', 'V', 'UNH', 'JNJ', 'WMT', 'PG', 'MA',
+                      'HD', 'DIS', 'BAC', 'XOM', 'PFE']
+
+def generate_technical_signals(stock_dfs: dict) -> pd.DataFrame:
+    """Generate trading signals from technical indicators only (no Reddit)."""
+    signals = []
+    for ticker in TECHNICAL_UNIVERSE:
+        if ticker not in stock_dfs or stock_dfs[ticker] is None:
+            continue
+        df = stock_dfs[ticker]
+        if len(df) < 50:
+            continue
+        latest = df.iloc[-1]
+
+        rsi = latest.get('RSI_14', 50)
+        macd_hist = latest.get('MACD_Hist', 0)
+        close = latest['Close']
+        bb_lower = latest.get('BB_Lower', close * 0.95)
+        bb_upper = latest.get('BB_Upper', close * 1.05)
+        ha_close = latest.get('HA_Close', close)
+        ha_open = latest.get('HA_Open', close)
+        gk_vol = latest.get('GK_Vol', 0.50)
+        ema_20 = latest.get('EMA_20', close)
+
+        volatility_shield_passed = gk_vol < 1.20
+
+        bullish_score = int(ha_close > ha_open) + int((close > ema_20) and (macd_hist > 0)) + int(30 < rsi < 70) + int(close > bb_lower)
+        bearish_score = int(ha_close < ha_open) + int((close < ema_20) and (macd_hist < 0)) + int(30 < rsi < 70) + int(close < bb_upper)
+
+        if volatility_shield_passed:
+            if bullish_score >= 3:
+                signals.append({'ticker': ticker, 'sentiment_score': 1.0})
+            elif bearish_score >= 3:
+                signals.append({'ticker': ticker, 'sentiment_score': -1.0})
+
+    return pd.DataFrame(signals)
 
 
 # ============================================================================
@@ -162,18 +200,33 @@ def main():
         return
 
 
-    # 2. Read the latest aggregated signals from our CSV database
-    csv_path = "wsb_factual_research_data.csv"
-    if not os.path.exists(csv_path):
-        print(f"[!] Could not locate database at {csv_path}. Run backtest or pipeline first.")
-        return
+    # 2. Read the latest aggregated signals
+    technical_only = '--mode' in sys.argv and 'technical' in sys.argv
 
-    df = pd.read_csv(csv_path)
-    df["post_date"] = pd.to_datetime(df["post_date"])
-    latest_date = df["post_date"].max()
-    print(f"[*] Analyzing latest available signals for date: {latest_date.strftime('%Y-%m-%d')}")
-
-    today_signals = df[df["post_date"] == latest_date]
+    if technical_only:
+        print("[*] Technical-only mode: Using indicators only")
+        from src.alpha.indicators import compute_indicators
+        px_data = yf.download(TECHNICAL_UNIVERSE, period='60d', progress=False, auto_adjust=True)
+        stock_dfs = {}
+        for ticker in TECHNICAL_UNIVERSE:
+            try:
+                t_px = px_data.loc[:, (slice(None), ticker)].copy()
+                t_px.columns = t_px.columns.get_level_values(0)
+                stock_dfs[ticker] = compute_indicators(t_px)
+            except:
+                continue
+        today_signals = generate_technical_signals(stock_dfs)
+        latest_date = datetime.now() # Mock latest_date for technical mode
+    else:
+        csv_path = "wsb_factual_research_data.csv"
+        if not os.path.exists(csv_path):
+            print(f"[!] No sentiment data. Use --mode technical")
+            return
+        df = pd.read_csv(csv_path)
+        df["post_date"] = pd.to_datetime(df["post_date"])
+        latest_date = df["post_date"].max()
+        print(f"[*] Analyzing latest available signals for date: {latest_date.strftime('%Y-%m-%d')}")
+        today_signals = df[df["post_date"] == latest_date]
 
     if today_signals.empty:
         print("[*] No active signals found for today. Cash preserved.")
