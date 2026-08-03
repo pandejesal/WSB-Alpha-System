@@ -1,0 +1,14 @@
+{
+  "last_updated": "2026-08-03T21:34:34Z",
+  "equity": 100000.0,
+  "initial_capital": 100000,
+  "total_pnl": 0.0,
+  "total_pnl_pct": 0.0,
+  "daily_pnl": 0.0,
+  "daily_pnl_pct": 0.0,
+  "win_rate": 0.0,
+  "total_trades": 0,
+  "open_positions": [],
+  "regime": "normal",
+  "regime_gk_vol": 0.35
+}
