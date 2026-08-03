@@ -31,8 +31,16 @@ class VectorBTEngine(BaseBacktestEngine):
         entries = fast_ma.ma_crossed_above(slow_ma)
         exits = fast_ma.ma_crossed_below(slow_ma)
 
+# 3b. Add volume-weighted slippage and ADV filter
+        if 'Volume' in df.columns:
+            avg_volume = df['Volume'].rolling(20).mean()
+            avg_dollar_volume = avg_volume * df['Close']
+            min_adv_threshold = 1_000_000
+            illiquid_mask = avg_dollar_volume < min_adv_threshold
+            entries = entries & ~illiquid_mask
+            exits = exits & ~illiquid_mask
+
         # T+1 Execution Rule Implementation in VectorBT:
-        # Shift the boolean signal array forward by 1 period so it actually triggers on the NEXT day
         entries_t1 = entries.shift(1).fillna(False)
         exits_t1 = exits.shift(1).fillna(False)
 
@@ -42,12 +50,9 @@ class VectorBTEngine(BaseBacktestEngine):
             exits=exits_t1,
             freq='1D',
             init_cash=100.0,
-            fees=strategy_spec.get('fees', 0.001)
+            fees=strategy_spec.get('fees', 0.001),
+            slippage=strategy_spec.get('slippage', 0.001)
         )
 
-        # Return trades as a dataframe
         trades_df = portfolio.trades.records_readable
-
-        # Add a check to confirm T+1 rule internally
-        # (the shift above guarantees this, but we'll surface the timestamps)
         return trades_df
