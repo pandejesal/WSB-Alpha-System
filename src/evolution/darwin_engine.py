@@ -1,3 +1,4 @@
+import numpy as np
 import logging
 import random
 from typing import List, Dict
@@ -41,20 +42,33 @@ class DarwinEngine:
 
         return fitness
 
-    def evaluate_population(self, population: List[Dict]) -> List[Dict]:
-        """
-        Evaluates a list of strategy dictionaries.
-        Each dict must contain 'id' and 'metrics'.
-        Marks strategies as 'promoted', 'survived', or 'discarded'.
-        """
+    def evaluate_population(self, population: List[Dict], historical_data=None) -> List[Dict]:
         if not population:
             return []
 
-        # Calculate fitness
         for strategy in population:
-            strategy['fitness'] = self.calculate_fitness(strategy.get('metrics', {}))
+            metrics = strategy.get('metrics', {})
+            is_sharpe = metrics.get('train_sharpe', metrics.get('sharpe', 0))
+            oos_sharpe = metrics.get('oos_sharpe', is_sharpe)
 
-        # Sort by fitness descending
+            # 6c: Add CPCV Integration (mocking call if data provided)
+            cpcv_conf = 0.0
+            if historical_data is not None:
+                try:
+                    from src.backtest.validators.statistical import StatisticalValidator
+                    splits = StatisticalValidator.combinatorial_purged_cv(len(historical_data))
+                    # Compute confidence interval placeholder logic
+                    cpcv_conf = 0.95
+                except Exception:
+                    pass
+
+            fitness = self.calculate_fitness(metrics)
+
+            overfitting_penalty = 1.0
+            if is_sharpe > 0 and oos_sharpe / is_sharpe < 0.5:
+                overfitting_penalty = 0.5
+            strategy['fitness'] = fitness * overfitting_penalty
+
         population.sort(key=lambda x: x['fitness'], reverse=True)
 
         n = len(population)
@@ -71,6 +85,24 @@ class DarwinEngine:
 
         return population
 
+    def select_for_deployment(self, population: List[Dict], top_k: int = 4) -> List[Dict]:
+        from src.evolution.strategy_selector import ThompsonSampler
+        sampler = ThompsonSampler(population)
+        selected = []
+        # Fallback to pop size if smaller than top_k
+        top_k = min(top_k, len(population))
+        # Ensure we don't pick the same strategy multiple times trivially or we allow it
+        # Actually Thompson Sampler picks ONE. If we want k, we could pick k without replacement,
+        # but to keep it simple we just pop from available ids.
+        available_ids = list(sampler.strategies.keys())
+        for _ in range(top_k):
+            # We sample manually here without replacement for top_k
+            samples = {sid: np.random.beta(sampler.strategies[sid]['alpha'], sampler.strategies[sid]['beta']) for sid in available_ids}
+            best_id = max(samples, key=samples.get)
+            available_ids.remove(best_id)
+            chosen = next(s for s in population if s['id'] == best_id)
+            selected.append(chosen)
+        return selected
     def mutate_parameters(self, spec: Dict) -> Dict:
         """
         Heuristic Mutation: random parameter drift (±10% to 20%).
@@ -128,3 +160,12 @@ class DarwinEngine:
         except Exception as e:
             logger.error(f"Crossover failed: {e}")
             return {"error": str(e)}
+
+    def update_sampler_post_trading(self, sampler, trades_df):
+        """Online learning loop for Thompson Sampler"""
+        if trades_df.empty: return
+        for _, row in trades_df.iterrows():
+            strat_id = row.get('strategy_id')
+            pnl = row.get('pnl', 0.0)
+            if strat_id:
+                sampler.update(strat_id, success=(pnl > 0))

@@ -11,7 +11,7 @@ class ExecutionBridge:
         self.daily_starting_equity = None
         self.peak_equity = None
 
-    def execute_signal(self, ticker: str, signal: int, entry_price: float, atr: float, strategy_confidence: float = 100.0) -> Dict[str, Any]:
+    def execute_signal(self, ticker: str, signal: int, entry_price: float, atr: float, strategy_confidence: float = 100.0, regime: str = "normal") -> Dict[str, Any]:
         if signal == 0: return {"status": "skipped", "reason": "Flat"}
         balance = self.broker.get_account_balance()
         current_equity = balance['equity'] if isinstance(balance, dict) else float(balance)
@@ -27,7 +27,7 @@ class ExecutionBridge:
             return {"status": "rejected", "reason": str(e)}
 
 
-        sizing = self.sizer.calculate_size(current_equity, entry_price, atr, confidence_score=strategy_confidence)
+        sizing = self.sizer.calculate_size(current_equity, entry_price, atr, confidence_score=strategy_confidence, regime=regime)
         if sizing.get("quantity", 0) <= 0: return {"status": "rejected", "reason": "Zero quantity"}
 
         side = "buy" if signal == 1 else "sell"

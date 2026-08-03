@@ -27,7 +27,7 @@ class BaseBacktestEngine(ABC):
 
         # Simple T+1 shift for daily data:
         # If signal occurs on date T, execution happens on date T+1 (at open, usually)
-        df['execution_date'] = df['signal_time'] + pd.Timedelta(days=1)
+        df['execution_date'] = df['signal_time'] + pd.tseries.offsets.BDay(1)
 
         # Strip time for daily alignment
         df['execution_date'] = df['execution_date'].dt.floor('d')
