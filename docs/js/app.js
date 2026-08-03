@@ -2,17 +2,27 @@
 // AUTHENTICATION - Password Protection
 // ============================================
 
-const DASHBOARD_PASSWORD = 'WSB-Alpha-2026';  // Change this to your own password
-const AUTH_KEY = 'wsb_dashboard_auth';
+const DASHBOARD_HASH = 'f6f65a42898bffb0cc32e54496f8873b022a41dcd64b88aeacee2968e5740338';
+const AUTH_KEY = 'wsb_dashboard_auth_hash';
 
-function checkAuth() {
+async function hashPassword(password) {
+    const msgBuffer = new TextEncoder().encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+async function checkAuth() {
     const auth = sessionStorage.getItem(AUTH_KEY);
-    if (auth === DASHBOARD_PASSWORD) return true;
+    if (auth === DASHBOARD_HASH) return true;
 
     const input = prompt('Enter dashboard password:');
-    if (input === DASHBOARD_PASSWORD) {
-        sessionStorage.setItem(AUTH_KEY, input);
-        return true;
+    if (input) {
+        const hashedInput = await hashPassword(input);
+        if (hashedInput === DASHBOARD_HASH) {
+            sessionStorage.setItem(AUTH_KEY, hashedInput);
+            return true;
+        }
     }
 
     document.body.innerHTML = `
@@ -27,11 +37,6 @@ function checkAuth() {
             </div>
         </div>`;
     return false;
-}
-
-// Check auth before loading anything
-if (!checkAuth()) {
-    throw new Error('Unauthorized');
 }
 
 // ============================================
@@ -303,7 +308,10 @@ async function togglePaperTrading(enable) {
 // INIT
 // ============================================
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    if (!await checkAuth()) {
+        return;
+    }
     renderDashboard();
 
     // Refresh every 5 minutes
