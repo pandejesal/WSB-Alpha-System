@@ -139,8 +139,15 @@ class CacheEngine:
             if res.empty or pd.isna(res.iloc[0]['min_dt']):
                 missing_ranges[ticker] = (start_date, end_date)
             else:
+
                 min_dt = pd.to_datetime(res.iloc[0]['min_dt'])
                 max_dt = pd.to_datetime(res.iloc[0]['max_dt'])
+
+                from datetime import timedelta
+                if max_dt < end_dt - timedelta(days=30):
+                    # Potentially delisted - skip this ticker
+                    continue
+
 
                 # If cached range doesn't cover requested range fully, we just fetch the requested range
                 # to keep it simple and ensure we don't have gaps.

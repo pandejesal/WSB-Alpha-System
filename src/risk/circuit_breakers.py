@@ -7,12 +7,21 @@ class TradingHaltedException(Exception):
     pass
 
 class CircuitBreaker:
-    def __init__(self, daily_limit: float = 0.05, weekly_limit: float = 0.10, total_limit: float = 0.15):
-        self.daily_limit = daily_limit
-        self.weekly_limit = weekly_limit
-        self.total_limit = total_limit
+    def __init__(self, regime="normal", daily_limit: float = None, weekly_limit: float = None, total_limit: float = None):
+        base_daily = 0.05
+        base_weekly = 0.10
+        base_total = 0.15
 
-        # State tracking (would be loaded from DB/JSON in prod)
+        regime_scale = {
+            "low_volatility": 1.2,
+            "normal": 1.0,
+            "high_volatility": 0.6
+        }.get(regime, 1.0)
+
+        self.daily_limit = daily_limit if daily_limit is not None else base_daily * regime_scale
+        self.weekly_limit = weekly_limit if weekly_limit is not None else base_weekly * regime_scale
+        self.total_limit = total_limit if total_limit is not None else base_total * regime_scale
+
         self.starting_equity_daily = None
         self.starting_equity_weekly = None
         self.starting_equity_total = None
@@ -23,7 +32,6 @@ class CircuitBreaker:
         if self.starting_equity_total is None: self.starting_equity_total = current_equity
 
     def _send_emergency_alert(self, msg: str):
-        # Implementation to send Telegram alert
         logger.critical(f"EMERGENCY ALERT: {msg}")
         try:
             from src.monitoring.telegram_bot import TelegramBot
@@ -33,11 +41,6 @@ class CircuitBreaker:
             logger.error(f"Failed to send emergency Telegram alert: {e}")
 
     def check_circuit_breakers(self, get_equity_func) -> bool:
-        """
-        Runs the circuit breaker checks.
-        Requires a callable that fetches the current equity.
-        Enforces a FAILS-CLOSED policy.
-        """
         try:
             current_equity = get_equity_func()
             if current_equity is None or current_equity <= 0:
@@ -66,7 +69,6 @@ class CircuitBreaker:
         if total_drop > self.total_limit:
             msg = f"Total Portfolio Drawdown Limit breached ({total_drop*100:.2f}%). Liquidating all positions to cash."
             self._send_emergency_alert(msg)
-            # Signal the system to liquidate
             raise TradingHaltedException(msg)
 
         return True

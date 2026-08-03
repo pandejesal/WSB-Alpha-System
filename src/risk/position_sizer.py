@@ -1,3 +1,22 @@
+
+class RegimeDetector:
+    @staticmethod
+    def detect_regime(gk_vol: float) -> str:
+        if gk_vol < 0.20:
+            return "low_volatility"
+        elif gk_vol < 0.50:
+            return "normal"
+        else:
+            return "high_volatility"
+
+    @staticmethod
+    def get_risk_multiplier(regime: str) -> float:
+        return {
+            "low_volatility": 1.5,
+            "normal": 1.0,
+            "high_volatility": 0.5
+        }.get(regime, 1.0)
+
 from typing import Dict, Any
 import logging
 
@@ -7,12 +26,13 @@ class PositionSizer:
         self.base_risk_pct = base_risk_pct
         self.max_notional_leverage = max_notional_leverage
 
-    def calculate_size(self, account_equity: float, entry_price: float, atr: float, stop_loss_atr_multiplier: float = 2.0, confidence_score: float = 100.0) -> Dict[str, Any]:
+    def calculate_size(self, account_equity: float, entry_price: float, atr: float, stop_loss_atr_multiplier: float = 2.0, confidence_score: float = 100.0, regime: str = "normal") -> Dict[str, Any]:
         if account_equity <= 0 or entry_price <= 0 or atr <= 0:
             return {"quantity": 0.0, "reason": "Invalid inputs"}
 
         normalized_confidence = min(max(confidence_score / 100.0, 0.1), 2.0)
-        adjusted_risk_pct = self.base_risk_pct * normalized_confidence
+        regime_multiplier = RegimeDetector.get_risk_multiplier(regime)
+        adjusted_risk_pct = self.base_risk_pct * normalized_confidence * regime_multiplier
         risk_amount = account_equity * adjusted_risk_pct
 
         stop_loss_dollar_distance = atr * stop_loss_atr_multiplier

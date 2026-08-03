@@ -67,7 +67,7 @@ class RateLimitedGeminiClient:
             self.client = None
 
         self.flash_limiter = RateLimiter(rpm_limit=5, rpd_limit=15, min_delay_sec=13.0)
-        self.lite_limiter = RateLimiter(rpm_limit=15, rpd_limit=450, min_delay_sec=4.5)
+        self.lite_limiter = RateLimiter(rpm_limit=15, rpd_limit=450, min_delay_sec=1.0)
 
     def generate_content(self, prompt: str, use_flash: bool = True, search_grounding: bool = False) -> str:
         if not self.api_key:
