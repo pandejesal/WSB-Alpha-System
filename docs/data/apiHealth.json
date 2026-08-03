@@ -1,0 +1,30 @@
+{
+  "last_checked": "2026-08-03T21:31:32.968092Z",
+  "apis": {
+    "alpaca": {
+      "status": "connected",
+      "message": "Paper equity: $100,000.00",
+      "last_check": "2026-08-03T21:31:33.042856Z"
+    },
+    "gemini": {
+      "status": "error",
+      "message": "cannot import name 'genai' from 'google' (unknown location)",
+      "last_check": "2026-08-03T21:31:33.043245Z"
+    },
+    "telegram": {
+      "status": "error",
+      "message": "HTTP 404",
+      "last_check": "2026-08-03T21:31:33.348091Z"
+    },
+    "yfinance": {
+      "status": "connected",
+      "message": "Data available",
+      "last_check": "2026-08-03T21:31:34.115916Z"
+    },
+    "reddit": {
+      "status": "not_configured",
+      "message": "Reddit API credentials not set",
+      "last_check": "2026-08-03T21:31:34.115924Z"
+    }
+  }
+}
