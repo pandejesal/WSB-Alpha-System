@@ -32,8 +32,9 @@ jobs:
       - name: Run Self-Improvement Agent
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          python self_improvement_agent.py
+          python -m src.research.self_improvement_agent
 
       - name: Create Pull Request or Commit Change
         run: |
