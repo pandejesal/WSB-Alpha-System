@@ -5,6 +5,9 @@ on:
     - cron: '0 7 * * 0'  # Weekly on Sunday 2 AM EST
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   generate:
     runs-on: ubuntu-latest
