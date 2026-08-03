@@ -18,3 +18,12 @@ vectorbt
 quantstats
 beautifulsoup4
 duckduckgo-search
+pydantic-settings
+langgraph
+duckdb
+arch
+pandera
+riskfolio-lib
+fastparquet
+google-genai
+matplotlib
