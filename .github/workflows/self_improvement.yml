@@ -5,6 +5,9 @@ on:
     - cron: '0 12 * * 6' # 12:00 PM UTC every Saturday
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   self_improve:
     runs-on: ubuntu-latest
