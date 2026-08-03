@@ -1,0 +1,103 @@
+name: API Health Check
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install requests yfinance
+
+      - name: Check APIs
+        env:
+          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
+          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python -c "
+          import requests, json, os, datetime
+
+          health = {
+              'last_checked': datetime.datetime.utcnow().isoformat() + 'Z',
+              'apis': {}
+          }
+
+          # Check Alpaca
+          try:
+              headers = {
+                  'APCA-API-KEY-ID': os.environ['ALPACA_API_KEY'],
+                  'APCA-API-SECRET-KEY': os.environ['ALPACA_SECRET_KEY']
+              }
+              r = requests.get('https://paper-api.alpaca.markets/v2/account', headers=headers, timeout=10)
+              if r.status_code == 200:
+                  acct = r.json()
+                  health['apis']['alpaca'] = {
+                      'status': 'connected',
+                      'message': f\"Paper equity: \${float(acct['equity']):,.2f}\",
+                      'last_check': datetime.datetime.utcnow().isoformat() + 'Z'
+                  }
+              else:
+                  health['apis']['alpaca'] = {'status': 'error', 'message': f'HTTP {r.status_code}', 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+          except Exception as e:
+              health['apis']['alpaca'] = {'status': 'error', 'message': str(e)[:100], 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+
+          # Check Gemini
+          try:
+              from google import genai
+              client = genai.Client(api_key=os.environ['GEMINI_API_KEY'])
+              response = client.models.generate_content(model='gemini-2.5-flash', contents='Say hello')
+              health['apis']['gemini'] = {'status': 'connected', 'message': 'Model responding', 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+          except Exception as e:
+              health['apis']['gemini'] = {'status': 'error', 'message': str(e)[:100], 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+
+          # Check Telegram
+          try:
+              r = requests.get(f'https://api.telegram.org/bot{os.environ[\"TELEGRAM_BOT_TOKEN\"]}/getMe', timeout=10)
+              if r.status_code == 200:
+                  bot_info = r.json()['result']
+                  health['apis']['telegram'] = {'status': 'connected', 'message': f\"Bot: @{bot_info['username']}\", 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+              else:
+                  health['apis']['telegram'] = {'status': 'error', 'message': f'HTTP {r.status_code}', 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+          except Exception as e:
+              health['apis']['telegram'] = {'status': 'error', 'message': str(e)[:100], 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+
+          # Check yfinance
+          try:
+              import yfinance as yf
+              spy = yf.download('SPY', period='1d', progress=False)
+              if not spy.empty:
+                  health['apis']['yfinance'] = {'status': 'connected', 'message': 'Data available', 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+              else:
+                  health['apis']['yfinance'] = {'status': 'rate_limited', 'message': 'No data returned', 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+          except Exception as e:
+              health['apis']['yfinance'] = {'status': 'error', 'message': str(e)[:100], 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+
+          # Reddit (not configured)
+          health['apis']['reddit'] = {'status': 'not_configured', 'message': 'Reddit API credentials not set', 'last_check': datetime.datetime.utcnow().isoformat() + 'Z'}
+
+          with open('docs/data/apiHealth.json', 'w') as f:
+              json.dump(health, f, indent=2)
+
+          print('API health check complete')
+          "
+
+      - name: Commit health data
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/apiHealth.json
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: update API health status"
+            git push
+          fi
