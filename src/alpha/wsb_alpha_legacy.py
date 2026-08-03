@@ -214,7 +214,9 @@ def run_sentiment_pipeline():
     logger.info("Select Reddit data collection mode:")
     logger.info("1. [FREE] Public RSS Feed Scraper (No API Keys / Accounts / Costs, fetches latest 25 posts)")
     logger.info("2. [PAID/KEY] PRAW Reddit Scraper (Requires Reddit API Keys)")
-    mode_input = input("Enter option (1 or 2, default 1): ").strip()
+
+    # Auto-mode for tests/automation. Default to 1 (Free RSS)
+    mode_input = os.environ.get("WSB_SCRAPER_MODE", "1").strip()
     
     use_rss = mode_input != "2"
     
@@ -222,10 +224,10 @@ def run_sentiment_pipeline():
     target_year = None
 
     if not use_rss:
-        max_items_input = input("How many posts do you want to find (working backward from present)? (e.g. 100, 500, 1000. Default: 1000): ").strip()
+        max_items_input = os.environ.get("WSB_MAX_ITEMS", "1000").strip()
         max_items = int(max_items_input) if max_items_input.isdigit() else 1000
 
-        target_year_input = input("Which year do you want to filter? (e.g. 2025, 2026. Press Enter for ALL years): ").strip()
+        target_year_input = os.environ.get("WSB_TARGET_YEAR", "").strip()
         target_year = int(target_year_input) if target_year_input.isdigit() else None
     
     items = []
@@ -243,7 +245,8 @@ def run_sentiment_pipeline():
     if not items:
         if os.path.exists(OUTPUT_CSV):
             logger.info("No new items returned or scraper could not fetch data.")
-            user_choice = input("Would you like to re-evaluate and update returns for your existing CSV database? (y/n): ").strip().lower()
+            # Automate fallback choice using env variable (default to 'n' for safety, but we can set it to 'y' in tests)
+            user_choice = os.environ.get("WSB_FALLBACK_RE_EVALUATE", "n").strip().lower()
             if user_choice != 'y':
                 return False
             # Generate empty new data so the pipeline naturally falls back to updating the old database
