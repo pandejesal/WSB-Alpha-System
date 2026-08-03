@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WSB-Alpha-System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <!-- Header -->
+    <nav class="bg-gray-800 border-b border-gray-700 px-6 py-3">
+        <div class="flex items-center justify-between max-w-7xl mx-auto">
+            <h1 class="text-xl font-bold text-green-400">WSB-Alpha-System</h1>
+            <div class="relative">
+                <button onclick="document.getElementById('dropdown').classList.toggle('hidden')"
+                        class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">
+                    Paper: <span id="paper-status">LOADING</span> ▼
+                </button>
+                <div id="dropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-50">
+                    <button onclick="togglePaperTrading(true)" class="w-full text-left px-4 py-2 hover:bg-gray-700 text-green-400 rounded-t-lg">
+                        ✓ Turn ON
+                    </button>
+                    <button onclick="togglePaperTrading(false)" class="w-full text-left px-4 py-2 hover:bg-gray-700 text-red-400 rounded-b-lg">
+                        ✗ Turn OFF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-6 py-6">
+        <!-- Status Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <p class="text-gray-400 text-xs uppercase">Equity</p>
+                <p id="equity" class="text-2xl font-bold text-green-400">—</p>
+                <p id="equity-change" class="text-xs text-gray-400">—</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <p class="text-gray-400 text-xs uppercase">Today P&L</p>
+                <p id="daily-pnl" class="text-2xl font-bold">—</p>
+                <p id="daily-pnl-pct" class="text-xs text-gray-400">—</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <p class="text-gray-400 text-xs uppercase">Win Rate</p>
+                <p id="win-rate" class="text-2xl font-bold text-blue-400">—</p>
+                <p id="total-trades" class="text-xs text-gray-400">—</p>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <p class="text-gray-400 text-xs uppercase">Regime</p>
+                <p id="regime-text" class="text-2xl font-bold text-yellow-400">—</p>
+                <p id="gk-vol" class="text-xs text-gray-400">—</p>
+            </div>
+        </div>
+
+        <!-- API Health -->
+        <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 mb-6">
+            <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">API Health</h2>
+            <div id="api-health">
+                <p class="text-gray-500">Loading...</p>
+            </div>
+        </div>
+
+        <!-- Bottom Row: Positions + Strategies -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Open Positions -->
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Open Positions</h2>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-500 border-b border-gray-700 text-xs">
+                            <th class="text-left py-2">Ticker</th>
+                            <th class="text-right py-2">Qty</th>
+                            <th class="text-right py-2">Entry</th>
+                            <th class="text-right py-2">Current</th>
+                            <th class="text-right py-2">P&L</th>
+                        </tr>
+                    </thead>
+                    <tbody id="positions-table">
+                        <tr><td colspan="5" class="py-4 text-center text-gray-500">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Strategy Leaderboard -->
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Top Strategies</h2>
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-500 border-b border-gray-700 text-xs">
+                            <th class="text-left py-2">#</th>
+                            <th class="text-left py-2">Name</th>
+                            <th class="text-right py-2">Sharpe</th>
+                            <th class="text-right py-2">Fitness</th>
+                            <th class="text-right py-2">Thompson</th>
+                        </tr>
+                    </thead>
+                    <tbody id="strategy-table">
+                        <tr><td colspan="5" class="py-4 text-center text-gray-500">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Trades -->
+        <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 mt-6">
+            <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Recent Trades</h2>
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-gray-500 border-b border-gray-700 text-xs">
+                        <th class="text-left py-2">Date</th>
+                        <th class="text-left py-2">Ticker</th>
+                        <th class="text-left py-2">Side</th>
+                        <th class="text-right py-2">P&L</th>
+                    </tr>
+                </thead>
+                <tbody id="trades-table">
+                    <tr><td colspan="4" class="py-4 text-center text-gray-500">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

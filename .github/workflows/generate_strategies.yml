@@ -1,0 +1,87 @@
+name: Generate Strategy Data
+
+on:
+  schedule:
+    - cron: '0 7 * * 0'  # Weekly on Sunday 2 AM EST
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt
+
+      - name: Generate strategy data
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python -c "
+          import json, os
+
+          # Load existing population if available
+          try:
+              with open('strategy_population.json') as f:
+                  population = json.load(f)
+          except:
+              population = []
+
+          # Load Thompson state if available
+          try:
+              with open('thompson_state.json') as f:
+                  thompson = json.load(f)
+          except:
+              thompson = {}
+
+          # Build strategies.json for dashboard
+          strategies = []
+          for s in population:
+              metrics = s.get('metrics', {})
+              strategies.append({
+                  'id': s.get('id', 'unknown'),
+                  'name': s.get('strategy_name', s.get('id', 'Unknown')),
+                  'fitness': s.get('fitness', 0),
+                  'sharpe': metrics.get('sharpe', 0),
+                  'sortino': metrics.get('sortino', 0),
+                  'calmar': metrics.get('calmar', 0),
+                  'max_drawdown': metrics.get('max_drawdown', 0),
+                  'win_rate': metrics.get('win_rate', 0),
+                  'profit_factor': metrics.get('profit_factor', 0),
+                  'total_trades': metrics.get('total_trades', 0),
+                  'oos_sharpe': metrics.get('oos_sharpe', 0),
+                  'thompson_alpha': thompson.get(s.get('id', ''), {}).get('alpha', 1),
+                  'thompson_beta': thompson.get(s.get('id', ''), {}).get('beta', 1),
+                  'thompson_ev': thompson.get(s.get('id', ''), {}).get('alpha', 1) / (thompson.get(s.get('id', ''), {}).get('alpha', 1) + thompson.get(s.get('id', ''), {}).get('beta', 1)),
+                  'status': s.get('status', 'unknown'),
+                  'parameters': s.get('parameters', {})
+              })
+
+          # Sort by fitness
+          strategies.sort(key=lambda x: x['fitness'], reverse=True)
+
+          output = {
+              'strategies': strategies,
+              'generated_at': '$(date -u +%Y-%m-%dT%H:%M:%SZ)'
+          }
+
+          os.makedirs('docs/data', exist_ok=True)
+          with open('docs/data/strategies.json', 'w') as f:
+              json.dump(output, f, indent=2)
+
+          print(f'Generated strategies.json with {len(strategies)} strategies')
+          "
+
+      - name: Commit strategy data
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/strategies.json
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: update strategy data for dashboard"
+            git push
+          fi
