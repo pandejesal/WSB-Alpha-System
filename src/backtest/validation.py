@@ -3,15 +3,62 @@ import numpy as np
 import yfinance as yf
 from datetime import timedelta
 import matplotlib.pyplot as plt
-import indicators
-import run_historic_backtest as rb
+from src.alpha import indicators
+import src.backtest.run_historic_backtest as rb
 from tqdm import tqdm
 
 NUM_PERMUTATIONS = 200
 
 def load_base_data():
-    posts_df = pd.read_csv("wsb_factual_research_data.csv")
-    posts_df["post_date"] = pd.to_datetime(posts_df["post_date"])
+    import os
+    csv_path = "wsb_factual_research_data.csv"
+
+    if not os.path.exists(csv_path):
+        print("No sentiment data found. Using technical-only universe.")
+        import json
+        with open("config/universe.json") as f:
+            universe = json.load(f).get("tickers", [])
+
+        # Create synthetic signals from technical indicators
+        print("Downloading baseline pricing data for synthetic signals...")
+        px_data = yf.download(universe, period="2y", progress=False, auto_adjust=True)
+        synthetic_signals = []
+        for ticker in universe:
+            try:
+                t_px = px_data.loc[:, (slice(None), ticker)].copy()
+                t_px.columns = t_px.columns.get_level_values(0)
+                t_px = t_px.dropna(subset=["Close", "Open", "High", "Low"])
+                if len(t_px) < 50:
+                    continue
+                ind_df = indicators.compute_indicators(t_px)
+
+                # Generate synthetic signals for backtesting
+                for idx, row in ind_df.iterrows():
+                    rsi = row.get('RSI_14', 50)
+                    macd_hist = row.get('MACD_Hist', 0)
+                    close = row['Close']
+                    bb_lower = row.get('BB_Lower', close * 0.95)
+                    bb_upper = row.get('BB_Upper', close * 1.05)
+                    ha_close = row.get('HA_Close', close)
+                    ha_open = row.get('HA_Open', close)
+                    gk_vol = row.get('GK_Vol', 0.50)
+                    ema_20 = row.get('EMA_20', close)
+
+                    volatility_shield_passed = gk_vol < 1.20
+                    bullish_score = int(ha_close > ha_open) + int((close > ema_20) and (macd_hist > 0)) + int(30 < rsi < 70) + int(close > bb_lower)
+                    bearish_score = int(ha_close < ha_open) + int((close < ema_20) and (macd_hist < 0)) + int(30 < rsi < 70) + int(close < bb_upper)
+
+                    if volatility_shield_passed:
+                        if bullish_score >= 3:
+                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
+                        elif bearish_score >= 3:
+                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
+            except:
+                continue
+        posts_df = pd.DataFrame(synthetic_signals)
+    else:
+        posts_df = pd.read_csv(csv_path)
+        posts_df["post_date"] = pd.to_datetime(posts_df["post_date"])
 
     unique_tickers = posts_df["ticker"].unique().tolist()
     min_date = posts_df["post_date"].min() - timedelta(days=60)
@@ -39,9 +86,9 @@ def compute_metrics(trades_df):
         return 0.0, 0.0
     # Sorting by post_date to compute accurate cumsum total returns
     trades_sorted = trades_df.sort_values(by="post_date").reset_index(drop=True)
-    tot_return = trades_sorted["adaptive_ret_5d"].fillna(0).sum()
+    tot_return = trades_sorted["return"].fillna(0).sum()
 
-    rets = trades_sorted["adaptive_ret_5d"].fillna(0)
+    rets = trades_sorted["return"].fillna(0)
     std = rets.std()
     sharpe = (rets.mean() / (std + 1e-10)) * np.sqrt(100) if std > 0 else 0.0
     return tot_return, sharpe
