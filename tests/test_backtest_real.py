@@ -4,7 +4,7 @@ import numpy as np
 
 class TestRealBacktest(unittest.TestCase):
     def test_run_backtest_returns_dataframe(self):
-        from run_historic_backtest import run_backtest
+        from src.backtest.run_historic_backtest import run_backtest
         res = run_backtest()
         self.assertIsInstance(res, pd.DataFrame)
         cols = res.columns.tolist()
@@ -13,7 +13,7 @@ class TestRealBacktest(unittest.TestCase):
             self.assertIn(c, cols)
 
     def test_run_backtest_t1_execution(self):
-        from run_historic_backtest import run_backtest
+        from src.backtest.run_historic_backtest import run_backtest
         # Mock inputs
         posts = pd.DataFrame([{'post_date': pd.to_datetime('2023-01-06'), 'ticker': 'AAPL', 'sentiment_score': 1}]) # 2023-01-06 is Friday
 
@@ -33,7 +33,7 @@ class TestRealBacktest(unittest.TestCase):
     def test_slippage_reduces_returns(self):
         # We can mock entry and actual_entry diff
         # Since it's a fixed formula, we know entry_price + slippage is used
-        from run_historic_backtest import run_backtest
+        from src.backtest.run_historic_backtest import run_backtest
         # Hard to fully isolate without injection, but we can verify the code path logically.
         pass
 

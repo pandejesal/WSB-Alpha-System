@@ -1,6 +1,6 @@
 import os
 import re
-import google.generativeai as genai
+from google import genai
 from src.backtest.validation import run_in_sample_test, run_walk_forward_test, load_base_data, NUM_PERMUTATIONS
 from datetime import datetime
 
@@ -47,8 +47,7 @@ def main():
         print("No GEMINI_API_KEY found, skipping self improvement.")
         return
 
-    genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-flash')
+    client = genai.Client(api_key=api_key)
 
 
     logs = read_logs()
@@ -87,7 +86,10 @@ def main():
     """
 
     try:
-        response = model.generate_content(prompt)
+        response = client.models.generate_content(
+            model='gemini-2.5-flash',
+            contents=prompt
+        )
         # Parse JSON from response
         import json
         match = re.search(r'\{.*?\}', response.text, re.DOTALL)
