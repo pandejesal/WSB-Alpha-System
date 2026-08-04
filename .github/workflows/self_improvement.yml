@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: main
           fetch-depth: 0
@@ -22,12 +22,12 @@ jobs:
         run: git fetch origin paper_trading_logs || true
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11'
 
       - name: Install dependencies
-        run: pip install pandas numpy yfinance google-generativeai
+        run: pip install -r requirements.txt
 
       - name: Run Self-Improvement Agent
         env:
@@ -40,7 +40,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add run_historic_backtest.py self_improvement_log.md
+          git add src/backtest/run_historic_backtest.py self_improvement_log.md
           if ! git diff-index --quiet HEAD; then
             git commit -m "Self-Improvement: Applied proposed strategy change"
             git pull --rebase origin main
