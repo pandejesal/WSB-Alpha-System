@@ -21,20 +21,17 @@ import re
 from src.alpha.indicators import compute_indicators, compute_regime_returns
 
 import json
-import torch
 import pandas as pd
 import numpy as np
 import requests
 import xml.etree.ElementTree as ET
 import yfinance as yf
 import matplotlib.pyplot as plt
-import seaborn as sns
 from datetime import datetime, timedelta
 from tqdm import tqdm
 from collections import defaultdict
 import praw
 import os
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 # ============================================================================
 # DYNAMIC SYSTEM PATH CONFIGURATION
@@ -107,21 +104,12 @@ def extract_tickers(text: str) -> list[str]:
 
 
 def load_finbert():
-    logger.info("Loading FinBERT pre-trained model resources...")
-    tokenizer = AutoTokenizer.from_pretrained(FINBERT_MODEL)
-    model = AutoModelForSequenceClassification.from_pretrained(FINBERT_MODEL)
-    
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-    model.to(device)
-    model.eval()
-    return tokenizer, model, device
+    logger.info("FinBERT loading skipped since torch/transformers are no longer installed.")
+    return None, None, None
 
 def finbert_sentiment(text: str, tokenizer, model, device) -> dict:
-    inputs = tokenizer(text, return_tensors="pt", truncation=True, max_length=512).to(device)
-    with torch.no_grad():
-        outputs = model(**inputs)
-    probs = torch.nn.functional.softmax(outputs.logits, dim=-1)[0]
-    return {lbl: float(p) for lbl, p in zip(FINBERT_LABELS, probs)}
+    logger.warning("finbert_sentiment called but finbert is removed, returning neutral")
+    return {"bullish": 0.0, "bearish": 0.0, "neutral": 1.0}
 
 import time
 def safe_write_csv(df, path):
@@ -755,7 +743,8 @@ def run_trajectory_plotter(top_n_tickers=5):
             'post_date': best_event['post_date']
         })
         
-    sns.set_theme(style="whitegrid")
+    # sns.set_theme(style="whitegrid") # Removed seaborn dependency
+    plt.style.use("seaborn-v0_8-whitegrid") if "seaborn-v0_8-whitegrid" in plt.style.available else plt.grid(True)
     fig, ax = plt.subplots(figsize=(12, 7))
     
     spy_trajectories = []

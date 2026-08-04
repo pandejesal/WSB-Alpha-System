@@ -3,11 +3,7 @@ numpy==2.2.0
 yfinance==0.2.52
 requests==2.32.3
 matplotlib==3.10.0
-seaborn==0.13.2
-torch==2.5.1
-transformers==4.47.1
 tqdm==4.67.1
-ccxt==4.4.45
 python-dotenv==1.0.1
 alpaca-py==0.35.0
 nltk==3.9.1
@@ -24,6 +20,4 @@ duckdb
 arch
 pandera
 riskfolio-lib
-fastparquet
-google-genai
-matplotlib
+scipy
