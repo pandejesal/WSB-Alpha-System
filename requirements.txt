@@ -21,3 +21,4 @@ arch
 pandera
 riskfolio-lib
 scipy
+pyarrow

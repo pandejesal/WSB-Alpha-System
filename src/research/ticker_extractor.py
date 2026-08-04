@@ -32,13 +32,13 @@ def extract_tickers(text: str) -> list[str]:
 
     # Ensure NLTK resources are available (usually downloaded at startup, but just in case)
     try:
-        nltk.data.find('taggers/averaged_perceptron_tagger')
+        nltk.data.find('taggers/averaged_perceptron_tagger_eng')
     except LookupError:
-        nltk.download('averaged_perceptron_tagger', quiet=True)
+        nltk.download('averaged_perceptron_tagger_eng', quiet=True)
     try:
-        nltk.data.find('tokenizers/punkt')
+        nltk.data.find('tokenizers/punkt_tab/english')
     except LookupError:
-        nltk.download('punkt', quiet=True)
+        nltk.download('punkt_tab', quiet=True)
 
     # Use NLTK POS-tagging to filter out common dictionary words
     # PRON (PRP, PRP$), PREP (IN), CONJ (CC)
