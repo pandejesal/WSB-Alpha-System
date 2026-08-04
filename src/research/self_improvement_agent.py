@@ -139,10 +139,14 @@ def main():
                 print("Applied change. Running validation harness...")
                 try:
                     posts_df, stock_dfs, spy_close = load_base_data()
-                    in_sample_passed, p1 = run_in_sample_test(posts_df, stock_dfs, spy_close)
+                    is_result = run_in_sample_test(posts_df, stock_dfs, spy_close)
+                    is_pval = is_result[4]  # p_value is the 5th return value
+                    in_sample_passed = is_pval <= 0.01
+
                     if in_sample_passed:
-                        wf_passed, p2 = run_walk_forward_test(posts_df, stock_dfs, spy_close)
-                        passed = wf_passed
+                        wf_result = run_walk_forward_test(posts_df, stock_dfs, spy_close)
+                        wf_pval = wf_result[4]
+                        passed = wf_pval <= 0.05
                     else:
                         passed = False
                 except Exception as e:
