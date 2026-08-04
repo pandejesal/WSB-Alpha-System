@@ -1,30 +1,30 @@
 {
-  "last_checked": "2026-08-04T11:36:50.362314Z",
+  "last_checked": "2026-08-04T13:23:56.673974Z",
   "apis": {
     "alpaca": {
       "status": "connected",
       "message": "Paper equity: $100,000.00",
-      "last_check": "2026-08-04T11:36:50.556596Z"
+      "last_check": "2026-08-04T13:23:56.707492Z"
     },
     "gemini": {
-      "status": "connected",
-      "message": "Model responding",
-      "last_check": "2026-08-04T11:36:52.076167Z"
+      "status": "error",
+      "message": "503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high deman",
+      "last_check": "2026-08-04T13:24:23.256727Z"
     },
     "telegram": {
       "status": "connected",
       "message": "Bot: @WSB_trade_bot",
-      "last_check": "2026-08-04T11:36:52.523323Z"
+      "last_check": "2026-08-04T13:24:23.549087Z"
     },
     "yfinance": {
       "status": "rate_limited",
       "message": "No data returned",
-      "last_check": "2026-08-04T11:36:54.088839Z"
+      "last_check": "2026-08-04T13:24:24.593356Z"
     },
     "reddit": {
       "status": "not_configured",
       "message": "Reddit API credentials not set",
-      "last_check": "2026-08-04T11:36:54.088850Z"
+      "last_check": "2026-08-04T13:24:24.593367Z"
     }
   }
 }
