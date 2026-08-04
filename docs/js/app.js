@@ -415,7 +415,11 @@ function renderBacktestSection(data) {
     // 3. Strategy Rankings
     const sRankings = document.getElementById('strategy-rankings');
     if (sRankings && data.all_strategies) {
-        const top10 = data.all_strategies.sort((a,b) => b.metrics.sharpe - a.metrics.sharpe).slice(0, 10);
+        const top10 = data.all_strategies.sort((a,b) => {
+            const aScore = a.metrics.sharpe * Math.max(a.metrics.wf_efficiency, 0.1);
+            const bScore = b.metrics.sharpe * Math.max(b.metrics.wf_efficiency, 0.1);
+            return bScore - aScore;
+        }).slice(0, 10);
         let tbody = '';
         top10.forEach((s, i) => {
             tbody += `
