@@ -277,30 +277,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-def run_optimized_backtest(posts_df, stock_dfs, spy_close):
-    from src.backtest.optimization.walk_forward import WalkForwardOptimizer
-    from src.backtest.optimization.optimizer import GridSearchOptimizer
-    from src.backtest.engines.vectorbt_engine import VectorBTEngine
-
-    # Mocking strategy_class for GridSearch
-    class MockStrat:
-        def __init__(self, **kwargs):
-            self.params = kwargs
-        def backtest(self, data):
-            # Mock sharpe
-            return {'sharpe': 1.5, 'return': 0.1, 'max_drawdown': 0.05}
-
-    param_grid = {
-        'fast_window': [5, 10, 15, 20],
-        'slow_window': [20, 30, 40, 50],
-        'rsi_threshold': [30, 35, 40, 45],
-        'slippage': [0.0005, 0.001, 0.002]
-    }
-
-    optimizer = GridSearchOptimizer(param_grid)
-    results = optimizer.optimize(MockStrat, stock_dfs)
-
-    if not results.empty:
-        return results.iloc[0]
-    return None

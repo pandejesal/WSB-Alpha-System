@@ -60,7 +60,7 @@ function formatCurrency(value) {
 // Utility: format percentage
 function formatPercent(value) {
     if (value === null || value === undefined) return '—';
-    return (Number(value) * 100).toFixed(2) + '%';
+    return Number(value).toFixed(2) + '%';
 }
 
 // Utility: color class based on value
@@ -131,7 +131,7 @@ async function renderDashboard() {
     // Portfolio cards
     if (portfolio) {
         document.getElementById('equity').textContent = formatCurrency(portfolio.equity);
-        document.getElementById('equity-change').textContent = formatPercent(portfolio.total_pnl_pct / 100);
+        document.getElementById('equity-change').textContent = formatPercent(portfolio.total_pnl_pct);
         document.getElementById('equity-change').className = `text-sm ${pnlClass(portfolio.total_pnl)}`;
 
         document.getElementById('daily-pnl').textContent = (portfolio.daily_pnl >= 0 ? '+' : '') + formatCurrency(portfolio.daily_pnl);

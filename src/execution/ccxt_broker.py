@@ -34,7 +34,7 @@ class CCXTBroker(BaseBroker):
             self.logger.error(f"CCXT fetch_balance failed: {e}")
             raise
 
-    def get_open_positions(self) -> List[Dict]:
+    def get_positions(self) -> List[Dict]:
         try:
             positions = self.exchange.fetch_positions()
             return [

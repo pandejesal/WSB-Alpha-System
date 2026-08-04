@@ -56,7 +56,7 @@ class RateLimiter:
 class RateLimitedGeminiClient:
     """
     Router for Gemini calls with strict rate limiting and fallback mechanisms.
-    Flash Lite: 15 RPM (4.5s delay), 450 RPD safe margin
+    Flash Lite: 15 RPM (1s delay), 500 RPD safe margin
     Flash: 5 RPM (13s delay), 15 RPD safe margin
     """
     def __init__(self, api_key: str):
@@ -66,8 +66,8 @@ class RateLimitedGeminiClient:
         else:
             self.client = None
 
-        self.flash_limiter = RateLimiter(rpm_limit=5, rpd_limit=15, min_delay_sec=13.0)
-        self.lite_limiter = RateLimiter(rpm_limit=15, rpd_limit=450, min_delay_sec=1.0)
+        self.flash_limiter = RateLimiter(rpm_limit=5, rpd_limit=20, min_delay_sec=13.0)
+        self.lite_limiter = RateLimiter(rpm_limit=15, rpd_limit=500, min_delay_sec=1.0)
 
     def generate_content(self, prompt: str, use_flash: bool = True, search_grounding: bool = False) -> str:
         if not self.api_key:
@@ -79,7 +79,7 @@ class RateLimitedGeminiClient:
                 self.flash_limiter.wait_if_needed()
                 self.flash_limiter.record_call()
                 logger.info("Executing Gemini Flash request...")
-                response = self.client.models.generate_content(model='gemini-1.5-flash', contents=prompt)
+                response = self.client.models.generate_content(model='gemini-3.5-flash', contents=prompt)
                 return response.text
             except Exception as e:
                 error_str = str(e)
@@ -108,5 +108,5 @@ class RateLimitedGeminiClient:
         config_kwargs = {}
         if tools: config_kwargs['tools'] = tools
 
-        response = self.client.models.generate_content(model='gemini-1.5-flash-8b', contents=prompt, config=config_kwargs if config_kwargs else None)
+        response = self.client.models.generate_content(model='gemini-3.5-flash-lite', contents=prompt, config=config_kwargs if config_kwargs else None)
         return response.text
