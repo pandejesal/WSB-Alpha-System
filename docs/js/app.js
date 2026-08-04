@@ -351,6 +351,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 
 function renderBacktestSection(data) {
+    window.lastBacktestData = data;
     // 1. Cards
     const cardsDiv = document.getElementById('backtest-cards');
     if (cardsDiv) {
@@ -553,6 +554,20 @@ function renderEquityChart(history) {
     ctx.stroke();
     ctx.setLineDash([]);
 
+    // Draw SPY Benchmark line (if available)
+    if (window.lastBacktestData && window.lastBacktestData.benchmark_equity_curve) {
+        ctx.strokeStyle = '#3B82F6'; // blue-500
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        window.lastBacktestData.benchmark_equity_curve.forEach((d, i) => {
+            const x = scaleX(i);
+            const y = scaleY(d.equity);
+            if (i === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        ctx.stroke();
+    }
+
     // Draw Equity line
     ctx.strokeStyle = '#4ADE80'; // green-400
     ctx.lineWidth = 2;
@@ -571,8 +586,13 @@ function renderEquityChart(history) {
     ctx.fillStyle = '#D1D5DB';
     ctx.fillText('Portfolio Equity', padding.left + 35, padding.top + 9);
 
-    ctx.fillStyle = '#6B7280';
-    ctx.fillRect(padding.left + 120, padding.top, 10, 10);
+    ctx.fillStyle = '#3B82F6';
+    ctx.fillRect(padding.left + 140, padding.top, 10, 10);
     ctx.fillStyle = '#D1D5DB';
-    ctx.fillText('Total Deposits', padding.left + 135, padding.top + 9);
+    ctx.fillText('SPY Benchmark', padding.left + 155, padding.top + 9);
+
+    ctx.fillStyle = '#6B7280';
+    ctx.fillRect(padding.left + 260, padding.top, 10, 10);
+    ctx.fillStyle = '#D1D5DB';
+    ctx.fillText('Total Deposits', padding.left + 275, padding.top + 9);
 }

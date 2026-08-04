@@ -3,7 +3,7 @@ import logging
 import pandas as pd
 import numpy as np
 import yfinance as yf
-from datetime import datetime, timezone
+from datetime import datetime
 import os
 
 # Set up logging
@@ -24,7 +24,7 @@ def download_data(tickers, start_date, end_date):
 
     try:
         yf.set_tz_cache_location('cache/yfinance')
-    except:
+    except Exception:
         pass
 
     try:
@@ -32,7 +32,7 @@ def download_data(tickers, start_date, end_date):
         data = yf.download(tickers, start=start_date, end=end_date, group_by='ticker', auto_adjust=False, threads=True)
 
         # Also download SPY for benchmark
-        spy_data = yf.download('SPY', start=start_date, end=end_date, auto_adjust=False)
+        spy_data = yf.download('SPY', start='2018-01-01', end=end_date, auto_adjust=False)
 
         # Check if rate limited
         if len(data) == 0:
@@ -46,9 +46,10 @@ def download_data(tickers, start_date, end_date):
         np.random.seed(42)
 
         # Generate SPY
-        spy_returns = np.random.normal(0.0005, 0.01, len(dates))
+        spy_dates = pd.date_range(start='2018-01-01', end=end_date, freq='B')
+        spy_returns = np.random.normal(0.0005, 0.01, len(spy_dates))
         spy_prices = 100 * np.exp(np.cumsum(spy_returns))
-        spy_data = pd.DataFrame({'Close': spy_prices}, index=dates)
+        spy_data = pd.DataFrame({'Close': spy_prices}, index=spy_dates)
 
         # Generate Tickers
         dfs = []
@@ -127,6 +128,9 @@ def compute_indicators_vectorized(df):
     first_valid = df["GK_Vol"].dropna().iloc[0] if len(df["GK_Vol"].dropna()) > 0 else 0.50
     df["GK_Vol"] = df["GK_Vol"].fillna(first_valid)
 
+    # 60-day Rate of Change (Momentum)
+    df["ROC_60"] = df["Close"].pct_change(periods=60) * 100
+
     return df
 
 def generate_signals_vectorized(df, rsi_bounds, gk_limit, min_confluence):
@@ -187,12 +191,14 @@ class Portfolio:
         self.total_deposits += amount
         self.deposits_count += 1
 
-    def open_position(self, ticker, qty, entry_price, cost, date, regime, holding_days, spread_cost):
+    def open_position(self, ticker, qty, entry_price, cost, date, regime, holding_days, spread_cost, atr_14=0.0):
         self.cash -= cost
         self.open_positions.append({
             'ticker': ticker,
             'qty': qty,
             'entry_price': entry_price,
+            'highest_high': entry_price,
+            'atr_14': atr_14,
             'cost': cost,
             'entry_date': date,
             'regime': regime,
@@ -219,10 +225,17 @@ class Portfolio:
             'regime': position['regime']
         })
 
-    def update_daily(self, date, current_prices):
-        # Update days held
+    def update_daily(self, date, current_prices, current_highs=None):
+        if current_highs is None:
+            current_highs = current_prices
+
+        # Update days held and highest high
         for pos in self.open_positions:
             pos['days_held'] += 1
+            if pos['ticker'] in current_highs:
+                high_price = current_highs[pos['ticker']]
+                if high_price > pos['highest_high']:
+                    pos['highest_high'] = high_price
 
         # Calculate current equity
         pos_value = 0
@@ -263,9 +276,11 @@ class Portfolio:
         self.equity = self.cash # Since all positions are closed
 
 def run_backtest_for_params(df_dict, spy_df, params, deposit_schedule):
-    holding_days = params['holding_days']
+    holding_days = 30 # Fixed max holding guardrail
+    atr_trailing_mult = params['atr_trailing_mult']
+    atr_profit_mult = params['atr_profit_mult']
     rsi_bounds = params['rsi_bounds']
-    gk_limit = params['gk_limit']
+    gk_limit = params.get('gk_limit', 1.0) # Keep for compatibility, or fix to 1.0/0.8
     min_confluence = params['min_confluence']
 
     # Precompute signals to save time
@@ -294,9 +309,13 @@ def run_backtest_for_params(df_dict, spy_df, params, deposit_schedule):
 
         # Current prices for MTM and closing
         current_prices = {}
+        current_highs = {}
+        current_lows = {}
         for ticker, df in df_dict.items():
             if date in df.index:
                 current_prices[ticker] = df.loc[date, "Close"]
+                current_highs[ticker] = df.loc[date, "High"]
+                current_lows[ticker] = df.loc[date, "Low"]
 
         def get_slippage(ticker):
              df = df_dict[ticker]
@@ -310,7 +329,7 @@ def run_backtest_for_params(df_dict, spy_df, params, deposit_schedule):
              return 0.01
 
         # Update daily metrics and check circuit breakers
-        daily_dd = portfolio.update_daily(date_str, current_prices)
+        daily_dd = portfolio.update_daily(date_str, current_prices, current_highs)
 
         # We need a weekly drawdown approximation (using last 5 days of history)
         weekly_dd = 0
@@ -322,12 +341,39 @@ def run_backtest_for_params(df_dict, spy_df, params, deposit_schedule):
              portfolio.liquidate_all(date_str, current_prices, get_slippage)
              continue
 
-        # 2. Close positions that have reached holding period
+        # 2. Dynamic Exit System (Trailing Stop, Hard Stop, Profit Target, Max Holding)
         for pos in list(portfolio.open_positions):
-            if pos['days_held'] >= holding_days:
-                ticker = pos['ticker']
-                if ticker in current_prices:
-                    exit_price_raw = current_prices[ticker]
+            ticker = pos['ticker']
+            if ticker in current_prices:
+                low = current_lows[ticker]
+                high = current_highs[ticker]
+                close = current_prices[ticker]
+
+                # Check stops and targets
+                # Initial Hard Stop: Entry - (Trailing_Mult * ATR_14)
+                hard_stop = pos['entry_price'] - (atr_trailing_mult * pos['atr_14'])
+                # Trailing Stop: Highest High - (Trailing_Mult * ATR_14)
+                trailing_stop = pos['highest_high'] - (atr_trailing_mult * pos['atr_14'])
+
+                actual_stop = max(hard_stop, trailing_stop)
+
+                # Profit Target: Entry + (Profit_Mult * ATR_14)
+                profit_target = pos['entry_price'] + (atr_profit_mult * pos['atr_14'])
+
+                exit_price_raw = None
+
+                # We check if Low hit the stop
+                if low <= actual_stop:
+                    # Execute at stop price (or open if it gapped down, simplified to stop price)
+                    exit_price_raw = actual_stop
+                # We check if High hit the profit target
+                elif high >= profit_target:
+                    exit_price_raw = profit_target
+                # Guardrail: max holding days (30)
+                elif pos['days_held'] >= 30:
+                    exit_price_raw = close
+
+                if exit_price_raw is not None:
                     slippage_pct = get_slippage(ticker)
                     exit_price = exit_price_raw * (1 - slippage_pct)
                     spread_pct = 0.0005
@@ -347,65 +393,85 @@ def run_backtest_for_params(df_dict, spy_df, params, deposit_schedule):
             prev_date = trading_days[i-1]
 
             if len(portfolio.open_positions) < max_positions:
-                for ticker, signals in signals_dict.items():
-                    if len(portfolio.open_positions) >= max_positions:
-                        break
 
-                    # Check if signal fired yesterday
+                # Gather all candidates for today
+                candidates = []
+                for ticker, signals in signals_dict.items():
                     if prev_date in signals.index and signals.loc[prev_date]:
                         # Ensure we don't already have this position
                         if any(p['ticker'] == ticker for p in portfolio.open_positions):
                             continue
 
-                        # Execute trade today
-                        if ticker in current_prices:
-                            entry_price_raw = current_prices[ticker]
-                            df = df_dict[ticker]
+                        # Also check Macro Trend Filter (SPY 200 EMA Regime Shield)
+                        # We only allow LONG position entries when SPY Close > SPY 200 EMA on prev_date
+                        if prev_date in spy_df.index:
+                            spy_close = spy_df.loc[prev_date, 'Close']
+                            spy_ema_200 = spy_df.loc[prev_date, 'EMA_200']
+                            if spy_close <= spy_ema_200:
+                                continue # Block entry due to Macro Trend Filter
 
-                            # Regime
-                            gk = df.loc[prev_date, "GK_Vol"] if prev_date in df.index else 0.3
-                            if gk < 0.20:
-                                regime = "low_volatility"
-                            elif gk < 0.50:
-                                regime = "normal"
-                            else:
-                                regime = "high_volatility"
+                        df = df_dict[ticker]
+                        if prev_date in df.index:
+                            roc_60 = df.loc[prev_date, "ROC_60"]
+                            if pd.isna(roc_60):
+                                roc_60 = -999 # penalize missing ROC
+                            candidates.append({
+                                'ticker': ticker,
+                                'roc_60': roc_60
+                            })
 
-                            slippage_pct = get_slippage(ticker)
-                            entry_price = entry_price_raw * (1 + slippage_pct)
+                # Rank candidates by 60-day relative strength (Momentum)
+                candidates.sort(key=lambda x: x['roc_60'], reverse=True)
 
-                            # Max 25% of equity per position
-                            max_invest = portfolio.equity * max_pos_size_pct
-                            # Limit by available cash
-                            actual_invest = min(max_invest, portfolio.cash)
+                for candidate in candidates:
+                    if len(portfolio.open_positions) >= max_positions:
+                        break
 
-                            if actual_invest > 5: # Minimum $5 investment to make sense
-                                qty = actual_invest / entry_price
+                    ticker = candidate['ticker']
 
-                                spread_pct = 0.0005
-                                spread_cost = entry_price * qty * spread_pct
-                                cost = (entry_price * qty) + spread_cost
+                    # Execute trade today
+                    if ticker in current_prices:
+                        entry_price_raw = current_prices[ticker]
+                        df = df_dict[ticker]
 
-                                portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost)
+                        # Regime
+                        gk = df.loc[prev_date, "GK_Vol"] if prev_date in df.index else 0.3
+                        if gk < 0.20:
+                            regime = "low_volatility"
+                        elif gk < 0.50:
+                            regime = "normal"
+                        else:
+                            regime = "high_volatility"
 
-    # Force close all remaining positions at end of backtest
+                        slippage_pct = get_slippage(ticker)
+                        entry_price = entry_price_raw * (1 + slippage_pct)
+
+                        # Max 25% of equity per position
+                        max_invest = portfolio.equity * max_pos_size_pct
+                        # Limit by available cash
+                        actual_invest = min(max_invest, portfolio.cash)
+
+                        if actual_invest > 5: # Minimum $5 investment to make sense
+                            qty = actual_invest / entry_price
+
+                            spread_pct = 0.0005
+                            spread_cost = entry_price * qty * spread_pct
+                            cost = (entry_price * qty) + spread_cost
+
+    portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost)
+# Force close all remaining positions at end of backtest
     final_date_str = trading_days[-1].strftime('%Y-%m-%d')
     portfolio.liquidate_all(final_date_str, {k: v.iloc[-1]["Close"] for k,v in df_dict.items()}, lambda t: 0.01)
     portfolio.update_daily(final_date_str, {})
-
     return portfolio
-
 def calculate_metrics(portfolio, spy_df):
     if not portfolio.history:
         return {}
-
     hist_df = pd.DataFrame(portfolio.history)
     hist_df['date'] = pd.to_datetime(hist_df['date'])
     hist_df.set_index('date', inplace=True)
-
     # Daily returns
     hist_df['return'] = hist_df['equity'].pct_change().fillna(0)
-
     # Handling deposits in return calculations to avoid massive fake spikes
     # For a day with a deposit, return is (equity - deposit - prev_equity) / prev_equity
     hist_df['deposit_diff'] = hist_df['deposits'].diff().fillna(0)
@@ -524,7 +590,8 @@ def analyze_overfitting(portfolio, spy_df):
     def get_sharpe(start_year, end_year):
         mask = (hist_df.index.year >= start_year) & (hist_df.index.year <= end_year)
         period_rets = hist_df.loc[mask, 'return']
-        if len(period_rets) < 20: return 0
+        if len(period_rets) < 20:
+            return 0
         excess = period_rets - rf_daily
         std = excess.std()
         return (excess.mean() / std * np.sqrt(252)) if std > 0 else 0
@@ -567,9 +634,54 @@ def main():
         if 'Ticker' in spy_data.columns.names:
             spy_df = spy_data.xs('SPY', level='Ticker', axis=1)
         else:
-            spy_df = spy_data
+            spy_df = spy_data.copy()
+            spy_df.columns = spy_df.columns.get_level_values(0)
     else:
         spy_df = spy_data
+
+    spy_df = spy_df.copy()
+    spy_df['EMA_200'] = spy_df['Close'].ewm(span=200, adjust=False).mean()
+    spy_df = spy_df[spy_df.index >= pd.to_datetime(start_date)]
+
+    # Calculate SPY Benchmark Equity Curve
+    spy_benchmark_portfolio = Portfolio(initial_capital=100)
+
+    # We need to compute SPY shares properly based on deposits
+    benchmark_history = []
+
+    deposit_schedule = get_deposit_schedule(start_date, end_date, 50, 'quarterly')
+
+    spy_trading_days = spy_df.index
+    spy_qty = 0
+    cash = 100
+
+    for i, date in enumerate(spy_trading_days):
+        date_str = date.strftime('%Y-%m-%d')
+
+        # Add deposits
+        if date_str in deposit_schedule:
+            cash += deposit_schedule[date_str]
+            spy_benchmark_portfolio.total_deposits += deposit_schedule[date_str]
+            spy_benchmark_portfolio.deposits_count += 1
+
+        current_price = spy_df.loc[date, 'Close']
+
+        # If we have cash, buy SPY (fractional shares allowed for benchmark simplicity)
+        if cash > 0:
+            spy_qty += cash / current_price
+            cash = 0
+
+        equity = cash + spy_qty * current_price
+
+        benchmark_history.append({
+            'date': date_str,
+            'equity': equity,
+            'cash': cash,
+            'deposits': spy_benchmark_portfolio.initial_capital + spy_benchmark_portfolio.total_deposits
+        })
+
+    spy_benchmark_portfolio.history = benchmark_history
+    spy_metrics = calculate_metrics(spy_benchmark_portfolio, spy_df)
 
     # Process tickers
     df_dict = {}
@@ -598,14 +710,14 @@ def main():
     deposit_schedule = get_deposit_schedule(start_date, end_date, 50, 'quarterly')
 
     # Parameters
-    holding_periods = [3, 5, 7, 10, 15]
-    rsi_thresholds = [(30, 70), (35, 65), (40, 60)]
-    gk_limits = [0.8, 1.0, 1.2]
+    atr_trailing_mults = [1.5, 2.0, 2.5]
+    atr_profit_mults = [2.5, 3.5, 4.5]
+    rsi_thresholds = [(30, 70), (35, 65)]
     min_confluences = [3, 4]
 
     all_strategies = []
 
-    total_combos = len(holding_periods) * len(rsi_thresholds) * len(gk_limits) * len(min_confluences)
+    total_combos = len(atr_trailing_mults) * len(atr_profit_mults) * len(rsi_thresholds) * len(min_confluences)
     logger.info(f"Running {total_combos} strategies...")
 
     best_portfolio = None
@@ -613,20 +725,21 @@ def main():
     best_params = None
     best_metrics = None
     best_overfitting = None
+    best_name = None
 
     strat_idx = 0
-    for hp in holding_periods:
-        for rsi in rsi_thresholds:
-            for gk in gk_limits:
+    for t_mult in atr_trailing_mults:
+        for p_mult in atr_profit_mults:
+            for rsi in rsi_thresholds:
                 for mc in min_confluences:
                     params = {
-                        'holding_days': hp,
+                        'atr_trailing_mult': t_mult,
+                        'atr_profit_mult': p_mult,
                         'rsi_bounds': rsi,
-                        'gk_limit': gk,
                         'min_confluence': mc
                     }
 
-                    name = f"HA_MACD_RSI_BB_hp{hp}_rsi{rsi[0]}{rsi[1]}_gk{gk}_min{mc}"
+                    name = f"DYN_EXIT_t{t_mult}_p{p_mult}_rsi{rsi[0]}{rsi[1]}_min{mc}"
 
                     portfolio = run_backtest_for_params(df_dict, spy_df, params, deposit_schedule)
                     metrics = calculate_metrics(portfolio, spy_df)
@@ -745,6 +858,17 @@ def main():
             "parameters": best_params,
             "overfitting": best_overfitting
         },
+        "benchmark_comparison": {
+            "strategy_return_pct": best_metrics["total_return_pct"],
+            "spy_return_pct": spy_metrics["total_return_pct"],
+            "alpha_return_pct": best_metrics["total_return_pct"] - spy_metrics["total_return_pct"],
+            "strategy_cagr": best_metrics["cagr"],
+            "spy_cagr": spy_metrics["cagr"],
+            "strategy_sharpe": best_metrics["sharpe"],
+            "spy_sharpe": spy_metrics["sharpe"],
+            "strategy_max_dd_pct": best_metrics["max_drawdown_pct"],
+            "spy_max_dd_pct": spy_metrics["max_drawdown_pct"]
+        },
         "portfolio_summary": {
             "final_equity": best_portfolio.equity,
             "total_return_pct": best_metrics["total_return_pct"],
@@ -764,6 +888,7 @@ def main():
         "monthly_returns": monthly_ret,
         "regime_breakdown": regime_breakdown,
         "all_strategies": all_strategies,
+        "benchmark_equity_curve": benchmark_history,
         "equity_curve": [{"date": r['date'], "equity": r['equity'], "deposits": r['deposits']} for r in best_portfolio.history],
         "trade_log": best_portfolio.trades[:500], # Limit to 500
         "limitations": [
