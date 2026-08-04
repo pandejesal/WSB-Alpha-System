@@ -1,5 +1,6 @@
 import os
 import re
+import time
 from google import genai
 from src.backtest.validation import run_in_sample_test, run_walk_forward_test, load_base_data, NUM_PERMUTATIONS
 from datetime import datetime
@@ -40,6 +41,36 @@ def update_file(filename, old_str, new_str):
         f.write(content)
 
     return True
+
+def call_gemini_with_retry(client, prompt):
+    models = ["gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-2.0-flash", "gemini-3.5-flash-lite"]
+    backoffs = [2, 4, 8]
+
+    for model in models:
+        for attempt in range(1, 4):
+            print(f"Trying {model} (attempt {attempt}/3)...")
+            try:
+                response = client.models.generate_content(
+                    model=model,
+                    contents=prompt
+                )
+                print("Success!")
+                return response.text
+            except Exception as e:
+                error_msg = str(e)
+                if '503' in error_msg or '429' in error_msg:
+                    error_type = '503' if '503' in error_msg else '429'
+                    if attempt < 3:
+                        sleep_time = backoffs[attempt - 1]
+                        print(f"{error_type} error, retrying in {sleep_time}s...")
+                        time.sleep(sleep_time)
+                    else:
+                        print(f"{error_type} error, moving to next model...")
+                else:
+                    print(f"Other error: {e}, moving to next model...")
+                    break
+
+    return None
 
 def main():
     api_key = os.getenv("GEMINI_API_KEY")
@@ -86,13 +117,14 @@ def main():
     """
 
     try:
-        response = client.models.generate_content(
-            model='gemini-3.5-flash-lite',
-            contents=prompt
-        )
+        response_text = call_gemini_with_retry(client, prompt)
+        if response_text is None:
+            print("All Gemini models unavailable after retries. Skipping this cycle.")
+            return
+
         # Parse JSON from response
         import json
-        match = re.search(r'\{.*?\}', response.text, re.DOTALL)
+        match = re.search(r'\{.*?\}', response_text, re.DOTALL)
         if match:
             data = json.loads(match.group(0))
 
