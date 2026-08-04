@@ -32,5 +32,6 @@ jobs:
           git add docs/data/strategies.json
           if ! git diff-index --quiet HEAD; then
             git commit -m "chore: update strategy data for dashboard"
+            git pull --rebase origin main
             git push
           fi

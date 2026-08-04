@@ -156,5 +156,6 @@ jobs:
           git add docs/data/
           if ! git diff-index --quiet HEAD; then
             git commit -m "chore: update dashboard data from paper trading"
+            git pull --rebase origin main
             git push
           fi

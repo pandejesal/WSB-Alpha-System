@@ -43,5 +43,6 @@ jobs:
           git add run_historic_backtest.py self_improvement_log.md
           if ! git diff-index --quiet HEAD; then
             git commit -m "Self-Improvement: Applied proposed strategy change"
+            git pull --rebase origin main
             git push origin main
           fi
