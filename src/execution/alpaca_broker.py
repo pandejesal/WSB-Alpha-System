@@ -88,7 +88,7 @@ class AlpacaBroker(BaseBroker):
 
 
             if not self.client:
-                return {"status": "success", "order_id": "mock_id", "filled_qty": qty or notional}
+                raise ConnectionError("Alpaca TradingClient not initialized. Check API keys.")
 
             if notional is not None:
                 req = MarketOrderRequest(
@@ -123,15 +123,9 @@ class AlpacaBroker(BaseBroker):
             return False
 
     def _get_latest_price(self, symbol: str) -> float:
-        # Mock fetch for simplicity unless data client is initialized
-        # In a real engine, we'd use StockHistoricalDataClient
-        try:
-            from alpaca.data.historical import StockHistoricalDataClient
-            from alpaca.data.requests import StockLatestTradeRequest
-            client = StockHistoricalDataClient(self.api_key, self.secret_key)
-            req = StockLatestTradeRequest(symbol_or_symbols=symbol)
-            res = client.get_stock_latest_trade(req)
-            return float(res[symbol].price)
-        except Exception:
-            # Return a dummy 100.0 for tests/mocking if API fails
-            return 100.0
+        from alpaca.data.historical import StockHistoricalDataClient
+        from alpaca.data.requests import StockLatestTradeRequest
+        client = StockHistoricalDataClient(self.api_key, self.secret_key)
+        req = StockLatestTradeRequest(symbol_or_symbols=symbol)
+        res = client.get_stock_latest_trade(req)
+        return float(res[symbol].price)
