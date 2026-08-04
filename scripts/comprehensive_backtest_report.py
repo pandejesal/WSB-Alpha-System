@@ -683,21 +683,36 @@ def main():
     hist_df['month'] = hist_df.index.to_period('M')
     hist_df['quarter'] = hist_df.index.to_period('Q')
 
+    # Build month-end equity lookup for proper cross-month return calculation
+    month_end_eq = {}
+    for m, group in hist_df.groupby('month'):
+        month_end_eq[str(m)] = group['equity'].iloc[-1]
+
+    prev_month_end_eq = None
     monthly_ret = []
     for m, group in hist_df.groupby('month'):
-        start_eq = group['equity'].iloc[0]
         end_eq = group['equity'].iloc[-1]
         deposits_in_period = group['deposits'].iloc[-1] - group['deposits'].iloc[0]
-        ret = (end_eq - (start_eq + deposits_in_period)) / (start_eq + deposits_in_period) * 100 if start_eq > 0 else 0
+        # Use previous month's last-day equity as baseline (or first day of this month if no previous)
+        base_eq = prev_month_end_eq if prev_month_end_eq is not None else group['equity'].iloc[0]
+        ret = (end_eq - (base_eq + deposits_in_period)) / (base_eq + deposits_in_period) * 100 if base_eq > 0 else 0
         monthly_ret.append({"month": str(m), "return_pct": ret})
+        prev_month_end_eq = end_eq
 
+    # Same for quarterly
+    quarter_end_eq = {}
+    for q, group in hist_df.groupby('quarter'):
+        quarter_end_eq[str(q)] = group['equity'].iloc[-1]
+
+    prev_q_end_eq = None
     quarterly_ret = []
     for q, group in hist_df.groupby('quarter'):
-        start_eq = group['equity'].iloc[0]
         end_eq = group['equity'].iloc[-1]
         deposits_in_period = group['deposits'].iloc[-1] - group['deposits'].iloc[0]
-        ret = (end_eq - (start_eq + deposits_in_period)) / (start_eq + deposits_in_period) * 100 if start_eq > 0 else 0
+        base_eq = prev_q_end_eq if prev_q_end_eq is not None else group['equity'].iloc[0]
+        ret = (end_eq - (base_eq + deposits_in_period)) / (base_eq + deposits_in_period) * 100 if base_eq > 0 else 0
         quarterly_ret.append({"quarter": str(q), "return_pct": ret, "equity": end_eq})
+        prev_q_end_eq = end_eq
 
     # Regime breakdown
     trades_df = pd.DataFrame(best_portfolio.trades)
@@ -705,13 +720,17 @@ def main():
     if len(trades_df) > 0:
         for regime in ["low_volatility", "normal", "high_volatility"]:
             r_trades = trades_df[trades_df['regime'] == regime]
-            regime_breakdown[regime] = {
+            entry = {
                 "trades": len(r_trades),
                 "avg_return": (r_trades['pnl'] / (r_trades['entry_price'] * r_trades['qty'])).mean() * 100 if len(r_trades) > 0 else 0,
                 "win_rate": (len(r_trades[r_trades['pnl'] > 0]) / len(r_trades)) * 100 if len(r_trades) > 0 else 0
             }
+            if regime == "high_volatility" and len(r_trades) == 0:
+                entry["note"] = "No trades: GK_Volatility shield blocked entries when GK_Vol >= 1.2"
+            regime_breakdown[regime] = entry
 
-    roic = (best_portfolio.equity - (100 + best_portfolio.total_deposits)) / (100 + best_portfolio.total_deposits) * 100
+    total_invested = 100 + best_portfolio.total_deposits
+    roic = (best_portfolio.equity - total_invested) / total_invested * 100
 
     report = {
         "report_date": datetime.now().strftime("%Y-%m-%d"),
