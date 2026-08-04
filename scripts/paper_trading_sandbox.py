@@ -10,7 +10,7 @@ import logging
 import argparse
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -129,7 +129,7 @@ def main():
 
         # Update state
         state["days_completed"] = current_day
-        state["last_run"] = datetime.utcnow().isoformat() + "Z"
+        state["last_run"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         state["portfolio_value"] = new_portfolio_value
         state["trades"].extend(signals)
 
