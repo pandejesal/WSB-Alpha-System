@@ -16,7 +16,6 @@ $ python live_crypto_executor.py
 
 import os
 
-import ccxt
 import pandas as pd
 from dotenv import load_dotenv
 import risk_config

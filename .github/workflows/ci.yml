@@ -7,9 +7,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python 3.12
-      uses: actions/setup-python@v4
-    - name: Test with pytest
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install dependencies
       run: |
-        pip install -r requirements.txt pytest pytest-cov pydantic pydantic-settings pyyaml duckdb pandera nltk praw feedparser openbb arch scipy riskfolio-lib cvxpy nautilus_trader vectorbt langgraph langchain-core RestrictedPython bandit
-        PYTHONPATH=. pytest tests/ -v --cov=src
+        pip install -r requirements.txt
+        pip install pytest pytest-cov RestrictedPython bandit
+    - name: Run tests
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+      run: pytest tests/ -v --cov=src
