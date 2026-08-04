@@ -102,5 +102,6 @@ jobs:
           git add docs/data/apiHealth.json
           if ! git diff-index --quiet HEAD; then
             git commit -m "chore: update API health status"
+            git pull --rebase origin main
             git push
           fi
