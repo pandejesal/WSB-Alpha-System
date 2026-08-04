@@ -52,7 +52,7 @@ def main():
 
     logs = read_logs()
 
-    with open('run_historic_backtest.py', 'r') as f:
+    with open('src/backtest/run_historic_backtest.py', 'r') as f:
         _ = f.read()
 
     try:
@@ -62,7 +62,7 @@ def main():
         history = ""
 
     prompt = f"""
-    You are an automated algorithmic trading quant. Your goal is to propose EXACTLY ONE parameter change to the strategy in `run_historic_backtest.py`.
+    You are an automated algorithmic trading quant. Your goal is to propose EXACTLY ONE parameter change to the strategy in `src/backtest/run_historic_backtest.py`.
 
     Rules:
     - Change only one parameter (e.g. RSI threshold, EMA span, Volatility limit).
@@ -79,7 +79,7 @@ def main():
     Respond in JSON format:
     {{
         "hypothesis": "Your reasoning here.",
-        "file": "run_historic_backtest.py",
+        "file": "src/backtest/run_historic_backtest.py",
         "old_code": "exact string to replace",
         "new_code": "exact replacement string"
     }}
