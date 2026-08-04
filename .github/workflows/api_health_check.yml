@@ -19,7 +19,7 @@ jobs:
         with:
           python-version: '3.11'
 
-      - run: pip install requests yfinance google-genai
+      - run: pip install -r requirements.txt
 
       - name: Check APIs
         env:
