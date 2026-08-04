@@ -1,25 +1,15 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional
+from typing import Dict, Any, List
 
 class BaseBroker(ABC):
     @abstractmethod
-    def get_account_balance(self) -> dict:
-        """Returns account balance dict: {'equity': float, 'cash': float}"""
+    def get_account_balance(self) -> Dict[str, Any]:
         pass
 
     @abstractmethod
-    def get_open_positions(self) -> List[Dict]:
-        """Returns list of open positions"""
+    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market") -> Dict[str, Any]:
         pass
 
     @abstractmethod
-    def place_order(self, symbol: str, qty: Optional[float], side: str, order_type: str, notional: Optional[float] = None) -> dict:
-        """
-        Place order. If qty is None, notional must be provided.
-        """
-        pass
-
-    @abstractmethod
-    def cancel_order(self, order_id: str) -> bool:
-        """Cancels an order by ID"""
+    def get_positions(self) -> List[Dict[str, Any]]:
         pass

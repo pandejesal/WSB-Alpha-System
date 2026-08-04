@@ -20,7 +20,13 @@ def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_prelo
             continue
 
         df = stock_dfs_preloaded[ticker]
-        if df.empty or 'Date' not in df.columns:
+        if df.empty:
+            continue
+        if 'Date' not in df.columns:
+            df = df.reset_index()
+            if 'Date' not in df.columns and 'Datetime' in df.columns:
+                df.rename(columns={'Datetime': 'Date'}, inplace=True)
+        if 'Date' not in df.columns:
             continue
 
         # Ensure datetimes
