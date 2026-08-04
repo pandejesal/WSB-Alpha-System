@@ -358,15 +358,15 @@ function renderBacktestSection(data) {
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
                 <p class="text-gray-400 text-xs uppercase">Final Equity</p>
                 <p class="text-2xl font-bold text-green-400">${formatCurrency(data.portfolio_summary.final_equity)}</p>
-                <p class="text-xs text-gray-400">Total Return: ${formatPercent(data.portfolio_summary.total_return_pct / 100)}</p>
+                <p class="text-xs text-gray-400">Total Return: ${data.portfolio_summary.total_return_pct.toFixed(2)}%</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
                 <p class="text-gray-400 text-xs uppercase">CAGR</p>
-                <p class="text-2xl font-bold">${formatPercent(data.portfolio_summary.cagr / 100)}</p>
+                <p class="text-2xl font-bold">${data.portfolio_summary.cagr.toFixed(2)}%</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
                 <p class="text-gray-400 text-xs uppercase">Max Drawdown</p>
-                <p class="text-2xl font-bold text-red-400">-${formatPercent(data.portfolio_summary.max_drawdown_pct / 100)}</p>
+                <p class="text-2xl font-bold text-red-400">-${data.portfolio_summary.max_drawdown_pct.toFixed(2)}%</p>
                 <p class="text-xs text-gray-400">On ${data.portfolio_summary.max_drawdown_date}</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
@@ -394,7 +394,7 @@ function renderBacktestSection(data) {
             tbody += `
                 <tr class="border-b border-gray-700">
                     <td class="py-2">${y}</td>
-                    <td class="py-2 text-right ${sumRet >= 0 ? 'text-green-400' : 'text-red-400'}">${sumRet > 0 ? '+' : ''}${formatPercent(sumRet / 100)}</td>
+                    <td class="py-2 text-right ${sumRet >= 0 ? 'text-green-400' : 'text-red-400'}">${sumRet > 0 ? '+' : ''}${sumRet.toFixed(2)}%</td>
                 </tr>
             `;
         });
@@ -426,7 +426,7 @@ function renderBacktestSection(data) {
                 <tr class="border-b border-gray-700">
                     <td class="py-2">${i+1}</td>
                     <td class="py-2 text-xs truncate max-w-[150px]" title="${s.name}">${s.name.replace('HA_MACD_RSI_BB_', '')}</td>
-                    <td class="py-2 text-right">${formatPercent(s.metrics.total_return_pct / 100)}</td>
+                    <td class="py-2 text-right">${s.metrics.total_return_pct.toFixed(2)}%</td>
                     <td class="py-2 text-right">${s.metrics.sharpe.toFixed(2)}</td>
                     <td class="py-2 text-right">
                         <span class="px-2 py-1 rounded text-[10px] ${s.metrics.likely_overfit ? 'bg-red-900 text-red-200' : 'bg-green-900 text-green-200'}">
