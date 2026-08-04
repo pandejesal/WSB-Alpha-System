@@ -71,9 +71,9 @@ jobs:
           portfolio = {
               'last_updated': '$(date -u +%Y-%m-%dT%H:%M:%SZ)',
               'equity': float(acct['equity']),
-              'initial_capital': 100000,
-              'total_pnl': float(acct['equity']) - 100000,
-              'total_pnl_pct': (float(acct['equity']) / 100000 - 1) * 100,
+              'initial_capital': 100,
+              'total_pnl': float(acct['equity']) - 100,
+              'total_pnl_pct': (float(acct['equity']) / 100 - 1) * 100,
               'daily_pnl': float(acct['equity']) - float(acct['last_equity']),
               'daily_pnl_pct': (float(acct['equity']) / float(acct['last_equity']) - 1) * 100 if float(acct['last_equity']) > 0 else 0,
               'win_rate': float(acct.get('win_rate', 0)),

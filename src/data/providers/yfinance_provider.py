@@ -1,6 +1,7 @@
 import pandera as pa
 from src.data.schemas import OHLCVSchema
 import yfinance as yf
+import os
 import pandas as pd
 import time
 import logging
