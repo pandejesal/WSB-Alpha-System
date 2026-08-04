@@ -15,6 +15,8 @@ jobs:
       run: |
         pip install -r requirements.txt
         pip install pytest pytest-cov RestrictedPython bandit
+    - name: Download NLTK data
+      run: python -c "import nltk; nltk.download('punkt_tab', quiet=True); nltk.download('averaged_perceptron_tagger_eng', quiet=True)"
     - name: Run tests
       env:
         PYTHONPATH: ${{ github.workspace }}
