@@ -1,0 +1,51 @@
+name: Sandbox Paper Trading
+
+on:
+  schedule:
+    # Run at 3:55 PM EST (20:55 UTC) on weekdays
+    - cron: '55 20 * * 1-5'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sandbox:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt
+
+      - name: Run Sandbox Day
+        run: |
+          python -c "
+          import json, os, sys
+          state_file = 'docs/data/sandbox_state.json'
+          if os.path.exists(state_file):
+              with open(state_file) as f:
+                  state = json.load(f)
+              days = state.get('days_completed', 0)
+              if days >= 5:
+                  print('Sandbox complete (5 days finished). Exiting.')
+                  sys.exit(0)
+              current_day = days + 1
+          else:
+              current_day = 1
+          print(f'Running sandbox day {current_day}...')
+          os.system(f'PYTHONPATH=. python scripts/paper_trading_sandbox.py --day {current_day}')
+          "
+
+      - name: Commit Sandbox Data
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: update sandbox trading state"
+            git push
+          fi

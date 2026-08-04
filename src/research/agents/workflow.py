@@ -190,7 +190,7 @@ class ResearchWorkflow:
         return {"generated_code": sanitized_code}
 
     def reflection_node(self, state: GraphState) -> dict:
-        from run_historic_backtest import run_backtest
+        from src.backtest.run_historic_backtest import run_backtest
 
         generated_code = state.get("generated_code", "")
         if not generated_code or generated_code.startswith("# Error"):
