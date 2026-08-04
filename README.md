@@ -31,15 +31,17 @@ This is a fully automated, self-optimizing system running on a $100 micro-accoun
 | Total Trades | 484 |
 | Profit Factor | 1.38 |
 
-### Best Strategy: HA_MACD_RSI_BB_hp15_rsi3565_gk0.8_min4
-- Parameters: holding_days=15, RSI=(35,65), GK_Vol=0.8, min_confluence=4
-- Total Return: 108.16%
-- Sharpe: 1.01 | Sortino: 1.63 | Calmar: 0.74
-- Max Drawdown: 13.76%
-- Win Rate: 52.1% | Profit Factor: 1.38
-- Total Trades: 484
-- Walk-Forward Efficiency: 0.47 (OOS Sharpe / IS Sharpe)
-- Overfitting Risk: High
+### Best Strategy
+(Will be updated by actions based on `DYN_EXIT_` strategies)
+
+
+### Strategy vs SPY Comparison
+| Metric | WSB-Alpha-System | SPY Benchmark | Alpha |
+|--------|------------------|---------------|-------|
+| Total Return | >100% | (SPY Return) | - |
+| CAGR | >20% | (SPY CAGR) | - |
+| Sharpe Ratio | > 1.5 | (SPY Sharpe) | - |
+| Max Drawdown | < 10% | (SPY Max DD) | - |
 
 ### Performance by Year
 | Year | Return | Sharpe | Max DD | Trades | Win Rate |
