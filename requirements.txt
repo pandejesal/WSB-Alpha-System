@@ -22,4 +22,3 @@ pandera
 riskfolio-lib
 scipy
 pyarrow
-nautilus_trader
