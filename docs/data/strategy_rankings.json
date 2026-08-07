@@ -1,2341 +1,973 @@
 [
   {
-    "id": "strat_0038",
-    "name": "WSBConfluence_sm2.0_tm3.0_mp4_rpt0.01",
+    "id": "strat_0000",
+    "name": "DYN_EXIT_t1.5_p2.5_rsi3070_min3",
     "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": 42.35818937363985,
-      "cagr": 7.805280561357229,
-      "sharpe": 1.7408064835806591,
-      "sortino": 2.6112097253709887,
-      "max_drawdown_pct": -11.757519128218906,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8995149286732724,
-      "is_sharpe": 2.088967780296791,
-      "oos_sharpe": 1.3926451868645273,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0041",
-    "name": "WSBConfluence_sm2.0_tm3.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 97.16504623317553,
-      "cagr": 9.70167984750707,
-      "sharpe": 1.705518148868281,
-      "sortino": 2.5582772233024214,
-      "max_drawdown_pct": -26.24849746756224,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8786817898517123,
-      "is_sharpe": 2.046621778641937,
-      "oos_sharpe": 1.3644145190946249,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0068",
-    "name": "WSBConfluence_sm2.5_tm3.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 81.2742399463569,
-      "cagr": 8.091117697386238,
-      "sharpe": 1.661187521094599,
-      "sortino": 2.4917812816418987,
-      "max_drawdown_pct": -17.979180266639755,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7556279593504752,
-      "is_sharpe": 1.9934250253135186,
-      "oos_sharpe": 1.3289500168756794,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0024",
-    "name": "WSBConfluence_sm1.5_tm6.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 55.914283279669014,
-      "cagr": 14.753212110122785,
-      "sharpe": 1.650406928727477,
-      "sortino": 2.4756103930912152,
-      "max_drawdown_pct": -29.00873967537426,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6313715641835465,
-      "is_sharpe": 1.9804883144729724,
-      "oos_sharpe": 1.3203255429819816,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0015",
-    "name": "WSBConfluence_sm1.5_tm4.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 30.78887860171544,
-      "cagr": 7.275076050713917,
-      "sharpe": 1.6485446752830502,
-      "sortino": 2.4728170129245752,
-      "max_drawdown_pct": -26.007414782758257,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8997293040103234,
-      "is_sharpe": 1.9782536103396602,
-      "oos_sharpe": 1.3188357402264401,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0039",
-    "name": "WSBConfluence_sm2.0_tm3.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 61.56215195188069,
-      "cagr": 11.912945714750569,
-      "sharpe": 1.646701502612383,
-      "sortino": 2.4700522539185745,
-      "max_drawdown_pct": -11.435828562456704,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8781256216103408,
-      "is_sharpe": 1.9760418031348594,
-      "oos_sharpe": 1.3173612020899066,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0007",
-    "name": "WSBConfluence_sm1.5_tm3.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 94.18425304503751,
-      "cagr": 5.391732826718496,
-      "sharpe": 1.6316893380937931,
-      "sortino": 2.44753400714069,
-      "max_drawdown_pct": -27.843547612587933,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5451633998404659,
-      "is_sharpe": 1.9580272057125516,
-      "oos_sharpe": 1.3053514704750346,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0070",
-    "name": "WSBConfluence_sm2.5_tm3.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 21.88552432812624,
-      "cagr": 6.025940220006399,
-      "sharpe": 1.6221438828606827,
-      "sortino": 2.433215824291024,
-      "max_drawdown_pct": -22.708004009357353,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8706566927119748,
-      "is_sharpe": 1.9465726594328192,
-      "oos_sharpe": 1.2977151062885461,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0080",
-    "name": "WSBConfluence_sm2.5_tm5.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 25.957710071792885,
-      "cagr": 11.126094535406654,
-      "sharpe": 1.5986889505587585,
-      "sortino": 2.398033425838138,
-      "max_drawdown_pct": -13.52956380009035,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5808221550428823,
-      "is_sharpe": 1.91842674067051,
-      "oos_sharpe": 1.278951160447007,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0042",
-    "name": "WSBConfluence_sm2.0_tm4.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 78.21857442014378,
-      "cagr": 8.055410775149124,
-      "sharpe": 1.5489619513381312,
-      "sortino": 2.323442927007197,
-      "max_drawdown_pct": -22.608322287414055,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8701051195256235,
-      "is_sharpe": 1.8587543416057573,
-      "oos_sharpe": 1.2391695610705051,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0071",
-    "name": "WSBConfluence_sm2.5_tm3.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 81.27427198898957,
-      "cagr": 8.131650162675006,
-      "sharpe": 1.5399124990579254,
-      "sortino": 2.3098687485868883,
-      "max_drawdown_pct": -14.144433283587363,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7339270877139388,
-      "is_sharpe": 1.8478949988695104,
-      "oos_sharpe": 1.2319299992463404,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0048",
-    "name": "WSBConfluence_sm2.0_tm5.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 93.08750100155666,
-      "cagr": 12.739601164185757,
-      "sharpe": 1.5293130197733467,
-      "sortino": 2.29396952966002,
-      "max_drawdown_pct": -29.061076645962515,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8700718863606725,
-      "is_sharpe": 1.835175623728016,
-      "oos_sharpe": 1.2234504158186774,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0030",
-    "name": "WSBConfluence_sm2.0_tm2.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 44.19182316376805,
-      "cagr": 14.255537628099129,
-      "sharpe": 1.5240421265193849,
-      "sortino": 2.2860631897790773,
-      "max_drawdown_pct": -19.245711767585316,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7021401848329938,
-      "is_sharpe": 1.8288505518232618,
-      "oos_sharpe": 1.219233701215508,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0059",
-    "name": "WSBConfluence_sm2.0_tm6.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 12.450318990449677,
-      "cagr": 5.409140046609706,
-      "sharpe": 1.4951682672469728,
-      "sortino": 2.2427524008704594,
-      "max_drawdown_pct": -20.660321495446134,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.567658609477297,
-      "is_sharpe": 1.7942019206963673,
-      "oos_sharpe": 1.1961346137975783,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0083",
-    "name": "WSBConfluence_sm2.5_tm5.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 69.14265756394411,
-      "cagr": 7.180626418326348,
-      "sharpe": 1.4762059897002446,
-      "sortino": 2.214308984550367,
-      "max_drawdown_pct": -21.019943358907735,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5274641209145683,
-      "is_sharpe": 1.7714471876402935,
-      "oos_sharpe": 1.1809647917601958,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0009",
-    "name": "WSBConfluence_sm1.5_tm3.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 92.61595358077984,
-      "cagr": 10.88492024997563,
-      "sharpe": 1.4295809681320977,
-      "sortino": 2.1443714521981465,
-      "max_drawdown_pct": -27.031809006174267,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7384209720817959,
-      "is_sharpe": 1.715497161758517,
-      "oos_sharpe": 1.1436647745056783,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0028",
-    "name": "WSBConfluence_sm1.5_tm6.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 84.08916397702939,
-      "cagr": 8.110106162580676,
-      "sharpe": 1.4017473709021306,
-      "sortino": 2.102621056353196,
-      "max_drawdown_pct": -12.180582485723384,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6576308037523979,
-      "is_sharpe": 1.6820968450825566,
-      "oos_sharpe": 1.1213978967217046,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0074",
-    "name": "WSBConfluence_sm2.5_tm4.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 72.37471087027029,
-      "cagr": 5.244372074710711,
-      "sharpe": 1.394912162708949,
-      "sortino": 2.0923682440634233,
-      "max_drawdown_pct": -14.56656912307162,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8841630197760856,
-      "is_sharpe": 1.6738945952507387,
-      "oos_sharpe": 1.1159297301671591,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0072",
-    "name": "WSBConfluence_sm2.5_tm4.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 19.515957788918282,
-      "cagr": 13.849232878011156,
-      "sharpe": 1.3871755384032805,
-      "sortino": 2.080763307604921,
-      "max_drawdown_pct": -15.301414679528616,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7290759374225915,
-      "is_sharpe": 1.6646106460839365,
-      "oos_sharpe": 1.1097404307226244,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0049",
-    "name": "WSBConfluence_sm2.0_tm5.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 21.99779270979961,
-      "cagr": 10.764624775246952,
-      "sharpe": 1.2843517546523244,
-      "sortino": 1.9265276319784865,
-      "max_drawdown_pct": -19.004939918578412,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6456130077843136,
-      "is_sharpe": 1.5412221055827893,
-      "oos_sharpe": 1.0274814037218596,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0012",
-    "name": "WSBConfluence_sm1.5_tm4.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 75.19172585505318,
-      "cagr": 9.939996300201384,
-      "sharpe": 1.2781464474630375,
-      "sortino": 1.9172196711945562,
-      "max_drawdown_pct": -17.537295045569355,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5164342717257727,
-      "is_sharpe": 1.533775736955645,
-      "oos_sharpe": 1.02251715797043,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0047",
-    "name": "WSBConfluence_sm2.0_tm4.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 99.98256481192597,
-      "cagr": 8.604603559646831,
-      "sharpe": 1.26422998541992,
-      "sortino": 1.8963449781298798,
-      "max_drawdown_pct": -23.18289337600265,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8035348411023653,
-      "is_sharpe": 1.517075982503904,
-      "oos_sharpe": 1.011383988335936,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0022",
-    "name": "WSBConfluence_sm1.5_tm5.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 42.91990304939753,
-      "cagr": 5.662080313387742,
-      "sharpe": 1.2093231524381889,
-      "sortino": 1.8139847286572834,
-      "max_drawdown_pct": -23.71521168905423,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6939593565571535,
-      "is_sharpe": 1.4511877829258266,
-      "oos_sharpe": 0.9674585219505512,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0067",
-    "name": "WSBConfluence_sm2.5_tm3.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 57.470898608603186,
-      "cagr": 8.186391385827855,
-      "sharpe": 1.2051818794885618,
-      "sortino": 1.8077728192328428,
-      "max_drawdown_pct": -26.492543205257874,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6509253380610021,
-      "is_sharpe": 1.4462182553862741,
-      "oos_sharpe": 0.9641455035908495,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0050",
-    "name": "WSBConfluence_sm2.0_tm5.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 21.563152715164634,
-      "cagr": 9.970977927481808,
-      "sharpe": 1.1996695441976275,
-      "sortino": 1.7995043162964413,
-      "max_drawdown_pct": -15.854781852026802,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6989420774128365,
-      "is_sharpe": 1.4396034530371529,
-      "oos_sharpe": 0.959735635358102,
-      "likely_overfit": false
     }
   },
   {
     "id": "strat_0001",
-    "name": "WSBConfluence_sm1.5_tm2.0_mp2_rpt0.02",
+    "name": "DYN_EXIT_t1.5_p2.5_rsi3070_min4",
     "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": 98.89820412135644,
-      "cagr": 10.084611987596176,
-      "sharpe": 1.1853885257785937,
-      "sortino": 1.7780827886678905,
-      "max_drawdown_pct": -25.670351668684447,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5078191559813003,
-      "is_sharpe": 1.4224662309343123,
-      "oos_sharpe": 0.948310820622875,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0076",
-    "name": "WSBConfluence_sm2.5_tm4.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 52.97750371711518,
-      "cagr": 7.5143863804475615,
-      "sharpe": 1.1727513346125338,
-      "sortino": 1.7591270019188006,
-      "max_drawdown_pct": -16.342646178994436,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6205925896937927,
-      "is_sharpe": 1.4073016015350406,
-      "oos_sharpe": 0.9382010676900271,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0046",
-    "name": "WSBConfluence_sm2.0_tm4.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 16.99132223566354,
-      "cagr": 11.763817176381842,
-      "sharpe": 1.1618773020975404,
-      "sortino": 1.7428159531463105,
-      "max_drawdown_pct": -15.06320133614878,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.719959879518338,
-      "is_sharpe": 1.3942527625170484,
-      "oos_sharpe": 0.9295018416780323,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0053",
-    "name": "WSBConfluence_sm2.0_tm5.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 21.890213431126597,
-      "cagr": 8.267807675644917,
-      "sharpe": 1.158093167422803,
-      "sortino": 1.7371397511342046,
-      "max_drawdown_pct": -12.668764501442261,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7347427861234269,
-      "is_sharpe": 1.3897118009073635,
-      "oos_sharpe": 0.9264745339382424,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0040",
-    "name": "WSBConfluence_sm2.0_tm3.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 77.01647335258875,
-      "cagr": 6.0209101211654374,
-      "sharpe": 1.1366354921597202,
-      "sortino": 1.7049532382395802,
-      "max_drawdown_pct": -10.77644579029991,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8420255629397226,
-      "is_sharpe": 1.3639625905916641,
-      "oos_sharpe": 0.9093083937277762,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0034",
-    "name": "WSBConfluence_sm2.0_tm2.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 64.82154930468253,
-      "cagr": 10.444085056988214,
-      "sharpe": 1.1123508245682339,
-      "sortino": 1.6685262368523508,
-      "max_drawdown_pct": -17.892007641978907,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6623291427760309,
-      "is_sharpe": 1.3348209894818805,
-      "oos_sharpe": 0.8898806596545872,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0057",
-    "name": "WSBConfluence_sm2.0_tm6.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 52.6451738091884,
-      "cagr": 14.010232387615257,
-      "sharpe": 1.0456510130577124,
-      "sortino": 1.5684765195865684,
-      "max_drawdown_pct": -28.731830591595454,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.785752782006084,
-      "is_sharpe": 1.2547812156692548,
-      "oos_sharpe": 0.8365208104461699,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0031",
-    "name": "WSBConfluence_sm2.0_tm2.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 84.92431742510395,
-      "cagr": 10.890648230900464,
-      "sharpe": 1.0008308730938127,
-      "sortino": 1.501246309640719,
-      "max_drawdown_pct": -11.056871590311916,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8038867025142085,
-      "is_sharpe": 1.200997047712575,
-      "oos_sharpe": 0.8006646984750502,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0061",
-    "name": "WSBConfluence_sm2.5_tm2.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 58.04720478055599,
-      "cagr": 13.757879241488247,
-      "sharpe": 0.9856592175129217,
-      "sortino": 1.4784888262693827,
-      "max_drawdown_pct": -21.91191638815146,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5847342581730809,
-      "is_sharpe": 1.1827910610155061,
-      "oos_sharpe": 0.7885273740103375,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0052",
-    "name": "WSBConfluence_sm2.0_tm5.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 55.39719910973618,
-      "cagr": 14.158893018621042,
-      "sharpe": 0.9770893961023097,
-      "sortino": 1.4656340941534647,
-      "max_drawdown_pct": -12.497111069074773,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7476820349191781,
-      "is_sharpe": 1.1725072753227717,
-      "oos_sharpe": 0.7816715168818478,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0079",
-    "name": "WSBConfluence_sm2.5_tm5.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 46.45610758885519,
-      "cagr": 9.906637301998185,
-      "sharpe": 0.9768051397191433,
-      "sortino": 1.4652077095787148,
-      "max_drawdown_pct": -12.701478929615245,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8483189354535685,
-      "is_sharpe": 1.172166167662972,
-      "oos_sharpe": 0.7814441117753147,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0075",
-    "name": "WSBConfluence_sm2.5_tm4.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 61.257185664077,
-      "cagr": 7.248412043907924,
-      "sharpe": 0.9647670923421154,
-      "sortino": 1.4471506385131732,
-      "max_drawdown_pct": -24.09313122390007,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8960396915179272,
-      "is_sharpe": 1.1577205108105384,
-      "oos_sharpe": 0.7718136738736924,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0025",
-    "name": "WSBConfluence_sm1.5_tm6.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 47.78375885205587,
-      "cagr": 10.911143416146437,
-      "sharpe": 0.9117832162137343,
-      "sortino": 1.3676748243206014,
-      "max_drawdown_pct": -17.1822192693555,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5253979788411361,
-      "is_sharpe": 1.094139859456481,
-      "oos_sharpe": 0.7294265729709875,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
     }
   },
   {
     "id": "strat_0002",
-    "name": "WSBConfluence_sm1.5_tm2.0_mp4_rpt0.01",
+    "name": "DYN_EXIT_t1.5_p2.5_rsi3565_min3",
     "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": 11.594060599701837,
-      "cagr": 12.090430190365337,
-      "sharpe": 0.8598090612666656,
-      "sortino": 1.2897135918999982,
-      "max_drawdown_pct": -19.796466579814677,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.642473089016038,
-      "is_sharpe": 1.0317708735199986,
-      "oos_sharpe": 0.6878472490133325,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0014",
-    "name": "WSBConfluence_sm1.5_tm4.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 88.58035943796813,
-      "cagr": 14.148475665587858,
-      "sharpe": 0.8135812439124654,
-      "sortino": 1.2203718658686982,
-      "max_drawdown_pct": -11.308998667784174,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.521058768820775,
-      "is_sharpe": 0.9762974926949585,
-      "oos_sharpe": 0.6508649951299724,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
     }
   },
   {
-    "id": "strat_0011",
-    "name": "WSBConfluence_sm1.5_tm3.0_mp6_rpt0.02",
+    "id": "strat_0003",
+    "name": "DYN_EXIT_t1.5_p2.5_rsi3565_min4",
     "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": 33.85504526860734,
-      "cagr": 13.291899004718648,
-      "sharpe": 0.7998549118146616,
-      "sortino": 1.1997823677219923,
-      "max_drawdown_pct": -18.38440978471289,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.729404968748544,
-      "is_sharpe": 0.9598258941775939,
-      "oos_sharpe": 0.6398839294517293,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0084",
-    "name": "WSBConfluence_sm2.5_tm6.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 50.730899272315924,
-      "cagr": 6.272609289053265,
-      "sharpe": 0.7928714865549182,
-      "sortino": 1.1893072298323775,
-      "max_drawdown_pct": -12.041978628319995,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5989492192364951,
-      "is_sharpe": 0.9514457838659018,
-      "oos_sharpe": 0.6342971892439346,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0055",
-    "name": "WSBConfluence_sm2.0_tm6.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 59.01226488968375,
-      "cagr": 8.050557657069195,
-      "sharpe": 0.7916445951873619,
-      "sortino": 1.1874668927810428,
-      "max_drawdown_pct": -27.903465817296855,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.539672273877791,
-      "is_sharpe": 0.9499735142248342,
-      "oos_sharpe": 0.6333156761498895,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0073",
-    "name": "WSBConfluence_sm2.5_tm4.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 54.411854076043035,
-      "cagr": 7.105428565767107,
-      "sharpe": 0.7000426508022484,
-      "sortino": 1.0500639762033726,
-      "max_drawdown_pct": -20.651223006261098,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6589214134415355,
-      "is_sharpe": 0.840051180962698,
-      "oos_sharpe": 0.5600341206417987,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0026",
-    "name": "WSBConfluence_sm1.5_tm6.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 82.77613797264706,
-      "cagr": 13.259545886018596,
-      "sharpe": 0.6798422163301776,
-      "sortino": 1.0197633244952664,
-      "max_drawdown_pct": -28.11018377658559,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.893438320245609,
-      "is_sharpe": 0.8158106595962131,
-      "oos_sharpe": 0.5438737730641421,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0019",
-    "name": "WSBConfluence_sm1.5_tm5.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 67.29369545990892,
-      "cagr": 5.538272634262439,
-      "sharpe": 0.6689901238210381,
-      "sortino": 1.0034851857315572,
-      "max_drawdown_pct": -19.807970982585505,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8027504216041912,
-      "is_sharpe": 0.8027881485852456,
-      "oos_sharpe": 0.5351920990568305,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0005",
-    "name": "WSBConfluence_sm1.5_tm2.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 77.29693375431891,
-      "cagr": 7.581871573033024,
-      "sharpe": 0.6540752402770289,
-      "sortino": 0.9811128604155434,
-      "max_drawdown_pct": -25.151399921267178,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.513438346689982,
-      "is_sharpe": 0.7848902883324347,
-      "oos_sharpe": 0.5232601922216231,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0043",
-    "name": "WSBConfluence_sm2.0_tm4.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 71.19561231925144,
-      "cagr": 14.534199839711926,
-      "sharpe": 0.6300414515199906,
-      "sortino": 0.9450621772799859,
-      "max_drawdown_pct": -22.21864299653098,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6349249689910419,
-      "is_sharpe": 0.7560497418239887,
-      "oos_sharpe": 0.5040331612159925,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0087",
-    "name": "WSBConfluence_sm2.5_tm6.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 68.80973154734457,
-      "cagr": 8.827902254798506,
-      "sharpe": 0.6183872255107843,
-      "sortino": 0.9275808382661764,
-      "max_drawdown_pct": -21.86155134139547,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6557673056593957,
-      "is_sharpe": 0.7420646706129411,
-      "oos_sharpe": 0.49470978040862745,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0018",
-    "name": "WSBConfluence_sm1.5_tm5.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 67.85638076016511,
-      "cagr": 10.246153353886374,
-      "sharpe": 0.6078907473108845,
-      "sortino": 0.9118361209663268,
-      "max_drawdown_pct": -29.604806936506687,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6857641085011067,
-      "is_sharpe": 0.7294688967730615,
-      "oos_sharpe": 0.4863125978487077,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0066",
-    "name": "WSBConfluence_sm2.5_tm3.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 31.866990620625923,
-      "cagr": 6.297867518986443,
-      "sharpe": 0.5948979072151968,
-      "sortino": 0.8923468608227951,
-      "max_drawdown_pct": -28.277647792883332,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.508649988874806,
-      "is_sharpe": 0.7138774886582361,
-      "oos_sharpe": 0.4759183257721574,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0081",
-    "name": "WSBConfluence_sm2.5_tm5.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 92.12023435784579,
-      "cagr": 12.680972107265141,
-      "sharpe": 0.588493686124395,
-      "sortino": 0.8827405291865925,
-      "max_drawdown_pct": -20.152332725636285,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5455046884063344,
-      "is_sharpe": 0.706192423349274,
-      "oos_sharpe": 0.470794948899516,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0036",
-    "name": "WSBConfluence_sm2.0_tm3.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 60.262839593947305,
-      "cagr": 7.37678878459112,
-      "sharpe": 0.5695507621278662,
-      "sortino": 0.8543261431917992,
-      "max_drawdown_pct": -24.411423519518127,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7340645829066571,
-      "is_sharpe": 0.6834609145534394,
-      "oos_sharpe": 0.4556406097022929,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0064",
-    "name": "WSBConfluence_sm2.5_tm2.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 91.95205642791464,
-      "cagr": 7.835424048607727,
-      "sharpe": 0.5625123691469298,
-      "sortino": 0.8437685537203947,
-      "max_drawdown_pct": -15.06368454858179,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7480156406670158,
-      "is_sharpe": 0.6750148429763158,
-      "oos_sharpe": 0.4500098953175439,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0016",
-    "name": "WSBConfluence_sm1.5_tm4.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 32.16541332334029,
-      "cagr": 13.94074309391659,
-      "sharpe": 0.5291166359216215,
-      "sortino": 0.7936749538824323,
-      "max_drawdown_pct": -15.558917034447957,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.760072013401685,
-      "is_sharpe": 0.6349399631059458,
-      "oos_sharpe": 0.4232933087372972,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0065",
-    "name": "WSBConfluence_sm2.5_tm2.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 90.39185391404477,
-      "cagr": 8.37422103942695,
-      "sharpe": 0.4641206490758021,
-      "sortino": 0.6961809736137031,
-      "max_drawdown_pct": -29.853996920972943,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6865138376719945,
-      "is_sharpe": 0.5569447788909625,
-      "oos_sharpe": 0.37129651926064167,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0010",
-    "name": "WSBConfluence_sm1.5_tm3.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 13.464168795494764,
-      "cagr": 8.506735883194478,
-      "sharpe": 0.44416853412365176,
-      "sortino": 0.6662528011854776,
-      "max_drawdown_pct": -20.65245413229304,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7578289286114324,
-      "is_sharpe": 0.5330022409483821,
-      "oos_sharpe": 0.3553348272989214,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0032",
-    "name": "WSBConfluence_sm2.0_tm2.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 29.347051484217207,
-      "cagr": 9.673848472881579,
-      "sharpe": 0.44214056506123467,
-      "sortino": 0.663210847591852,
-      "max_drawdown_pct": -15.484743268624984,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7743737613687878,
-      "is_sharpe": 0.5305686780734816,
-      "oos_sharpe": 0.35371245204898777,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0063",
-    "name": "WSBConfluence_sm2.5_tm2.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 87.31210816673385,
-      "cagr": 8.34313219724745,
-      "sharpe": 0.4379656719176799,
-      "sortino": 0.6569485078765198,
-      "max_drawdown_pct": -24.669881607434927,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6121581950955342,
-      "is_sharpe": 0.5255588063012159,
-      "oos_sharpe": 0.35037253753414394,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0054",
-    "name": "WSBConfluence_sm2.0_tm6.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 53.740430686826954,
-      "cagr": 5.36167506478032,
-      "sharpe": 0.43758900167593706,
-      "sortino": 0.6563835025139055,
-      "max_drawdown_pct": -28.81254668603797,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7737945923165632,
-      "is_sharpe": 0.5251068020111245,
-      "oos_sharpe": 0.35007120134074965,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0085",
-    "name": "WSBConfluence_sm2.5_tm6.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 87.39339749709715,
-      "cagr": 8.969145393996147,
-      "sharpe": 0.4102440823539949,
-      "sortino": 0.6153661235309924,
-      "max_drawdown_pct": -21.583434319420725,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6828338149605659,
-      "is_sharpe": 0.4922928988247939,
-      "oos_sharpe": 0.3281952658831959,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0078",
-    "name": "WSBConfluence_sm2.5_tm5.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 88.67224573904356,
-      "cagr": 6.495216901331626,
-      "sharpe": 0.408083060115789,
-      "sortino": 0.6121245901736835,
-      "max_drawdown_pct": -23.539843740717107,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6078744837183738,
-      "is_sharpe": 0.4896996721389468,
-      "oos_sharpe": 0.3264664480926312,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0060",
-    "name": "WSBConfluence_sm2.5_tm2.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 21.437360858130994,
-      "cagr": 12.97928930778502,
-      "sharpe": 0.3183415971911787,
-      "sortino": 0.4775123957867681,
-      "max_drawdown_pct": -19.56306242306136,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7531447065121388,
-      "is_sharpe": 0.38200991662941447,
-      "oos_sharpe": 0.25467327775294296,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0000",
-    "name": "WSBConfluence_sm1.5_tm2.0_mp2_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 97.01311782263744,
-      "cagr": 10.102028451207081,
-      "sharpe": 0.30534559905872205,
-      "sortino": 0.4580183985880831,
-      "max_drawdown_pct": -29.38671817783352,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5253443230453919,
-      "is_sharpe": 0.36641471887046645,
-      "oos_sharpe": 0.24427647924697765,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0086",
-    "name": "WSBConfluence_sm2.5_tm6.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 63.25144451769205,
-      "cagr": 14.241797692147808,
-      "sharpe": 0.2959188717378002,
-      "sortino": 0.4438783076067003,
-      "max_drawdown_pct": -13.231473827155424,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6684221096213567,
-      "is_sharpe": 0.3551026460853602,
-      "oos_sharpe": 0.23673509739024015,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0023",
-    "name": "WSBConfluence_sm1.5_tm5.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 18.072431219737222,
-      "cagr": 7.866885884180247,
-      "sharpe": 0.18053583666856265,
-      "sortino": 0.270803755002844,
-      "max_drawdown_pct": -20.388849745237216,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7219972251316039,
-      "is_sharpe": 0.21664300400227518,
-      "oos_sharpe": 0.14442866933485013,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0013",
-    "name": "WSBConfluence_sm1.5_tm4.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 93.90997200325408,
-      "cagr": 13.817750441916486,
-      "sharpe": 0.1727982750247029,
-      "sortino": 0.25919741253705436,
-      "max_drawdown_pct": -24.747144017858943,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7646582654068697,
-      "is_sharpe": 0.20735793002964348,
-      "oos_sharpe": 0.13823862001976234,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0029",
-    "name": "WSBConfluence_sm1.5_tm6.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 45.39132349276784,
-      "cagr": 8.798345354256746,
-      "sharpe": 0.16697226013455368,
-      "sortino": 0.2504583902018305,
-      "max_drawdown_pct": -23.45505897137339,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5770372700827531,
-      "is_sharpe": 0.20036671216146443,
-      "oos_sharpe": 0.13357780810764294,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
     }
   },
   {
     "id": "strat_0004",
-    "name": "WSBConfluence_sm1.5_tm2.0_mp6_rpt0.01",
+    "name": "DYN_EXIT_t1.5_p3.5_rsi3070_min3",
     "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": 27.817088939554957,
-      "cagr": 7.284844023685798,
-      "sharpe": 0.1601487770760931,
-      "sortino": 0.24022316561413964,
-      "max_drawdown_pct": -20.89290257791061,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6079309827324023,
-      "is_sharpe": 0.1921785324913117,
-      "oos_sharpe": 0.1281190216608745,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0089",
-    "name": "WSBConfluence_sm2.5_tm6.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 78.13442699482533,
-      "cagr": 10.274458296376725,
-      "sharpe": 0.14970871317581202,
-      "sortino": 0.22456306976371804,
-      "max_drawdown_pct": -26.33091376990808,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5899475434015595,
-      "is_sharpe": 0.1796504558109744,
-      "oos_sharpe": 0.11976697054064962,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
     }
   },
   {
-    "id": "strat_0045",
-    "name": "WSBConfluence_sm2.0_tm4.0_mp4_rpt0.02",
+    "id": "strat_0005",
+    "name": "DYN_EXIT_t1.5_p3.5_rsi3070_min4",
     "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": 81.55824589060799,
-      "cagr": 10.527978665521793,
-      "sharpe": 0.1463348905436016,
-      "sortino": 0.2195023358154024,
-      "max_drawdown_pct": -12.863912538710874,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8515472578008676,
-      "is_sharpe": 0.1756018686523219,
-      "oos_sharpe": 0.1170679124348813,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0069",
-    "name": "WSBConfluence_sm2.5_tm3.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 56.99060933290571,
-      "cagr": 13.381625369690811,
-      "sharpe": 0.12303437226204039,
-      "sortino": 0.1845515583930606,
-      "max_drawdown_pct": -14.226016561073502,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6185803043622125,
-      "is_sharpe": 0.14764124671444848,
-      "oos_sharpe": 0.09842749780963232,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0035",
-    "name": "WSBConfluence_sm2.0_tm2.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 30.942756227005592,
-      "cagr": 6.324693750892022,
-      "sharpe": 0.11251870402155506,
-      "sortino": 0.1687780560323326,
-      "max_drawdown_pct": -18.705380542735064,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6409323570227241,
-      "is_sharpe": 0.13502244482586606,
-      "oos_sharpe": 0.09001496321724406,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0037",
-    "name": "WSBConfluence_sm2.0_tm3.0_mp2_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 92.44429316756418,
-      "cagr": 12.306247745664958,
-      "sharpe": -0.005614124105388418,
-      "sortino": -0.008421186158082627,
-      "max_drawdown_pct": -18.471859792266237,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5833915296864959,
-      "is_sharpe": -0.006736948926466102,
-      "oos_sharpe": -0.0044912992843107345,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0088",
-    "name": "WSBConfluence_sm2.5_tm6.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 89.06041220853892,
-      "cagr": 13.818554942631843,
-      "sharpe": -0.008353188196569383,
-      "sortino": -0.012529782294854075,
-      "max_drawdown_pct": -12.269849316264219,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5426077975268838,
-      "is_sharpe": -0.01002382583588326,
-      "oos_sharpe": -0.006682550557255507,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0056",
-    "name": "WSBConfluence_sm2.0_tm6.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 19.139961246852984,
-      "cagr": 6.923264941076919,
-      "sharpe": -0.07972171551441781,
-      "sortino": -0.11958257327162672,
-      "max_drawdown_pct": -11.019248592839343,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6905802311689246,
-      "is_sharpe": -0.09566605861730137,
-      "oos_sharpe": -0.06377737241153425,
-      "likely_overfit": false
     }
   },
   {
     "id": "strat_0006",
-    "name": "WSBConfluence_sm1.5_tm3.0_mp2_rpt0.01",
+    "name": "DYN_EXIT_t1.5_p3.5_rsi3565_min3",
     "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 2,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": 28.450532380485843,
-      "cagr": 11.360461243797568,
-      "sharpe": -0.10002028320555245,
-      "sortino": -0.15003042480832868,
-      "max_drawdown_pct": -22.817652455492095,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.7704114313236563,
-      "is_sharpe": -0.12002433984666294,
-      "oos_sharpe": -0.08001622656444196,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0058",
-    "name": "WSBConfluence_sm2.0_tm6.0_mp6_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 77.21644266825916,
-      "cagr": 5.930739905108643,
-      "sharpe": -0.11586415792865035,
-      "sortino": -0.17379623689297552,
-      "max_drawdown_pct": -17.948609685792583,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5825107323651758,
-      "is_sharpe": -0.1390369895143804,
-      "oos_sharpe": -0.09269132634292028,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
     }
   },
   {
-    "id": "strat_0082",
-    "name": "WSBConfluence_sm2.5_tm5.0_mp6_rpt0.01",
+    "id": "strat_0007",
+    "name": "DYN_EXIT_t1.5_p3.5_rsi3565_min4",
     "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": 49.61510627453915,
-      "cagr": 5.56345131194976,
-      "sharpe": -0.21081466803637217,
-      "sortino": -0.31622200205455825,
-      "max_drawdown_pct": -22.22349989077542,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6790009349251359,
-      "is_sharpe": -0.2529776016436466,
-      "oos_sharpe": -0.16865173442909775,
-      "likely_overfit": false
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
     }
   },
   {
-    "id": "strat_0077",
-    "name": "WSBConfluence_sm2.5_tm4.0_mp6_rpt0.02",
+    "id": "strat_0008",
+    "name": "DYN_EXIT_t1.5_p4.5_rsi3070_min3",
     "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": 86.27299633163676,
-      "cagr": 5.20122118836572,
-      "sharpe": -0.22340919265799114,
-      "sortino": -0.33511378898698674,
-      "max_drawdown_pct": -19.19753677557736,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5685548218675522,
-      "is_sharpe": -0.2680910311895894,
-      "oos_sharpe": -0.17872735412639293,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0009",
+    "name": "DYN_EXIT_t1.5_p4.5_rsi3070_min4",
+    "parameters": {
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0010",
+    "name": "DYN_EXIT_t1.5_p4.5_rsi3565_min3",
+    "parameters": {
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0011",
+    "name": "DYN_EXIT_t1.5_p4.5_rsi3565_min4",
+    "parameters": {
+      "atr_trailing_mult": 1.5,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0012",
+    "name": "DYN_EXIT_t2.0_p2.5_rsi3070_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0013",
+    "name": "DYN_EXIT_t2.0_p2.5_rsi3070_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0014",
+    "name": "DYN_EXIT_t2.0_p2.5_rsi3565_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0015",
+    "name": "DYN_EXIT_t2.0_p2.5_rsi3565_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0016",
+    "name": "DYN_EXIT_t2.0_p3.5_rsi3070_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0017",
+    "name": "DYN_EXIT_t2.0_p3.5_rsi3070_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0018",
+    "name": "DYN_EXIT_t2.0_p3.5_rsi3565_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0019",
+    "name": "DYN_EXIT_t2.0_p3.5_rsi3565_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
     }
   },
   {
     "id": "strat_0020",
-    "name": "WSBConfluence_sm1.5_tm5.0_mp4_rpt0.01",
+    "name": "DYN_EXIT_t2.0_p4.5_rsi3070_min3",
     "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": 80.79286110623453,
-      "cagr": 13.389144956755633,
-      "sharpe": -0.24463397645441692,
-      "sortino": -0.36695096468162536,
-      "max_drawdown_pct": -12.515671180302688,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.711680759131706,
-      "is_sharpe": -0.2935607717453003,
-      "oos_sharpe": -0.19570718116353356,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0008",
-    "name": "WSBConfluence_sm1.5_tm3.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 3.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 78.97417493606522,
-      "cagr": 14.82246798119971,
-      "sharpe": -0.2700320391842926,
-      "sortino": -0.4050480587764389,
-      "max_drawdown_pct": -19.331414118375882,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8900021787319998,
-      "is_sharpe": -0.3240384470211511,
-      "oos_sharpe": -0.21602563134743408,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0017",
-    "name": "WSBConfluence_sm1.5_tm4.0_mp6_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 6,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 76.76486600334425,
-      "cagr": 10.68958347026965,
-      "sharpe": -0.27366622216421976,
-      "sortino": -0.41049933324632965,
-      "max_drawdown_pct": -28.916836536690013,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6446546703529571,
-      "is_sharpe": -0.3283994665970637,
-      "oos_sharpe": -0.21893297773137582,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0027",
-    "name": "WSBConfluence_sm1.5_tm6.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 6.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 10.499871843562605,
-      "cagr": 7.848480248770999,
-      "sharpe": -0.2798286548347717,
-      "sortino": -0.41974298225215756,
-      "max_drawdown_pct": -20.919633863786416,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.872706117148575,
-      "is_sharpe": -0.33579438580172605,
-      "oos_sharpe": -0.22386292386781736,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0051",
-    "name": "WSBConfluence_sm2.0_tm5.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 60.749319214872166,
-      "cagr": 13.061818492030227,
-      "sharpe": -0.2851644625116502,
-      "sortino": -0.42774669376747526,
-      "max_drawdown_pct": -17.647290061012264,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5537711705378118,
-      "is_sharpe": -0.3421973550139802,
-      "oos_sharpe": -0.22813157000932016,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0033",
-    "name": "WSBConfluence_sm2.0_tm2.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 18.536076143201818,
-      "cagr": 13.103426956417344,
-      "sharpe": -0.32942530282221566,
-      "sortino": -0.4941379542333235,
-      "max_drawdown_pct": -29.278131935790874,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5641655817458617,
-      "is_sharpe": -0.39531036338665876,
-      "oos_sharpe": -0.26354024225777256,
-      "likely_overfit": true
-    }
-  },
-  {
-    "id": "strat_0062",
-    "name": "WSBConfluence_sm2.5_tm2.0_mp4_rpt0.01",
-    "parameters": {
-      "atr_stop_multiplier": 2.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 68.97682355848704,
-      "cagr": 9.408406645157907,
-      "sharpe": -0.35232846291682574,
-      "sortino": -0.5284926943752386,
-      "max_drawdown_pct": -10.598993167751994,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.8757596711926567,
-      "is_sharpe": -0.4227941555001909,
-      "oos_sharpe": -0.2818627703334606,
-      "likely_overfit": false
-    }
-  },
-  {
-    "id": "strat_0003",
-    "name": "WSBConfluence_sm1.5_tm2.0_mp4_rpt0.02",
-    "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 2.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
-    },
-    "metrics": {
-      "total_return_pct": 77.80523479459318,
-      "cagr": 7.301089750022351,
-      "sharpe": -0.3925501031786367,
-      "sortino": -0.588825154767955,
-      "max_drawdown_pct": -11.060598823201161,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5246020712300549,
-      "is_sharpe": -0.471060123814364,
-      "oos_sharpe": -0.3140400825429094,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
     }
   },
   {
     "id": "strat_0021",
-    "name": "WSBConfluence_sm1.5_tm5.0_mp4_rpt0.02",
+    "name": "DYN_EXIT_t2.0_p4.5_rsi3070_min4",
     "parameters": {
-      "atr_stop_multiplier": 1.5,
-      "atr_target_multiplier": 5.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.02,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": 51.94402625168224,
-      "cagr": 7.098683732084236,
-      "sharpe": -0.4603087975276035,
-      "sortino": -0.6904631962914053,
-      "max_drawdown_pct": -21.07395676487214,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.6093746873552827,
-      "is_sharpe": -0.5523705570331242,
-      "oos_sharpe": -0.3682470380220828,
-      "likely_overfit": false
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
     }
   },
   {
-    "id": "strat_0044",
-    "name": "WSBConfluence_sm2.0_tm4.0_mp4_rpt0.01",
+    "id": "strat_0022",
+    "name": "DYN_EXIT_t2.0_p4.5_rsi3565_min3",
     "parameters": {
-      "atr_stop_multiplier": 2.0,
-      "atr_target_multiplier": 4.0,
-      "max_positions": 4,
-      "risk_per_trade": 0.01,
-      "max_capital_per_position": 0.25,
-      "max_hold_days": 30
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": 27.514903804431697,
-      "cagr": 8.472162948743167,
-      "sharpe": -0.4758075346715807,
-      "sortino": -0.7137113020073711,
-      "max_drawdown_pct": -20.473468292504535,
-      "win_rate": 55.0,
-      "profit_factor": 1.4,
-      "total_trades": 120,
-      "wf_efficiency": 0.5010614797682822,
-      "is_sharpe": -0.5709690416058968,
-      "oos_sharpe": -0.3806460277372646,
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0023",
+    "name": "DYN_EXIT_t2.0_p4.5_rsi3565_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.0,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0024",
+    "name": "DYN_EXIT_t2.5_p2.5_rsi3070_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0025",
+    "name": "DYN_EXIT_t2.5_p2.5_rsi3070_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0026",
+    "name": "DYN_EXIT_t2.5_p2.5_rsi3565_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0027",
+    "name": "DYN_EXIT_t2.5_p2.5_rsi3565_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 2.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0028",
+    "name": "DYN_EXIT_t2.5_p3.5_rsi3070_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0029",
+    "name": "DYN_EXIT_t2.5_p3.5_rsi3070_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0030",
+    "name": "DYN_EXIT_t2.5_p3.5_rsi3565_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0031",
+    "name": "DYN_EXIT_t2.5_p3.5_rsi3565_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 3.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0032",
+    "name": "DYN_EXIT_t2.5_p4.5_rsi3070_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0033",
+    "name": "DYN_EXIT_t2.5_p4.5_rsi3070_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        30,
+        70
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0034",
+    "name": "DYN_EXIT_t2.5_p4.5_rsi3565_min3",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 3
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
+      "likely_overfit": true
+    }
+  },
+  {
+    "id": "strat_0035",
+    "name": "DYN_EXIT_t2.5_p4.5_rsi3565_min4",
+    "parameters": {
+      "atr_trailing_mult": 2.5,
+      "atr_profit_mult": 4.5,
+      "rsi_bounds": [
+        35,
+        65
+      ],
+      "min_confluence": 4
+    },
+    "metrics": {
+      "total_return_pct": -0.3011724473174609,
+      "cagr": -0.03970704597349162,
+      "sharpe": -27.37440106369973,
+      "sortino": 0,
+      "max_drawdown_pct": 0.30117244731746595,
+      "win_rate": 0.0,
+      "profit_factor": 0.0,
+      "total_trades": 1,
+      "wf_efficiency": 0,
+      "is_sharpe": -4.488898616037298e+16,
+      "oos_sharpe": -8.969143995377254e+16,
       "likely_overfit": true
     }
   }
