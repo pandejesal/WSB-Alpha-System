@@ -165,3 +165,4 @@ xxhash==3.8.1
 yfinance==0.2.52
 zstandard==0.25.0
 nautilus-trader==1.218.0
+playwright==1.42.0
