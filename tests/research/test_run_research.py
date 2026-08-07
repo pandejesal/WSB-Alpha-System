@@ -17,7 +17,7 @@ def test_run_research_end_to_end(tmp_path):
          patch("scripts.run_research.os.path.exists") as mock_exists, \
          patch("scripts.run_research.json.load") as mock_json_load, \
          patch("scripts.run_research.FredMacroProvider") as MockFred, \
-         patch("scripts.run_research.fetch_headlines") as mock_fetch, \
+         patch("scripts.run_research.fetch_agentic_headlines") as mock_fetch, \
          patch("scripts.run_research.score_text") as mock_score_text, \
          patch("scripts.run_research.DebateEngine") as MockDebateEngine:
 
@@ -40,7 +40,10 @@ def test_run_research_end_to_end(tmp_path):
         mock_fred_instance = MockFred.return_value
         mock_fred_instance.regime_multiplier.return_value = 1.2
 
-        mock_fetch.return_value = ["Mock headline 1", "Mock headline 2"]
+        mock_fetch.return_value = [
+            {"headline": "Mock headline 1", "source": "Test", "url": "", "timestamp": ""},
+            {"headline": "Mock headline 2", "source": "Test", "url": "", "timestamp": ""}
+        ]
         mock_score_text.return_value = {"net_score": 0.5, "classification": "positive"}
 
         mock_debate_instance = MockDebateEngine.return_value
