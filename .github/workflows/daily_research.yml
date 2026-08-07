@@ -29,6 +29,12 @@ jobs:
           PYTHONPATH: .
         run: python scripts/comprehensive_backtest_report.py
 
+      - name: Run daily research pipeline
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PYTHONPATH: .
+        run: python scripts/run_research.py
+
       - name: Commit dashboard data
         run: |
           git config --global user.name "github-actions[bot]"
