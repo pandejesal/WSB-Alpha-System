@@ -29,6 +29,9 @@ jobs:
           PYTHONPATH: .
         run: python scripts/comprehensive_backtest_report.py
 
+      - name: Install Playwright browsers
+        run: playwright install chromium --with-deps
+
       - name: Run daily research pipeline
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}

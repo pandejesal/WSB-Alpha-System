@@ -3,7 +3,8 @@ import logging
 import os
 from datetime import datetime, timezone
 
-from src.research.browser_scraper import fetch_headlines, score_text
+from src.research.browser_scraper import score_text
+from src.research.agentic_scraper import fetch_agentic_headlines
 from src.research.debate_engine import DebateEngine
 from src.risk.fred_macro_provider import FredMacroProvider
 
@@ -40,8 +41,9 @@ def main():
 
     for ticker in tickers:
         try:
-            # 1. Fetch headlines (gracefully degrades to mock if no real scraper implemented)
-            headlines = fetch_headlines(ticker)
+            # 1. Fetch agentic headlines (gracefully degrades to fallback if Playwright fails)
+            agentic_results = fetch_agentic_headlines(ticker)
+            headlines = [item["headline"] for item in agentic_results]
 
             # 2. Score headlines
             base_score = score_text(headlines)
