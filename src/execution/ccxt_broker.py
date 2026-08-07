@@ -1,4 +1,24 @@
 import ccxt
+import time
+from functools import wraps
+
+def retry(max_retries=3, backoff=1):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            retries = 0
+            while retries < max_retries:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    retries += 1
+                    if retries == max_retries:
+                        raise e
+                    time.sleep(backoff * (2 ** (retries - 1)))
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
 import logging
 from typing import Dict, List, Optional
 from src.execution.base_broker import BaseBroker
@@ -23,6 +43,7 @@ class CCXTBroker(BaseBroker):
 
         self.exchange = exchange_class(config)
 
+    @retry(max_retries=3, backoff=1)
     def get_account_balance(self) -> dict:
         try:
             balance = self.exchange.fetch_balance()
@@ -34,6 +55,7 @@ class CCXTBroker(BaseBroker):
             self.logger.error(f"CCXT fetch_balance failed: {e}")
             raise
 
+    @retry(max_retries=3, backoff=1)
     def get_positions(self) -> List[Dict]:
         try:
             positions = self.exchange.fetch_positions()
@@ -49,6 +71,7 @@ class CCXTBroker(BaseBroker):
             self.logger.error(f"CCXT fetch_positions failed: {e}")
             raise
 
+    @retry(max_retries=3, backoff=1)
     def place_order(self, symbol: str, qty: Optional[float], side: str, order_type: str = 'market', notional: Optional[float] = None) -> dict:
         try:
             if qty is None and notional is not None:

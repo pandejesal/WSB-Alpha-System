@@ -88,9 +88,11 @@ def compute_metrics(trades_df):
     trades_sorted = trades_df.sort_values(by="post_date").reset_index(drop=True)
     tot_return = trades_sorted["return"].fillna(0).sum()
 
-    rets = trades_sorted["return"].fillna(0)
-    std = rets.std()
-    sharpe = (rets.mean() / (std + 1e-10)) * np.sqrt(100) if std > 0 else 0.0
+    # Resample to daily returns for accurate Sharpe calculation
+    daily_rets = trades_sorted.groupby(pd.to_datetime(trades_sorted['post_date']).dt.date)['return'].sum()
+    std = daily_rets.std()
+    # Use standard daily annualization sqrt(252) instead of arbitrary 100
+    sharpe = (daily_rets.mean() / (std + 1e-10)) * np.sqrt(252) if std > 0 else 0.0
     return tot_return, sharpe
 
 def run_in_sample_test(posts_df, stock_dfs, spy_close):
@@ -99,6 +101,22 @@ def run_in_sample_test(posts_df, stock_dfs, spy_close):
     # Real run
     real_trades = rb.run_backtest(custom_posts_df=posts_df, stock_dfs_preloaded=stock_dfs, spy_close_preloaded=spy_close)
     real_ret, real_sharpe = compute_metrics(real_trades)
+
+    # Calculate daily returns series for SPA test
+    is_real_ret_series = None
+    spy_ret_series = None
+    if len(real_trades) > 0:
+        trades_sorted = real_trades.sort_values(by="post_date").reset_index(drop=True)
+        is_real_ret_series = trades_sorted.groupby('post_date')['return'].sum()
+        is_real_ret_series.index = pd.to_datetime(is_real_ret_series.index)
+
+        # Get spy returns for the same dates
+        spy_rets = spy_close.pct_change().fillna(0)
+        spy_ret_series = spy_rets.reindex(is_real_ret_series.index).fillna(0)
+    else:
+        is_real_ret_series = pd.Series(dtype=float)
+        spy_ret_series = pd.Series(dtype=float)
+
     print(f"Real In-Sample -> Return: {real_ret*100:.2f}%, Sharpe: {real_sharpe:.2f}")
 
     permuted_rets = []
@@ -135,7 +153,7 @@ def run_in_sample_test(posts_df, stock_dfs, spy_close):
     p_value = beat_both / NUM_PERMUTATIONS
     print(f"In-Sample P-Value: {p_value:.4f}")
 
-    return real_ret, real_sharpe, permuted_rets, permuted_sharpes, p_value
+    return real_ret, real_sharpe, permuted_rets, permuted_sharpes, p_value, is_real_ret_series, spy_ret_series
 
 
 def run_walk_forward_test(posts_df, stock_dfs, spy_close):
@@ -238,11 +256,22 @@ def run_walk_forward_test(posts_df, stock_dfs, spy_close):
 def main():
     posts_df, stock_dfs, spy_close = load_base_data()
 
-    is_real_ret, is_real_sharpe, is_p_rets, is_p_sharpes, is_pval = run_in_sample_test(posts_df, stock_dfs, spy_close)
+    is_real_ret, is_real_sharpe, is_p_rets, is_p_sharpes, is_pval, is_real_ret_series, spy_ret_series = run_in_sample_test(posts_df, stock_dfs, spy_close)
     wf_real_ret, wf_real_sharpe, wf_p_rets, wf_p_sharpes, wf_pval, wf_win_rate, num_windows = run_walk_forward_test(posts_df, stock_dfs, spy_close)
 
     # Hansen's SPA Test Execution
-    spa_pval = _hansens_spa_test(is_p_rets, is_p_rets) # mocked implementation because real returns are singular values here, not series
+    from src.backtest.validators.statistical import StatisticalValidator
+
+    if len(is_real_ret_series) > 0 and len(spy_ret_series) > 0:
+        try:
+            spa_result = StatisticalValidator.spa_test(is_real_ret_series.values, spy_ret_series.values)
+            spa_pval = spa_result.get("p_value", 1.0)
+        except Exception as e:
+            print(f"Hansen's SPA test failed: {e}")
+            spa_pval = 1.0
+    else:
+        spa_pval = 1.0
+
     print(f"Hansen's SPA P-value (In-Sample): {spa_pval:.4f}")
 
     # Plotting

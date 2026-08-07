@@ -14,16 +14,14 @@ class WhitesRealityCheck:
         best_actual_strategy = mean_excess_returns.idxmax()
         best_actual_return = mean_excess_returns.max()
 
-        T = len(benchmark_returns)
-        bootstrap_max_returns = []
-        for _ in range(self.n_bootstraps):
-            indices = np.random.randint(0, T, T)
-            centered_sample = excess_returns.iloc[indices] - mean_excess_returns
-            best_boot_return = centered_sample.mean(axis=0).max()
-            bootstrap_max_returns.append(best_boot_return)
+        from src.backtest.validators.statistical import StatisticalValidator
 
-        bootstrap_max_returns = np.array(bootstrap_max_returns)
-        p_value = np.sum(bootstrap_max_returns >= best_actual_return) / self.n_bootstraps
+        # Use the unified implementation that respects serial correlation via StationaryBootstrap
+        p_value = StatisticalValidator.whites_reality_check(
+            strategy_returns=strategy_returns_matrix.values,
+            benchmark_returns=benchmark_returns.values,
+            replications=self.n_bootstraps
+        )
 
         return {
             "status": "PASSED" if p_value <= 0.05 else "FAILED",
