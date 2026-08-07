@@ -1,0 +1,41 @@
+name: Daily Research Pipeline
+
+on:
+  schedule:
+    - cron: '0 8 * * *'  # Daily at 8 AM UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  research:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install -r requirements.txt
+
+      - name: Download NLTK data
+        run: python -c "import nltk; nltk.download('punkt_tab', quiet=True); nltk.download('averaged_perceptron_tagger_eng', quiet=True)"
+
+      - name: Run comprehensive backtest report
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          PYTHONPATH: .
+        run: python scripts/comprehensive_backtest_report.py
+
+      - name: Commit dashboard data
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add docs/data/
+          if ! git diff-index --quiet HEAD; then
+            git commit -m "chore: update daily backtest report and dashboard data"
+            git pull --rebase origin main
+            git push
+          fi

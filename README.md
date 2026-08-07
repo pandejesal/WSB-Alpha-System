@@ -4,8 +4,17 @@ This is a fully automated, self-optimizing system running on a $100 micro-accoun
 
 ## The Tech Stack (Highlighting Zero-Cost)
 * **LLM Engine:** Google Gemini 3.1 Pro (Zero-cost optimization via Google AI Studio).
-* **Data Ingestion:** PRAW (Free Reddit API).
+* **Data Ingestion:** PRAW (Free Reddit API) and yfinance (Free Yahoo Finance data).
 * **Execution:** Alpaca (Zero-commission fractional shares) & CCXT.
+
+## CI/CD & Free Hosting (GitHub Actions + Pages)
+
+**Zero-Cost Guarantee:** This entire system runs 100% FREE and HOSTED via GitHub. It explicitly requires NO local execution (no local LLMs, no localhost servers), and NO paid APIs. It is designed to scale a $100 micro-account to $500 without incurring any operational costs.
+
+* **GitHub Actions:** Headless scheduled cron jobs (e.g., `daily_research.yml` running daily at 8 AM UTC) manage the data ingestion, Nautilus backtesting, reporting, and dashboard generation on the free `ubuntu-latest` runners.
+* **GitHub Pages:** The static dashboard (HTML/JS + JSON data files) is automatically deployed and hosted via the `pages.yml` deployment workflow directly from the `main` branch `docs/` folder.
+* **Required GitHub Secrets:** For the automated CI/CD pipeline to work correctly, you must configure the following repository secret in GitHub:
+  * `GEMINI_API_KEY`: Used by the research pipeline and LLM optimization loop.
 
 ## The Architecture
 * **Signal Generation:** FinBERT Sentiment + Smart Money Concepts (FVGs/Order Blocks) + Man AHL Trend Following.
