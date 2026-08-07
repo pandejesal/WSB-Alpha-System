@@ -596,11 +596,22 @@ def analyze_overfitting(portfolio, spy_df):
         std = excess.std()
         return (excess.mean() / std * np.sqrt(252)) if std > 0 else 0
 
-    periods = [
-        {"is_period": "2019-2020", "oos_period": "2021", "is_sharpe": get_sharpe(2019, 2020), "oos_sharpe": get_sharpe(2021, 2021)},
-        {"is_period": "2021-2022", "oos_period": "2023", "is_sharpe": get_sharpe(2021, 2022), "oos_sharpe": get_sharpe(2023, 2023)},
-        {"is_period": "2023-2024", "oos_period": "2025-2026", "is_sharpe": get_sharpe(2023, 2024), "oos_sharpe": get_sharpe(2025, 2026)}
-    ]
+    years = sorted(hist_df.index.year.unique().tolist())
+    periods = []
+
+    for i in range(len(years) - 1):
+        train_year = years[i]
+        test_year = years[i + 1]
+
+        is_sharpe = get_sharpe(train_year, train_year)
+        oos_sharpe = get_sharpe(test_year, test_year)
+
+        periods.append({
+            "is_period": str(train_year),
+            "oos_period": str(test_year),
+            "is_sharpe": is_sharpe,
+            "oos_sharpe": oos_sharpe
+        })
 
     for p in periods:
         p["wf_efficiency"] = (p["oos_sharpe"] / p["is_sharpe"]) if p["is_sharpe"] > 0 else 0

@@ -1,3 +1,23 @@
+import time
+from functools import wraps
+
+def retry(max_retries=3, backoff=1):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            retries = 0
+            while retries < max_retries:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    retries += 1
+                    if retries == max_retries:
+                        raise e
+                    time.sleep(backoff * (2 ** (retries - 1)))
+            return func(*args, **kwargs)
+        return wrapper
+    return decorator
+
 import logging
 from typing import Dict, Any, List, Optional
 from src.execution.base_broker import BaseBroker
@@ -29,6 +49,7 @@ class AlpacaBroker(BaseBroker):
         except Exception as e:
             self.logger.error(f"Failed to initialize Alpaca TradingClient: {e}")
 
+    @retry(max_retries=3, backoff=1)
     def get_account_balance(self) -> dict:
         if not self.client:
             return {'equity': config.trading.initial_capital, 'cash': config.trading.initial_capital}
@@ -43,6 +64,7 @@ class AlpacaBroker(BaseBroker):
             self.logger.error(f"Alpaca get_account failed: {e}")
             raise
 
+    @retry(max_retries=3, backoff=1)
     def get_positions(self) -> List[Dict]:
         if not self.client:
             return []
@@ -61,6 +83,7 @@ class AlpacaBroker(BaseBroker):
             self.logger.error(f"Alpaca get_positions failed: {e}")
             raise
 
+    @retry(max_retries=3, backoff=1)
     def place_order(self, symbol: str, qty: Optional[float], side: str, order_type: str = 'market', notional: Optional[float] = None) -> dict:
 
 
@@ -122,10 +145,14 @@ class AlpacaBroker(BaseBroker):
         except Exception:
             return False
 
+    @retry(max_retries=3, backoff=1)
     def _get_latest_price(self, symbol: str) -> float:
         from alpaca.data.historical import StockHistoricalDataClient
         from alpaca.data.requests import StockLatestTradeRequest
-        client = StockHistoricalDataClient(self.api_key, self.secret_key)
-        req = StockLatestTradeRequest(symbol_or_symbols=symbol)
-        res = client.get_stock_latest_trade(req)
-        return float(res[symbol].price)
+        try:
+            client = StockHistoricalDataClient(self.api_key, self.secret_key)
+            req = StockLatestTradeRequest(symbol_or_symbols=symbol)
+            res = client.get_stock_latest_trade(req)
+            return float(res[symbol].price)
+        except Exception as e:
+            raise RuntimeError(f"Failed to fetch latest price for {symbol}: {e}")
