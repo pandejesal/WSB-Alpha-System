@@ -157,6 +157,16 @@ async function renderDashboard() {
         renderBacktestSection(backtest);
     }
 
+    try {
+        const response = await fetch('data/research_sentiment.json?t=' + Date.now());
+        if (response.ok) {
+            const research = await response.json();
+            renderResearchSentiment(research);
+        }
+    } catch(e) {
+        console.log('Research data not available yet');
+    }
+
 
     // Portfolio cards
     if (portfolio) {
@@ -349,6 +359,32 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
+
+function renderResearchSentiment(research) {
+    const table = document.getElementById('research-sentiment-table');
+    if (!table) return;
+
+    if (!research || research.length === 0) {
+        table.innerHTML = '<tr><td colspan="3" class="py-4 text-center text-gray-500">No data</td></tr>';
+        return;
+    }
+
+    let tbody = '';
+    research.forEach(item => {
+        let stanceClass = 'text-gray-400';
+        if (item.stance === 'BULLISH') stanceClass = 'text-green-400 font-bold';
+        if (item.stance === 'BEARISH') stanceClass = 'text-red-400 font-bold';
+
+        tbody += `
+            <tr class="border-b border-gray-700">
+                <td class="py-2 text-white font-medium cursor-pointer" title="${item.reasoning}">${item.ticker}</td>
+                <td class="py-2 ${stanceClass}">${item.stance}</td>
+                <td class="py-2 text-right">${item.score.toFixed(4)}</td>
+            </tr>
+        `;
+    });
+    table.innerHTML = tbody;
+}
 
 function renderBacktestSection(data) {
     window.lastBacktestData = data;
