@@ -1,119 +1,104 @@
-import ccxt
-import time
-from functools import wraps
-
-def retry(max_retries=3, backoff=1):
-    def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            retries = 0
-            while retries < max_retries:
-                try:
-                    return func(*args, **kwargs)
-                except Exception as e:
-                    retries += 1
-                    if retries == max_retries:
-                        raise e
-                    time.sleep(backoff * (2 ** (retries - 1)))
-            return func(*args, **kwargs)
-        return wrapper
-    return decorator
-
 import logging
 from typing import Dict, List, Optional
 from src.execution.base_broker import BaseBroker
+from src.utils.config import config
 
 logger = logging.getLogger(__name__)
 
 class CCXTBroker(BaseBroker):
-    def __init__(self, exchange_id: str, api_key: str = None, secret: str = None, enable_rate_limit: bool = True):
-        self.logger = logging.getLogger(__name__)
-        exchange_class = getattr(ccxt, exchange_id)
+    """
+    Concrete implementation of BaseBroker using CCXT for Crypto execution.
+    """
 
-        config = {
-            'enableRateLimit': enable_rate_limit,
-            'options': {
-                'defaultType': 'swap' # Support perpetual futures
-            }
+    def __init__(self, exchange_id: str = "binance"):
+        self.logger = logging.getLogger(__name__)
+        self.is_paper = not config.trading.live_trading_enabled
+        self.exchange_id = exchange_id
+
+        # In a real setup, keys would come from config.
+        # Using dummy keys for demonstration as per instructions to mock crypto integration.
+        self.api_key = "dummy_api_key"
+        self.secret_key = "dummy_secret_key"
+
+        self.exchange = None
+        self._initialize_client()
+
+    def _initialize_client(self):
+        try:
+            import ccxt
+            exchange_class = getattr(ccxt, self.exchange_id)
+            self.exchange = exchange_class({
+                'apiKey': self.api_key,
+                'secret': self.secret_key,
+                'enableRateLimit': True,
+                'options': {
+                    'defaultType': 'spot' # or 'future'
+                }
+            })
+            if self.is_paper:
+                self.exchange.set_sandbox_mode(True)
+        except ImportError:
+            self.logger.warning("ccxt not installed. CCXTBroker will run in mock mode.")
+        except Exception as e:
+            self.logger.error(f"Failed to initialize CCXT client: {e}")
+
+    def get_account_balance(self) -> dict:
+        if not self.exchange:
+            return {'equity': config.trading.initial_capital, 'cash': config.trading.initial_capital}
+
+        balance = self.exchange.fetch_balance()
+        # For simplicity, assuming USD/USDT is the base currency
+        total_equity = balance.get('total', {}).get('USDT', config.trading.initial_capital)
+        free_cash = balance.get('free', {}).get('USDT', config.trading.initial_capital)
+
+        return {
+            'equity': float(total_equity),
+            'cash': float(free_cash)
         }
 
-        if api_key and secret:
-            config['apiKey'] = api_key
-            config['secret'] = secret
-
-        self.exchange = exchange_class(config)
-
-    @retry(max_retries=3, backoff=1)
-    def get_account_balance(self) -> dict:
-        try:
-            balance = self.exchange.fetch_balance()
-            # Simplification: returning total USDT balance
-            total = balance.get('USDT', {}).get('total', 0.0)
-            free = balance.get('USDT', {}).get('free', 0.0)
-            return {'equity': total, 'cash': free}
-        except Exception as e:
-            self.logger.error(f"CCXT fetch_balance failed: {e}")
-            raise
-
-    @retry(max_retries=3, backoff=1)
     def get_positions(self) -> List[Dict]:
+        if not self.exchange:
+            return []
+
+        # CCXT positions API depends heavily on the exchange (spot vs futures).
+        # For spot, it's just checking balances of non-USDT tokens.
+        balance = self.exchange.fetch_balance()
+        positions = []
+        for asset, data in balance['total'].items():
+            if asset != 'USDT' and data > 0:
+                positions.append({
+                    'symbol': f"{asset}/USDT",
+                    'qty': float(data),
+                    'market_value': 0.0, # Would require fetching ticker
+                    'unrealized_pl': 0.0
+                })
+        return positions
+
+    def place_order(self, symbol: str, qty: Optional[float], side: str, order_type: str = 'market', stop_loss_price: Optional[float] = None) -> dict:
+        if not self.exchange:
+            raise ConnectionError("CCXT exchange not initialized.")
+
+        # Standardize symbol (e.g., BTC/USDT)
+        ccxt_side = side.lower()
+
+        params = {}
+        if stop_loss_price is not None:
+            params['stopPrice'] = stop_loss_price
+
+        order = self.exchange.create_order(
+            symbol=symbol,
+            type=order_type,
+            side=ccxt_side,
+            amount=qty,
+            params=params
+        )
+        return {"status": "success", "order_id": str(order['id']), "status_details": order['status']}
+
+    def cancel_order(self, symbol: str) -> bool:
+        if not self.exchange:
+            return True
         try:
-            positions = self.exchange.fetch_positions()
-            return [
-                {
-                    'symbol': p['symbol'],
-                    'qty': p['contracts'],
-                    'market_value': p['notional'],
-                    'unrealized_pl': p['unrealizedPnl']
-                } for p in positions if float(p.get('contracts', 0)) > 0
-            ]
-        except Exception as e:
-            self.logger.error(f"CCXT fetch_positions failed: {e}")
-            raise
-
-    @retry(max_retries=3, backoff=1)
-    def place_order(self, symbol: str, qty: Optional[float], side: str, order_type: str = 'market', notional: Optional[float] = None) -> dict:
-        try:
-            if qty is None and notional is not None:
-                # CCXT usually requires base currency quantity. We must convert.
-                ticker = self.exchange.fetch_ticker(symbol)
-                current_price = ticker['last']
-                qty = notional / current_price
-
-            if qty is None or qty <= 0:
-                raise ValueError("Invalid quantity")
-
-            order = self.exchange.create_order(symbol, type=order_type.lower(), side=side.lower(), amount=qty)
-            return {"status": "success", "order_id": order['id'], "filled_qty": order.get('filled', 0)}
-
-        except Exception as e:
-            self.logger.error(f"CCXT create_order failed: {e}")
-            raise
-
-    def cancel_order(self, order_id: str, symbol: str = None) -> bool:
-        try:
-            self.exchange.cancel_order(order_id, symbol)
+            self.exchange.cancel_all_orders(symbol)
             return True
         except Exception:
             return False
-
-    def sync_orders(self, open_order_ids: List[str], symbol: str = None) -> List[Dict]:
-        """Implement order synchronization to detect partial fills, cancellations."""
-        updates = []
-        try:
-            orders = self.exchange.fetch_open_orders(symbol)
-            active_ids = [o['id'] for o in orders]
-
-            for oid in open_order_ids:
-                if oid not in active_ids:
-                    # Order is either filled, partially filled and canceled, or fully canceled
-                    # Need to fetch the specific order to check status
-                    try:
-                        order = self.exchange.fetch_order(oid, symbol)
-                        updates.append(order)
-                    except Exception as e:
-                        self.logger.warning(f"Failed to fetch order {oid} during sync: {e}")
-        except Exception as e:
-            self.logger.error(f"CCXT sync_orders failed: {e}")
-            raise
-        return updates

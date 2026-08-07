@@ -11,7 +11,7 @@
     <!-- Header -->
     <nav class="bg-gray-800 border-b border-gray-700 px-6 py-3">
         <div class="flex items-center justify-between max-w-7xl mx-auto">
-            <h1 class="text-xl font-bold text-green-400">WSB-Alpha-System</h1>
+            <h1 class="text-xl font-bold text-green-400">WSB-Alpha-System - OVERHAUL V1</h1>
             <div class="relative">
                 <button onclick="document.getElementById('dropdown').classList.toggle('hidden')"
                         class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">
@@ -31,38 +31,34 @@
 
     <main class="max-w-7xl mx-auto px-6 py-6">
         <!-- Status Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
                 <p class="text-gray-400 text-xs uppercase">Equity</p>
                 <p id="equity" class="text-2xl font-bold text-green-400">—</p>
                 <p id="equity-change" class="text-xs text-gray-400">—</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <p class="text-gray-400 text-xs uppercase">Today P&L</p>
-                <p id="daily-pnl" class="text-2xl font-bold">—</p>
-                <p id="daily-pnl-pct" class="text-xs text-gray-400">—</p>
+                <p class="text-gray-400 text-xs uppercase">Walk-Forward Eff.</p>
+                <p id="wf-efficiency" class="text-2xl font-bold">—</p>
+                <p id="wf-status" class="text-xs text-gray-400">—</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <p class="text-gray-400 text-xs uppercase">Win Rate</p>
-                <p id="win-rate" class="text-2xl font-bold text-blue-400">—</p>
-                <p id="total-trades" class="text-xs text-gray-400">—</p>
+                <p class="text-gray-400 text-xs uppercase">OOS P-Value (MC)</p>
+                <p id="monte-carlo-p" class="text-2xl font-bold text-blue-400">—</p>
+                <p class="text-xs text-gray-400">Target < 0.01</p>
             </div>
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
                 <p class="text-gray-400 text-xs uppercase">Regime</p>
                 <p id="regime-text" class="text-2xl font-bold text-yellow-400">—</p>
                 <p id="gk-vol" class="text-xs text-gray-400">—</p>
             </div>
-        </div>
-
-        <!-- API Health -->
-        <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 mb-6">
-            <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">API Health</h2>
-            <div id="api-health">
-                <p class="text-gray-500">Loading...</p>
+            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
+                 <p class="text-gray-400 text-xs uppercase">Active Hypothesis</p>
+                 <p id="active-hypothesis" class="text-md font-bold text-purple-400 truncate">—</p>
+                 <p id="hypothesis-confidence" class="text-xs text-gray-400">—</p>
             </div>
         </div>
 
-        <!-- Bottom Row: Positions + Strategies -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <!-- Open Positions -->
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
@@ -85,15 +81,15 @@
 
             <!-- Strategy Leaderboard -->
             <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Top Strategies</h2>
+                <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Top Strategies (OOS Filtered)</h2>
                 <table class="w-full text-sm">
                     <thead>
                         <tr class="text-gray-500 border-b border-gray-700 text-xs">
                             <th class="text-left py-2">#</th>
                             <th class="text-left py-2">Name</th>
-                            <th class="text-right py-2">Sharpe</th>
-                            <th class="text-right py-2">Fitness</th>
-                            <th class="text-right py-2">Thompson</th>
+                            <th class="text-right py-2">OOS Sharpe</th>
+                            <th class="text-right py-2">P-Value</th>
+                            <th class="text-right py-2">Complexity</th>
                         </tr>
                     </thead>
                     <tbody id="strategy-table">
@@ -105,7 +101,7 @@
 
         <!-- Recent Trades -->
         <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 mt-6">
-            <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Recent Trades</h2>
+            <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Recent Executions</h2>
             <table class="w-full text-sm">
                 <thead>
                     <tr class="text-gray-500 border-b border-gray-700 text-xs">
@@ -120,25 +116,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Research Sentiment Section -->
-        <section id="research-sentiment-section" class="mt-8 mb-6">
-            <h2 class="text-xl font-bold text-white mb-4">Research Sentiment (Live)</h2>
-            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="text-gray-500 border-b border-gray-700 text-xs">
-                            <th class="text-left py-2">Ticker</th>
-                            <th class="text-left py-2">Stance</th>
-                            <th class="text-right py-2">Consensus Q-Score</th>
-                        </tr>
-                    </thead>
-                    <tbody id="research-sentiment-table">
-                        <tr><td colspan="3" class="py-4 text-center text-gray-500">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
 
         <!-- Historical Backtest Section -->
         <section id="backtest-section" class="mt-8 mb-6">
@@ -159,7 +136,8 @@
             </div>
             <div id="overfitting-analysis" class="bg-gray-800 rounded-lg p-4 mt-4 border border-gray-700"></div>
         </section>
-</main>
+    </main>
+
 
     <script src="js/app.js"></script>
 </body>
