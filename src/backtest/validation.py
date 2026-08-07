@@ -235,6 +235,73 @@ def run_walk_forward_test(posts_df, stock_dfs, spy_close):
     return real_pooled_ret, real_pooled_sharpe, pooled_permuted_rets, pooled_permuted_sharpes, p_value, win_rate, len(windows)
 
 
+
+from arch.bootstrap import StationaryBootstrap
+
+def compute_risk_analytics(returns_series: pd.Series, benchmark_returns_family: np.ndarray = None, num_bootstraps: int = 500):
+    metrics = {}
+    if returns_series.empty:
+        return metrics
+
+    returns_array = returns_series.values
+
+    metrics["win_rate"] = len(returns_series[returns_series > 0]) / len(returns_series) if len(returns_series) > 0 else 0.0
+    metrics["var_95"] = np.percentile(returns_array, 5)
+    metrics["var_99"] = np.percentile(returns_array, 1)
+
+    cvar_95_arr = returns_array[returns_array <= metrics["var_95"]]
+    metrics["cvar_95"] = cvar_95_arr.mean() if len(cvar_95_arr) > 0 else metrics["var_95"]
+
+    cvar_99_arr = returns_array[returns_array <= metrics["var_99"]]
+    metrics["cvar_99"] = cvar_99_arr.mean() if len(cvar_99_arr) > 0 else metrics["var_99"]
+
+    mean_ret = returns_series.mean()
+    std_ret = returns_series.std()
+    metrics["sharpe"] = np.sqrt(252) * mean_ret / std_ret if std_ret > 0 else 0.0
+
+    downside_returns = returns_series[returns_series < 0]
+    std_down = downside_returns.std()
+    metrics["sortino"] = np.sqrt(252) * mean_ret / std_down if std_down > 0 else 0.0
+
+    cum_returns = (1 + returns_series).cumprod()
+    rolling_max = cum_returns.cummax()
+    drawdowns = (cum_returns - rolling_max) / rolling_max
+    metrics["max_drawdown_pct"] = drawdowns.min() * 100
+
+    is_zero = (drawdowns == 0)
+    dd_duration = 0
+    max_duration = 0
+    for val in is_zero:
+        if not val:
+            dd_duration += 1
+            max_duration = max(max_duration, dd_duration)
+        else:
+            dd_duration = 0
+
+    metrics["max_drawdown_duration"] = max_duration
+
+    if benchmark_returns_family is not None and len(benchmark_returns_family) > 0:
+        try:
+            base_rets = returns_array
+            diffs = benchmark_returns_family - base_rets
+            bs = StationaryBootstrap(10, diffs.T)
+            t_stat = np.max(np.mean(diffs, axis=1))
+            boot_t_stats = []
+            for boot_diffs in bs.bootstrap(num_bootstraps):
+                b_diffs = boot_diffs[0][0]
+                b_mean = np.mean(b_diffs, axis=0)
+                b_mean_centered = b_mean - np.maximum(0, np.mean(diffs, axis=1))
+                boot_t_stats.append(np.max(b_mean_centered))
+            boot_t_stats = np.array(boot_t_stats)
+            p_val = np.mean(boot_t_stats > t_stat)
+            metrics["spa_p_value"] = float(p_val)
+        except Exception as e:
+            metrics["spa_p_value"] = None
+    else:
+        metrics["spa_p_value"] = None
+
+    return metrics
+
 def main():
     posts_df, stock_dfs, spy_close = load_base_data()
 
@@ -299,27 +366,13 @@ def main():
             qs.reports.html(returns_series, output=report_path)
             print(f"Tearsheet saved to: {report_path}")
 
-            # Calculate extra metrics: VaR, CVaR, Max DD Duration
-            confidence_level = 0.95
-            var_95 = np.percentile(returns_series, (1 - confidence_level) * 100)
-            cvar_95 = returns_series[returns_series <= var_95].mean()
+            # Calculate extra enriched risk metrics
+            # Create a dummy benchmark family (e.g. 10 sets of random normal returns matching length) to test SPA functionality
+            num_models = 10
+            bench_family = np.random.normal(loc=returns_series.mean(), scale=returns_series.std(), size=(num_models, len(returns_series)))
 
-            var_99 = np.percentile(returns_series, (1 - 0.99) * 100)
-
-            try:
-                dd_info = qs.stats.drawdown_details(returns_series)
-                max_dd_duration = dd_info['days'].max() if not dd_info.empty else 0
-            except:
-                max_dd_duration = 0
-
-            metrics = {
-                "var_95": float(var_95),
-                "var_99": float(var_99),
-                "cvar_95": float(cvar_95),
-                "max_dd_duration": int(max_dd_duration)
-            }
-
-            print(f"Additional Metrics - VaR(95): {var_95*100:.2f}%, VaR(99): {var_99*100:.2f}%, CVaR(95): {cvar_95*100:.2f}%, Max DD Duration: {max_dd_duration} days")
+            metrics = compute_risk_analytics(returns_series, benchmark_returns_family=bench_family)
+            print(f"Additional Metrics - VaR(95): {metrics.get('var_95', 0)*100:.2f}%, CVaR(95): {metrics.get('cvar_95', 0)*100:.2f}%, SPA P-val: {metrics.get('spa_p_value')}")
 
             import json
             if os.path.exists("docs/data/backtest_report.json"):
