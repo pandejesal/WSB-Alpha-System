@@ -13,7 +13,7 @@ class GeminiSkillEngine:
         # The prompt says: "The user has a Google AI Pro Plan linked to AI Studio"
         self.api_key = os.environ.get("GEMINI_API_KEY", "mock_key")
         self.client = genai.Client(api_key=self.api_key)
-        self.model_name = "gemini-3.1-pro-preview-customtools"
+        self.model_name = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
         self.cached_content = None
 
     def _prepare_cache_content(self) -> str:
@@ -24,6 +24,8 @@ class GeminiSkillEngine:
             with open("strategy_config.yaml", "r") as f:
                 yaml_content = f.read()
             content_parts.append("--- strategy_config.yaml ---\n" + yaml_content)
+        else:
+            print("Warning: strategy_config.yaml not found, proceeding without it.")
 
         # 2. trades.db (last 30 days of trades as CSV text)
         if os.path.exists("trades.db"):
@@ -174,7 +176,9 @@ async def main():
         "Using your tools, first analyze the ledger's MFE and MAE. "
         "Then, formulate a hypothesis to improve the strategy's risk parameters. "
         "Run a sandbox backtest with your proposed `cvar_threshold`, `stop_loss_atr`, and `take_profit_atr`. "
-        "Iterate if necessary, and output your final optimized configuration."
+        "Iterate if necessary, and output your final optimized configuration. "
+        "DECLINE any parameter changes where the in-sample boost is not reproduced out-of-sample. "
+        "Prefer walk-forward efficiency. Do not exceed 5 iterations."
     )
 
     await engine.run_optimization_loop(system_instruction=sys_inst, prompt=prompt)
