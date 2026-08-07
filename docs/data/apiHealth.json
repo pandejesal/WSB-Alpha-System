@@ -1,30 +1,30 @@
 {
-  "last_checked": "2026-08-07T19:33:27.593658Z",
+  "last_checked": "2026-08-07T20:19:30.120047Z",
   "apis": {
     "alpaca": {
       "status": "connected",
       "message": "Paper equity: $100,000.00",
-      "last_check": "2026-08-07T19:33:27.777344Z"
+      "last_check": "2026-08-07T20:19:30.179146Z"
     },
     "gemini": {
       "status": "connected",
       "message": "Model responding",
-      "last_check": "2026-08-07T19:33:29.606306Z"
+      "last_check": "2026-08-07T20:19:33.334495Z"
     },
     "telegram": {
       "status": "connected",
       "message": "Bot: @WSB_trade_bot",
-      "last_check": "2026-08-07T19:33:30.119020Z"
+      "last_check": "2026-08-07T20:19:33.675241Z"
     },
     "yfinance": {
       "status": "rate_limited",
       "message": "No data returned",
-      "last_check": "2026-08-07T19:33:31.494394Z"
+      "last_check": "2026-08-07T20:19:34.949552Z"
     },
     "reddit": {
       "status": "not_configured",
       "message": "Reddit API credentials not set",
-      "last_check": "2026-08-07T19:33:31.494416Z"
+      "last_check": "2026-08-07T20:19:34.949573Z"
     }
   }
 }
