@@ -17,22 +17,29 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip' # Dependency caching enabled for speed
 
-      - run: pip install -r requirements.txt
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -U pytest ruff bandit
 
-      - name: Download NLTK data
-        run: python -c "import nltk; nltk.download('punkt_tab', quiet=True); nltk.download('averaged_perceptron_tagger_eng', quiet=True)"
+      - name: Download NLTK data (Cached)
+        run: |
+          python -c "import nltk; nltk.download('punkt_tab', quiet=True); nltk.download('averaged_perceptron_tagger_eng', quiet=True)"
 
-      - name: Run comprehensive backtest report
+      - name: Run comprehensive backtest report & Strategy Generation
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PYTHONPATH: .
-        run: python scripts/comprehensive_backtest_report.py
+        run: |
+          python scripts/comprehensive_backtest_report.py
+          python scripts/generate_strategy_data.py
 
-      - name: Install Playwright browsers
+      - name: Install Playwright browsers (if needed)
         run: playwright install chromium --with-deps
 
-      - name: Run daily research pipeline
+      - name: Run daily research pipeline (Sentiment & Regimes)
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PYTHONPATH: .
