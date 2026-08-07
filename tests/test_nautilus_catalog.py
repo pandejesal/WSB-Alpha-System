@@ -26,7 +26,7 @@ def test_catalog_builder_mock_fallback_and_types():
         instrument_id = InstrumentId(Symbol("SPY"), Venue("NASDAQ"))
         bar_type = BarType.from_str(f"{instrument_id}-1-DAY-LAST-EXTERNAL")
 
-        bars = catalog.bars(bar_types=[bar_type])
+        bars = catalog.bars(instrument_ids=[instrument_id])
         assert len(bars) > 0, "Bars should be persisted to catalog"
 
         # Verify UTC enforcement and native types
@@ -64,7 +64,7 @@ def test_catalog_builder_success():
         instrument_id = InstrumentId(Symbol("AAPL"), Venue("NASDAQ"))
         bar_type = BarType.from_str(f"{instrument_id}-1-DAY-LAST-EXTERNAL")
 
-        bars = catalog.bars(bar_types=[bar_type])
+        bars = catalog.bars(instrument_ids=[instrument_id])
         assert len(bars) == 1
 
         first_bar = bars[0]
