@@ -1,4 +1,3 @@
-[bandit]
-severity = "high"
-# We set severity to high so that MEDIUM/LOW findings are emitted as warnings
-# but do not fail the build. This balances code checking with pipeline stability.
+[tool.bandit]
+# Note: severity gating is handled in the CI via the -lll flag to only fail on HIGH severity.
+# This file is retained for future plugin configuration, test exclusions (skips), or profiles.
