@@ -13,6 +13,7 @@ from src.alpha.indicators import compute_indicators
 from src.alpha.macro_regime import MacroRegimeFilter
 from src.alpha.fade_strategy import FadeStrategy
 from src.execution.execution_adapter import PaperbrokerClient, ExecutionAdapter
+from src.risk.position_sizing import PositionSizer, LIVE_TRADING_ENABLED, ACCOUNT_BASE_CAPITAL, MAX_CONCURRENT_POSITIONS
 import yfinance as yf
 
 # Configure Logging
@@ -96,12 +97,32 @@ def run_technical_and_risk_pipelines(df: pd.DataFrame, macro_filter: MacroRegime
 
             latest_tech = stock_data.iloc[-1]
 
+            current_price = latest_tech.get('Close', 100.0)
+            stop_loss = current_price * 0.95
+
+            # Position sizing
+            target_qty = PositionSizer.calculate_position_size(
+                account_equity=ACCOUNT_BASE_CAPITAL,
+                current_price=current_price,
+                stop_loss_price=stop_loss,
+                win_rate=0.55,
+                win_loss_ratio=1.5,
+                confidence_score=sentiment_score
+            )
+
+            if target_qty <= 0:
+                continue
+
+            if len(final_signals) >= MAX_CONCURRENT_POSITIONS:
+                logger.warning(f"Max concurrent positions ({MAX_CONCURRENT_POSITIONS}) reached. Skipping remaining signals.")
+                break
+
             # 1. Evaluate Fade Strategy
             fade_signal = fade_strategy.generate_signal(
                 ticker=ticker,
                 current_score=sentiment_score,
                 technical_data=latest_tech,
-                base_qty=10, # Stub sizing
+                base_qty=target_qty,
                 cvar=latest_tech.get('CVaR_95', 0.05)
             )
 
@@ -126,7 +147,7 @@ def run_technical_and_risk_pipelines(df: pd.DataFrame, macro_filter: MacroRegime
                 alpha_signal = {
                     "ticker": ticker,
                     "side": "BUY",
-                    "quantity": 10, # Stub sizing, ideally derived from src.risk parity
+                    "quantity": target_qty,
                     "order_type": "MARKET",
                     "target_cvar_allocation": latest_tech.get('CVaR_95', 0.05),
                     "confluence_score": confluence_score,
@@ -149,6 +170,10 @@ def run_technical_and_risk_pipelines(df: pd.DataFrame, macro_filter: MacroRegime
 
 def main():
     logger.info("=== STARTING LIVE TRADING ORCHESTRATOR ===")
+
+    if not LIVE_TRADING_ENABLED:
+        logger.warning("LIVE_TRADING_ENABLED is False. Aborting live trading run.")
+        return
 
     try:
         # Step 1: Run Sentiment Pipeline (Scraping + FinBERT)

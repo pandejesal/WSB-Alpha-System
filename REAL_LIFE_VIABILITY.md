@@ -17,7 +17,7 @@ Yes. The mathematical models and filters designed in `run_historic_backtest.py` 
 ---
 
 ## ⚠️ 2. Real-World Frictions: Why Backtests Can Still Lose Real Money
-While the backtest demonstrates extraordinary performance (e.g., S&P 500 Adaptive Switcher achieving up to **+1,479.92%** total return from 2020 to 2026), executing this strategy in real life with real capital introduces several frictions that can erode alpha if unmanaged:
+While the backtest demonstrates extraordinary performance (e.g., S&P 500 Adaptive Switcher achieving up to **108.16%** total return from 2019 to 2026), executing this strategy in real life with real capital introduces several frictions that can erode alpha if unmanaged:
 
 ### A. Slippage & Bid-Ask Spreads
 * **The Backtest Assumption**: Assumes entry and exit at the exact daily closing price.
@@ -92,7 +92,7 @@ The strategy has been re-evaluated with a new `validation.py` harness using a Mo
 ![Permutation Histogram](permutation_histogram.png)
 
 ### Expected Real-World Performance
-While the raw backtest reports over 1,700%+ compound return, the **expected real-world performance will be substantially lower**.
+While the raw backtest reports over 108%+ compound return, the **expected real-world performance will be substantially lower**.
 1. **$50-100 Account Limit:** At a total account size of $50-100, diversification is severely limited. Attempting to balance across too many small positions exposes the strategy heavily to slippage and bid-ask spreads that can consume the edge entirely. For this reason, live and paper accounts are strictly constrained to 3-5 simultaneous holdings using fractional shares.
 2. **Short-Term Viability:** Due to this high concentration, early real-money performance (over a span of a few weeks) is likely to be heavily influenced by random walk and market volatility. Whether returns are wildly positive or heavily negative during the initial 4-8 weeks, this limited sample size will not be statistically meaningful. The strategy must survive a longer walk-forward period to prove true edge.
 

@@ -164,5 +164,4 @@ xlsxwriter==3.2.9
 xxhash==3.8.1
 yfinance==0.2.52
 zstandard==0.25.0
-nautilus-trader==1.218.0
-defusedxml
+defusedxml==0.7.1

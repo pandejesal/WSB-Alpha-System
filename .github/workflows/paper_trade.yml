@@ -72,12 +72,24 @@ jobs:
           acct = requests.get('https://paper-api.alpaca.markets/v2/account', headers=headers).json()
           positions = requests.get('https://paper-api.alpaca.markets/v2/positions', headers=headers).json()
 
+          state_file = 'docs/data/portfolio_state.json'
+          baseline = float(acct['equity'])
+
+          if os.path.exists(state_file):
+              with open(state_file, 'r') as f:
+                  state = json.load(f)
+                  baseline = state.get('baseline_equity', baseline)
+          else:
+              os.makedirs('docs/data', exist_ok=True)
+              with open(state_file, 'w') as f:
+                  json.dump({'baseline_equity': baseline}, f)
+
           portfolio = {
               'last_updated': '$(date -u +%Y-%m-%dT%H:%M:%SZ)',
               'equity': float(acct['equity']),
-              'initial_capital': 100,
-              'total_pnl': float(acct['equity']) - 100,
-              'total_pnl_pct': (float(acct['equity']) / 100 - 1) * 100,
+              'initial_capital': baseline,
+              'total_pnl': float(acct['equity']) - baseline,
+              'total_pnl_pct': (float(acct['equity']) / baseline - 1) * 100 if baseline > 0 else 0,
               'daily_pnl': float(acct['equity']) - float(acct['last_equity']),
               'daily_pnl_pct': (float(acct['equity']) / float(acct['last_equity']) - 1) * 100 if float(acct['last_equity']) > 0 else 0,
               'win_rate': float(acct.get('win_rate', 0)),
