@@ -112,3 +112,6 @@ To safeguard against catastrophic failure on real, small-cap accounts ($50-$100)
 - **Circuit Breakers:** A daily maximum drawdown limit of 5% acts as a strict halt mechanism. If tripped, trading is suspended and must be explicitly re-enabled.
 
 By locking these safeguards outside the reach of the self-improvement loop, we guarantee that the system can optimize for alpha without sacrificing its structural survival rules.
+
+## Comprehensive Bias & Risk Management
+For a full technical breakdown of how this system mitigates the top 20 quantitative trading risks (including Overfitting, Look-Ahead Bias, Survivorship Bias, Market Regimes, Slippage, and Non-Stationarity), please refer to the dedicated [BIAS_AND_RISK_ANALYSIS.md](BIAS_AND_RISK_ANALYSIS.md) document.

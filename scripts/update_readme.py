@@ -27,7 +27,7 @@ section = f'''## Historical Backtest Results (2019-2026)
 | Profit Factor | {report["portfolio_summary"]["profit_factor"]:.2f} |
 
 ### Best Strategy: {report["best_strategy"]["name"]}
-- Parameters: holding_days={report["best_strategy"]["parameters"]["holding_days"]}, RSI=({report["best_strategy"]["parameters"]["rsi_bounds"][0]},{report["best_strategy"]["parameters"]["rsi_bounds"][1]}), GK_Vol={report["best_strategy"]["parameters"]["gk_limit"]}, min_confluence={report["best_strategy"]["parameters"]["min_confluence"]}
+- Parameters: RSI=({report["best_strategy"]["parameters"]["rsi_bounds"][0]},{report["best_strategy"]["parameters"]["rsi_bounds"][1]}), min_confluence={report["best_strategy"]["parameters"]["min_confluence"]}
 - Total Return: {report["portfolio_summary"]["total_return_pct"]:.2f}%
 - Sharpe: {report["portfolio_summary"]["sharpe_ratio"]:.2f} | Sortino: {report["portfolio_summary"]["sortino_ratio"]:.2f} | Calmar: {report["portfolio_summary"]["calmar_ratio"]:.2f}
 - Max Drawdown: {report["portfolio_summary"]["max_drawdown_pct"]:.2f}%
