@@ -1,8 +1,9 @@
-from typing import List, Dict, Any
+import logging
+from typing import Any
+
 from src.research.base_search import SearchProvider
 from src.utils.base_provider import LLMProvider
-import json
-import logging
+
 
 class ResearchAgent:
     def __init__(self, search_provider: SearchProvider, llm_provider: LLMProvider):
@@ -10,7 +11,7 @@ class ResearchAgent:
         self.llm = llm_provider
         self.logger = logging.getLogger(__name__)
 
-    def run_research_cycle(self, topic: str) -> Dict[str, Any]:
+    def run_research_cycle(self, topic: str) -> dict[str, Any]:
         self.logger.info(f"Starting research cycle for topic: {topic}")
         # 1. Search the internet
         results = self.search.search(topic, num_results=3)

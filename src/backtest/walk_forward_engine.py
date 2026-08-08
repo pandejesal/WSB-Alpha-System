@@ -1,7 +1,10 @@
-import pandas as pd
-import numpy as np
-from typing import Callable, Dict, Any
 import logging
+from collections.abc import Callable
+from typing import Any
+
+import numpy as np
+import pandas as pd
+
 
 class WalkForwardValidator:
     def __init__(self, train_window_days: int = 252, test_window_days: int = 63):
@@ -9,7 +12,7 @@ class WalkForwardValidator:
         self.test_window = test_window_days
         self.logger = logging.getLogger(__name__)
 
-    def validate(self, df: pd.DataFrame, strategy_eval_func: Callable) -> Dict[str, Any]:
+    def validate(self, df: pd.DataFrame, strategy_eval_func: Callable) -> dict[str, Any]:
         if len(df) < self.train_window + self.test_window:
             self.logger.warning("Insufficient data for walk-forward validation.")
             return {"status": "FAILED", "reason": "Insufficient data"}

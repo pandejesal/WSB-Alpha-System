@@ -1,16 +1,16 @@
-import os
 import json
 import logging
-import asyncio
+import os
+
 from google import genai
 from google.genai import types
-from datetime import datetime
 
 # Setup basic logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("StrategyResearchAgent")
 
-from google.genai.types import Tool, FunctionDeclaration, GenerateContentConfig
+from google.genai.types import FunctionDeclaration, GenerateContentConfig, Tool
+
 
 def search_strategy_concepts_online(query: str) -> str:
     """Mock implementation for now. In reality, it would call an API like Apify or Serper"""

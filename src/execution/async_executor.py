@@ -1,6 +1,7 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
 
+
 class AsyncExecutor:
     def __init__(self, broker, max_workers=4):
         self.broker = broker

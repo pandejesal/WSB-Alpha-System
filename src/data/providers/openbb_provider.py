@@ -1,6 +1,7 @@
 import logging
-from typing import List, Dict
+
 import pandas as pd
+
 from .base import BaseDataProvider
 from .yfinance_provider import YFinanceProvider
 
@@ -17,7 +18,7 @@ class OpenBBProvider(BaseDataProvider):
         except ImportError:
             logger.info("OpenBB not installed. OpenBBProvider will fall back to YFinanceProvider.")
 
-    def fetch_ohlcv(self, tickers: List[str], start_date: str, end_date: str) -> pd.DataFrame:
+    def fetch_ohlcv(self, tickers: list[str], start_date: str, end_date: str) -> pd.DataFrame:
         if self.use_openbb:
             try:
                 # OpenBB SDK logic for fetching historical equity data

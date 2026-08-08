@@ -1,7 +1,10 @@
-from src.research.ticker_extractor import extract_tickers
 import re
+
 import nltk
 from nltk.corpus import words
+
+from src.research.ticker_extractor import extract_tickers
+
 try:
     _ = words.words()
 except LookupError:

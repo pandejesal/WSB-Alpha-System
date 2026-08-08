@@ -1,7 +1,7 @@
-import sqlite3
 import json
 import logging
-from typing import Dict, Any, List
+import sqlite3
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -35,11 +35,11 @@ class MemoryEngine:
             """)
             conn.commit()
 
-    def _normalize_combo(self, combo: Dict[str, Any]) -> str:
+    def _normalize_combo(self, combo: dict[str, Any]) -> str:
         # Sort keys to ensure the JSON string is consistent for the same dictionary
         return json.dumps(combo, sort_keys=True)
 
-    def block_combo(self, combo: Dict[str, Any], reason: str):
+    def block_combo(self, combo: dict[str, Any], reason: str):
         combo_str = self._normalize_combo(combo)
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -53,7 +53,7 @@ class MemoryEngine:
         except Exception as e:
             logger.error(f"Error blocking combo: {e}")
 
-    def record_outcome(self, combo: Dict[str, Any], performance: Dict[str, Any]):
+    def record_outcome(self, combo: dict[str, Any], performance: dict[str, Any]):
         combo_str = self._normalize_combo(combo)
         perf_str = json.dumps(performance)
         try:
@@ -68,7 +68,7 @@ class MemoryEngine:
         except Exception as e:
             logger.error(f"Error recording outcome: {e}")
 
-    def is_blocked(self, combo: Dict[str, Any]) -> bool:
+    def is_blocked(self, combo: dict[str, Any]) -> bool:
         combo_str = self._normalize_combo(combo)
         try:
             with sqlite3.connect(self.db_path) as conn:
@@ -79,7 +79,7 @@ class MemoryEngine:
             logger.error(f"Error checking if blocked: {e}")
             return False
 
-    def recommend_params(self, candidate_combos: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    def recommend_params(self, candidate_combos: list[dict[str, Any]]) -> list[dict[str, Any]]:
         """
         Given a list of candidate combinations, returns only those that are NOT blocked.
         """

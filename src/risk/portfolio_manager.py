@@ -1,4 +1,3 @@
-import logging
 
 class PortfolioManager:
     def __init__(self, max_strategies: int = 5, max_allocation_per_strategy_pct: float = 0.5):

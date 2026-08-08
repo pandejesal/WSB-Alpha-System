@@ -46,7 +46,7 @@ def send_webhook_notification(signals: list):
 
     payload = {"content": message}
     try:
-        response = requests.post(DISCORD_WEBHOOK_URL, json=payload)
+        response = requests.post(DISCORD_WEBHOOK_URL, json=payload, timeout=10)
         response.raise_for_status()
         logger.info("Webhook notification sent successfully.")
     except Exception as e:

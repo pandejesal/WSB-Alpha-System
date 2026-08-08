@@ -1,6 +1,8 @@
-import pandas as pd
-import numpy as np
 from datetime import timedelta
+
+import numpy as np
+import pandas as pd
+
 
 class WalkForwardOptimizer:
     def __init__(self, train_days=90, test_days=30, step_days=30):

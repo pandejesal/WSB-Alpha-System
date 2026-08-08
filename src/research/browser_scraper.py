@@ -1,14 +1,15 @@
 import logging
 import time
+from typing import Any
+
 import requests
-from typing import List, Dict, Any
 
 logger = logging.getLogger(__name__)
 
 POSITIVE_WORDS = {"up", "high", "growth", "beat", "profit", "gain", "buy", "bull", "strong", "positive", "exceed", "soar"}
 NEGATIVE_WORDS = {"plunge", "miss", "fall", "down", "low", "loss", "decline", "sell", "bear", "weak", "negative", "drop", "crash", "fail", "missed"}
 
-def fetch_headlines(ticker: str) -> List[str]:
+def fetch_headlines(ticker: str) -> list[str]:
     """
     Fetches lightweight market/news headlines for a ticker using Yahoo Finance RSS feeds.
     Includes HTTP retries with exponential backoff on 429/5xx, and a 5-second timeout.
@@ -70,7 +71,7 @@ def fetch_headlines(ticker: str) -> List[str]:
     logger.warning(f"Exhausted retries fetching headlines for {ticker}.")
     return []
 
-def score_text(texts: List[str]) -> Dict[str, Any]:
+def score_text(texts: list[str]) -> dict[str, Any]:
     """
     Produces a simple positive/neutral/negative sentiment score with a tiny lexicon.
     Gracefully handles empty lists and exceptions.

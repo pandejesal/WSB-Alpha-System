@@ -1,14 +1,11 @@
-import pandas as pd
-import numpy as np
-import yfinance as yf
 from datetime import timedelta
+
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import yfinance as yf
+
 from src.alpha.indicators import compute_indicators, compute_regime_returns
-
-
-
-
-
 
 
 def evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="total_return"):
@@ -82,9 +79,7 @@ def evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="total
             risk_parity_weight *= 1.50
 
         forecast_passed = False
-        if sentiment_score > 0 and projected_5d_return > 0.005:
-            forecast_passed = True
-        elif sentiment_score < 0 and projected_5d_return < -0.005:
+        if sentiment_score > 0 and projected_5d_return > 0.005 or sentiment_score < 0 and projected_5d_return < -0.005:
             forecast_passed = True
 
         confluence_triggered_full = confluence_triggered_ensemble_only and forecast_passed

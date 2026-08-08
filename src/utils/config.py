@@ -1,7 +1,9 @@
 import os
+
 import yaml
-from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import Field, SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
 
 class Settings(BaseSettings):
     environment: str = Field(default="development", validation_alias="ENVIRONMENT")

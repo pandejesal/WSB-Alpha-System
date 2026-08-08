@@ -1,6 +1,7 @@
-import numpy as np
-import pandas as pd
 import logging
+
+import pandas as pd
+
 
 class WhitesRealityCheck:
     def __init__(self, n_bootstraps: int = 500):

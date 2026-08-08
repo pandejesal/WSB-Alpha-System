@@ -1,10 +1,13 @@
-from typing import Any, Dict
-from src.utils.base_provider import LLMProvider
-from src.utils.config import config
 import json
 import logging
+from typing import Any
+
 from google import genai
 from google.genai import types
+
+from src.utils.base_provider import LLMProvider
+from src.utils.config import config
+
 
 class GeminiProvider(LLMProvider):
     def __init__(self):
@@ -29,7 +32,7 @@ class GeminiProvider(LLMProvider):
             self.logger.error(f"Gemini generation failed: {e}")
             return ""
 
-    def generate_json(self, prompt: str, schema: Any, **kwargs) -> Dict:
+    def generate_json(self, prompt: str, schema: Any, **kwargs) -> dict:
         """
         Generate structured JSON. 'schema' must be a valid Pydantic model class
         if using the new google-genai library's structured output format.

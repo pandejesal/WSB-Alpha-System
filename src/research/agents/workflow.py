@@ -1,10 +1,11 @@
 import json
 import logging
-import ast
-from typing import TypedDict, Annotated, Sequence, Optional
-from langgraph.graph import StateGraph, END
-from src.utils.gemini_client import RateLimitedGeminiClient
+from typing import TypedDict
+
+from langgraph.graph import END, StateGraph
+
 from src.utils.config import config
+from src.utils.gemini_client import RateLimitedGeminiClient
 
 logger = logging.getLogger(__name__)
 
@@ -65,10 +66,11 @@ class ResearchWorkflow:
 
     def regime_detection_node(self, state: GraphState) -> dict:
         try:
+            import pandas as pd
+            import yfinance as yf
+
             from src.alpha.indicators import compute_indicators
             from src.risk.position_sizer import RegimeDetector
-            import yfinance as yf
-            import pandas as pd
 
             spy = yf.download("SPY", period="60d", progress=False)
             if isinstance(spy.columns, pd.MultiIndex):
@@ -149,9 +151,10 @@ class ResearchWorkflow:
         code = code.replace("```python", "").replace("```", "").strip()
 
         try:
-            import tempfile
             import subprocess
-            from RestrictedPython import compile_restricted, safe_builtins
+            import tempfile
+
+            from RestrictedPython import compile_restricted
 
             try:
                 byte_code = compile_restricted(code, '<inline>', 'exec')
@@ -174,9 +177,9 @@ class ResearchWorkflow:
                     try:
                         bandit_out = json_lib.loads(result.stdout)
                         if bandit_out.get('metrics', {}).get('_totals', {}).get('SEVERITY.HIGH', 0) > 0:
-                            raise ValueError(f"Bandit found HIGH severity security issues.")
+                            raise ValueError("Bandit found HIGH severity security issues.")
                     except json_lib.JSONDecodeError:
-                        raise ValueError(f"Bandit execution returned non-zero code but output was unparsable.")
+                        raise ValueError("Bandit execution returned non-zero code but output was unparsable.")
             finally:
                 import os
                 if os.path.exists(temp_name):

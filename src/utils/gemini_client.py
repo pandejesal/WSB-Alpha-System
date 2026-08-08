@@ -1,7 +1,8 @@
-import time
 import logging
+import time
 from collections import deque
-from datetime import datetime, timedelta
+from datetime import datetime
+
 from google import genai
 
 logger = logging.getLogger(__name__)
@@ -130,7 +131,7 @@ class RateLimitedGeminiClient:
             tools.append({"google_search": {}})
 
         self.lite_limiter.record_call()
-        logger.info(f"Executing Gemini Flash Lite request...")
+        logger.info("Executing Gemini Flash Lite request...")
         config_kwargs = {}
         if tools: config_kwargs['tools'] = tools
 

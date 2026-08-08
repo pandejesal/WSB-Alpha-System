@@ -1,7 +1,8 @@
 import re
+
 import nltk
-from nltk.tokenize import word_tokenize
 from nltk.tag import pos_tag
+from nltk.tokenize import word_tokenize
 
 # Common financial false positives requested in Phase 2
 BLACKLIST = {

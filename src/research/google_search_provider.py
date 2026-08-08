@@ -1,15 +1,17 @@
+import logging
+
 import requests
 from bs4 import BeautifulSoup
-from src.research.base_search import SearchProvider
-from typing import List, Dict
 from duckduckgo_search import DDGS
-import logging
+
+from src.research.base_search import SearchProvider
+
 
 class DDGSearchProvider(SearchProvider):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def search(self, query: str, num_results: int = 5) -> List[Dict[str, str]]:
+    def search(self, query: str, num_results: int = 5) -> list[dict[str, str]]:
         self.logger.info(f"Searching DuckDuckGo for: {query}")
         results = []
         try:
