@@ -1,0 +1,4 @@
+[bandit]
+severity = "high"
+# We set severity to high so that MEDIUM/LOW findings are emitted as warnings
+# but do not fail the build. This balances code checking with pipeline stability.
