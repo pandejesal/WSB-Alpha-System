@@ -12,6 +12,8 @@ ACCOUNT_BASE_CAPITAL = 100.0
 # Hard cap of US$ notional risk <= 1% of equity per trade
 MAX_RISK_PER_TRADE_PCT = 0.01
 
+MAX_POSITION_SIZE_PCT = 0.25
+
 # Absolute maximum concurrent positions
 MAX_CONCURRENT_POSITIONS = 4
 

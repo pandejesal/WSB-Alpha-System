@@ -134,9 +134,9 @@ def main():
         if match:
             data = json.loads(match.group(0))
 
-            # Make sure it doesn't try to edit risk_config.py
-            if 'risk_config.py' in data['file']:
-                print("Agent tried to modify risk_config.py. Blocking.")
+            # Make sure it only modifies the target file
+            if data['file'] != 'src/backtest/run_historic_backtest.py':
+                print(f"Agent tried to modify disallowed file: {data['file']}. Blocking.")
                 return
 
             success = update_file(data['file'], data['old_code'], data['new_code'])

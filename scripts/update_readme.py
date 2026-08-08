@@ -121,7 +121,13 @@ section += f'''
 - Regulatory fees approximated
 '''
 
-new_readme = readme.replace('## Setup Instructions', section + '\n## Setup Instructions')
+import re
+new_readme = re.sub(
+    r'## Historical Backtest Results \(2019-2026\).*?(?=## Setup Instructions)',
+    section + '\n',
+    readme,
+    flags=re.DOTALL
+)
 
 with open('README.md', 'w') as f:
     f.write(new_readme)

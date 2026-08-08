@@ -291,6 +291,7 @@ def main():
     active_pos_count = sum(1 for p in current_positions.values() if abs(p) > 0)
     if active_pos_count >= risk_config.MAX_CONCURRENT_POSITIONS:
         print(f"[*] Max positions ({risk_config.MAX_CONCURRENT_POSITIONS}) reached or exceeded.")
+        return
 
     print("\n[*] Current Live Positions (Dollar Values):")
     for ticker, pos in current_positions.items():
