@@ -47,6 +47,6 @@ jobs:
           git add src/backtest/run_historic_backtest.py self_improvement_log.md
           if ! git diff-index --quiet HEAD; then
             git commit -am "Self-Improvement: Applied proposed strategy change"
-            git pull --rebase --autostash origin main || (git checkout --theirs -- docs/data/ && git add docs/data/ && git rebase --continue)
+            git pull --rebase --autostash origin main || (git checkout --theirs -- src/backtest/run_historic_backtest.py self_improvement_log.md && git add src/backtest/run_historic_backtest.py self_improvement_log.md && git rebase --continue)
             git push origin main
           fi
