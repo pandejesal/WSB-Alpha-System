@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: docs-data-writers
+  cancel-in-progress: false
+
 jobs:
   sandbox:
     runs-on: ubuntu-latest
@@ -46,7 +50,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add docs/data/
           if ! git diff-index --quiet HEAD; then
-            git commit -m "chore: update sandbox trading state"
-            git pull --rebase origin main
+            git commit -am "chore: update sandbox trading state"
+            git pull --rebase --autostash origin main || (git checkout --theirs -- docs/data/ && git add docs/data/ && git rebase --continue)
             git push
           fi
