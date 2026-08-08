@@ -68,7 +68,7 @@ class TestPhase4(unittest.TestCase):
         self.assertEqual(evaluated[-1]["id"], "strat4")
 
         # Check statuses
-        self.assertEqual(evaluated[0]["status"], "promoted")
+        self.assertEqual(evaluated[0]["status"], "survived")
         self.assertEqual(evaluated[-1]["status"], "discarded")
 
         # Check mutation

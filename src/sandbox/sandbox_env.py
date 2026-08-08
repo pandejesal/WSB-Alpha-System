@@ -1,11 +1,10 @@
 import ast
+import json
+import os
 import subprocess
 import sys
 import tempfile
-import os
-import platform
-import json
-from typing import Dict, Any, Tuple
+
 
 class SandboxError(Exception):
     pass
@@ -31,7 +30,7 @@ class ASTValidator(ast.NodeVisitor):
 
     def visit_Call(self, node: ast.Call):
         if isinstance(node.func, ast.Name) and node.func.id == '__import__':
-            self.violations.append(f"Direct call to __import__ is not allowed.")
+            self.violations.append("Direct call to __import__ is not allowed.")
         self.generic_visit(node)
 
 class PythonSandbox:
@@ -97,7 +96,7 @@ with open('{result_path}', 'w') as f:
 """
         return script
 
-    def execute(self, code: str) -> Tuple[bool, str]:
+    def execute(self, code: str) -> tuple[bool, str]:
         self.validate_ast(code)
 
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -131,4 +130,4 @@ with open('{result_path}', 'w') as f:
             except subprocess.TimeoutExpired:
                 return False, f"Execution timed out after {self.timeout} seconds."
             except Exception as e:
-                return False, f"Sandbox error: {str(e)}"
+                return False, f"Sandbox error: {e!s}"

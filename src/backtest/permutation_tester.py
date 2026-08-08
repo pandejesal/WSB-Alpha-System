@@ -1,6 +1,9 @@
+from collections.abc import Callable
+from typing import Any
+
 import numpy as np
 import pandas as pd
-from typing import Callable, Dict, Any
+
 
 class PermutationValidator:
     """
@@ -76,7 +79,7 @@ class PermutationValidator:
         # Convert back to arithmetic prices
         return np.exp(synthetic_ohlc)
 
-    def validate(self, strategy_func: Callable[[pd.DataFrame], float], df: pd.DataFrame) -> Dict[str, Any]:
+    def validate(self, strategy_func: Callable[[pd.DataFrame], float], df: pd.DataFrame) -> dict[str, Any]:
         """
         Executes the in-sample permutation test.
         """

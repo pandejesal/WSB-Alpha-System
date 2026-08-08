@@ -1,13 +1,12 @@
-import pandera as pa
-from src.data.schemas import OHLCVSchema
-import yfinance as yf
-import os
-import pandas as pd
-import time
 import logging
-from typing import List
-from .base import BaseDataProvider
+import os
+
+import pandas as pd
+import yfinance as yf
+
 from src.data.cache_engine import CacheEngine
+
+from .base import BaseDataProvider
 
 logger = logging.getLogger(__name__)
 
@@ -15,7 +14,7 @@ class YFinanceProvider(BaseDataProvider):
     def __init__(self, cache_engine: CacheEngine = None):
         self.cache = cache_engine or CacheEngine()
 
-    def fetch_ohlcv(self, tickers: List[str], start_date: str, end_date: str) -> pd.DataFrame:
+    def fetch_ohlcv(self, tickers: list[str], start_date: str, end_date: str) -> pd.DataFrame:
         missing_ranges = self.cache.determine_missing_ranges(tickers, start_date, end_date)
 
         tickers_to_fetch = list(missing_ranges.keys())

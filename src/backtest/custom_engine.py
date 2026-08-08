@@ -1,8 +1,10 @@
-from typing import Dict, Any
-import pandas as pd
-import numpy as np
-from src.backtest.base_engine import BacktestEngine
 import logging
+from typing import Any
+
+import pandas as pd
+
+from src.backtest.base_engine import BacktestEngine
+
 
 class CustomEngine(BacktestEngine):
     def __init__(self, atr_period: int = 14, initial_capital: float = 100.0, commission: float = 0.0004):
@@ -11,7 +13,7 @@ class CustomEngine(BacktestEngine):
         self.initial_capital = initial_capital
         self.commission = commission
 
-    def run_backtest(self, data: pd.DataFrame, strategy: Any, **kwargs) -> Dict[str, Any]:
+    def run_backtest(self, data: pd.DataFrame, strategy: Any, **kwargs) -> dict[str, Any]:
         self.logger.info(f"Running CustomEngine simulation for {strategy.__class__.__name__}")
         try:
             df = strategy.generate_signals(data.copy())

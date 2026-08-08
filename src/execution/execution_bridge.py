@@ -1,7 +1,9 @@
-from typing import Dict, Any
+from typing import Any
+
 from src.execution.base_broker import BaseBroker as Broker
-from src.risk.position_sizer import PositionSizer
 from src.risk.circuit_breakers import CircuitBreaker
+from src.risk.position_sizer import PositionSizer
+
 
 class ExecutionBridge:
     def __init__(self, broker: Broker, position_sizer: PositionSizer, circuit_breaker: CircuitBreaker):
@@ -11,7 +13,7 @@ class ExecutionBridge:
         self.daily_starting_equity = None
         self.peak_equity = None
 
-    def execute_signal(self, ticker: str, signal: int, entry_price: float, atr: float, strategy_confidence: float = 100.0, regime: str = "normal") -> Dict[str, Any]:
+    def execute_signal(self, ticker: str, signal: int, entry_price: float, atr: float, strategy_confidence: float = 100.0, regime: str = "normal") -> dict[str, Any]:
         if signal == 0: return {"status": "skipped", "reason": "Flat"}
         balance = self.broker.get_account_balance()
         current_equity = balance['equity'] if isinstance(balance, dict) else float(balance)

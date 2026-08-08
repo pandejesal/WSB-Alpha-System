@@ -41,7 +41,7 @@ class PaperbrokerClient(PaperTradeBroker):
         }
 
         try:
-            response = requests.post(endpoint, json=payload, headers=self.headers)
+            response = requests.post(endpoint, json=payload, headers=self.headers, timeout=10)
             response.raise_for_status()
             logger.info(f"Successfully placed order for {qty} {ticker} {side}")
             return response.json()
@@ -54,7 +54,7 @@ class PaperbrokerClient(PaperTradeBroker):
     def get_portfolio(self) -> dict:
         endpoint = f"{self.base_url}/portfolio"
         try:
-            response = requests.get(endpoint, headers=self.headers)
+            response = requests.get(endpoint, headers=self.headers, timeout=10)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:
@@ -64,7 +64,7 @@ class PaperbrokerClient(PaperTradeBroker):
     def get_open_positions(self) -> dict:
         endpoint = f"{self.base_url}/positions"
         try:
-            response = requests.get(endpoint, headers=self.headers)
+            response = requests.get(endpoint, headers=self.headers, timeout=10)
             response.raise_for_status()
             return response.json()
         except requests.exceptions.RequestException as e:

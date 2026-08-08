@@ -30,7 +30,7 @@ class TelegramBot:
             "parse_mode": "HTML"
         }
         try:
-            res = requests.post(url, json=payload)
+            res = requests.post(url, json=payload, timeout=10)
             res.raise_for_status()
             return True
         except Exception as e:

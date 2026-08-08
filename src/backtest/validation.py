@@ -1,11 +1,13 @@
-import pandas as pd
-import numpy as np
-import yfinance as yf
 from datetime import timedelta
+
 import matplotlib.pyplot as plt
-from src.alpha import indicators
-import src.backtest.run_historic_backtest as rb
+import numpy as np
+import pandas as pd
+import yfinance as yf
 from tqdm import tqdm
+
+import src.backtest.run_historic_backtest as rb
+from src.alpha import indicators
 
 NUM_PERMUTATIONS = 200
 
@@ -309,11 +311,13 @@ def main():
         print("\nCONCLUSION: Strategy passed validation thresholds.")
 
     try:
-        import quantstats as qs
         import os
         from datetime import datetime
-        import pandas as pd
+
         import numpy as np
+        import pandas as pd
+        import quantstats as qs
+
         import src.backtest.legacy_backtest as rb
 
         real_trades = rb.run_backtest(custom_posts_df=posts_df, stock_dfs_preloaded=stock_dfs, spy_close_preloaded=spy_close)

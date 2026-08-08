@@ -1,6 +1,8 @@
 import pandas as pd
 import vectorbt as vbt
+
 from ..engine_base import BaseBacktestEngine
+
 
 class VectorBTEngine(BaseBacktestEngine):
     def run_sim(self, strategy_spec: dict, historical_data: pd.DataFrame) -> pd.DataFrame:

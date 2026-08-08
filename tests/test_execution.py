@@ -31,7 +31,7 @@ class TestExecutionAdapter(unittest.TestCase):
     def test_order_payload_generation(self):
         client = PaperbrokerClient(base_url="http://dummy")
 
-        def mock_post(url, json=None, headers=None):
+        def mock_post(url, json=None, headers=None, timeout=None):
             self.assertEqual(json['ticker'], "AAPL")
             self.assertEqual(json['side'], "BUY")
             self.assertEqual(json['quantity'], 10)

@@ -1,14 +1,17 @@
-from typing import Dict, Any
-import pandas as pd
-from src.backtest.base_engine import BacktestEngine
-import vectorbt as vbt
 import logging
+from typing import Any
+
+import pandas as pd
+import vectorbt as vbt
+
+from src.backtest.base_engine import BacktestEngine
+
 
 class VectorBTEngine(BacktestEngine):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
 
-    def run_backtest(self, data: pd.DataFrame, strategy: Any, **kwargs) -> Dict[str, Any]:
+    def run_backtest(self, data: pd.DataFrame, strategy: Any, **kwargs) -> dict[str, Any]:
         """
         Runs the generated strategy instance using vectorbt.
         Assumes 'strategy' has a 'generate_signals' method returning a DataFrame with a 'signal' column.

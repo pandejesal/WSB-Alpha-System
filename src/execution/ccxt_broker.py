@@ -1,5 +1,5 @@
 import logging
-from typing import Dict, List, Optional
+
 from src.execution.base_broker import BaseBroker
 from src.utils.config import config
 
@@ -56,7 +56,7 @@ class CCXTBroker(BaseBroker):
             'cash': float(free_cash)
         }
 
-    def get_positions(self) -> List[Dict]:
+    def get_positions(self) -> list[dict]:
         if not self.exchange:
             return []
 
@@ -74,7 +74,7 @@ class CCXTBroker(BaseBroker):
                 })
         return positions
 
-    def place_order(self, symbol: str, qty: Optional[float], side: str, order_type: str = 'market', stop_loss_price: Optional[float] = None) -> dict:
+    def place_order(self, symbol: str, qty: float | None, side: str, order_type: str = 'market', stop_loss_price: float | None = None) -> dict:
         if not self.exchange:
             raise ConnectionError("CCXT exchange not initialized.")
 

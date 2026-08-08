@@ -1,8 +1,10 @@
-import pandas as pd
-import numpy as np
-from src.alpha.base_strategy import BaseStrategy
-from src.alpha.indicators import compute_indicators
 import logging
+
+import numpy as np
+import pandas as pd
+
+from src.alpha.base_strategy import BaseStrategy
+
 
 class ManAHLStrategy(BaseStrategy):
     def __init__(self, windows=[5, 10, 21, 42], vol_window=63):

@@ -1,7 +1,7 @@
 import numpy as np
-import pandas as pd
 from arch.bootstrap import StationaryBootstrap
 from scipy import stats
+
 
 class StatisticalValidator:
     """

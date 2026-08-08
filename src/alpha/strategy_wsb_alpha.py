@@ -1,7 +1,10 @@
+import logging
+
 import pandas as pd
+
 from src.alpha.base_strategy import BaseStrategy
 from src.alpha.indicators import compute_indicators
-import logging
+
 
 class WSBAlphaStrategy(BaseStrategy):
     def __init__(self, rsi_threshold_low=30, rsi_threshold_high=70):

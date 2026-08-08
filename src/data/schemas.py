@@ -1,7 +1,8 @@
+
 import pandas as pd
 import pandera as pa
 from pandera.typing import Series
-from typing import Optional
+
 
 class OHLCVSchema(pa.DataFrameModel):
     Ticker: Series[str] = pa.Field(coerce=True)
@@ -28,5 +29,5 @@ class SentimentPostSchema(pa.DataFrameModel):
     ticker: Series[str] = pa.Field(coerce=True)
     title: Series[str] = pa.Field(coerce=True)
     sentiment_score: Series[float] = pa.Field(coerce=True, ge=-1.0, le=1.0)
-    content: Optional[Series[str]] = pa.Field(coerce=True, nullable=True)
-    score: Optional[Series[float]] = pa.Field(coerce=True, nullable=True)
+    content: Series[str] | None = pa.Field(coerce=True, nullable=True)
+    score: Series[float] | None = pa.Field(coerce=True, nullable=True)

@@ -1,5 +1,5 @@
 import logging
-from typing import List, Dict, Any
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -7,7 +7,7 @@ class DebateEngine:
     def __init__(self):
         pass
 
-    def run_debate(self, ticker: str, headlines: List[str], base_score: Dict[str, Any]) -> Dict[str, Any]:
+    def run_debate(self, ticker: str, headlines: list[str], base_score: dict[str, Any]) -> dict[str, Any]:
         """
         Orchestrates a mock debate between 3 persona agents (Bull, Bear, Neutral).
         Falls back seamlessly if data is missing.
@@ -69,7 +69,7 @@ class DebateEngine:
             return -1.0
         return 0.0
 
-    def _simulate_bull_agent(self, ticker: str, headlines: List[str], base_score: Dict[str, Any]) -> Dict[str, Any]:
+    def _simulate_bull_agent(self, ticker: str, headlines: list[str], base_score: dict[str, Any]) -> dict[str, Any]:
         try:
             # Bull looks for positive ratio
             pos_ratio = base_score.get("positive_ratio", 0.0)
@@ -100,7 +100,7 @@ class DebateEngine:
             logger.error(f"Bull agent failed: {e}")
             return None
 
-    def _simulate_bear_agent(self, ticker: str, headlines: List[str], base_score: Dict[str, Any]) -> Dict[str, Any]:
+    def _simulate_bear_agent(self, ticker: str, headlines: list[str], base_score: dict[str, Any]) -> dict[str, Any]:
         try:
             neg_ratio = base_score.get("negative_ratio", 0.0)
             if not headlines:
@@ -130,7 +130,7 @@ class DebateEngine:
             logger.error(f"Bear agent failed: {e}")
             return None
 
-    def _simulate_neutral_agent(self, ticker: str, headlines: List[str], base_score: Dict[str, Any]) -> Dict[str, Any]:
+    def _simulate_neutral_agent(self, ticker: str, headlines: list[str], base_score: dict[str, Any]) -> dict[str, Any]:
         try:
             if not headlines:
                 return {

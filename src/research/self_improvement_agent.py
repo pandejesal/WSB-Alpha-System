@@ -1,9 +1,15 @@
 import os
 import re
 import time
-from google import genai
-from src.backtest.validation import run_in_sample_test, run_walk_forward_test, load_base_data, NUM_PERMUTATIONS
 from datetime import datetime
+
+from google import genai
+
+from src.backtest.validation import (
+    load_base_data,
+    run_in_sample_test,
+    run_walk_forward_test,
+)
 
 
 def read_logs():

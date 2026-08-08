@@ -1,7 +1,7 @@
-import numpy as np
 import logging
 import random
-from typing import List, Dict
+
+import numpy as np
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +13,7 @@ class DarwinEngine:
     """
 
     @staticmethod
-    def calculate_fitness(metrics: Dict[str, float], spec: Dict = None) -> float:
+    def calculate_fitness(metrics: dict[str, float], spec: dict = None) -> float:
         """
         Calculates fitness with AIC/BIC-informed complexity penalty.
         Fitness = Score_oos + lambda * complexity_penalty
@@ -51,7 +51,7 @@ class DarwinEngine:
 
         return max(0.0, fitness)
 
-    def evaluate_population(self, population: List[Dict], historical_data=None) -> List[Dict]:
+    def evaluate_population(self, population: list[dict], historical_data=None) -> list[dict]:
         if not population:
             return []
 
@@ -118,7 +118,7 @@ class DarwinEngine:
 
         return population
 
-    def select_for_deployment(self, population: List[Dict], top_k: int = 4) -> List[Dict]:
+    def select_for_deployment(self, population: list[dict], top_k: int = 4) -> list[dict]:
         from src.evolution.strategy_selector import ThompsonSampler
         sampler = ThompsonSampler(population)
         selected = []
@@ -132,7 +132,7 @@ class DarwinEngine:
             selected.append(chosen)
         return selected
 
-    def mutate_parameters(self, spec: Dict) -> Dict:
+    def mutate_parameters(self, spec: dict) -> dict:
         import copy
         mutated_spec = copy.deepcopy(spec)
         params = mutated_spec.get('parameters', {})
@@ -151,7 +151,7 @@ class DarwinEngine:
 
         return mutated_spec
 
-    def llm_guided_crossover(self, spec1: Dict, spec2: Dict, llm_client) -> Dict:
+    def llm_guided_crossover(self, spec1: dict, spec2: dict, llm_client) -> dict:
         prompt = f"""
         Analyze these two high-performing quantitative trading strategy specifications.
         Combine their core features and output a new, single strategy specification JSON.

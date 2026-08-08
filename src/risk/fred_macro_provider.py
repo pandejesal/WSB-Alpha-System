@@ -1,7 +1,8 @@
 import logging
 import time
+from typing import Any
+
 import requests
-from typing import Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -63,7 +64,7 @@ class FredMacroProvider:
 
         return None
 
-    def get_regime(self) -> Dict[str, Any]:
+    def get_regime(self) -> dict[str, Any]:
         """
         Classifies the current regime based on T10Y2Y (term spread) and T10YIE (inflation).
         Falls back to NEUTRAL if data is unavailable.

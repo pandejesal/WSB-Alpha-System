@@ -1,7 +1,7 @@
-import pandas as pd
-import numpy as np
-import riskfolio as rp
 import logging
+
+import pandas as pd
+import riskfolio as rp
 
 logger = logging.getLogger(__name__)
 
