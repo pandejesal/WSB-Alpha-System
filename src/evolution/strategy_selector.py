@@ -1,8 +1,9 @@
+
 import numpy as np
-from typing import List, Dict
+
 
 class ThompsonSampler:
-    def __init__(self, strategies: List[Dict]):
+    def __init__(self, strategies: list[dict]):
         self.strategies = {s['id']: {'alpha': s.get('alpha', 1), 'beta': s.get('beta', 1)}
                           for s in strategies}
 
@@ -18,6 +19,6 @@ class ThompsonSampler:
         else:
             self.strategies[strategy_id]['beta'] += 1
 
-    def get_expected_values(self) -> Dict[str, float]:
+    def get_expected_values(self) -> dict[str, float]:
         return {sid: p['alpha'] / (p['alpha'] + p['beta'])
                 for sid, p in self.strategies.items()}

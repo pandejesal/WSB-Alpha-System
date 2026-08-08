@@ -1,6 +1,8 @@
-from typing import Dict, Any
 import logging
+from typing import Any
+
 from src.risk.fred_macro_provider import FredMacroProvider
+
 
 class RegimeDetector:
     @staticmethod
@@ -33,7 +35,7 @@ class PositionSizer:
             self.logger.warning(f"Could not initialize FredMacroProvider: {e}")
             self.macro_provider = None
 
-    def calculate_size(self, account_equity: float, entry_price: float, atr: float, stop_loss_atr_multiplier: float = 2.0, confidence_score: float = 100.0, regime: str = "normal") -> Dict[str, Any]:
+    def calculate_size(self, account_equity: float, entry_price: float, atr: float, stop_loss_atr_multiplier: float = 2.0, confidence_score: float = 100.0, regime: str = "normal") -> dict[str, Any]:
         if account_equity <= 0 or entry_price <= 0 or atr <= 0:
             return {"quantity": 0.0, "reason": "Invalid inputs"}
 

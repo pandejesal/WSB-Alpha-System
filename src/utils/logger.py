@@ -1,6 +1,7 @@
 import logging
-import sys
 import os
+import sys
+
 
 def setup_logger():
     os.makedirs('logs', exist_ok=True)

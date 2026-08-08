@@ -1,8 +1,10 @@
-import sqlite3
-import random
-from datetime import datetime, timedelta, timezone
-import yaml
 import os
+import random
+import sqlite3
+from datetime import datetime, timedelta, timezone
+
+import yaml
+
 
 def create_trades_db():
     if os.path.exists("trades.db"):

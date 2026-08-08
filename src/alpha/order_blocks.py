@@ -1,7 +1,8 @@
+
 import numpy as np
 import pandas as pd
 from numba import njit
-from typing import Dict, List, Any
+
 
 @njit
 def calculate_atr(high: np.ndarray, low: np.ndarray, close: np.ndarray, period: int = 14) -> np.ndarray:
@@ -122,8 +123,7 @@ def detect_order_blocks_and_entries(
                             if tp == -1.0:
                                 max_h = -1.0
                                 for k in range(max(0, i-50), i):
-                                    if high[k] > max_h:
-                                        max_h = high[k]
+                                    max_h = max(max_h, high[k])
                                 tp = max_h
 
                             if tp > close[i]: # Only take valid RR
@@ -169,8 +169,7 @@ def detect_order_blocks_and_entries(
                             if tp == -1.0:
                                 min_l = 1e9
                                 for k in range(max(0, i-50), i):
-                                    if low[k] < min_l:
-                                        min_l = low[k]
+                                    min_l = min(min_l, low[k])
                                 tp = min_l
 
                             if tp != -1.0 and tp < close[i]:

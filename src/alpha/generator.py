@@ -1,5 +1,6 @@
 from src.alpha.schemas import StrategySpecification
 
+
 class PythonGenerator:
     def __init__(self):
         pass
@@ -13,7 +14,7 @@ class PythonGenerator:
         # This acts as the scaffold for the LLM or template engine.
 
         params_str = ",\n        ".join(
-            [f"{p.name}: {p.type} = {repr(p.default)}" for p in spec.parameters]
+            [f"{p.name}: {p.type} = {p.default!r}" for p in spec.parameters]
         )
 
         code = f"""

@@ -12,17 +12,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -39,17 +39,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -66,17 +66,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -93,17 +93,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -120,17 +120,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -147,17 +147,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -174,17 +174,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -201,17 +201,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -228,17 +228,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -255,17 +255,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -282,17 +282,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -309,17 +309,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -336,17 +336,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -363,17 +363,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -390,17 +390,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -417,17 +417,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -444,17 +444,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -471,17 +471,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -498,17 +498,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -525,17 +525,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -552,17 +552,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -579,17 +579,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -606,17 +606,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -633,17 +633,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -660,17 +660,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -687,17 +687,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -714,17 +714,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -741,17 +741,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -768,17 +768,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -795,17 +795,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -822,17 +822,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -849,17 +849,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -876,17 +876,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -903,17 +903,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -930,17 +930,17 @@
       "min_confluence": 3
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   },
@@ -957,17 +957,17 @@
       "min_confluence": 4
     },
     "metrics": {
-      "total_return_pct": -0.3011724473174609,
-      "cagr": -0.03970704597349162,
-      "sharpe": -27.37440106369973,
+      "total_return_pct": -0.3005730582626849,
+      "cagr": -0.039613640704172504,
+      "sharpe": -27.435011049563013,
       "sortino": 0,
-      "max_drawdown_pct": 0.30117244731746595,
+      "max_drawdown_pct": 0.30057305826268754,
       "win_rate": 0.0,
       "profit_factor": 0.0,
       "total_trades": 1,
       "wf_efficiency": 0,
-      "is_sharpe": -4.488898616037298e+16,
-      "oos_sharpe": -8.969143995377254e+16,
+      "is_sharpe": -9.609804245794894e+16,
+      "oos_sharpe": -7.687837710323362e+16,
       "likely_overfit": true
     }
   }

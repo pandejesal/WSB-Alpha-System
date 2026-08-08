@@ -1,9 +1,8 @@
 import logging
+from pathlib import Path
+
 import pandas as pd
 import yfinance as yf
-from pathlib import Path
-from typing import List
-
 from nautilus_trader.core.datetime import dt_to_unix_nanos
 from nautilus_trader.model.data import Bar, BarType
 from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
@@ -18,7 +17,7 @@ class NautilusCatalogBuilder:
         self.catalog = ParquetDataCatalog(self.catalog_path.as_posix())
         self.mock_used = False
 
-    def build_catalog(self, tickers: List[str], start_date: str = "2018-01-01", end_date: str = None):
+    def build_catalog(self, tickers: list[str], start_date: str = "2018-01-01", end_date: str = None):
         if end_date is None:
             end_date = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
 
@@ -32,7 +31,7 @@ class NautilusCatalogBuilder:
                 logger.info(f"Successfully downloaded {len(df)} rows for {ticker}")
                 self._process_and_write(ticker, df)
             except Exception as e:
-                logger.warning(f"yfinance download failed for {ticker}: {str(e)}. Falling back to mock data.")
+                logger.warning(f"yfinance download failed for {ticker}: {e!s}. Falling back to mock data.")
                 self.mock_used = True
                 df_mock = self._generate_mock_data(start_date, end_date)
                 self._process_and_write(ticker, df_mock)

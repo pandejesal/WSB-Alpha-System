@@ -1,5 +1,5 @@
 import pandas as pd
-import numpy as np
+
 
 def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_preloaded=None):
     """

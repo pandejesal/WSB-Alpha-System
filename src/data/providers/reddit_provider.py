@@ -1,12 +1,14 @@
+import logging
+
 import pandas as pd
 import pandera as pa
-from src.data.schemas import SentimentPostSchema
-from src.data.cache_engine import CacheEngine
 import praw
-import logging
-from typing import List, Dict
-from .base import BaseDataProvider
+
+from src.data.cache_engine import CacheEngine
+from src.data.schemas import SentimentPostSchema
 from src.utils.config import config
+
+from .base import BaseDataProvider
 
 logger = logging.getLogger(__name__)
 
@@ -24,7 +26,7 @@ class RedditProvider(BaseDataProvider):
             except Exception as e:
                 logger.error(f"Failed to initialize PRAW: {e}")
 
-    def fetch_ohlcv(self, tickers: List[str], start_date: str, end_date: str) -> pd.DataFrame:
+    def fetch_ohlcv(self, tickers: list[str], start_date: str, end_date: str) -> pd.DataFrame:
         raise NotImplementedError("Reddit does not provide OHLCV data.")
 
 
@@ -61,8 +63,9 @@ class RedditProvider(BaseDataProvider):
         return df
 
     def _fetch_rss_fallback(self, limit: int) -> list:
-        import feedparser
         import time
+
+        import feedparser
         posts = []
         try:
             feed = feedparser.parse("https://www.reddit.com/r/wallstreetbets/hot.rss")

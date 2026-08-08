@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List
+from typing import Any
+
 
 class BaseBroker(ABC):
     """
@@ -8,26 +9,23 @@ class BaseBroker(ABC):
     """
 
     @abstractmethod
-    def get_account_balance(self) -> Dict[str, Any]:
+    def get_account_balance(self) -> dict[str, Any]:
         """
         Returns account balance metrics.
         Must return a dict containing at minimum: 'equity', 'cash'.
         """
-        pass
 
     @abstractmethod
-    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float = None) -> Dict[str, Any]:
+    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float = None) -> dict[str, Any]:
         """
         Places an order.
         """
-        pass
 
     @abstractmethod
-    def get_positions(self) -> List[Dict[str, Any]]:
+    def get_positions(self) -> list[dict[str, Any]]:
         """
         Returns a list of current active positions.
         """
-        pass
 
     @abstractmethod
     def cancel_order(self, symbol: str) -> bool:
@@ -35,4 +33,3 @@ class BaseBroker(ABC):
         Cancels any open/working orders for a symbol.
         Used primarily during fails-closed events.
         """
-        pass

@@ -1,6 +1,8 @@
-import pandas as pd
-from ..engine_base import BaseBacktestEngine
 import logging
+
+import pandas as pd
+
+from ..engine_base import BaseBacktestEngine
 
 logger = logging.getLogger(__name__)
 

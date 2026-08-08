@@ -1,5 +1,6 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 
 def compute_indicators(df):
     if len(df) < 20:

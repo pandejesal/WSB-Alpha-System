@@ -1,5 +1,7 @@
-import pandas as pd
 from abc import ABC, abstractmethod
+
+import pandas as pd
+
 
 class BaseBacktestEngine(ABC):
     """
@@ -11,7 +13,6 @@ class BaseBacktestEngine(ABC):
         """
         Run the simulation for a given strategy specification and return a DataFrame with trades/performance.
         """
-        pass
 
     def apply_t1_execution_rule(self, signals: pd.DataFrame, ohlcv: pd.DataFrame) -> pd.DataFrame:
         """

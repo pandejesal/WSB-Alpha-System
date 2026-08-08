@@ -1,5 +1,7 @@
 import pandas as pd
+
 from src.alpha.smc import SmartMoneyConcepts
+
 
 class SMCAlphaGenerator:
     """

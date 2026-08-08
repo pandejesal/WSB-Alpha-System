@@ -1,12 +1,10 @@
-import os
-import time
-import random
 import asyncio
-import hashlib
-import sqlite3
-import logging
 import datetime
-from typing import List, Dict
+import hashlib
+import logging
+import os
+import random
+import sqlite3
 
 try:
     import praw
@@ -65,7 +63,7 @@ def _mark_post_seen(conn, post_id: str):
     )
     conn.commit()
 
-async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = None) -> List[Dict]:
+async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = None) -> list[dict]:
     """
     Fetches Reddit data using Time-Window Chunking (4-hour intervals) to bypass the 1000 post limit.
     Wraps asynchronous execution for praw block safe queries.
@@ -146,7 +144,7 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
                     # Execute the blocking PRAW call in a background thread
                     submissions_chunk = await asyncio.to_thread(_fetch_sync)
                     success = True
-                except prawcore.exceptions.TooManyRequests as e:
+                except prawcore.exceptions.TooManyRequests:
                     # Exponential Backoff algorithm: if rate limit is hit, wait 60s, then 120s, etc.
                     logger.warning(f"Rate limit hit! TooManyRequests. Sleeping for {backoff} seconds... (Retry {retries+1}/{max_retries})")
                     await asyncio.sleep(backoff)
@@ -205,7 +203,7 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
     logger.info(f"Retrieved {len(items)} raw metadata items from PRAW using chunking.")
     return items
 
-def fetch_reddit_data_sync(max_items: int = 1000, target_year: int = None) -> List[Dict]:
+def fetch_reddit_data_sync(max_items: int = 1000, target_year: int = None) -> list[dict]:
     """
     Synchronous wrapper for fetch_reddit_data_chunked.
     This provides a simplified interface for scripts that do not require

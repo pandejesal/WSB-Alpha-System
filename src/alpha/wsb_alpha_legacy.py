@@ -1,5 +1,7 @@
-from src.research.ticker_extractor import extract_tickers
 import logging
+
+from src.research.ticker_extractor import extract_tickers
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
 
@@ -8,6 +10,7 @@ logger = logging.getLogger(__name__)
 # WSB DD SENTIMENT ANALYTICS & PLOTTER - UNIFIED INCREMENTAL SYSTEM
 # ============================================================================
 import nltk
+
 try:
     nltk.data.find('tokenizers/punkt_tab')
     nltk.data.find('taggers/averaged_perceptron_tagger_eng')
@@ -16,22 +19,21 @@ except LookupError:
     nltk.download('averaged_perceptron_tagger_eng')
 
 
+import json
 import os
 import re
-from src.alpha.indicators import compute_indicators, compute_regime_returns
-
-import json
-import pandas as pd
-import numpy as np
-import requests
-import xml.etree.ElementTree as ET
-import yfinance as yf
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
-from tqdm import tqdm
+import defusedxml.ElementTree as ET
 from collections import defaultdict
-import praw
-import os
+from datetime import datetime, timedelta
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import requests
+import yfinance as yf
+from tqdm import tqdm
+
+from src.alpha.indicators import compute_indicators, compute_regime_returns
 
 # ============================================================================
 # DYNAMIC SYSTEM PATH CONFIGURATION
@@ -112,6 +114,8 @@ def finbert_sentiment(text: str, tokenizer, model, device) -> dict:
     return {"bullish": 0.0, "bearish": 0.0, "neutral": 1.0}
 
 import time
+
+
 def safe_write_csv(df, path):
     for i in range(3):
         try:
@@ -122,8 +126,6 @@ def safe_write_csv(df, path):
             time.sleep(2**i)
     df.to_csv(f"{path}.tmp", index=False)
 
-import json
-import time
 def safe_write_json(data, path):
     for i in range(3):
         try:
@@ -379,7 +381,7 @@ def run_sentiment_pipeline():
     if "regime_holding_days" not in combined.columns:
         combined["regime_holding_days"] = 5
 
-    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]  # noqa: E712
+    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]
     logger.info(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
     if not needs_calculation.empty:
@@ -529,9 +531,7 @@ def run_sentiment_pipeline():
 
                     # Consensus Filter: Bullish trades require positive forecast; Bearish require negative forecast
                     forecast_passed = False
-                    if sentiment_score > 0 and projected_5d_return > 0.005: # At least +0.50% projected return
-                        forecast_passed = True
-                    elif sentiment_score < 0 and projected_5d_return < -0.005: # At least -0.50% projected return
+                    if sentiment_score > 0 and projected_5d_return > 0.005 or sentiment_score < 0 and projected_5d_return < -0.005: # At least +0.50% projected return
                         forecast_passed = True
 
                     # Final Trigger Confluence: Vote-Ensemble trigger must agree with our statistical Forecast
@@ -730,7 +730,7 @@ def run_trajectory_plotter(top_n_tickers=5):
     df['post_date'] = pd.to_datetime(df['post_date'])
     
     # Filter out tickers that are marked as pricing_failed to ensure we only select tickers with valid price data for plotting
-    valid_df = df[df['pricing_failed'] != True]  # noqa: E712
+    valid_df = df[df['pricing_failed'] != True]
     top_tickers = valid_df['ticker'].value_counts().head(top_n_tickers).index.tolist()
     logger.info(f"Selected top {top_n_tickers} tickers for plotting: {top_tickers}")
     

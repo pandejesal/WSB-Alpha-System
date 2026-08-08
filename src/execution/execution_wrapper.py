@@ -1,6 +1,7 @@
-import time
 import logging
-from typing import Callable, Any
+import time
+from collections.abc import Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -25,12 +26,12 @@ class ExecutionWrapper:
             except Exception as e:
                 retries += 1
                 if retries > self.max_retries:
-                    logger.error(f"Execution failed after {self.max_retries} retries: {str(e)}")
+                    logger.error(f"Execution failed after {self.max_retries} retries: {e!s}")
                     raise e
 
                 # Exponential backoff with jitter
                 sleep_time = (self.base_timeout * (2 ** (retries - 1))) + random.uniform(0, 1)
-                logger.warning(f"Execution error ({str(e)}). Retrying in {sleep_time:.2f}s...")
+                logger.warning(f"Execution error ({e!s}). Retrying in {sleep_time:.2f}s...")
                 time.sleep(sleep_time)
 
     def get_account_balance(self) -> dict:

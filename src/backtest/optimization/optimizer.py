@@ -1,11 +1,11 @@
 import itertools
+
 import pandas as pd
-from typing import Dict, List
 from scipy.optimize import minimize
-import numpy as np
+
 
 class GridSearchOptimizer:
-    def __init__(self, param_grid: Dict[str, List]):
+    def __init__(self, param_grid: dict[str, list]):
         self.param_grid = param_grid
 
     def generate_combinations(self):
@@ -26,7 +26,7 @@ class GridSearchOptimizer:
         return pd.DataFrame(results).sort_values('sharpe', ascending=False)
 
 class BayesianOptimizer:
-    def __init__(self, strategy_class, bounds: Dict[str, tuple]):
+    def __init__(self, strategy_class, bounds: dict[str, tuple]):
         self.strategy_class = strategy_class
         self.bounds = bounds
         self.data = None

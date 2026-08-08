@@ -1,9 +1,10 @@
+import hashlib
+import logging
+import os
+
 import pandas as pd
 import yfinance as yf
-from datetime import datetime, timedelta
-import logging
-import hashlib
-import os
+
 
 class MarketDataManager:
     def __init__(self, provider=None):
@@ -12,7 +13,7 @@ class MarketDataManager:
 
     def _generate_cache_key(self, ticker: str, start_date: str, end_date: str, timeframe: str) -> str:
         key_str = f"{ticker}_{start_date}_{end_date}_{timeframe}"
-        return hashlib.md5(key_str.encode()).hexdigest()
+        return hashlib.sha256(key_str.encode()).hexdigest()
 
     def fetch_data(self, ticker: str, start_date: str, end_date: str, timeframe: str = '1d', use_cache: bool = True) -> pd.DataFrame:
         cache_dir = "database/cache"

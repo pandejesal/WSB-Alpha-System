@@ -14,14 +14,17 @@ To run this in production, schedule this script to run daily at 00:01 UTC via cr
 $ python live_crypto_executor.py
 """
 
+import json
 import os
 
+try:
+    import ccxt
+except ImportError:
+    ccxt = None
 import pandas as pd
+from src.risk import position_sizing as risk_config
 from dotenv import load_dotenv
-import risk_config
-import json
-
-from strategy_man_ahl import (
+from src.alpha.man_ahl_legacy import (
     calculate_momentum_score,
     calculate_target_position_sizes,
     calculate_volatility_and_atr,
@@ -47,12 +50,12 @@ BYBIT_SYMBOLS = {
 }
 
 # Target risk parameters matching backtest
-TARGET_RISK = risk_config.MAX_POSITION_SIZE_PCT
+TARGET_RISK = risk_config.MAX_RISK_PER_TRADE_PCT
 HALF_KELLY = 0.5
 LEVERAGE_CAP = 1.0 # Force leverage cap for safety
 MIN_ORDER_SIZE = 10.0  # Bybit floor minimum position size $10
 
-def init_bybit_exchange() -> ccxt.bybit:
+def init_bybit_exchange():
     """
     Initializes Bybit linear perpetual connection via ccxt.
     """
@@ -72,7 +75,7 @@ def init_bybit_exchange() -> ccxt.bybit:
         print("[*] Initializing Bybit in PRODUCTION (live) mode.")
     return exchange
 
-def fetch_account_equity(exchange: ccxt.bybit) -> float:
+def fetch_account_equity(exchange) -> float:
     """
     Fetches the total equity (wallet balance + unrealized PnL) of the USDT account.
     """
@@ -101,7 +104,7 @@ def fetch_historical_ohlcv(exchange: ccxt.bybit, symbol: str, limit: int = 100) 
         print(f"[!] Exception fetching OHLCV for {symbol}: {e}")
         return pd.DataFrame()
 
-def get_current_positions_and_scores(exchange: ccxt.bybit) -> tuple[dict, dict, dict]:
+def get_current_positions_and_scores(exchange) -> tuple[dict, dict, dict]:
     """
     Fetch active scores, volatilities, and current positions on exchange.
     """
@@ -153,7 +156,7 @@ def get_current_positions_and_scores(exchange: ccxt.bybit) -> tuple[dict, dict, 
 
     return current_positions, today_scores, today_vols
 
-def execute_bybit_order(exchange: ccxt.bybit, symbol: str, target_size: float, current_pos: float):
+def execute_bybit_order(exchange, symbol: str, target_size: float, current_pos: float):
     """
     Submits market orders to reach the target dollar size.
     Gracefully handles ccxt.InsufficientFunds and ccxt.InvalidOrder exceptions.
@@ -270,8 +273,7 @@ def main():
             pass
 
     # Update high water mark
-    if equity > high_water_mark:
-        high_water_mark = equity
+    high_water_mark = max(high_water_mark, equity)
 
     # Check Circuit Breakers
     if last_equity > 0:

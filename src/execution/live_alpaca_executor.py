@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """
 🤖 Live Alpaca Broker Execution Template: WSB Sentiment & Technical Confluence
 
@@ -12,12 +11,13 @@ To run this in production, schedule this script to run daily at 3:55 PM EST via 
 
 import os
 import sys
-import requests
-import pandas as pd
 from datetime import datetime, timedelta
-from src.risk import risk_config
+
+import pandas as pd
+import requests
 import yfinance as yf
-from src.alpha.indicators import compute_indicators
+
+from src.risk import position_sizing as risk_config
 
 TECHNICAL_UNIVERSE = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMD', 'META', 'AMZN',
                       'GOOGL', 'JPM', 'V', 'UNH', 'JNJ', 'WMT', 'PG', 'MA',
@@ -220,7 +220,7 @@ def main():
     else:
         csv_path = "wsb_factual_research_data.csv"
         if not os.path.exists(csv_path):
-            print(f"[!] No sentiment data. Use --mode technical")
+            print("[!] No sentiment data. Use --mode technical")
             return
         df = pd.read_csv(csv_path)
         df["post_date"] = pd.to_datetime(df["post_date"])
@@ -311,7 +311,7 @@ def main():
     print(active_signals[["ticker", "sentiment_score"]].to_string(index=False))
 
     # Base max allocation per trade based on risk config
-    max_trade_dollar_size = equity * risk_config.MAX_POSITION_SIZE_PCT
+    max_trade_dollar_size = equity * risk_config.MAX_RISK_PER_TRADE_PCT
 
     # 3. Process each active signal and execute orders
     for _, signal in active_signals.iterrows():

@@ -1,5 +1,6 @@
 from src.sandbox.sandbox_env import PythonSandbox, SandboxError
 
+
 def test_sandbox_safe():
     sb = PythonSandbox()
     code = "import pandas as pd\nx = len([1, 2, 3])"
