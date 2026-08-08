@@ -22,5 +22,5 @@ jobs:
         PYTHONPATH: ${{ github.workspace }}
       run: |
         pytest tests/ -v --cov=src
-        bandit -r src/ -c bandit.toml
+        bandit -r src/ -lll -c bandit.toml
         ruff check src/
