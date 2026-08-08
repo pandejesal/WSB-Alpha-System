@@ -161,5 +161,5 @@ jobs:
           if ! git diff-index --quiet HEAD; then
             git commit -am "chore: update dashboard data from paper trading"
             git pull --rebase --autostash origin main || (git checkout --theirs -- docs/data/ && git add docs/data/ && git rebase --continue)
-            git push
+            git push origin main
           fi
