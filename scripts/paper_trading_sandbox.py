@@ -34,11 +34,18 @@ def main():
         logger.info("Downloading pricing data...")
         end_date = pd.Timestamp.now()
         start_date = end_date - timedelta(days=90)
-        px_data = yf.download(universe, start=start_date, end=end_date, progress=False, auto_adjust=True)
+
+        from src.data.providers.chain import get_provider
+        provider = get_provider()
+        px_data = provider.fetch_ohlcv(universe, start_date=start_date.strftime('%Y-%m-%d'), end_date=end_date.strftime('%Y-%m-%d'))
 
         if px_data.empty:
             logger.warning("No pricing data available.")
             return
+
+        # Transform flat provider dataframe back into the MultiIndex format expected by the rest of the script
+        if 'Ticker' in px_data.columns:
+            px_data = px_data.pivot(index='Date', columns='Ticker')
 
         signals = []
         current_prices = {}
