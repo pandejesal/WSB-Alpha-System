@@ -502,14 +502,16 @@ def calculate_metrics(portfolio, spy_df):
     rf = 0.029 # 2.9% blended average
     daily_rf = rf / 252
 
+    from src.backtest.metrics import safe_sharpe, safe_sortino
+
     excess_returns = hist_df['return'] - daily_rf
     volatility = hist_df['return'].std() * np.sqrt(252) * 100
 
-    sharpe = (excess_returns.mean() / excess_returns.std() * np.sqrt(252)) if excess_returns.std() > 0 else 0
+    sharpe = safe_sharpe(excess_returns, periods=252)
 
-    downside_returns = hist_df['return'][hist_df['return'] < 0]
-    downside_std = downside_returns.std() * np.sqrt(252)
-    sortino = (excess_returns.mean() * 252 / downside_std) if downside_std > 0 else 0
+    # Passing the raw returns to safe_sortino, minus risk free for sortino conceptually is ok but
+    # since safe_sortino calculates it from the full series natively, we just pass the excess returns
+    sortino = safe_sortino(excess_returns, periods=252)
 
     calmar = (cagr / max_drawdown_pct) if max_drawdown_pct > 0 else 0
 
@@ -593,8 +595,8 @@ def analyze_overfitting(portfolio, spy_df):
         if len(period_rets) < 20:
             return 0
         excess = period_rets - rf_daily
-        std = excess.std()
-        return (excess.mean() / std * np.sqrt(252)) if std > 0 else 0
+        from src.backtest.metrics import safe_sharpe
+        return safe_sharpe(excess, periods=252)
 
     years = sorted(hist_df.index.year.unique().tolist())
     periods = []
