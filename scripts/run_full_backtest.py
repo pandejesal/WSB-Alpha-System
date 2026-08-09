@@ -22,16 +22,13 @@ def _compute_trade_metrics(trades_df):
     if trades_df.empty:
         return {"sharpe": 0, "sortino": 0, "calmar": 0, "win_rate": 0, "profit_factor": 0, "max_drawdown": 0, "total_trades": 0, "total_return": 0, "annualized_return": 0, "avg_holding_period": 0}
 
+    from src.backtest.metrics import safe_sharpe, safe_sortino
+
     rets = trades_df["return"].fillna(0)
     total_return = rets.sum()
-    mean_ret = rets.mean()
-    std_ret = rets.std()
 
-    sharpe = (mean_ret / (std_ret + 1e-10)) * np.sqrt(252) if std_ret > 0 else 0
-
-    downside_rets = rets[rets < 0]
-    downside_std = downside_rets.std() if len(downside_rets) > 0 else 1e-10
-    sortino = (mean_ret / (downside_std + 1e-10)) * np.sqrt(252) if downside_std > 0 else 0
+    sharpe = safe_sharpe(rets, periods=252)
+    sortino = safe_sortino(rets, periods=252)
 
     cum_ret = rets.cumsum()
     running_max = cum_ret.cummax()
@@ -59,6 +56,18 @@ def _compute_trade_metrics(trades_df):
     annualized_return = ((1 + total_return) ** (1 / years) - 1) if years > 0 else total_return
     avg_holding_period = trades_df["holding_days"].mean() if "holding_days" in trades_df.columns else 0
 
+    # Defect 2 Fix: compute a REAL out-of-sample signal
+    train_sharpe = sharpe
+    oos_sharpe = None
+    if len(trades_df) >= 5:
+        # Split 80/20 sequentially
+        split_idx = int(len(trades_df) * 0.8)
+        train_trades = trades_df.iloc[:split_idx]
+        oos_trades = trades_df.iloc[split_idx:]
+        train_sharpe = safe_sharpe(train_trades["return"].fillna(0), periods=252)
+        if len(oos_trades) >= 2:
+            oos_sharpe = safe_sharpe(oos_trades["return"].fillna(0), periods=252)
+
     return {
         "sharpe": float(sharpe),
         "sortino": float(sortino),
@@ -70,103 +79,14 @@ def _compute_trade_metrics(trades_df):
         "total_return": float(total_return),
         "annualized_return": float(annualized_return),
         "avg_holding_period": float(avg_holding_period),
-        "train_sharpe": float(sharpe),
-        "oos_sharpe": float(sharpe)
+        "train_sharpe": float(train_sharpe),
+        "oos_sharpe": float(oos_sharpe) if oos_sharpe is not None else None
     }
 
 
 def _run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_high, gk_vol_limit, min_confluence_score):
-    """Run backtest with specific parameter combination."""
-    # Filter signals by RSI threshold (modify posts_df)
-    filtered_posts = posts_df.copy()
-
-    results = []
-    for idx, row in filtered_posts.iterrows():
-        post_date = row["post_date"]
-        ticker = row["ticker"]
-        sentiment_score = row.get("sentiment_score", 0)
-
-        if ticker not in stock_dfs:
-            continue
-        df = stock_dfs[ticker]
-        if df is None or df.empty:
-            continue
-
-        # Ensure we have a Date column or use the index
-        if "Date" not in df.columns:
-            df = df.reset_index()
-            if "Date" not in df.columns and "Datetime" in df.columns:
-                df.rename(columns={"Datetime": "Date"}, inplace=True)
-
-        if "Date" not in df.columns:
-            continue
-
-        if not pd.api.types.is_datetime64_any_dtype(df["Date"]):
-            df["Date"] = pd.to_datetime(df["Date"])
-
-        exec_date = pd.to_datetime(post_date) + pd.tseries.offsets.BDay(1)
-        exec_date = exec_date.normalize()
-
-        entry_row = df[df["Date"] >= exec_date]
-        if entry_row.empty:
-            continue
-
-        entry_idx = entry_row.index[0]
-
-        # GK Vol shield
-        if "GK_Vol" in df.columns and df.loc[entry_idx, "GK_Vol"] >= gk_vol_limit:
-            continue
-
-        # RSI filter
-        rsi_val = df.loc[entry_idx, "RSI_14"] if "RSI_14" in df.columns else 50
-        if not (rsi_low < rsi_val < rsi_high):
-            continue
-
-        # Confluence check
-        ha_close = df.loc[entry_idx, "HA_Close"] if "HA_Close" in df.columns else df.loc[entry_idx, "Close"]
-        ha_open = df.loc[entry_idx, "HA_Open"] if "HA_Open" in df.columns else df.loc[entry_idx, "Close"]
-        macd_hist = df.loc[entry_idx, "MACD_Hist"] if "MACD_Hist" in df.columns else 0
-        close = df.loc[entry_idx, "Close"]
-        bb_lower = df.loc[entry_idx, "BB_Lower"] if "BB_Lower" in df.columns else close * 0.95
-        bb_upper = df.loc[entry_idx, "BB_Upper"] if "BB_Upper" in df.columns else close * 1.05
-        ema_20 = df.loc[entry_idx, "EMA_20"] if "EMA_20" in df.columns else close
-
-        if sentiment_score > 0:
-            score = int(ha_close > ha_open) + int((close > ema_20) and (macd_hist > 0)) + int(30 < rsi_val < 70) + int(close > bb_lower)
-        else:
-            score = int(ha_close < ha_open) + int((close < ema_20) and (macd_hist < 0)) + int(30 < rsi_val < 70) + int(close < bb_upper)
-
-        if score < min_confluence_score:
-            continue
-
-        entry_price = df.loc[entry_idx, "Open"]
-
-        # ATR slippage
-        atr_val = df.loc[entry_idx, "ATR_14"] if "ATR_14" in df.columns else entry_price * 0.02
-        raw_slippage = atr_val * 0.05
-        min_slip = entry_price * 0.001
-        max_slip = entry_price * 0.025
-        slippage = max(min_slip, min(raw_slippage, max_slip))
-
-        direction = 1 if sentiment_score > 0 else -1
-        actual_entry = entry_price + (slippage * direction)
-
-        exit_idx = entry_idx + holding_days
-        if exit_idx >= len(df):
-            exit_idx = len(df) - 1
-
-        exit_price = df.loc[exit_idx, "Close"]
-        actual_exit = exit_price - (slippage * direction)
-        trade_ret = (actual_exit - actual_entry) / actual_entry * direction
-
-        results.append({
-            "post_date": post_date,
-            "ticker": ticker,
-            "return": trade_ret,
-            "holding_days": holding_days
-        })
-
-    return pd.DataFrame(results)
+    import src.backtest.run_historic_backtest as rb
+    return rb.run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_high, gk_vol_limit, min_confluence_score)
 
 
 def main():
