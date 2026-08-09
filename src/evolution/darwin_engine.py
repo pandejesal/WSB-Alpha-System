@@ -20,7 +20,10 @@ class DarwinEngine:
         """
         # Ensure keys exist with default 0.0
         is_sharpe = metrics.get('train_sharpe', metrics.get('sharpe', 0.0))
-        oos_sharpe = metrics.get('oos_sharpe', is_sharpe)
+        # Defect 2 Fix: Handle None oos_sharpe gracefully by defaulting to 0.0 for fitness
+        oos_sharpe_raw = metrics.get('oos_sharpe')
+        oos_sharpe = oos_sharpe_raw if oos_sharpe_raw is not None else 0.0
+
         sortino = metrics.get('sortino', 0.0)
         calmar = metrics.get('calmar', 0.0)
         win_rate = metrics.get('win_rate', 0.0)
@@ -69,11 +72,14 @@ class DarwinEngine:
                     pass
 
             is_sharpe = metrics.get('train_sharpe', metrics.get('sharpe', 0.0))
-            oos_sharpe = metrics.get('oos_sharpe', is_sharpe)
+
+            # Defect 2 Fix: Handle missing OOS gracefully
+            oos_sharpe_raw = metrics.get('oos_sharpe')
+            oos_sharpe = oos_sharpe_raw if oos_sharpe_raw is not None else 0.0
 
             # 1. Walk-Forward Efficiency (Target >= 0.7)
             wf_efficiency = 0.0
-            if is_sharpe > 0:
+            if is_sharpe > 0 and oos_sharpe_raw is not None:
                 wf_efficiency = oos_sharpe / is_sharpe
 
             # 2. Strict OOS P-Value gate
@@ -103,13 +109,16 @@ class DarwinEngine:
             # Strict gating for promotion
             metrics = strategy.get('metrics', {})
             is_sharpe = metrics.get('train_sharpe', metrics.get('sharpe', 0.0))
-            oos_sharpe = metrics.get('oos_sharpe', is_sharpe)
-            wf_eff = (oos_sharpe / is_sharpe) if is_sharpe > 0 else 0
+
+            # Defect 2 Fix: Read actual OOS sharpe. If None, fail-closed for promotion
+            oos_sharpe = metrics.get('oos_sharpe')
+
+            wf_eff = (oos_sharpe / is_sharpe) if (is_sharpe > 0 and oos_sharpe is not None) else 0
             p_val = metrics.get('oos_p_value', 1.0)
             blocks = metrics.get('wf_blocks_survived', 0)
 
-            # Only promote if rigorous conditions are met
-            if i < top_quartile_idx and wf_eff >= 0.7 and p_val < 0.01 and blocks >= 3 and oos_sharpe >= 1.0:
+            # Only promote if rigorous conditions are met and we actually have an OOS sharpe
+            if i < top_quartile_idx and oos_sharpe is not None and wf_eff >= 0.7 and p_val < 0.01 and blocks >= 3 and oos_sharpe >= 1.0:
                 strategy['status'] = 'promoted'
             elif i >= bottom_quartile_idx:
                 strategy['status'] = 'discarded'
