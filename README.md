@@ -1,140 +1,183 @@
-# WSB-Alpha-System: Autonomous Agentic Quant Firm
+# WSB-Alpha-System
 
-This is a fully automated, self-optimizing system running on a $100 micro-account. It uses natural language processing on retail sentiment data, combines it with institutional quantitative methods, and continually refines itself using an AI skill loop.
+An autonomous, agentic quantitative trading system that turns retail-sentiment signals into a validated, statistically-hardened strategy pipeline -- fully hosted on GitHub's free infrastructure (Actions + Pages).
 
-## The Tech Stack (Highlighting Zero-Cost)
-* **LLM Engine:** Google Gemini 3.1 Pro (Zero-cost optimization via Google AI Studio).
-* **Data Ingestion:** PRAW (Free Reddit API) and yfinance (Free Yahoo Finance data).
-* **Execution:** Alpaca (Zero-commission fractional shares) & CCXT.
+It scrapes public sentiment (Reddit / web research), prices a universe of stocks through a multi-provider OHLCV fallback chain, runs lookahead-free backtests with honest statistical validation, evolves parameters with a DERM-style evolutionary gate, paper-trades every weekday, and publishes a static dashboard.
 
-## CI/CD & Free Hosting (GitHub Actions + Pages)
+## How it works
 
-**Zero-Cost Guarantee:** This entire system runs 100% FREE and HOSTED via GitHub. It explicitly requires NO local execution (no local LLMs, no localhost servers), and NO paid APIs. It is designed to scale a $100 micro-account to $500 without incurring any operational costs.
+```
+Social & web research        Reddit scraper (PRAW), web-search providers, Gemini-2.5-flash
+        │
+        ▼
+Sentiment & thesis signals ──► src/research/  (ticker extraction, NLP scoring)
+        │
+        ▼
+OHLCV market data ──► DataProviderChain: Alpaca → Tiingo → Binance (public) → yfinance
+        │              CacheEngine (duckdb) dedup + incremental backfill
+        ▼
+Backtest engines ──► run_historic_backtest.py (T+1, ATR slippage, GK-vol shield)
+        │              VectorBT / Nautilus engines for evolution runs
+        ▼
+Statistical validation ──► src/backtest/ validation, permutation tests, walk-forward,
+        │                     deflated Sharpe (trial ledger / DSR helper)
+        ▼
+Evolution & selection ──► src/evolution/darwin_engine.py  (promotion only on OOS evidence)
+        ▼
+Execution / paper trading ──► AlpacaBroker, CCXTBroker, paper_trading_sandbox.py
+        │                        (risk-capped, ATR stops, position sizing)
+        ▼
+Dashboard & monitoring ──► docs/ static GitHub Pages dashboard, Telegram alerts, API health checks
+```
 
-* **GitHub Actions:** Headless scheduled cron jobs (e.g., `daily_research.yml` running daily at 8 AM UTC) manage the data ingestion, Nautilus backtesting, reporting, and dashboard generation on the free `ubuntu-latest` runners.
-* **GitHub Pages:** The static dashboard (HTML/JS + JSON data files) is automatically deployed and hosted via the `pages.yml` deployment workflow directly from the `main` branch `docs/` folder.
-* **Required GitHub Secrets:** For the automated CI/CD pipeline to work correctly, you must configure the following repository secret in GitHub:
-  * `GEMINI_API_KEY`: Used by the research pipeline and LLM optimization loop.
+## Repository layout
 
-## The Architecture
-* **Signal Generation:** FinBERT Sentiment + Smart Money Concepts (FVGs/Order Blocks) + Man AHL Trend Following.
-* **Validation:** Timothy Masters' Monte Carlo Permutation Testing (Logarithmic).
-* **Self-Learning:** The Gemini Agent Skill Loop (`skill_executor.py`) that generates hypotheses, tests them via the Sandbox Backtest Tool, and safely deploys optimized parameters.
+| Path | Purpose |
+|------|---------|
+| `src/data/` | Market-data providers and the fallback chain: `providers/chain.py` (`DataProviderChain`), `providers/alpaca_data_provider.py`, `providers/tiingo_provider.py`, `providers/binance_public_provider.py`, `providers/yfinance_provider.py`, `cache_engine.py` (duckdb), `market_data.py`, `nautilus_catalog.py` |
+| `src/backtest/` | `run_historic_backtest.py` (honest backtest engine), `validation.py` (in-sample + walk-forward permutation p-values), `metrics.py` (`safe_sharpe` / `safe_sortino`), `permutation_tester.py`, `walk_forward_engine.py`, `whites_reality_check.py`, `engines/` (vectorbt, nautilus) |
+| `src/evolution/` | `darwin_engine.py` (evolutionary strategy selection with complexity penalty + promotion gate), `strategy_selector.py` |
+| `src/risk/` | `fred_macro_provider.py` (FRED regime classification: RISK_ON / RISK_OFF / STAGFLATION / NEUTRAL), `position_sizing.py`, `portfolio_manager.py`, `circuit_breakers.py` |
+| `src/research/` | `reddit_scraper.py`, `ticker_extractor.py`, `nlp_utils.py`, `strategy_research_agent.py`, `self_improvement_agent.py`, `skill_executor.py`, `google_search_provider.py`, `agentic_scraper.py` (Playwright) |
+| `src/execution/` | `base_broker.py`, `alpaca_broker.py`, `ccxt_broker.py`, `execution_wrapper/bridge/adapter.py`, `live_alpaca_executor.py`, `live_crypto_executor.py` |
+| `src/monitoring/` | `telegram_bot.py` (notifications; returns `False` + warning on missing credentials), `dashboard.py` (deprecated stub -- real dashboard lives in `docs/`) |
+| `src/utils/` | `config.py` (pydantic-settings, `.env` + `config/settings.yaml`), `gemini_provider.py` / `gemini_client.py` (Google `google-genai`, `gemini-2.5-flash`) |
+| `config/` | `universe.json` (ticker universe), `settings.yaml` (trading flags) |
+| `scripts/` | `run_full_backtest.py`, `generate_strategy_data.py`, `comprehensive_backtest_report.py`, `paper_trading_sandbox.py`, `run_research.py`, `check_market_data.py` |
+| `tests/` | pytest suite covering indicators, data, providers, backtest, validation, execution, risk, evolution, sandbox |
+| `docs/` | Static dashboard (GitHub Pages) + `data/*.json` artifacts (backtest_report, strategies, equity_curve, trades, portfolio, apiHealth, ...) |
+| `.github/workflows/` | 8 scheduled / triggered pipelines (see below) |
 
-## Historical Backtest Results (2019-2026)
+## Data providers
 
-### Summary Table
-| Metric | Value |
-|--------|-------|
-| Backtest Period | Jan 2019 – Aug 2026 |
-| Initial Capital | $100 |
-| Quarterly Deposit | $50 |
-| Total Deposits | $1550 (31 deposits) |
-| Final Portfolio Value | $1645.04 |
-| Total Return | -0.30% |
-| CAGR | -0.04% |
-| Max Drawdown | 0.30% (on 2026-08-07) |
-| Sharpe Ratio | -27.44 |
-| Sortino Ratio | 0.00 |
-| Win Rate | 0.0% |
-| Total Trades | 1 |
-| Profit Factor | 0.00 |
+OHLCV data is fetched through an ordered fallback chain (**Alpaca → Tiingo → Binance (public) → yfinance**) so a single provider outage never blocks the pipeline:
 
-### Best Strategy: DYN_EXIT_t1.5_p2.5_rsi3070_min3
-- Parameters: RSI=(30,70), min_confluence=3
-- Total Return: -0.30%
-- Sharpe: -27.44 | Sortino: 0.00 | Calmar: -0.13
-- Max Drawdown: 0.30%
-- Win Rate: 0.0% | Profit Factor: 0.00
-- Total Trades: 1
-- Walk-Forward Efficiency: 0.00 (OOS Sharpe / IS Sharpe)
-- Overfitting Risk: High
+- `AlpacaDataProvider` -- requires `ALPACA_API_KEY` / `ALPACA_SECRET_KEY`; disabled (empty) without keys.
+- `TiingoProvider` -- requires `TIINGO_API_KEY`; retries (`429` / 5xx) with exponential back-off.
+- `BinancePublicProvider` -- public REST endpoints, no keys required (weight-limited).
+- `YFinanceProvider` -- last-resort fallback, cached via `CacheEngine`.
+- `CacheEngine` -- duckdb-backed local cache; deduplicates and backfills only the missing ranges.
 
-### Performance by Year
-| Year | Return | Sharpe | Max DD | Trades | Win Rate |
-|------|--------|--------|--------|--------|----------|
-| 2019 | 0.0% | -134537657483007328.00 | 0.0% | 0 | 0.0% |
-| 2020 | 0.0% | 0.00 | 0.0% | 0 | 0.0% |
-| 2021 | 0.0% | -134537657483007328.00 | 0.0% | 0 | 0.0% |
-| 2022 | 0.0% | -134536662378310320.00 | 0.0% | 0 | 0.0% |
-| 2023 | 0.0% | -134536662378310320.00 | 0.0% | 0 | 0.0% |
-| 2024 | 0.0% | 0.00 | 0.0% | 0 | 0.0% |
-| 2025 | 0.0% | -134537657483007328.00 | 0.0% | 0 | 0.0% |
-| 2026 | -0.3% | -8.90 | 0.3% | 1 | 0.0% |
+FRED macro data (`T10Y2Y` term spread + `T10YIE` inflation) is used for regime classification; it fails closed to `NEUTRAL` when `FRED_API_KEY` is unset or data is unavailable.
 
-### Performance by Regime
-| Regime | Trades | Avg Return | Win Rate | Best Strategy |
-|--------|--------|------------|----------|---------------|
-| Low Volatility | 0 | 0.00% | 0.0% | DYN_EXIT_t1.5_p2.5_rsi3070_min3 |
-| Normal | 1 | -1.20% | 0.0% | DYN_EXIT_t1.5_p2.5_rsi3070_min3 |
-| High Volatility | 0 | 0.00% | 0.0% | DYN_EXIT_t1.5_p2.5_rsi3070_min3 |
+## Backtesting & validation
 
-### Overfitting Analysis
-- Strategies tested: 90
-- Likely overfit (WF efficiency < 0.5): 36
-- Robust strategies (WF efficiency >= 0.7): 0
-- Average walk-forward efficiency: 0.00
+The system takes an aggressive anti-overfit stance:
 
-### Assumptions
-- Slippage: ATR(14) * 0.05, clamped 0.1%-2.5% of price per side
-- Fees: $0 commission (Alpaca), SEC fee $0.000008 per $ sell-side, TAF $0.000166/share sell-side
-- Spread: 0.05% liquid large-cap, 0.15% mid-cap
-- Market impact: negligible at <$25 position sizes
-- Risk-free rate: 2.0% (2019-2023), 4.5% (2024-2026)
+- **No look-ahead:** entries are decided on the last closed bar (`decision_iloc = entry_iloc - 1`) and filled at the **next** bar's open; execution rolls to the next business day (`T+1`), asserted in `tests/test_session4_lookahead.py`.
+- **Realistic frictions:** ATR(14)-based slippage clamped to 0.1%-2.5% per side, SEC/TAF regulatory fees, small-cap spread assumptions. See "Assumptions" in the backtest report.
+- **Statistical gates:** in-sample + multi-year rolling walk-forward Monte-Carlo permutation tests (`permutation_tester.py`, Timothy Masters' methodology) with p-value thresholds (`< 0.01` IS, `< 0.05` WF for promotion).
+- **Safe metrics everywhere:** `safe_sharpe` / `safe_sortino` (`src/backtest/metrics.py`) return `0.0` instead of astronomical values when returns have near-zero std.
+- **No aliased metrics:** `generate_strategy_data.py` computes true out-of-sample Sharpe per candidate (80/20 partition) and reports walk-forward efficiency (`OOS_sharpe` vs `IS_sharpe`); the dashboard marks likely-overfit strategies.
 
-### Limitations
-- Survivorship bias: current ticker list used, delisted tickers excluded
-- No intraday data, daily OHLCV only
-- Spread modeled as fixed percentage, not actual bid-ask
-- Slippage modeled as ATR-based, not actual fills
-- Regulatory fees approximated
+## Evolution & self-improvement
 
-## Setup Instructions
+- **`darwin_engine.py`** evolves populations of `(rsi_low, rsi_high, min_confluence, holding_days, gk_vol_limit)` parameter sets. Promotion requires out-of-sample evidence; strategies marked likely-overfit are not promoted.
+- **`src/research/self_improvement_agent.py`** proposes exactly one parameter change against the strategy engine, logs the proposal to `self_improvement_log.md`, and the change is committed to `src/backtest/run_historic_backtest.py` by the `Bounded Self-Improvement Loop` workflow.
+- **`strategy_research_agent.py`** performs real web searches (DuckDuckGo + `google_search_provider.py`) -- no mock search stubs.
 
-1. **Install Dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Execution
 
-2. **Configure Environment Variables:**
-   Copy `.env.example` to `.env` and fill in the following values:
-   * `ALPACA_API_KEY`: For zero-commission fractional share execution.
-   * `GEMINI_API_KEY`: For the self-learning agent and LLM optimization loop.
-   * `REDDIT_CLIENT_ID`: Your PRAW / Reddit App client ID.
-   * `REDDIT_CLIENT_SECRET`: Your PRAW / Reddit App client secret.
-     * **You MUST create a registered Reddit Developer App (type: 'script') to get OAuth credentials. Do not use unauthenticated requests, or you will be throttled to 10 requests per minute and your IP will be blocked.**
-   * `TELEGRAM_BOT_TOKEN`: For system notifications and trade logging.
+| Mode | Where | Details |
+|------|-------|---------|
+| Paper (GitHub) | `paper_trade.yml` / `paper_trading_sandbox.py` | Weekday 3:55 PM EST simulated portfolio, saved to `docs/data/` |
+| Sandbox | `sandbox.yml` | 5-day scripted sandbox (pre-trading simulations) |
+| Live (optional) | `live_alpaca_executor.py`, `live_crypto_executor.py` | Requires `LIVE_TRADING_ENABLED=True` and real broker credentials; defaults to **disabled** |
 
-## Real Backtest Results (2020-2026)
+All brokers implement risk controls: position sizing (`position_sizing.py`), ATR-based stops, circuit breakers, and fails-closed behavior when credentials are missing (no dummy/mock credentials or silent mock fallbacks -- ccxt broker raises `ValueError`/`ImportError` on config miss).
 
-The strategy was rigorously backtested from 2020 to 2026, evaluating the S&P 500 Adaptive Auto-Regime Switcher.
-While the raw backtest reports extraordinary performance (achieving up to **+1,479.92%** total return), the statistical validation via Monte Carlo permutation tests indicates the strategy has not demonstrated it beats random noise:
-* **In-sample Monte Carlo permutation p-value:** 0.1100 (11.0%)
-* **Multi-year rolling Walk-forward permutation p-value:** 0.2150 (21.5%)
+## GitHub Actions pipelines
 
-The true statistical performance currently fails to meet the strict viability thresholds (In-sample p-value > 1%, Walk-forward p-value > 5%). Please read `REAL_LIFE_VIABILITY.md` for full details.
+| Workflow | Schedule | What it does |
+|----------|----------|--------------|
+| `ci.yml` | on push to `main` | `pytest tests/ -v --cov=src`, `bandit`, `ruff` |
+| `daily_research.yml` | 08:00 UTC daily | Runs `comprehensive_backtest_report.py` + `generate_strategy_data.py` + `run_research.py`; commits dashboard JSON |
+| `generate_strategies.yml` | 07:00 UTC Sunday | Regenerates `docs/data/strategies.json` from the evolution pipeline |
+| `paper_trade.yml` | 20:55 UTC Mon-Fri | Daily paper trading (3:55 PM ET) with real mark-to-market |
+| `sandbox.yml` | 20:55 UTC Mon-Fri | Runs the 5-day paper sandbox |
+| `self_improvement.yml` | 12:00 UTC Saturday | LLM proposes one parameter change; commits if accepted |
+| `api_health_check.yml` | hourly | Pings external data APIs and records status to `docs/data/apiHealth.json` |
+| `pages.yml` | on `docs/**` push | Deploys `docs/` as GitHub Pages |
 
-## Risk Management & Failure Checks
+The static dashboard (`docs/index.html` + vanilla JS) reads the committed JSON artifacts in `docs/data/` and is published automatically.
 
-### Technical and System Failures
-* **Internet Drops:** A lost connection stops your program from getting price updates or sending stop-loss orders.
-* **Server Crashes:** Software bugs or hardware freezes can leave open trades hanging without protection.
-* **Latency Delays:** Slow data speeds mean your order arrives too late, missing the target price.
+## Setup
 
-### Strategy and Data Errors
-* **Over-Optimization:** Tuning a model too closely to past data (curve fitting) means it will fail in live markets.
-* **Bad Data Quality:** Incorrect or delayed historical and live feeds create false buy or sell signals.
-* **Ignoring Costs:** Forgetting about broker fees, taxes, and price slippage can turn a winning idea into a losing routine.
+**Requirements:** Python 3.12, Git, GitHub Actions (for scheduled runs).
 
-### Market and Execution Risks
-* **Liquidity Shortages:** Sudden drops in buyers or sellers mean your large order cannot close at a fair price.
-* **Changing Conditions:** An automated rule built for a quiet market will often break during sudden economic panic or high volatility.
+### 1. Install
 
-## Data Accuracy & Strategy Validation
+```bash
+git clone https://github.com/pandejesal/WSB-Alpha-System.git
+cd WSB-Alpha-System
+python -m venv .venv && .venv\Scripts\activate   # Windows
+# or: source .venv/bin/activate                    # Linux/macOS
+pip install -r requirements.txt
+```
 
-All market data downloaded during live execution and historical backtesting is strictly compared against real-world stock market data from institutional data sources (via `yfinance` caching mechanisms).
+### 2. Environment variables
 
-**Validation Steps:**
-- Tests assert zero Look-ahead bias by employing T+1 execution rules, strictly transacting on the next available open price (verified via `pandas` T+1 business day offsets).
-- The historical strategies are rigorously benchmarked against the `SPY` (S&P 500) performance utilizing Monte Carlo Permutation Testing on logarithmic returns (as recorded in `REAL_LIFE_VIABILITY.md`).
-- All technical indicators (RSI, Bollinger Bands, Moving Averages) are thoroughly unit tested in `tests/test_indicators.py` against baseline mathematical definitions to ensure accurate calculations during paper and live trading.
+Copy `.env.example` to `.env` and fill in what you need:
+
+```dotenv
+# Trading Configurations
+LIVE_TRADING_ENABLED=False
+PAPER_TRADING_ENABLED=True
+
+# API Keys
+ALPACA_API_KEY=""        # paper/live equities + market data
+ALPACA_SECRET_KEY=""
+GEMINI_API_KEY=""        # LLM research + self-improvement loop
+ANTHROPIC_API_KEY=""     # optional alternate LLM
+OPENROUTER_API_KEY=""
+APIFY_TOKEN=""           # optional scraping
+REDDIT_CLIENT_ID=""      # sentiment source (PRAW)
+REDDIT_CLIENT_SECRET=""
+BINANCE_API_KEY=""       # crypto (optional)
+BINANCE_SECRET_KEY=""
+TELEGRAM_BOT_TOKEN=""    # notifications (optional; missing => disabled with warning)
+```
+
+For GitHub Actions, set the same names as **repository secrets** (at least `GEMINI_API_KEY` for research flows, `ALPACA_*` for data/paper trading, `TIINGO_API_KEY` for the Tiingo tier).
+
+### 3. Run locally
+
+```bash
+# Backtest report (writes docs/data JSON)
+PYTHONPATH=. python scripts/comprehensive_backtest_report.py
+
+# Dashboard strategy data
+PYTHONPATH=. python scripts/generate_strategy_data.py
+
+# Paper-trading day (1-5)
+PYTHONPATH=. python scripts/paper_trading_sandbox.py --day 1
+
+# Daily research (sentiment + regime)
+PYTHONPATH=. python scripts/run_research.py
+```
+
+### 4. Quality gates
+
+```bash
+pytest tests/ -v --cov=src
+bandit -r src/ -lll -c bandit.toml
+ruff check src/
+```
+
+## Known limitations & honest-claims policy
+
+- **Historical backtest claims** in this README are replaced by the live report pipeline: see `docs/data/backtest_report.json`, `docs/data/strategies.json` and the published Pages dashboard for the current, freshly computed numbers.
+- Strategy returns can show an edge in-sample only; the walk-forward permutation p-value is the published viability metric (see `REAL_LIFE_VIABILITY.md`).
+- Survivorship bias: the current ticker universe is used, delisted tickers excluded.
+- Daily OHLCV only; no intraday. Spread/slippage are modeled, not measured.
+- The report pipeline has had historical metric bugs (near-zero-std Sharpe artifacts); `safe_sharpe`/`safe_sortino` + permutation gates are now the guardrails (see `AUDIT_REPORT.md` for the full audit trail).
+
+## Also in docs/
+
+- `docs/BLUEPRINT.md` -- quantitative overhaul blueprint (SMC definitions, position sizing, walking-speed gates)
+- `AUTOMATION.md`, `PROMPT_ENGINEERING.md` -- design notes
+- `PAPER_BROKER_SETUP.md` -- paperbroker walkthrough
+- `BIAS_AND_RISK_ANALYSIS.md` -- bias & risk review
+- `REAL_LIFE_VIABILITY.md` -- statistical viability findings
+- `web-research/*.md` -- researched corpus used for strategy and infra decisions
+- `self_improvement_log.md` -- audit log of every applied self-improvement change
