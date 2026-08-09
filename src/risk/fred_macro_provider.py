@@ -1,4 +1,5 @@
 import logging
+import os
 import time
 from typing import Any
 
@@ -17,7 +18,7 @@ class FredMacroProvider:
         # We will use the FRED Observations API. Requires API key usually.
         # But we can also fetch from fred.stlouisfed.org HTML directly,
         # or we just rely on the API and degrade to NEUTRAL on 403 (Missing Key).
-        self.api_key = "DEMO_KEY_OR_ENV_VAR"
+        self.api_key = os.environ.get("FRED_API_KEY", "")
         self.base_url = "https://api.stlouisfed.org/fred/series/observations"
 
     def _fetch_series(self, series_id: str) -> float:
@@ -26,6 +27,10 @@ class FredMacroProvider:
         Retries up to 3 times on 429/5xx, with 5s timeout.
         Returns None on any unrecoverable failure.
         """
+        if not self.api_key:
+            logger.warning(f"FRED_API_KEY is empty. Failing closed for {series_id}.")
+            return None
+
         url = f"{self.base_url}?series_id={series_id}&api_key={self.api_key}&file_type=json&sort_order=desc&limit=1"
 
         max_retries = 3

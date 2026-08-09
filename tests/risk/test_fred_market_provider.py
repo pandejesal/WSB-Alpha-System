@@ -14,7 +14,9 @@ class MockResponse:
 
 @pytest.fixture
 def fred_provider():
-    return FredMacroProvider()
+    provider = FredMacroProvider()
+    provider.api_key = "FAKE_KEY"
+    return provider
 
 def test_fetch_series_success(fred_provider):
     mock_data = {"observations": [{"value": "1.25"}]}

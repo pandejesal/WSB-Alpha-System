@@ -1,5 +1,5 @@
 import numpy as np
-from arch.bootstrap import StationaryBootstrap
+from arch.bootstrap import StationaryBootstrap, SPA
 from scipy import stats
 
 
@@ -61,21 +61,28 @@ class StatisticalValidator:
     def spa_test(strategy_returns: np.ndarray, benchmark_returns: np.ndarray) -> dict:
         """
         Superior Predictive Ability (SPA) Test (Hansen's SPA).
-        A simpler proxy implemented using scipy for basic comparison.
+        Uses Hansen's consistent p-value via arch.bootstrap.SPA.
         Null hypothesis: Strategy does NOT outperform the benchmark.
         """
-        # A basic t-test for the mean of the difference (excess returns)
-        excess = strategy_returns - benchmark_returns
-        t_stat, p_val = stats.ttest_1samp(excess, popmean=0.0, alternative='greater')
+        # SPA expects losses, so we negate the returns.
+        # Strategy returns needs to be 2D (T, k)
+        strategy_losses = -np.asarray(strategy_returns)
+        if strategy_losses.ndim == 1:
+            strategy_losses = strategy_losses.reshape(-1, 1)
+        benchmark_losses = -np.asarray(benchmark_returns)
+
+        spa = SPA(benchmark_losses, strategy_losses, seed=42)
+        spa.compute()
+        p_val = float(spa.pvalues['consistent'])
 
         return {
-            "t_stat": t_stat,
+            "t_stat": float(spa.stat) if hasattr(spa, 'stat') else None,
             "p_value": p_val,
             "reject_null": p_val < 0.05
         }
 
     @staticmethod
-    def combinatorial_purged_cv(data_length: int, n_splits: int = 5, n_test_splits: int = 2, purge_length: int = 5) -> list:
+    def combinatorial_purged_cv(data_length: int, n_splits: int = 5, n_test_splits: int = 2, purge_length: int = 5, embargo: int = 5) -> list:
         """
         Combinatorial Purged Cross-Validation (CPCV).
         Partitions historical dataset into non-overlapping training and validation windows,
@@ -105,10 +112,10 @@ class StatisticalValidator:
                     # Purge logic: remove data points near test blocks
                     # If this block is immediately before a test block, purge the end
                     if (i + 1) in test_idx_tuple:
-                        train_block = train_block[:-purge_length]
-                    # If this block is immediately after a test block, purge the start
+                        train_block = train_block[:-purge_length] if purge_length > 0 else train_block
+                    # If this block is immediately after a test block, embargo the start
                     if (i - 1) in test_idx_tuple:
-                        train_block = train_block[purge_length:]
+                        train_block = train_block[embargo:] if embargo > 0 else train_block
 
                     train_indices.extend(train_block)
 
