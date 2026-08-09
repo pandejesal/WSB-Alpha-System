@@ -4,12 +4,13 @@ import os
 
 import pandas as pd
 import yfinance as yf
+from src.data.providers.chain import get_provider
 
 
 class MarketDataManager:
     def __init__(self, provider=None):
         self.logger = logging.getLogger(__name__)
-        self.provider = provider
+        self.provider = provider or get_provider()
 
     def _generate_cache_key(self, ticker: str, start_date: str, end_date: str, timeframe: str) -> str:
         key_str = f"{ticker}_{start_date}_{end_date}_{timeframe}"
@@ -30,10 +31,14 @@ class MarketDataManager:
                 self.logger.warning(f"Cache corrupted for {ticker}: {e}")
 
         self.logger.info(f"Downloading {ticker} from {start_date} to {end_date}")
-        if self.provider:
+        if hasattr(self.provider, 'get_historical_data'):
             df = self.provider.get_historical_data(ticker, start_date, end_date, timeframe)
         else:
-            df = yf.download(ticker, start=start_date, end=end_date, interval=timeframe, progress=False)
+            df = self.provider.fetch_ohlcv([ticker], start_date, end_date)
+            if not df.empty and 'Ticker' in df.columns:
+                df = df[df['Ticker'] == ticker]
+                if 'Date' in df.columns:
+                    df = df.set_index('Date')
 
         if df is None or df.empty:
             self.logger.error(f"Failed to fetch data for {ticker}")
