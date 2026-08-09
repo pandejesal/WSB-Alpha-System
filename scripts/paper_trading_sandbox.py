@@ -103,24 +103,81 @@ def main():
             with open(state_file, "r") as f:
                 state = json.load(f)
         else:
-            state = {"days_completed": 0, "last_run": None, "portfolio_value": 100.0, "trades": []}
+            state = {"days_completed": 0, "last_run": None, "portfolio_value": 100.0, "trades": [], "realized_pnl": 0.0, "cash": 100.0}
 
-        # Simulate execution
-        # For simplicity, if we hold positions, we would update their value here.
-        # Here we just apply a mock P&L based on signals if any.
-        daily_pnl = 0
+        from src.risk.position_sizing import PositionSizer
+
+        # Real Mark-to-Market tracking
+        daily_pnl = 0.0
+        open_trades = []
+        realized_pnl_today = 0.0
+
         if state.get("trades"):
-            # Mock update open trades P&L (in a real scenario, use actual prices)
+            # Update open trades P&L and handle exits based on simple holding period (e.g. max 5 days) or condition
             for trade in state["trades"]:
                 if trade["ticker"] in current_prices:
-                    if trade["direction"] == "buy":
-                        pnl = (current_prices[trade["ticker"]] - trade["entry_price"])
-                    else:
-                        pnl = (trade["entry_price"] - current_prices[trade["ticker"]])
-                    # Add to daily pnl (mocking closing the trade for simplicity in this sandbox)
-                    daily_pnl += pnl * 0.1 # scaled down
+                    current_price = current_prices[trade["ticker"]]
+                    trade_days = current_day - trade.get("entry_day", current_day)
 
-        new_portfolio_value = state["portfolio_value"] + daily_pnl
+                    if trade["direction"] == "buy":
+                        pnl = (current_price - trade["entry_price"]) * trade.get("quantity", 0)
+                    else:
+                        pnl = (trade["entry_price"] - current_price) * trade.get("quantity", 0)
+
+                    # Exit logic: if held for 5 days or hitting a threshold, close it
+                    if trade_days >= 5:
+                        realized_pnl_today += pnl
+                        # For long: we get back original capital plus pnl.
+                        # For short: the cash allocated was qty * entry_price.
+                        # The return to cash is the initial cash allocated + pnl.
+                        state["cash"] += trade.get("quantity", 0) * trade["entry_price"] + pnl
+                    else:
+                        trade["unrealized_pnl"] = pnl
+                        open_trades.append(trade)
+                        daily_pnl += pnl
+
+        state["trades"] = open_trades
+
+        # Process new signals
+        for sig in signals:
+            if sig["ticker"] in current_prices:
+                # Use PositionSizer for realistic sizing logic
+                # Assumed metrics for sandbox
+                win_rate = 0.55
+                win_loss_ratio = 1.5
+                confidence_score = 0.8
+                stop_loss = sig["entry_price"] * 0.95 if sig["direction"] == "buy" else sig["entry_price"] * 1.05
+
+                qty = PositionSizer.calculate_position_size(
+                    account_equity=state["portfolio_value"],
+                    current_price=sig["entry_price"],
+                    stop_loss_price=stop_loss,
+                    win_rate=win_rate,
+                    win_loss_ratio=win_loss_ratio,
+                    confidence_score=confidence_score
+                )
+
+                if qty > 0 and state["cash"] >= qty * sig["entry_price"]:
+                    sig["quantity"] = qty
+                    sig["entry_day"] = current_day
+                    sig["unrealized_pnl"] = 0.0
+                    state["cash"] -= qty * sig["entry_price"] # deduct notional size from cash
+                    state["trades"].append(sig)
+
+        state["realized_pnl"] = state.get("realized_pnl", 0.0) + realized_pnl_today
+
+        # Total portfolio value = cash + value of open positions
+        # Value of a long position is current_price * qty
+        # Value of a short position is (entry_price * qty) + unrealized_pnl = (entry_price * qty) + (entry_price - current_price) * qty
+        # Which is 2 * entry_price * qty - current_price * qty.
+        # But a simpler mental model for margin is: portfolio = cash + initial margin allocated + total pnl.
+        # Since cash was deducted by `qty * entry_price`, the margin held is exactly `qty * entry_price`.
+        # So open position value = `qty * entry_price` + `unrealized_pnl`.
+        open_positions_value = sum(
+            (t.get("quantity", 0) * t["entry_price"]) + t.get("unrealized_pnl", 0.0)
+            for t in state["trades"]
+        )
+        new_portfolio_value = state["cash"] + open_positions_value
 
         # Save signals log
         signal_log = {
@@ -138,12 +195,11 @@ def main():
         state["days_completed"] = current_day
         state["last_run"] = datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
         state["portfolio_value"] = new_portfolio_value
-        state["trades"].extend(signals)
 
         with open(state_file, "w") as f:
             json.dump(state, f, indent=2)
 
-        logger.info(f"Sandbox day {current_day} complete. Value: {new_portfolio_value}")
+        logger.info(f"Sandbox day {current_day} complete. Value: {new_portfolio_value:.2f}")
 
     except Exception as e:
         logger.error(f"Sandbox run failed: {e}", exc_info=True)

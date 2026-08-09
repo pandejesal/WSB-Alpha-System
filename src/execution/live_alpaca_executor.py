@@ -61,9 +61,20 @@ def generate_technical_signals(stock_dfs: dict) -> pd.DataFrame:
 # ============================================================================
 # API CONFIGURATION
 # ============================================================================
-ALPACA_API_KEY_ID = os.getenv("ALPACA_API_KEY", "MOCK_KEY_ID")
-ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY", "MOCK_SECRET_KEY")
+from src.utils.config import config
 
+try:
+    ALPACA_API_KEY_ID = config.api_keys.alpaca_api_key
+    try:
+        ALPACA_SECRET_KEY = config.api_keys.alpaca_secret_key.get_secret_value()
+    except AttributeError:
+        ALPACA_SECRET_KEY = config.api_keys.alpaca_secret_key
+except AttributeError:
+    ALPACA_API_KEY_ID = os.getenv("ALPACA_API_KEY")
+    ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
+
+if not ALPACA_API_KEY_ID or not ALPACA_SECRET_KEY:
+    raise ValueError("Valid Alpaca API credentials required. Please set them in configuration.")
 
 if risk_config.LIVE_TRADING_ENABLED:
     ALPACA_BASE_URL = os.getenv("ALPACA_BASE_URL", "https://api.alpaca.markets")
@@ -216,7 +227,8 @@ def main():
             except:
                 continue
         today_signals = generate_technical_signals(stock_dfs)
-        latest_date = datetime.now() # Mock latest_date for technical mode
+        # Use real latest date from downloaded market data
+        latest_date = px_data.index[-1].to_pydatetime() if not px_data.empty else datetime.now()
     else:
         csv_path = "wsb_factual_research_data.csv"
         if not os.path.exists(csv_path):

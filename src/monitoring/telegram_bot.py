@@ -14,14 +14,14 @@ class TelegramBot:
         except AttributeError:
             self.bot_token = config.api_keys.telegram_bot_token
 
-        self.chat_id = os.getenv("TELEGRAM_CHAT_ID", "dummy_chat_id")
+        self.chat_id = os.getenv("TELEGRAM_CHAT_ID")
         self.base_url = f"https://api.telegram.org/bot{self.bot_token}"
         self.approved_file = "strategies/approved.json"
 
     def send_message(self, text: str) -> bool:
-        if not self.bot_token or self.bot_token == "":
-            logger.info(f"Mock Telegram Send: {text}")
-            return True
+        if not self.bot_token or not self.chat_id:
+            logger.warning("Telegram credentials (bot token or chat ID) missing. Cannot send message.")
+            return False
 
         url = f"{self.base_url}/sendMessage"
         payload = {
@@ -58,8 +58,8 @@ class TelegramBot:
 
     def handle_command(self, text: str) -> str:
         """
-        Mock implementation of command handling.
-        In reality, this would be a webhook or polling loop.
+        Basic implementation of command handling.
+        For production, this would be hooked up to a webhook or polling loop.
         """
         if not text.startswith('/'):
             return "Ignored"

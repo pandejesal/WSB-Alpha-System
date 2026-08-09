@@ -12,13 +12,27 @@ logger = logging.getLogger("StrategyResearchAgent")
 from google.genai.types import FunctionDeclaration, GenerateContentConfig, Tool
 
 
+from src.research.google_search_provider import DDGSearchProvider
+
 def search_strategy_concepts_online(query: str) -> str:
-    """Mock implementation for now. In reality, it would call an API like Apify or Serper"""
+    """Real implementation using DDGSearchProvider"""
     logger.info(f"Searching internet for trading concepts: {query}")
-    return json.dumps([
-        {"title": "Mean Reversion with RSI and Bollinger Bands", "content": "Buy when price touches lower BB and RSI < 30. Sell when price touches upper BB."},
-        {"title": "MACD Trend Following", "content": "Buy when MACD crosses above signal line. Sell when MACD crosses below."}
-    ])
+    provider = DDGSearchProvider()
+    results = provider.search(query, num_results=3)
+
+    if not results:
+        logger.warning(f"No results found for query: {query}")
+        return json.dumps([])
+
+    enriched_results = []
+    for r in results:
+        url = r.get("url")
+        content = provider.fetch_content(url) if url else r.get("snippet", "")
+        enriched_results.append({
+            "title": r.get("title", ""),
+            "content": content[:1000] if content else r.get("snippet", "")
+        })
+    return json.dumps(enriched_results)
 
 def save_generated_strategy(strategy_name: str, python_code: str) -> str:
     """Saves the generated python code to the strategies folder/file"""
@@ -111,7 +125,7 @@ class StrategyResearchAgent:
                  for call in response.function_calls:
                      if call.name == "search_strategy_concepts_online":
                          res = search_strategy_concepts_online(**call.args)
-                         logger.info(f"Mock Search Result: {res}")
+                         logger.info(f"Search Result: {res[:200]}...")
                      elif call.name == "save_generated_strategy":
                          res = save_generated_strategy(**call.args)
                          logger.info(res)
