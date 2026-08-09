@@ -11,9 +11,11 @@ class PermutationValidator:
     Validates trading strategies by generating synthetic price paths
     using logarithmic returns to preserve statistical moments while destroying serial correlation.
     """
-    def __init__(self, num_permutations: int = 1000, p_value_threshold: float = 0.01):
+    def __init__(self, num_permutations: int = 1000, p_value_threshold: float = 0.01, seed: int = 42, null_mode: str = "circular"):
         self.num_permutations = num_permutations
         self.p_value_threshold = p_value_threshold
+        self.seed = seed
+        self.null_mode = null_mode
 
     def _generate_synthetic_paths(self, df: pd.DataFrame, n_paths: int) -> np.ndarray:
         """
@@ -48,16 +50,22 @@ class PermutationValidator:
 
         # Allocate output array: paths x time x 4 (OHLC)
         synthetic_ohlc = np.zeros((n_paths, n_bars, 4), dtype=np.float64)
+        rng = np.random.default_rng(self.seed)
 
         # Generate all paths
         for p in range(n_paths):
-            # Shuffle indices
-            # We shuffle the geometric shapes and gaps independently to destroy all serial correlation
-            shuffled_geom_idx = np.random.permutation(n_bars)
-            shuffled_gap_idx = np.random.permutation(n_bars)
+            if self.null_mode == "circular":
+                lag = rng.integers(0, n_bars)
+                shuf_geom = np.roll(intra_geometry, lag, axis=0)
+                shuf_gaps = np.roll(inter_gaps, lag)
+            else:
+                # Shuffle indices
+                # We shuffle the geometric shapes and gaps independently to destroy all serial correlation
+                shuffled_geom_idx = rng.permutation(n_bars)
+                shuffled_gap_idx = rng.permutation(n_bars)
 
-            shuf_geom = intra_geometry[shuffled_geom_idx]
-            shuf_gaps = inter_gaps[shuffled_gap_idx]
+                shuf_geom = intra_geometry[shuffled_geom_idx]
+                shuf_gaps = inter_gaps[shuffled_gap_idx]
 
             # Reconstruct the log prices
             # The change from Open(t) to Open(t+1) = intra_close(t) + gap(t+1)
