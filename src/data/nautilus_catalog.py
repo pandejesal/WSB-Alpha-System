@@ -3,6 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 import yfinance as yf
+from src.data.providers.chain import get_provider
 from nautilus_trader.core.datetime import dt_to_unix_nanos
 from nautilus_trader.model.data import Bar, BarType
 from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
@@ -21,12 +22,18 @@ class NautilusCatalogBuilder:
         if end_date is None:
             end_date = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
 
+        provider = get_provider()
+
         for ticker in tickers:
             try:
-                # yf.download can be rate limited.
-                df = yf.download(ticker, start=start_date, end=end_date, progress=False)
+                df = provider.fetch_ohlcv([ticker], start_date, end_date)
                 if df.empty:
                     raise Exception(f"No data returned for {ticker}")
+
+                if 'Ticker' in df.columns:
+                    df = df[df['Ticker'] == ticker]
+                if 'Date' in df.columns:
+                    df = df.set_index('Date')
 
                 logger.info(f"Successfully downloaded {len(df)} rows for {ticker}")
                 self._process_and_write(ticker, df)
