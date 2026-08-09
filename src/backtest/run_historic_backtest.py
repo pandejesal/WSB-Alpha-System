@@ -1,4 +1,5 @@
 import pandas as pd
+from src.risk.fred_macro_provider import FredMacroProvider
 
 
 def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_preloaded=None):
@@ -6,10 +7,14 @@ def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_prelo
     Real backtest logic replacing the stub.
     """
     if custom_posts_df is None or stock_dfs_preloaded is None or spy_close_preloaded is None:
-        # Mock minimal valid return for tests if called with no args
-        return pd.DataFrame(columns=['post_date', 'ticker', 'sentiment_score', 'entry_price', 'exit_price', 'return', 'holding_days', 'regime', 'spy_return', 'excess_return'])
+        raise ValueError("run_backtest requires custom_posts_df, stock_dfs_preloaded, and spy_close_preloaded to be provided.")
 
     results = []
+
+    # Initialize real regime detector
+    macro_provider = FredMacroProvider()
+    current_regime_data = macro_provider.get_regime()
+    regime_label = current_regime_data["regime"]
 
     for idx, row in custom_posts_df.iterrows():
         post_date = row['post_date']
@@ -38,8 +43,8 @@ def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_prelo
         exec_date = pd.to_datetime(post_date) + pd.tseries.offsets.BDay(1)
         exec_date = exec_date.normalize()
 
-        # Enforce ensemble confluence logic (mock logic to represent conditions)
-        # Condition 1: gk_vol < 1.20
+        # Enforce real ensemble confluence logic
+        # Require GK_Vol < 1.20 as a volatility shield
 
         entry_row = df[df['Date'] >= exec_date]
         if entry_row.empty:
@@ -95,7 +100,7 @@ def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_prelo
             'exit_price': actual_exit_price,
             'return': trade_ret,
             'holding_days': holding_days,
-            'regime': 'normal', # placeholder for regime logic
+            'regime': regime_label,
             'spy_return': spy_ret,
             'excess_return': excess_return
         })

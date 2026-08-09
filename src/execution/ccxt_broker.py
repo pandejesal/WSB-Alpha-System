@@ -15,10 +15,14 @@ class CCXTBroker(BaseBroker):
         self.is_paper = not config.trading.live_trading_enabled
         self.exchange_id = exchange_id
 
-        # In a real setup, keys would come from config.
-        # Using dummy keys for demonstration as per instructions to mock crypto integration.
-        self.api_key = "dummy_api_key"
-        self.secret_key = "dummy_secret_key"
+        self.api_key = config.api_keys.binance_api_key
+        try:
+            self.secret_key = config.api_keys.binance_secret_key.get_secret_value()
+        except AttributeError:
+            self.secret_key = config.api_keys.binance_secret_key
+
+        if not self.api_key or not self.secret_key:
+            raise ValueError("CCXTBroker requires valid exchange API credentials (e.g., BINANCE_API_KEY).")
 
         self.exchange = None
         self._initialize_client()
@@ -38,13 +42,14 @@ class CCXTBroker(BaseBroker):
             if self.is_paper:
                 self.exchange.set_sandbox_mode(True)
         except ImportError:
-            self.logger.warning("ccxt not installed. CCXTBroker will run in mock mode.")
+            raise ImportError("ccxt not installed. CCXTBroker requires ccxt to function.")
         except Exception as e:
             self.logger.error(f"Failed to initialize CCXT client: {e}")
+            raise
 
     def get_account_balance(self) -> dict:
         if not self.exchange:
-            return {'equity': config.trading.initial_capital, 'cash': config.trading.initial_capital}
+            raise ConnectionError("CCXT exchange not initialized.")
 
         balance = self.exchange.fetch_balance()
         # For simplicity, assuming USD/USDT is the base currency
@@ -58,7 +63,7 @@ class CCXTBroker(BaseBroker):
 
     def get_positions(self) -> list[dict]:
         if not self.exchange:
-            return []
+            raise ConnectionError("CCXT exchange not initialized.")
 
         # CCXT positions API depends heavily on the exchange (spot vs futures).
         # For spot, it's just checking balances of non-USDT tokens.
