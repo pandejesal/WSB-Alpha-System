@@ -86,15 +86,17 @@ def load_base_data():
 def compute_metrics(trades_df):
     if len(trades_df) == 0:
         return 0.0, 0.0
+    from src.backtest.metrics import safe_sharpe
+
     # Sorting by post_date to compute accurate cumsum total returns
     trades_sorted = trades_df.sort_values(by="post_date").reset_index(drop=True)
     tot_return = trades_sorted["return"].fillna(0).sum()
 
     # Resample to daily returns for accurate Sharpe calculation
     daily_rets = trades_sorted.groupby(pd.to_datetime(trades_sorted['post_date']).dt.date)['return'].sum()
-    std = daily_rets.std()
+
     # Use standard daily annualization sqrt(252) instead of arbitrary 100
-    sharpe = (daily_rets.mean() / (std + 1e-10)) * np.sqrt(252) if std > 0 else 0.0
+    sharpe = safe_sharpe(daily_rets, periods=252)
     return tot_return, sharpe
 
 def run_in_sample_test(posts_df, stock_dfs, spy_close):
