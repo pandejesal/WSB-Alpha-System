@@ -16,7 +16,6 @@ class NautilusCatalogBuilder:
     def __init__(self, catalog_path: str = "nautilus_data_catalog"):
         self.catalog_path = Path(catalog_path)
         self.catalog = ParquetDataCatalog(self.catalog_path.as_posix())
-        self.mock_used = False
 
     def build_catalog(self, tickers: list[str], start_date: str = "2018-01-01", end_date: str = None):
         if end_date is None:
@@ -38,20 +37,8 @@ class NautilusCatalogBuilder:
                 logger.info(f"Successfully downloaded {len(df)} rows for {ticker}")
                 self._process_and_write(ticker, df)
             except Exception as e:
-                logger.warning(f"yfinance download failed for {ticker}: {e!s}. Falling back to mock data.")
-                self.mock_used = True
-                df_mock = self._generate_mock_data(start_date, end_date)
-                self._process_and_write(ticker, df_mock)
-
-    def _generate_mock_data(self, start_date: str, end_date: str) -> pd.DataFrame:
-        dates = pd.bdate_range(start=start_date, end=end_date, tz="UTC")
-        df = pd.DataFrame(index=dates)
-        df['Open'] = 100.0
-        df['High'] = 105.0
-        df['Low'] = 95.0
-        df['Close'] = 100.0
-        df['Volume'] = 1000000
-        return df
+                logger.warning(f"Download failed for {ticker}: {e!s}. Skipping ticker.")
+                continue
 
     def _process_and_write(self, ticker: str, df: pd.DataFrame):
         venue = Venue("NASDAQ")

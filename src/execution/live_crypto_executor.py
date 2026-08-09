@@ -37,8 +37,19 @@ load_dotenv()
 # ============================================================================
 # BYBIT CONFIGURATION
 # ============================================================================
-BYBIT_API_KEY = os.getenv("BYBIT_API_KEY", "")
-BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET", "")
+from src.utils.config import config
+
+BYBIT_API_KEY = config.api_keys.binance_api_key  # Assume binance/ccxt key map for now, or fallback
+try:
+    BYBIT_API_SECRET = config.api_keys.binance_secret_key.get_secret_value()
+except AttributeError:
+    BYBIT_API_SECRET = config.api_keys.binance_secret_key
+
+if not BYBIT_API_KEY or not BYBIT_API_SECRET:
+    # Fallback to direct env since Bybit might have separate keys not in Settings yet
+    BYBIT_API_KEY = os.getenv("BYBIT_API_KEY")
+    BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET")
+
 USE_SANDBOX = not risk_config.LIVE_TRADING_ENABLED
 
 TICKERS = ["BTC-USD", "ETH-USD", "SOL-USD"]

@@ -1,4 +1,6 @@
 import pandas as pd
+from src.risk.fred_macro_provider import FredMacroProvider
+
 
 def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_high, gk_vol_limit, min_confluence_score, spy_close_preloaded=None):
     """Run backtest with specific parameter combination, with honest entry/exit rules."""
@@ -7,6 +9,12 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
 
     filtered_posts = posts_df.copy()
     results = []
+
+    # Real regime classification from FRED macro data (fails closed to NEUTRAL
+    # when the API key is missing or data is unavailable)
+    macro_provider = FredMacroProvider()
+    current_regime_data = macro_provider.get_regime()
+    regime_label = current_regime_data["regime"]
 
     for idx, row in filtered_posts.iterrows():
         post_date = row["post_date"]
@@ -103,7 +111,7 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
         spy_ret = 0.0
         if spy_close_preloaded is not None:
             spy_start = spy_close_preloaded.get(actual_exec_date)
-            spy_end = spy_close_preloaded.get(df.loc[exit_idx, 'Date'])
+            spy_end = spy_close_preloaded.get(df.loc[exit_idx, "Date"])
             if spy_start is not None and spy_end is not None:
                 spy_ret = (spy_end - spy_start) / spy_start * direction
 
@@ -117,7 +125,7 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
             "exit_price": actual_exit,
             "return": trade_ret,
             "holding_days": holding_days,
-            "regime": "normal",
+            "regime": regime_label,
             "spy_return": spy_ret,
             "excess_return": excess_return
         })
@@ -129,7 +137,7 @@ def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_prelo
     Wrapper for the real backtest logic to match the validation.py interface.
     """
     if custom_posts_df is None or stock_dfs_preloaded is None or spy_close_preloaded is None:
-        return pd.DataFrame(columns=['post_date', 'ticker', 'sentiment_score', 'entry_price', 'exit_price', 'return', 'holding_days', 'regime', 'spy_return', 'excess_return'])
+        raise ValueError("run_backtest requires custom_posts_df, stock_dfs_preloaded, and spy_close_preloaded to be provided.")
 
     return run_backtest_with_params(
         custom_posts_df,
