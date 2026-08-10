@@ -1,9 +1,9 @@
 {
-  "last_updated": "2026-08-08T15:16:18Z",
+  "last_updated": "2026-08-10T21:28:28Z",
   "equity": 100000.0,
-  "initial_capital": 100,
-  "total_pnl": 99900.0,
-  "total_pnl_pct": 99900.0,
+  "initial_capital": 100000.0,
+  "total_pnl": 0.0,
+  "total_pnl_pct": 0.0,
   "daily_pnl": 0.0,
   "daily_pnl_pct": 0.0,
   "win_rate": 0.0,
