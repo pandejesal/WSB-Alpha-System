@@ -1,0 +1,35 @@
+symbol,kind,note
+SPY,INDEX,SPDR S&P 500 ETF Trust
+QQQ,INDEX,Invesco QQQ Trust
+DIA,INDEX,SPDR Dow Jones Industrial Average ETF Trust
+IWM,INDEX,iShares Russell 2000 ETF
+EEM,INDEX,iShares MSCI Emerging Markets ETF
+GLD,INDEX,SPDR Gold Shares
+SLV,INDEX,iShares Silver Trust
+TLT,INDEX,iShares 20+ Year Treasury Bond ETF
+HYG,INDEX,iShares iBoxx $ High Yield Corporate Bond ETF
+XLE,INDEX,Energy Select Sector SPDR Fund
+XLF,INDEX,Financial Select Sector SPDR Fund
+^VIX,INDEX,CBOE Volatility Index
+AAPL,EQUITY,Apple Inc.
+MSFT,EQUITY,Microsoft Corporation
+NVDA,EQUITY,NVIDIA Corporation
+AMZN,EQUITY,"Amazon.com, Inc."
+GOOGL,EQUITY,Alphabet Inc.
+META,EQUITY,"Meta Platforms, Inc."
+TSLA,EQUITY,"Tesla, Inc."
+AVGO,EQUITY,Broadcom Inc.
+JPM,EQUITY,JPMorgan Chase & Co.
+BAC,EQUITY,Bank of America Corporation
+WMT,EQUITY,Walmart Inc.
+XOM,EQUITY,Exxon Mobil Corporation
+UNH,EQUITY,UnitedHealth Group Incorporated
+JNJ,EQUITY,Johnson & Johnson
+V,EQUITY,Visa Inc.
+MA,EQUITY,Mastercard Incorporated
+NFLX,EQUITY,"Netflix, Inc."
+DIS,EQUITY,The Walt Disney Company
+AMD,EQUITY,"Advanced Micro Devices, Inc."
+ADBE,EQUITY,Adobe Inc.
+BTC,CRYPTO,Bitcoin
+ETH,CRYPTO,Ethereum
