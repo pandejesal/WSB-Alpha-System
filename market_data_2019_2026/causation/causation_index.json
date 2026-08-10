@@ -1,0 +1,1082 @@
+[
+  {
+    "symbol": "NFLX",
+    "date": "2022-01-21",
+    "z": -4.481331999505793,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2019-04-02",
+    "z": 4.416152718859179,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "META",
+    "date": "2024-02-02",
+    "z": 4.407814993200945,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Meta Platforms ( META ) Bounced Back Following a Tough 2022",
+    "top1_domain": "finance.yahoo.com"
+  },
+  {
+    "symbol": "META",
+    "date": "2023-02-02",
+    "z": 4.348555396314864,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2022-04-20",
+    "z": -4.345685695217995,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AMD",
+    "date": "2025-10-06",
+    "z": 4.343902393688526,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2020-03-12",
+    "z": -4.310233112062359,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "^VIX",
+    "date": "2024-12-18",
+    "z": 4.285968018397287,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2019-07-26",
+    "z": 4.282899275494604,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Alphabet ( GOOGL ) Looks Good : Stock Adds 9 . 6 % in Session",
+    "top1_domain": "news.yahoo.com"
+  },
+  {
+    "symbol": "^VIX",
+    "date": "2021-11-26",
+    "z": 4.272748566331888,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ADBE",
+    "date": "2025-03-13",
+    "z": -4.249400995698975,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2023-05-25",
+    "z": 4.234001378534611,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2021-10-25",
+    "z": 4.227404415142604,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "WMT",
+    "date": "2022-05-17",
+    "z": -4.196905089164926,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "META",
+    "date": "2022-02-03",
+    "z": -4.18268357021583,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2019-10-24",
+    "z": 4.166833943109064,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ETH",
+    "date": "2023-08-17",
+    "z": -4.158147706369167,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2019-09-24",
+    "z": -4.158023190523421,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2020-07-27",
+    "z": 4.146694362283961,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "UNH",
+    "date": "2026-01-27",
+    "z": -4.1445782421295645,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "META",
+    "date": "2023-04-27",
+    "z": 4.140146147852465,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2026-07-30",
+    "z": 4.121890361359212,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2024-01-25",
+    "z": -4.115396191464777,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "^VIX",
+    "date": "2026-06-05",
+    "z": 4.111594999866969,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2024-12-13",
+    "z": 4.101105983425982,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "DIS",
+    "date": "2019-04-12",
+    "z": 4.09597207149538,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "META",
+    "date": "2025-07-31",
+    "z": 4.089754401612058,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2025-01-27",
+    "z": -4.072985829696331,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "JPM",
+    "date": "2024-11-06",
+    "z": 4.063360206576278,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2025-09-03",
+    "z": 4.058103042583094,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Alphabet Inc . ( GOOGL ) CEO Couldve Said He Not Happy With Antitrust Lawsuit Outcome , Says Jim Cramer",
+    "top1_domain": "insidermonkey.com"
+  },
+  {
+    "symbol": "JNJ",
+    "date": "2025-04-01",
+    "z": -4.055558030951497,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ETH",
+    "date": "2020-03-12",
+    "z": -4.047941773771961,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "^VIX",
+    "date": "2021-01-27",
+    "z": 4.039781521156707,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "UNH",
+    "date": "2025-04-17",
+    "z": -4.0350817646873285,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Why UnitedHealth Group ( UNH ) Is Among the Best Blue Chip Stocks to Buy According to Billionaires",
+    "top1_domain": "finance.yahoo.com"
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2023-10-19",
+    "z": 4.032181903298967,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "XLE",
+    "date": "2020-03-09",
+    "z": -4.030019868656824,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "DIS",
+    "date": "2020-12-11",
+    "z": 4.0298961131704125,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "DIS",
+    "date": "2024-02-08",
+    "z": 4.0226909887788835,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ETH",
+    "date": "2023-11-09",
+    "z": 4.01890744065828,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2023-08-17",
+    "z": -4.015169211599621,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "When Bitcoin Does This , Altcoins  Will Start Popping Left And Right , Analyst Predicts",
+    "top1_domain": "benzinga.com"
+  },
+  {
+    "symbol": "^VIX",
+    "date": "2020-06-11",
+    "z": 4.0134728348594875,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "UNH",
+    "date": "2024-10-15",
+    "z": -4.010696085052759,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "V",
+    "date": "2026-04-29",
+    "z": 4.008283271542855,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2019-04-30",
+    "z": -4.004635061303432,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "MED",
+    "top1_title": "Diane Greene",
+    "top1_domain": "benzinga.com"
+  },
+  {
+    "symbol": "ETH",
+    "date": "2019-04-02",
+    "z": 4.004199404724581,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Ethereum ( ETH ) Price Analysis : $150 On The Horizon ?",
+    "top1_domain": "newsbtc.com"
+  },
+  {
+    "symbol": "ETH",
+    "date": "2025-05-08",
+    "z": 3.999110745941148,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "META",
+    "date": "2022-10-27",
+    "z": -3.995006107702004,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2026-04-30",
+    "z": 3.9910517974735353,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "^VIX",
+    "date": "2025-10-10",
+    "z": 3.985601129983901,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "WMT",
+    "date": "2023-11-16",
+    "z": -3.9649145392144423,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2021-11-04",
+    "z": 3.9476282637532303,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2021-01-20",
+    "z": 3.940745909679543,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "DIS",
+    "date": "2024-05-07",
+    "z": -3.940620275465112,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "MED",
+    "top1_title": "\u30c7\u30a3\u30ba\u30cb\u30fc \uff62 1\u6cca30\u4e07\u5186\u4ee5\u4e0a \uff63 \u8d85\u9ad8\u7d1a\u30db\u30c6\u30eb\u306e\u885d\u6483",
+    "top1_domain": "toyokeizai.net"
+  },
+  {
+    "symbol": "WMT",
+    "date": "2024-05-16",
+    "z": 3.9376943386105365,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "WMT",
+    "date": "2025-10-14",
+    "z": 3.92814791825199,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AAPL",
+    "date": "2024-06-11",
+    "z": 3.9275844389001704,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "WMT",
+    "date": "2022-07-26",
+    "z": -3.9275096114760517,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2026-07-31",
+    "z": 3.926123381172874,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "^VIX",
+    "date": "2024-08-05",
+    "z": 3.916729396131499,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "JNJ",
+    "date": "2023-07-20",
+    "z": 3.900747636440465,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2019-07-18",
+    "z": -3.8984608661614284,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2024-10-18",
+    "z": 3.8859542167005934,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ETH",
+    "date": "2024-05-20",
+    "z": 3.8799417215797503,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ADBE",
+    "date": "2022-09-15",
+    "z": -3.875931240791046,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "XLF",
+    "date": "2024-11-06",
+    "z": 3.866509292232929,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Financial Select Sector SPDR Fund ( NYSEARCA : XLF ) Hits New 52 - Week High \u2013 What Next ?",
+    "top1_domain": "modernreaders.com"
+  },
+  {
+    "symbol": "ADBE",
+    "date": "2024-06-14",
+    "z": 3.8658903073617683,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2019-04-25",
+    "z": 3.8592914953925543,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ADBE",
+    "date": "2024-09-13",
+    "z": -3.85706695580496,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "META",
+    "date": "2025-10-30",
+    "z": -3.849226889473869,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2025-08-01",
+    "z": -3.8463686310299963,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2024-01-24",
+    "z": 3.8448097476761443,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2020-10-21",
+    "z": 3.841042405684874,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "DIS",
+    "date": "2020-08-05",
+    "z": 3.8377315270818704,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2020-01-31",
+    "z": 3.83630967325149,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "DIS",
+    "date": "2024-11-14",
+    "z": 3.8357294806175535,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ADBE",
+    "date": "2024-12-12",
+    "z": -3.821580811251903,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "JNJ",
+    "date": "2025-07-16",
+    "z": 3.8212844153868546,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2024-10-24",
+    "z": 3.8130147259805645,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2024-04-26",
+    "z": 3.8085791484921647,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "ETH",
+    "date": "2021-01-03",
+    "z": 3.80608655883999,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "WMT",
+    "date": "2025-11-20",
+    "z": 3.804824035941371,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Walmart : Fiscal Q3 Earnings Snapshot",
+    "top1_domain": "5newsonline.com"
+  },
+  {
+    "symbol": "WMT",
+    "date": "2020-07-07",
+    "z": 3.804167421785593,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2023-10-23",
+    "z": 3.7943419047632623,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NVDA",
+    "date": "2024-02-22",
+    "z": 3.7802642489921356,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AMZN",
+    "date": "2024-02-02",
+    "z": 3.7785999540253354,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "V",
+    "date": "2022-01-28",
+    "z": 3.7762575917932013,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2026-02-05",
+    "z": -3.7733464264122807,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BAC",
+    "date": "2025-04-03",
+    "z": -3.773219841422171,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2025-10-22",
+    "z": -3.7697381922238504,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "META",
+    "date": "2019-04-25",
+    "z": 3.76529746125738,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AMD",
+    "date": "2026-04-24",
+    "z": 3.7639098439242615,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2024-10-31",
+    "z": -3.7589095995104067,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2025-07-31",
+    "z": 3.7561542986837244,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Is it Still a Wise Move to Buy Microsoft ( MSFT ) Shares ?",
+    "top1_domain": "finance.yahoo.com"
+  },
+  {
+    "symbol": "WMT",
+    "date": "2024-08-15",
+    "z": 3.7500594430942926,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "Walmart strategic investments expected to bolster profitability , analysts say",
+    "top1_domain": "proactiveinvestors.com"
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2023-05-18",
+    "z": 3.746912120621737,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AMD",
+    "date": "2021-11-08",
+    "z": 3.742650650455227,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "DIS",
+    "date": "2022-01-21",
+    "z": -3.7369261121096127,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "MA",
+    "date": "2023-10-26",
+    "z": -3.7365551511525057,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "HYG",
+    "date": "2020-03-09",
+    "z": -3.732672926972985,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "SPY",
+    "date": "2024-12-18",
+    "z": -3.7232531406641205,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2019-03-15",
+    "z": 3.7230029288942794,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BAC",
+    "date": "2020-03-09",
+    "z": -3.722170616453178,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "NFLX",
+    "date": "2020-08-26",
+    "z": 3.721070923932547,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "MSFT",
+    "date": "2026-01-29",
+    "z": -3.7165564991578983,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "GOOGL",
+    "date": "2023-10-25",
+    "z": -3.7154540312149247,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "XLE",
+    "date": "2025-04-03",
+    "z": -3.703872542711677,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "MED",
+    "top1_title": "Energy Select Sector SPDR Fund ( NYSEARCA : XLE ) Reaches New 12 - Month Low \u2013 Should You Sell ?",
+    "top1_domain": "theenterpriseleader.com"
+  },
+  {
+    "symbol": "^VIX",
+    "date": "2019-08-05",
+    "z": 3.694135605634993,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "JNJ",
+    "date": "2019-05-29",
+    "z": -3.693278924463058,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BAC",
+    "date": "2023-03-09",
+    "z": -3.6901658878567503,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "UNH",
+    "date": "2019-10-15",
+    "z": 3.6900005673068463,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "UnitedHealth Group ( UNH ) in Focus : Stock Moves 8 . 2 % Higher",
+    "top1_domain": "news.yahoo.com"
+  },
+  {
+    "symbol": "MA",
+    "date": "2019-04-30",
+    "z": 3.687957884769408,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "BTC",
+    "date": "2019-05-11",
+    "z": 3.6861608684726566,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "JPM",
+    "date": "2024-04-12",
+    "z": -3.6829782154083284,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "HIGH",
+    "top1_title": "JPMorgan Chase Declares Preferred Stock Dividends",
+    "top1_domain": "wallstreet-online.de"
+  },
+  {
+    "symbol": "BTC",
+    "date": "2023-01-12",
+    "z": 3.6823915062283477,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "TSLA",
+    "date": "2019-07-25",
+    "z": -3.68084823900691,
+    "verdict": "LIKELY_DRIVER",
+    "confidence": "MED",
+    "top1_title": "Henry Chen | Financial Buzz",
+    "top1_domain": "financialbuzz.com"
+  },
+  {
+    "symbol": "AVGO",
+    "date": "2024-06-13",
+    "z": 3.680180098667471,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "JPM",
+    "date": "2020-11-09",
+    "z": 3.680053901877279,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "TLT",
+    "date": "2020-03-06",
+    "z": 3.678132119096003,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "DIS",
+    "date": "2025-11-13",
+    "z": -3.6736889272540503,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  },
+  {
+    "symbol": "SPY",
+    "date": "2025-10-10",
+    "z": -3.6710587810203408,
+    "verdict": "NO_CLEAR_SOURCE",
+    "confidence": "LOW",
+    "top1_title": "",
+    "top1_domain": ""
+  }
+]
