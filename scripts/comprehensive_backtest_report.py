@@ -46,37 +46,62 @@ def download_data(tickers, start_date, end_date):
     except Exception as e:
         global DATA_IS_MOCK
         DATA_IS_MOCK = True
-        logger.warning(f"Download failed ({e}), generating mock data for testing...")
+        logger.warning(f"Download failed ({e}), falling back to local unadjusted CSVs — results will NOT be published")
 
-        dates = pd.date_range(start=start_date, end=end_date, freq='B')
-        np.random.seed(42)
+        # Fallback for SPY
+        spy_csv_path = "market_data_2019_2026/ohlcv/SPY.csv"
+        if os.path.exists(spy_csv_path):
+            spy_data = pd.read_csv(spy_csv_path)
+            if not spy_data.empty:
+                spy_data['date'] = pd.to_datetime(spy_data['date'])
+                spy_data = spy_data.set_index('date')
+                spy_data = spy_data.loc['2018-01-01':end_date]
+                spy_data = spy_data.rename(columns={
+                    'open': 'Open',
+                    'high': 'High',
+                    'low': 'Low',
+                    'close': 'Close',
+                    'volume': 'Volume'
+                })
+                spy_data = spy_data[['Open', 'High', 'Low', 'Close', 'Volume']]
+            else:
+                spy_data = pd.DataFrame()
+        else:
+            spy_data = pd.DataFrame()
 
-        # Generate SPY
-        spy_dates = pd.date_range(start='2018-01-01', end=end_date, freq='B')
-        spy_returns = np.random.normal(0.0005, 0.01, len(spy_dates))
-        spy_prices = 100 * np.exp(np.cumsum(spy_returns))
-        spy_data = pd.DataFrame({'Close': spy_prices}, index=spy_dates)
-
-        # Generate Tickers
+        # Fallback for Tickers
         dfs = []
         for ticker in tickers:
-            returns = np.random.normal(0.0005, 0.02, len(dates))
-            prices = 100 * np.exp(np.cumsum(returns))
-            high = prices * np.random.uniform(1.0, 1.02, len(dates))
-            low = prices * np.random.uniform(0.98, 1.0, len(dates))
-            open_px = prices * np.random.uniform(0.99, 1.01, len(dates))
-            vol = np.random.randint(1000000, 10000000, len(dates))
+            csv_path = f"market_data_2019_2026/ohlcv/{ticker}.csv"
+            if not os.path.exists(csv_path):
+                logger.warning(f"Fallback CSV missing for {ticker}, skipping")
+                continue
+            df = pd.read_csv(csv_path)
+            if df.empty:
+                logger.warning(f"Fallback CSV empty for {ticker}, skipping")
+                continue
 
-            df = pd.DataFrame({
-                ('Close', ticker): prices,
-                ('Open', ticker): open_px,
-                ('High', ticker): high,
-                ('Low', ticker): low,
-                ('Volume', ticker): vol
-            }, index=dates)
+            df['date'] = pd.to_datetime(df['date'])
+            df = df.set_index('date')
+            df = df.loc[start_date:end_date]
+
+            df = df.rename(columns={
+                'open': 'Open',
+                'high': 'High',
+                'low': 'Low',
+                'close': 'Close',
+                'volume': 'Volume'
+            })
+            df = df[['Open', 'High', 'Low', 'Close', 'Volume']]
+
+            df.columns = pd.MultiIndex.from_product([['Open', 'High', 'Low', 'Close', 'Volume'], [ticker]])
             dfs.append(df)
 
-        data = pd.concat(dfs, axis=1)
+        if dfs:
+            data = pd.concat(dfs, axis=1)
+        else:
+            data = pd.DataFrame()
+
         return data, spy_data
 
 def compute_indicators_vectorized(df):
