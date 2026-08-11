@@ -136,3 +136,45 @@ class FredMacroProvider:
             return 0.4
 
         return 0.8 # Fallback default
+
+    def get_historical_regimes(self) -> dict[str, str]:
+        """
+        Fetches full historical daily series from public keyless FRED links,
+        aligns them, and returns a dictionary of 'YYYY-MM-DD' -> regime label.
+        """
+        try:
+            import pandas as pd
+            spread_df = pd.read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10Y2Y")
+            spread_df.columns = ["Date", "Spread"]
+            spread_df["Date"] = pd.to_datetime(spread_df["Date"])
+            spread_df["Spread"] = pd.to_numeric(spread_df["Spread"], errors="coerce")
+            spread_df = spread_df.dropna()
+
+            inf_df = pd.read_csv("https://fred.stlouisfed.org/graph/fredgraph.csv?id=T10YIE")
+            inf_df.columns = ["Date", "Inflation"]
+            inf_df["Date"] = pd.to_datetime(inf_df["Date"])
+            inf_df["Inflation"] = pd.to_numeric(inf_df["Inflation"], errors="coerce")
+            inf_df = inf_df.dropna()
+
+            merged = pd.merge(spread_df, inf_df, on="Date", how="inner")
+            regimes = {}
+            for _, row in merged.iterrows():
+                dt_str = row["Date"].strftime("%Y-%m-%d")
+                spread = row["Spread"]
+                inflation = row["Inflation"]
+
+                if spread < 0:
+                    if inflation > 2.5:
+                        regime = "STAGFLATION"
+                    else:
+                        regime = "RISK_OFF"
+                else:
+                    if inflation < 2.5:
+                        regime = "RISK_ON"
+                    else:
+                        regime = "NEUTRAL"
+                regimes[dt_str] = regime
+            return regimes
+        except Exception as e:
+            logger.warning(f"Failed to fetch historical FRED data: {e}. Defaulting to NEUTRAL regimes.")
+            return {}
