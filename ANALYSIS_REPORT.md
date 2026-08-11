@@ -73,265 +73,276 @@ graph TD
 
 ---
 
-## 3. Severity-Ranked Issue List
+## 3. Independent Review Verification & Verdicts
 
-Below is the comprehensive list of architectural, quality, trading logic, security, and performance issues discovered during the code audit.
+A rigorous line-by-line verification of the five findings raised by the second independent review has been performed.
 
-### 3.1 Summary Table of Issues
+### Finding 1: `portfolio.open_position(...)` Indentation Error
+* **Verdict**: **CONFIRMED** (Critical Severity)
+* **File Path & Line Number**: `scripts/comprehensive_backtest_report.py` (Line 461)
+* **Analysis**:
+  The function call `portfolio.open_position(...)` is indeed indented with exactly **4 spaces**. This places it at the same indentation block level as the main daily execution loop `for i, date in enumerate(trading_days):` starting on line 303.
+* **Impact**:
+  **Catastrophic**. Because the position-opening call resides outside the daily trading loop, **no positions are ever opened during the actual 7-year historical simulation**. The method is called exactly once *after* the daily loop completely terminates, using the leftover state of the final loop iteration (resulting in a single trade of AAPL on the last day, 2026-08-11, with 0 holding days, an immediate liquidation, and a return of -0.3%). This explains why `backtest_report.json` contains exactly 1 trade, a Sharpe ratio of `-27.5`, and why every single rolling In-Sample (IS) Sharpe is exactly `0.0`. Every "best strategy" pick is indeed selected from a completely empty, non-transacting backtest engine.
+
+---
+
+### Finding 2: Unsafe Mock Price Fallback on Download Failure
+* **Verdict**: **CONFIRMED** (High Severity)
+* **File Path & Line Number**: `scripts/comprehensive_backtest_report.py` (Lines 39-62)
+* **Analysis**:
+  If `yf.download(...)` fails due to network errors, timeouts, or API rate-limiting (which occur frequently when running GitHub Actions from shared runner IP pools), the `except Exception` block silently catches the exception, logs a warning, and dynamically generates mock price data using `np.random.seed(42)` normal returns.
+* **Impact**:
+  **Severe**. The system silently builds historical backtest reports and publishes validation metrics to the dashboard using random noise instead of real-world asset prices. This completely invalidates the integrity of the published reports without alerting the developer through a build failure or fails-closed halt.
+
+---
+
+### Finding 3: Optimistic Stop-Loss Trigger Bias
+* **Verdict**: **PARTIALLY CORRECT** (High Severity)
+* **File Path & Line Number**: `src/backtest/run_historic_backtest.py` (Line 68 & complete file)
+* **Analysis**:
+  The finding is **partially correct** in pointing out that stop losses are not evaluated on intraday Lows in backtests. However, the finding contains a technical citation error: line 68 in `run_historic_backtest.py` actually computes Heikin-Ashi indicators (`ha_close = df.loc[decision_idx, "HA_Close"]...`), not stop-loss triggers.
+  More significantly, **there is absolutely no stop-loss or trailing stop-loss logic implemented in `run_historic_backtest.py`**. Positions are held unconditionally for the entire `holding_days` period and exited at the Close price of the exit bar.
+* **Impact**:
+  **Severe backtest-vs-live inconsistency**. In live trading (`main_live.py`, `live_crypto_executor.py`) and the paper sandbox (`paper_trading_sandbox.py`), strict 5% stop-losses or ATR-based stop-losses are applied. Ignoring stop-losses in the historical backtesting engine prevents the system from modeling real-world capital exits, drawdowns, or stop-outs, creating an overly optimistic or unrepresentative backtest return.
+
+---
+
+### Finding 4: Unconditional Overwrite of Short Position Exits
+* **Verdict**: **DISPROVED** (Invalid Finding)
+* **File Path & Line Number**: `src/backtest/run_historic_backtest.py` (Lines 49-57 & complete file)
+* **Analysis**:
+  There is no conditional exit overwrite for bearish short positions in `run_historic_backtest.py`. Lines 49-57 represent the Lookahead Fix, which computes decision indicators on day $T-1$ (`decision_iloc = entry_iloc - 1`) relative to entry execution.
+  The second independent reviewer made two errors:
+  1. They confused the variable `short_holding_days` (which stands for the **short-term holding period** horizon, e.g. 1-10 days, in the legacy volatility-switching model) with bearish "short positions" (selling-to-open).
+  2. They mistakenly claimed that the exit index was overwritten to `entry_iloc + 1` unconditionally for short trades, which does not occur anywhere in the core backtester.
+* **Impact**:
+  **None**. The backtest engine handles exit indices for both bullish and bearish positions correctly according to the specified strategy `holding_days` parameter.
+
+---
+
+### Finding 5: Hardcoded "strategies_tested" Value on Dashboard
+* **Verdict**: **CONFIRMED** (Medium Severity)
+* **File Path & Line Number**: `scripts/comprehensive_backtest_report.py` (Line 868)
+* **Analysis**:
+  Line 868 hardcodes `"strategies_tested": 90` directly inside the exported `report` dictionary structure, which is subsequently written to `docs/data/backtest_report.json` and rendered on the front-end dashboard.
+  However, line 725-728 defines the actual grid parameter arrays:
+  * `atr_trailing_mults` (len = 3)
+  * `atr_profit_mults` (len = 3)
+  * `rsi_thresholds` (len = 2)
+  * `min_confluences` (len = 2)
+  This represents a total of `3 * 3 * 2 * 2 = 36` actual combinations, which is dynamically calculated on line 733 as `total_combos`.
+* **Impact**:
+  Produces a misleading metric on the frontend dashboard, asserting that 90 parameter combinations were backtested when only 36 were actually run.
+
+---
+
+## 4. Severity-Ranked Issue List
+
+Below is the comprehensive list of architectural, quality, trading logic, security, and performance issues discovered during the audit, **ordered and prioritized by severity**.
+
+### 4.1 Summary Table of Issues
 
 | ID | Scope | Severity | Target File Path & Lines | Problem Description |
 |---|---|---|---|---|
-| **1** | Trading Logic | **Critical** | `src/backtest/run_historic_backtest.py` (14-17) | Regime Classifier Future Data Leak in Historic Backtests |
-| **2** | Trading Logic | **Critical** | `src/alpha/wsb_alpha_legacy.py` (461-482) | Direct Lookahead / Future-Function Leak in Legacy Alpha Model |
-| **3** | Architecture | **High** | `src/evolution/darwin_engine.py` (130, 193) | Dead Thompson Sampling / Multi-Armed Bandit Code |
-| **4** | Trading Logic | **High** | `src/execution/live_crypto_executor.py` (173-195) | CCXT Order Placement Hedging & Position Mode Collision |
-| **5** | Code Quality | **High** | `src/execution/ccxt_broker.py` (67-75) | Missing Try-Except Wrappers for CCXT Order Placement |
-| **6** | Performance | **Medium**| `src/risk/portfolio_optimization.py` (31-32, 72-73) | Incorrect Setting of Riskfolio Weight Bounds (Dead Code) |
-| **7** | Code Quality | **Medium**| `src/backtest/metrics.py` (35-49) | Mathematically Incorrect Downside Deviation in Sortino |
-| **8** | Trading Logic | **Medium**| `src/backtest/run_historic_backtest.py` (100-112) | Zero Commission / Exchange Fee Assumption in Backtester |
-| **9** | Trading Logic | **Medium**| `src/execution/live_crypto_executor.py` (70-80) | Rate Limiting Disabled in Live Bybit Client |
-| **10**| Architecture | **Medium**| `src/execution/live_crypto_executor.py` (all) | Direct CCXT Library Coupling & Bypassed Broker Interface |
-| **11**| Security | **Low**   | `update_auth.py` (11) | Plaintext Password in Historic Update Script |
-| **12**| Performance | **Low**   | `src/alpha/indicators.py` (35-39) | High-Overhead Python Loop for Heikin-Ashi Calculation |
+| **1** | Trading Logic | **Critical** | `scripts/comprehensive_backtest_report.py` (461) | Dead Backtest Execution due to 4-space `open_position` Indentation |
+| **2** | Trading Logic | **Critical** | `src/backtest/run_historic_backtest.py` (14-17) | Regime Classifier Future Data Leak in Historic Backtests |
+| **3** | Trading Logic | **High** | `scripts/comprehensive_backtest_report.py` (39-62) | Silent Fallback to `np.random` Mock Prices on Download Failure |
+| **4** | Trading Logic | **High** | `src/backtest/run_historic_backtest.py` (all) | Complete Absence of Stop-Losses in Core Backtester (Stop Bias) |
+| **5** | Architecture | **High** | `src/evolution/darwin_engine.py` (130, 193) | Dead Thompson Sampling / Multi-Armed Bandit Code |
+| **6** | Trading Logic | **High** | `src/execution/live_crypto_executor.py` (173-195) | CCXT Order Placement Hedging & Position Mode Collision |
+| **7** | Code Quality | **High** | `src/execution/ccxt_broker.py` (67-75) | Missing Try-Except Wrappers for CCXT Order Placement |
+| **8** | Trading Logic | **High** | `src/alpha/wsb_alpha_legacy.py` (461-482) | Direct Lookahead / Future-Function Leak in Legacy Alpha Model |
+| **9** | Performance | **Medium**| `src/risk/portfolio_optimization.py` (31-32, 72-73) | Incorrect Setting of Riskfolio Weight Bounds (Dead Code) |
+| **10** | Code Quality | **Medium**| `src/backtest/metrics.py` (35-49) | Mathematically Incorrect Downside Deviation in Sortino |
+| **11** | Trading Logic | **Medium**| `src/backtest/run_historic_backtest.py` (100-112) | Zero Commission / Exchange Fee Assumption in Backtester |
+| **12** | Trading Logic | **Medium**| `src/execution/live_crypto_executor.py` (70-80) | Rate Limiting Disabled in Live Bybit Client |
+| **13** | Architecture | **Medium**| `src/execution/live_crypto_executor.py` (all) | Direct CCXT Library Coupling & Bypassed Broker Interface |
+| **14**| Trading Logic | **Medium**| `scripts/comprehensive_backtest_report.py` (868) | Hardcoded "strategies_tested" Value on Dashboard |
+| **15**| Security | **Low**   | `update_auth.py` (11) | Plaintext Password in Historic Update Script |
+| **16**| Performance | **Low**   | `src/alpha/indicators.py` (35-39) | High-Overhead Python Loop for Heikin-Ashi Calculation |
 
 ---
 
-### 3.2 Deep Dive: Critical & High Severity Issues
+### 4.2 Deep Dive Findings & Concrete Fixes
 
-#### Issue 1: Regime Classifier Future Data Leak in Historic Backtest
-* **Scope**: Trading Logic Correctness / Statistical Rigor
-* **File Path & Line Number**: `src/backtest/run_historic_backtest.py` (Lines 14-17)
-* **Problem**:
-  At the beginning of the `run_backtest_with_params` function, the backtester instantiates `FredMacroProvider()` and fetches the *current live* macro regime (`macro_provider.get_regime()`). It then stamps this single, current regime label (e.g., `RISK_ON` or `NEUTRAL` in 2026) onto every single historical trade in the results array from 2019 to 2026.
-* **Impact**:
-  Severe lookahead bias and statistical data leak. The historical backtest assumes that trades executing in 2019, 2020, or 2022 occurred under the exact macroeconomic regime of *today* (2026). If the FRED API key is missing (as in CI environments), it defaults to `NEUTRAL` for all past trades. The backtest fails to validate how the strategy dynamically handles historical regime shifts.
+#### Issue 1: Dead Backtest Execution due to 4-space `open_position` Indentation
+* **Impact**: **Critical**. Because the call is indented with only 4 spaces, it matching the indentation level of the `for` loop, running *only once* after the entire daily loop is completed. No trading occurred during the simulation.
 * **Concrete Fix**:
-  Do not fetch the live, current regime once at the start of the backtest. Instead, download the historical daily observations of the FRED series (`T10Y2Y` and `T10YIE`) for the entire backtest range, store them in CacheEngine (DuckDB), and inside the backtest loop, dynamically query the correct historical regime corresponding to each trade's `post_date` chronologically:
+  Indent `portfolio.open_position(...)` correctly to **28 spaces** inside the `if actual_invest > 5:` conditional block:
   ```python
-  # Correct Dynamic Historical Lookup
-  trade_regime = historical_fred_regimes.get(post_date.normalize(), "NEUTRAL")
+  # Fix: Indent to match the investment condition
+                              if actual_invest > 5:
+                                  qty = actual_invest / entry_price
+                                  spread_pct = 0.0005
+                                  spread_cost = entry_price * qty * spread_pct
+                                  cost = (entry_price * qty) + spread_cost
+                                  portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost)
   ```
 
 ---
 
-#### Issue 2: Direct Lookahead / Future-Function Leak in Legacy Alpha Model
-* **Scope**: Trading Logic Correctness
-* **File Path & Line Number**: `src/alpha/wsb_alpha_legacy.py` (Lines 461-482)
-* **Problem**:
-  The legacy backtest engine searches for the `entry_idx` for a social media post, retrieves the price and indicators on that entry day:
-  ```python
-  entry_row = ind_df.iloc[entry_idx]
-  # Indicators computed on entry_idx are used for the trade filters:
-  alg_ha = entry_row["HA_Close"] > entry_row["HA_Open"]
-  alg_momentum = (entry_row["Close"] > entry_row["EMA_20"]) and (entry_row["MACD_Hist"] > 0.0)
-  ```
-  But then, the trade is filled at the **Close price** of that very same day `entry_idx` (`entry_px = ind_df["Close"].iloc[entry_idx]`).
-* **Impact**:
-  This introduces direct lookahead bias. The model utilizes indicators computed using the day's Close price to decide whether to execute a trade at that *same* day's Close price. In a live system, you cannot calculate whether the daily Close is above the EMA_20 until the market closes, making it impossible to fill at that same Close. This artificially inflates legacy backtest returns.
+#### Issue 2: Regime Classifier Future Data Leak in Historic Backtest
+* **Impact**: **Critical**. Stamps the single current live macro regime label (e.g. 2026) onto all past trades from 2019 to 2026.
 * **Concrete Fix**:
-  Align the legacy backtest engine with the modern T+1 rule in `run_historic_backtest.py`. Change the indicators evaluation to index `entry_idx - 1` (the last completed bar $T-1$) to decide whether to execute the trade at the Open or Close of `entry_idx` (day $T$):
+  Cache historical monthly observations of the FRED series (`T10Y2Y` and `T10YIE`) and perform a chronological daily lookup inside the trade loop matching each post's `post_date`.
+
+---
+
+#### Issue 3: Silent Fallback to `np.random` Mock Prices on Download Failure
+* **Impact**: **High**. Silently builds reports on mock random-walk noise instead of real prices when Yahoo Finance rate-limits, violating the "fails-closed" mandate.
+* **Concrete Fix**:
+  Instead of silently generating synthetic prices under an exception catch, the script should **fail-closed** by raising a blocking `ConnectionError` and halting the GitHub Actions workflow, alerting the developer:
   ```python
-  decision_row = ind_df.iloc[entry_idx - 1]
-  # Evaluate voting channels on decision_row
+  # Fix: Fail-closed on data provider failure
+  except Exception as e:
+      logger.critical(f"FATAL: OHLCV data download failed: {e}")
+      raise ConnectionError(f"Fails-Closed: Unable to build backtest report without real-world data. Error: {e}")
   ```
 
 ---
 
-#### Issue 3: Dead Thompson Sampling / Multi-Armed Bandit Code
-* **Scope**: Architecture & Module Design
-* **File Path & Line Number**: `src/evolution/darwin_engine.py` (Line 130, `select_for_deployment`, and Line 193, `update_sampler_post_trading`)
-* **Problem**:
-  The methods `select_for_deployment` and `update_sampler_post_trading` are fully defined to implement online learning and adaptive parameter selection via a Multi-Armed Bandit (Thompson Sampling). However, a global grep of the repository reveals these two methods are **never** called by any execution script, paper sandbox, or live broker. The `thompson_state.json` is initialized with static `alpha: 1, beta: 1` values and never updated based on real trading results.
-* **Impact**:
-  The sophisticated Thompson Sampling online learning model is completely dead code. Expected values on the dashboard are statically frozen at `0.5`, offering zero adaptive benefit.
+#### Issue 4: Complete Absence of Stop-Losses in Core Backtester (Stop Bias)
+* **Impact**: **High**. Creates a severe backtest-vs-live inconsistency as live trading enforces strict stop-losses while the backtester assumes positions are held unconditionally, resulting in unrealistic performance curves.
 * **Concrete Fix**:
-  Hook `update_sampler_post_trading` into the post-trading routine of `paper_trading_sandbox.py` or `live_crypto_executor.py` to increment alpha/beta values based on trade profit/loss, and serialize the updated weights back to `thompson_state.json`.
-
----
-
-#### Issue 4: CCXT Order Placement Hedging & Position Mode Collision
-* **Scope**: Trading Logic Correctness / Execution Safety
-* **File Path & Line Number**: `src/execution/live_crypto_executor.py` (Lines 173-195, `execute_bybit_order`) and `src/execution/ccxt_broker.py` (Line 60, `place_order`)
-* **Problem**:
-  When rebalancing positions on Bybit linear perpetual contracts, the execution wrappers submit raw BUY/SELL market orders via CCXT without specifying the `reduceOnly` flag or checking if the Bybit account is configured in Hedge Mode versus One-way Mode:
+  Implement basic stop-loss validation inside `run_backtest_with_params` in `run_historic_backtest.py`:
   ```python
-  order = exchange.create_market_order(symbol, side, qty)
-  ```
-* **Impact**:
-  On Bybit and other perpetual linear exchanges, if the user's account is in the default Hedge Mode, submitting a raw SELL order to exit/reduce a Long position will instead open a new, separate Short position. This results in holding both positions simultaneously (locking in a loss and consuming double the margin), failing to close the target position.
-* **Concrete Fix**:
-  Ensure closing orders pass the `reduceOnly` parameter to the exchange, forcing CCXT to close existing contracts instead of opening opposite legs:
-  ```python
-  # Fix: Ensure closing orders reduce existing size
-  params = {'reduceOnly': True} if is_closing_order else {}
-  order = exchange.create_market_order(symbol, side, qty, params)
+  # Fix: Add intraday stop loss evaluation in the holding period
+  stop_loss_pct = 0.05
+  stop_price = actual_entry * (1 - stop_loss_pct * direction)
+
+  # Scan the holding period for a stop loss breach using High/Low
+  for h in range(1, holding_days + 1):
+      current_iloc = entry_iloc + h
+      if current_iloc >= len(df): break
+      bar_low = df.loc[df.index[current_iloc], "Low"]
+      bar_high = df.loc[df.index[current_iloc], "High"]
+
+      # For Long: low <= stop_price; For Short: high >= stop_price
+      if (direction == 1 and bar_low <= stop_price) or (direction == -1 and bar_high >= stop_price):
+          actual_exit = stop_price
+          exit_idx = df.index[current_iloc]
+          trade_ret = -stop_loss_pct
+          break
   ```
 
 ---
 
-#### Issue 5: Missing Try-Except Wrappers for CCXT Order Placement
-* **Scope**: Code Quality / Error Handling
-* **File Path & Line Number**: `src/execution/ccxt_broker.py` (Line 67, `place_order`)
-* **Problem**:
-  The CCXT broker implementation places order executions directly on the exchange instance without wrapping the call in safety try-except blocks:
-  ```python
-  order = self.exchange.create_order(
-      symbol=symbol,
-      type=order_type,
-      side=ccxt_side,
-      amount=qty,
-      params=params
-  )
-  return {"status": "success", "order_id": str(order['id']), ...}
-  ```
-* **Impact**:
-  If Bybit/Binance rejects the order due to insufficient margin, invalid lot size, or API network timeouts, CCXT will throw a raw unhandled exception (e.g., `ccxt.InsufficientFunds` or `ccxt.ExchangeError`). This will propagate and crash the execution script immediately, preventing the system from running gracefully or sending alert notifications.
+#### Issue 5: Dead Thompson Sampling / Multi-Armed Bandit Code
+* **Impact**: **High**. Multi-armed bandit parameter selection functions are dead code; alpha and beta remain statically frozen at 1, rendering the dashboard metrics purely cosmetic.
 * **Concrete Fix**:
-  Wrap the order submission in a try-except block, logging specific CCXT errors and returning a structured status dictionary to allow the parent runner to handle the failure gracefully:
-  ```python
-  try:
-      order = self.exchange.create_order(...)
-      return {"status": "success", "order_id": str(order['id'])}
-  except (ccxt.InsufficientFunds, ccxt.InvalidOrder, ccxt.NetworkError) as e:
-      self.logger.error(f"CCXT Order Placement failed: {e}")
-      return {"status": "failed", "error_message": str(e)}
-  ```
+  Trigger `update_sampler_post_trading` inside `paper_trading_sandbox.py` or the live executors, incrementing success/failure based on the realized PnL of each parameter set and saving the state.
 
 ---
 
-### 3.3 Deep Dive: Medium & Low Severity Issues
-
-#### Issue 6: Incorrect Setting of Riskfolio Weight Bounds (Dead Code)
-* **Scope**: Dependencies & Performance / Portfolio Optimization
-* **File Path & Line Number**: `src/risk/portfolio_optimization.py` (Lines 31-32, `optimize_cvar`, and Lines 72-73, `optimize_erc`)
-* **Problem**:
-  The script attempts to set upper and lower weight bounds on assets in the Riskfolio portfolio class:
-  ```python
-  port.lowerreq = 0.0
-  port.upperreq = max_weight / (1.0 - min_cash)
-  ```
-  However, in `riskfolio-lib`, setting individual asset bounds is done via the `port.w_lo` and `port.w_up` vectors/series. `lowerreq` and `upperreq` are invalid properties and are silently ignored by the optimizer.
-* **Impact**:
-  Because the bounds are ignored, the math solver outputs asset weights that can violate the `max_weight` limit. The script then applies a naive post-optimization capping loop to force the weights back under the cap. This post-optimization manipulation breaks the mathematical optimality of the CVaR minimizer.
+#### Issue 6: CCXT Order Placement Hedging & Position Mode Collision
+* **Impact**: **High**. In standard Bybit Hedge Mode, order executors will open opposing position legs (dual-positions) instead of reducing/exiting active trades.
 * **Concrete Fix**:
-  Define bounds using the correct, standard Riskfolio properties before starting the solver:
-  ```python
-  port.w_up = pd.Series(max_weight / (1.0 - min_cash), index=returns.columns)
-  port.w_lo = pd.Series(0.0, index=returns.columns)
-  ```
+  Pass `params={'reduceOnly': True}` on close-side market orders to ensure position reduction.
 
 ---
 
-#### Issue 7: Mathematically Incorrect Downside Deviation in Sortino
-* **Scope**: Code Quality / Trading Logic
-* **File Path & Line Number**: `src/backtest/metrics.py` (Lines 35-49, `safe_sortino`)
-* **Problem**:
-  The standard deviation of negative returns is calculated on a filtered slice of negative returns only:
-  ```python
-  downside_rets = returns_series[returns_series < 0]
-  ...
-  downside_std = downside_rets.std()
-  ```
-* **Impact**:
-  This is mathematically incorrect. Downside risk (semi-deviation) is calculated by replacing positive returns with *zero* and taking the root-mean-square or standard deviation of the **full** series. Reducing the denominator to `N_downside` instead of `N_total` artificially inflates downside volatility, severely underestimating the Sortino ratio.
+#### Issue 7: Missing Try-Except Wrappers for CCXT Order Placement
+* **Impact**: **High**. Rejected orders propagate unhandled CCXT exceptions and crash execution runs immediately, violating the "fails-closed" notification design.
 * **Concrete Fix**:
-  Re-implement the downside risk calculation using the standard mathematical formula:
-  ```python
-  # Clip positive returns to zero
-  downside_diff = returns_series.clip(upper=0)
-  # Downside risk standard deviation (denominator = N_total)
-  downside_std = np.sqrt(np.mean(downside_diff ** 2))
-  ```
+  Wrap `self.exchange.create_order(...)` in standard CCXT try-except blocks.
 
 ---
 
-#### Issue 8: Zero Commission / Exchange Fee Assumption in Backtesting
-* **Scope**: Trading Logic Correctness
-* **File Path & Line Number**: `src/backtest/run_historic_backtest.py` (Lines 100-112) & `src/alpha/indicators.py` (`compute_regime_returns`)
-* **Problem**:
-  While both backtest models apply realistic ATR-based slippage, they subtract exactly **zero** commission or transaction fees on trade entries/exits.
-* **Impact**:
-  Produces overly optimistic backtest results. For high-frequency parameter combinations, neglecting standard fee frictions (e.g., Bybit's 0.04% base or Alpaca's sell-side SEC regulatory fees) creates a backtest-vs-live inconsistency.
+#### Issue 8: Direct Lookahead / Future-Function Leak in Legacy Alpha Model
+* **Impact**: **High**. Uses end-of-day Close on day $T$ to compute indicators, but enters trade at that same day $T$ Close price.
 * **Concrete Fix**:
-  Incorporate a flat or percentage-based transaction fee parameter (e.g., `fees=0.001` or `fees=0.0004`) inside `run_backtest_with_params` and subtract it from the trade returns.
+  Evaluate all legacy voting indicators on bar `entry_idx - 1` (the last closed bar $T-1$) matching modern T+1 logic.
 
 ---
 
-#### Issue 9: Rate Limiting Disabled in Live Bybit Client
-* **Scope**: Trading Logic / Execution Safety
-* **File Path & Line Number**: `src/execution/live_crypto_executor.py` (Lines 70-80, `init_bybit_exchange`)
-* **Problem**:
-  The direct Bybit client initialization inside `live_crypto_executor.py` does not include the `'enableRateLimit': True` parameter.
-* **Impact**:
-  The client is vulnerable to HTTP 429 (Too Many Requests) rate limit errors during rapid historical OHLCV queries or multi-symbol rebalances, risking execution failures.
+#### Issue 9: Incorrect Setting of Riskfolio Weight Bounds (Dead Code)
+* **Impact**: **Medium**. silent failure to apply individual bounds in the solver; fallback capping post-optimization breaks mathematical optimality.
 * **Concrete Fix**:
-  Add `'enableRateLimit': True` to the exchange parameters dictionary inside `init_bybit_exchange`.
+  Apply bounds to `port.w_up` and `port.w_lo` properties.
 
 ---
 
-#### Issue 10: Direct CCXT Library Coupling & Bypassed Broker Interface
-* **Scope**: Architecture & Module Design
-* **File Path & Line Number**: `src/execution/live_crypto_executor.py` (all)
-* **Problem**:
-  Instead of utilizing the generic `CCXTBroker` abstraction class, `live_crypto_executor.py` directly imports the raw `ccxt` library and re-writes dedicated order, balance, and OHLCV fetching logic from scratch.
-* **Impact**:
-  Breaks the `BaseBroker` abstraction architecture, creating duplicate code, higher maintenance overhead, and making it difficult to swap Bybit for other CCXT-compatible exchanges.
+#### Issue 10: Mathematically Incorrect Downside Deviation in Sortino
+* **Impact**: **Medium**. Reducing denominator to $N_{downside}$ instead of $N_{total}$ inflates downside volatility and underestimates the Sortino ratio.
 * **Concrete Fix**:
-  Refactor `live_crypto_executor.py` to route all operations through the unified `CCXTBroker` class or a specialized Bybit subclass.
+  Clip returns above 0 to 0, and divide the sum of squared differences by $N_{total}$ to compute the correct downside deviation.
 
 ---
 
-#### Issue 11: Plaintext Password in Historic Update Script
-* **Scope**: Security / Secret Handling
-* **File Path & Line Number**: `update_auth.py` (Line 11)
-* **Problem**:
-  The utility script `update_auth.py` contains a hardcoded plaintext password `'WSB-Alpha-2026'` used to search and replace historic JS authentication blocks.
-* **Impact**:
-  Although the main JS file was successfully patched to use SHA-256 hashes, leaving the plaintext password in utility files in the git repository is insecure and easily readable by anyone viewing the codebase or history.
+#### Issue 11: Zero Commission / Exchange Fee Assumption in Backtester
+* **Impact**: **Medium**. Overly optimistic backtest returns.
 * **Concrete Fix**:
-  Remove `update_auth.py` from the repository or replace the plaintext search-string variable with a placeholder to eliminate the plaintext leak.
+  Subtract flat 0.04% (Bybit) or specific SEC/TAF fees from realized trade returns.
 
 ---
 
-#### Issue 12: High-Overhead Python Loop for Heikin-Ashi Calculation
-* **Scope**: Performance & Bottlenecks
-* **File Path & Line Number**: `src/alpha/indicators.py` (Lines 35-39, `compute_indicators`)
-* **Problem**:
-  The Heikin-Ashi `HA_Open` calculation utilizes a raw Python-level `for` loop to compute the recursive series over the dataframe rows.
-* **Impact**:
-  Python-level iteration over Pandas rows is highly inefficient. This creates a major execution bottleneck when downloading and computing indicators for dozens of tickers across long historical horizons.
+#### Issue 12: Rate Limiting Disabled in Live Bybit Client
+* **Impact**: **Medium**. High vulnerability to HTTP 429 errors.
 * **Concrete Fix**:
-  Accelerate the recursive Heikin-Ashi loop using the Numba compiler (`@njit`) or implement it via a pre-compiled vectorized NumPy array in a helper module.
+  Add `'enableRateLimit': True` to Bybit CCXT settings.
 
 ---
 
-## 4. Overall Verdict & Actionable Roadmap
-
-### 4.1 Overall Verdict
-The `WSB-Alpha-System` is an **exceptionally well-engineered** trading system that stands out for its statistical validation rigor, T+1 lookahead-free modern backtest design, and clean configuration hygiene. It successfully resolves the core requirements of running a automated $100 micro-account entirely on free infrastructure.
-
-However, **critical gaps** exist between the theoretical mathematical models (such as dead Thompson Sampling code, ignored Riskfolio bounds, and flawed Sortino denominator logic) and the physical execution layers (such as Bybit Hedge Mode conflicts and direct library coupling). Addressing these gaps will elevate the repository from a highly sophisticated hobbyist system to an institutional-grade, bulletproof execution platform.
+#### Issue 13: Direct CCXT Library Coupling & Bypassed Broker Interface
+* **Impact**: **Medium**. Violates the `BaseBroker` abstraction architecture, creating code duplication and poor portability.
+* **Concrete Fix**:
+  Route Bybit perpetual rebalancing calls directly through the unified `CCXTBroker` class interface.
 
 ---
 
-### 4.2 Prioritized Improvement Roadmap
+#### Issue 14: Hardcoded "strategies_tested" Value on Dashboard
+* **Impact**: **Medium**. Reports 90 tested strategies instead of the actual 36 parameter grid combinations run.
+* **Concrete Fix**:
+  Dynamically assign `"strategies_tested": len(all_strategies)` or `total_combos`.
+
+---
+
+#### Issue 15: Plaintext Password in Historic Update Script
+* **Impact**: **Low**. Plaintext dashboard password string `'WSB-Alpha-2026'` is exposed in the public git commit history.
+* **Concrete Fix**:
+  Delete the unused `update_auth.py` or mask the search-string.
+
+---
+
+#### Issue 16: High-Overhead Python Loop for Heikin-Ashi Calculation
+* **Impact**: **Low**. Raw Python dataframe-row iteration creates a CPU performance bottleneck during multi-ticker grid evaluations.
+* **Concrete Fix**:
+  Decorate the recursive loop with Numba's `@njit`.
+
+---
+
+## 5. Overall Verdict & Actionable Roadmap
+
+### 5.1 Overall Verdict
+The `WSB-Alpha-System` contains a dual personality: on one side, it possesses an elite, modern backtest engine (`run_historic_backtest.py`) with zero lookahead bias and highly advanced statistical validators. On the other side, **critical operational defects** (such as the 4-space indentation error that renders the comprehensive backtester completely dead, silent mock-data generation, Bybit Hedge Mode collisions, and dead Thompson Sampling loops) prevent the platform from realizing its full capabilities.
+
+Correcting these high-priority bugs—especially the backtest indentation typo and the complete absence of stop-losses in historical simulations—will instantly align the system's empirical findings with reality and secure a statistically robust, highly profitable, and uncompromised live trading setup.
+
+---
+
+### 5.2 Prioritized Improvement Roadmap
 
 ```
-Phase 1: Critical Trading & Safety Fixes (Days 1-2)
- └── Fix FredMacroProvider historic lookup in run_historic_backtest.py.
- └── Ensure 'reduceOnly=True' and position mode check in live Bybit orders.
- └── Wrap CCXT broker place_order in robust try-except error handling.
+Phase 1: Critical Backtester & Execution Fixes (Days 1-2)
+ └── Re-indent portfolio.open_position(...) in comprehensive_backtest_report.py to 28 spaces (Fixes Finding #1).
+ └── Force download_data() to fail-closed on exception instead of silent mock-price generation (Fixes Finding #2).
+ └── Integrate a standard stop-loss / trailing-stop evaluation in run_historic_backtest.py (Fixes Finding #3).
+ └── Ensure 'reduceOnly=True' and position mode check on CCXT order placements (Fixes Finding #6).
+ └── Set 'enableRateLimit': True in live Bybit CCXT client parameters (Fixes Finding #12).
 
 Phase 2: Mathematical & Code Quality Alignment (Days 3-4)
- └── Re-implement downside risk std in safe_sortino using full-series N.
- └── Correct Riskfolio bounds in portfolio_optimization.py (port.w_up / port.w_lo).
- └── Align legacy wsb_alpha_legacy.py with lookahead-free T-1 indicator logic.
- └── Remove update_auth.py or scrub plaintext 'WSB-Alpha-2026' password.
+ └── Re-implement downside risk std in safe_sortino using full-series N (Fixes Finding #10).
+ └── Correct Riskfolio bounds in portfolio_optimization.py (port.w_up / port.w_lo) (Fixes Finding #9).
+ └── Dynamically populate "strategies_tested" inside backtest reports (Fixes Finding #14).
+ └── Align legacy wsb_alpha_legacy.py with lookahead-free T-1 indicator logic (Fixes Finding #8).
+ └── Remove update_auth.py or scrub plaintext 'WSB-Alpha-2026' password (Fixes Finding #15).
 
 Phase 3: Architecture & Performance Optimizations (Days 5-6)
- └── Integrate the Thompson Sampler online learning loop with sandbox execution.
- └── Refactor live_crypto_executor.py to use CCXTBroker instead of raw ccxt calls.
- └── Vectorize Heikin-Ashi calculation in indicators.py using Numba @njit.
+ └── Activate and serialize the Thompson Sampler online learning loop in live sandbox runs (Fixes Finding #5).
+ └── Refactor live_crypto_executor.py to use CCXTBroker instead of raw ccxt calls (Fixes Finding #13).
+ └── Vectorize Heikin-Ashi calculation in indicators.py using Numba @njit (Fixes Finding #16).
+ └── Integrate a configurable flat 0.04% exchange fee inside backtest engines (Fixes Finding #11).
 
 Aspirational Tier (Future Milestones - Non-Blocking)
  └── Multi-Asset Covariance Shrinkage (Ledoit-Wolf) for Riskfolio inputs.
