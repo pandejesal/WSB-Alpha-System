@@ -3,7 +3,7 @@ import pandas as pd
 from src.risk.fred_macro_provider import FredMacroProvider
 
 
-def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_high, gk_vol_limit, min_confluence_score, spy_close_preloaded=None):
+def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_high, gk_vol_limit, min_confluence_score, spy_close_preloaded=None, stop_loss_pct=0.0):
     """Run backtest with specific parameter combination, with honest entry/exit rules."""
     if posts_df is None or posts_df.empty:
         return pd.DataFrame(columns=['post_date', 'ticker', 'sentiment_score', 'entry_price', 'exit_price', 'return', 'holding_days', 'regime', 'spy_return', 'excess_return'])
@@ -14,8 +14,7 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
     # Real regime classification from FRED macro data (fails closed to NEUTRAL
     # when the API key is missing or data is unavailable)
     macro_provider = FredMacroProvider()
-    current_regime_data = macro_provider.get_regime()
-    regime_label = current_regime_data["regime"]
+    historical_regimes = macro_provider.get_historical_regimes()
 
     # Pre-normalize per-ticker frames and date arrays once (semantics-preserving
     # speedup: replaces a full-frame boolean mask per post with np.searchsorted)
@@ -37,6 +36,9 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
         ticker_date_arrays[ticker] = d["Date"].to_numpy()
 
     for idx, row in filtered_posts.iterrows():
+        # Dynamic historical regime lookup
+        post_date_str = pd.to_datetime(row["post_date"]).strftime("%Y-%m-%d")
+        regime_label = historical_regimes.get(post_date_str, "NEUTRAL")
         post_date = row["post_date"]
         ticker = row["ticker"]
         sentiment_score = row.get("sentiment_score", 0)
@@ -113,6 +115,26 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
         actual_exit = exit_price - (slippage * direction)
         trade_ret = (actual_exit - actual_entry) / actual_entry * direction
 
+        # Opt-in stop loss logic via High/Low intraday breach
+        if stop_loss_pct > 0.0:
+            stop_price = actual_entry * (1.0 - stop_loss_pct) if direction == 1 else actual_entry * (1.0 + stop_loss_pct)
+            for h_idx in range(entry_iloc, exit_iloc + 1):
+                h_date = df.index[h_idx]
+                h_low = df.loc[h_date, "Low"]
+                h_high = df.loc[h_date, "High"]
+
+                is_breached = False
+                if direction == 1 and h_low <= stop_price:
+                    is_breached = True
+                elif direction == -1 and h_high >= stop_price:
+                    is_breached = True
+
+                if is_breached:
+                    exit_idx = h_date
+                    actual_exit = stop_price
+                    trade_ret = -stop_loss_pct
+                    break
+
         actual_exec_date = df.loc[entry_idx, "Date"]
 
         # SPY benchmark
@@ -155,5 +177,6 @@ def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_prelo
         rsi_high=70,
         gk_vol_limit=1.20,
         min_confluence_score=3,
-        spy_close_preloaded=spy_close_preloaded
+        spy_close_preloaded=spy_close_preloaded,
+        stop_loss_pct=0.0
     )

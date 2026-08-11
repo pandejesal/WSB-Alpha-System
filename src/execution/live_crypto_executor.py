@@ -73,6 +73,7 @@ def init_bybit_exchange():
     exchange_params = {
         'apiKey': BYBIT_API_KEY,
         'secret': BYBIT_API_SECRET,
+        'enableRateLimit': True,
         'options': {
             'defaultType': 'linear',  # Use linear USDT-margined perpetuals
         }

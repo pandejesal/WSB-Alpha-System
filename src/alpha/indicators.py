@@ -1,5 +1,16 @@
 import numpy as np
 import pandas as pd
+from numba import njit
+
+
+@njit
+def compute_ha_open_numba(open_arr, close_arr, ha_close_arr):
+    n = len(open_arr)
+    ha_open = np.zeros(n)
+    ha_open[0] = (open_arr[0] + close_arr[0]) / 2.0
+    for i in range(1, n):
+        ha_open[i] = (ha_open[i-1] + ha_close_arr[i-1]) / 2.0
+    return ha_open
 
 
 def compute_indicators(df):
@@ -36,11 +47,7 @@ def compute_indicators(df):
 
     # Heikin-Ashi
     df["HA_Close"] = (df["Open"] + df["High"] + df["Low"] + df["Close"]) / 4.0
-    ha_open = np.zeros(len(df))
-    ha_open[0] = (df["Open"].iloc[0] + df["Close"].iloc[0]) / 2.0
-    for i in range(1, len(df)):
-        ha_open[i] = (ha_open[i-1] + df["HA_Close"].iloc[i-1]) / 2.0
-    df["HA_Open"] = ha_open
+    df["HA_Open"] = compute_ha_open_numba(df["Open"].values, df["Close"].values, df["HA_Close"].values)
     df["HA_High"] = df[["High", "HA_Open", "HA_Close"]].max(axis=1)
     df["HA_Low"] = df[["Low", "HA_Open", "HA_Close"]].min(axis=1)
 

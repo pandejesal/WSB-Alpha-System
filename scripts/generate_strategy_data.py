@@ -148,7 +148,7 @@ def main():
             json.dump(population, f, indent=2)
         logger.info("Saved strategy_population.json")
 
-        # 8. Initialize or load thompson_state.json
+        # 8. Initialize or load thompson_state.json and update with backtest results
         thompson_path = "thompson_state.json"
         if os.path.exists(thompson_path):
             with open(thompson_path) as f:
@@ -160,6 +160,16 @@ def main():
             sid = s["id"]
             if sid not in thompson:
                 thompson[sid] = {"alpha": 1, "beta": 1}
+
+            # Hookup: update Thompson sampling alpha/beta with trading success/failure
+            metrics = s.get("metrics", {})
+            total_trades = metrics.get("total_trades", 0)
+            win_rate = metrics.get("win_rate", 0.0)
+            wins = int(round(win_rate * total_trades))
+            losses = total_trades - wins
+
+            thompson[sid]["alpha"] += wins
+            thompson[sid]["beta"] += losses
 
         with open(thompson_path, "w") as f:
             json.dump(thompson, f, indent=2)
