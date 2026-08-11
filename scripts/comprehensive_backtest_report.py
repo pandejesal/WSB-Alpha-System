@@ -38,40 +38,46 @@ def download_data(tickers, start_date, end_date):
         if len(data) == 0:
             raise Exception("Rate limited")
 
-        return data, spy_data
+        return data, spy_data, "yfinance"
     except Exception as e:
-        logger.warning(f"Download failed ({e}), generating mock data for testing...")
+        logger.warning(f"yfinance download failed ({e}), falling back to preloaded historical CSV data from market_data_2019_2026...")
+        try:
+            # Load SPY
+            spy_csv_path = "market_data_2019_2026/ohlcv/SPY.csv"
+            if not os.path.exists(spy_csv_path):
+                raise FileNotFoundError(f"Local SPY CSV not found at {spy_csv_path}")
 
-        dates = pd.date_range(start=start_date, end=end_date, freq='B')
-        np.random.seed(42)
+            spy_df = pd.read_csv(spy_csv_path)
+            spy_df["date"] = pd.to_datetime(spy_df["date"])
+            spy_df.set_index("date", inplace=True)
+            spy_df.columns = [c.capitalize() for c in spy_df.columns]
 
-        # Generate SPY
-        spy_dates = pd.date_range(start='2018-01-01', end=end_date, freq='B')
-        spy_returns = np.random.normal(0.0005, 0.01, len(spy_dates))
-        spy_prices = 100 * np.exp(np.cumsum(spy_returns))
-        spy_data = pd.DataFrame({'Close': spy_prices}, index=spy_dates)
+            # Load Tickers
+            ticker_dfs = []
+            for ticker in tickers:
+                csv_path = f"market_data_2019_2026/ohlcv/{ticker}.csv"
+                if os.path.exists(csv_path):
+                    df = pd.read_csv(csv_path)
+                    df["date"] = pd.to_datetime(df["date"])
+                    df.set_index("date", inplace=True)
 
-        # Generate Tickers
-        dfs = []
-        for ticker in tickers:
-            returns = np.random.normal(0.0005, 0.02, len(dates))
-            prices = 100 * np.exp(np.cumsum(returns))
-            high = prices * np.random.uniform(1.0, 1.02, len(dates))
-            low = prices * np.random.uniform(0.98, 1.0, len(dates))
-            open_px = prices * np.random.uniform(0.99, 1.01, len(dates))
-            vol = np.random.randint(1000000, 10000000, len(dates))
+                    columns_map = {}
+                    for col in ["open", "high", "low", "close", "volume"]:
+                        if col in df.columns:
+                            columns_map[col] = (col.capitalize(), ticker)
 
-            df = pd.DataFrame({
-                ('Close', ticker): prices,
-                ('Open', ticker): open_px,
-                ('High', ticker): high,
-                ('Low', ticker): low,
-                ('Volume', ticker): vol
-            }, index=dates)
-            dfs.append(df)
+                    df = df[list(columns_map.keys())].rename(columns=columns_map)
+                    df.columns = pd.MultiIndex.from_tuples(df.columns, names=[None, "Ticker"])
+                    ticker_dfs.append(df)
 
-        data = pd.concat(dfs, axis=1)
-        return data, spy_data
+            if not ticker_dfs:
+                raise FileNotFoundError("No local ticker CSV files found.")
+
+            combined_tickers = pd.concat(ticker_dfs, axis=1)
+            return combined_tickers, spy_df, "local_csv_fallback"
+        except Exception as local_err:
+            logger.critical(f"FATAL: Local CSV fallback also failed: {local_err}")
+            raise ConnectionError(f"Fails-Closed: Unable to build backtest report without real-world data. Error: {e} | Local error: {local_err}")
 
 def compute_indicators_vectorized(df):
     """Computes necessary indicators in a vectorized manner for a single ticker's DataFrame."""
@@ -457,8 +463,10 @@ def run_backtest_for_params(df_dict, spy_df, params, deposit_schedule):
                             spread_pct = 0.0005
                             spread_cost = entry_price * qty * spread_pct
                             cost = (entry_price * qty) + spread_cost
-
-    portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost)
+                            atr_val = df.loc[prev_date, "ATR_14"] if prev_date in df.index else 0.0
+                            if pd.isna(atr_val) or atr_val <= 0:
+                                atr_val = entry_price * 0.02
+                            portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost, atr_14=atr_val)
 # Force close all remaining positions at end of backtest
     final_date_str = trading_days[-1].strftime('%Y-%m-%d')
     portfolio.liquidate_all(final_date_str, {k: v.iloc[-1]["Close"] for k,v in df_dict.items()}, lambda t: 0.01)
@@ -640,7 +648,7 @@ def main():
     start_date = "2019-01-01"
     end_date = datetime.now().strftime("%Y-%m-%d")
 
-    raw_data, spy_data = download_data(tickers, start_date, end_date)
+    raw_data, spy_data, data_source = download_data(tickers, start_date, end_date)
 
     # Process SPY
     if isinstance(spy_data.columns, pd.MultiIndex):
@@ -860,12 +868,13 @@ def main():
 
     report = {
         "report_date": datetime.now().strftime("%Y-%m-%d"),
+        "data_source": data_source,
         "period": {"start": start_date, "end": end_date},
         "initial_capital": 100,
         "quarterly_deposit": 50,
         "total_deposits": best_portfolio.deposits_count,
         "total_deposited": best_portfolio.total_deposits,
-        "strategies_tested": 90,
+        "strategies_tested": total_combos,
         "best_strategy": {
             "name": best_name,
             "parameters": best_params,

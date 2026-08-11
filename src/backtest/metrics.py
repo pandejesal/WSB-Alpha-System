@@ -37,11 +37,8 @@ def safe_sortino(returns_series, periods=252):
     if len(returns_series) < 2:
         return 0.0
 
-    downside_rets = returns_series[returns_series < 0]
-    if len(downside_rets) == 0:
-        return 0.0
-
-    downside_std = downside_rets.std()
+    downside_diff = returns_series.clip(upper=0.0)
+    downside_std = np.sqrt(np.mean(downside_diff ** 2))
     if downside_std < 1e-12:
         return 0.0
 

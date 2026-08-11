@@ -35,12 +35,10 @@ class PortfolioOptimizer:
             # We will optimize assuming weights sum to 1, then scale down by (1 - min_cash).
             # Actually, Riskfolio allows setting bounds on individual weights.
 
-            port.lowerreq = 0.0
-            port.upperreq = max_weight / (1.0 - min_cash) # scale up the bound during optimization
+            port.w_lo = 0.0
+            port.w_up = max_weight / (1.0 - min_cash) # scale up the bound during optimization
 
             # Estimate optimal portfolio
-# In some versions of riskfolio-lib, upperreq is ignored unless we pass it to the constraints
-            # We can use asset classes or simply cap and re-normalize if needed for the test
             w = port.optimization(model='Classic', rm=self.risk_measure, obj='MinRisk', rf=0.0, l=0, hist=True)
 
             if w is None or w.empty:
@@ -79,8 +77,8 @@ class PortfolioOptimizer:
             port = rp.Portfolio(returns=returns)
             port.assets_stats(method_mu='hist', method_cov='hist')
 
-            port.lowerreq = 0.0
-            port.upperreq = max_weight / (1.0 - min_cash)
+            port.w_lo = 0.0
+            port.w_up = max_weight / (1.0 - min_cash)
 
             # Estimate optimal portfolio for ERC
             w = port.rp_optimization(model='Classic', rm=self.risk_measure, rf=0.0, b=None, hist=True)

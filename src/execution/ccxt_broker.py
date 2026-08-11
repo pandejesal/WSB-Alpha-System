@@ -79,25 +79,31 @@ class CCXTBroker(BaseBroker):
                 })
         return positions
 
-    def place_order(self, symbol: str, qty: float | None, side: str, order_type: str = 'market', stop_loss_price: float | None = None) -> dict:
+    def place_order(self, symbol: str, qty: float | None, side: str, order_type: str = 'market', stop_loss_price: float | None = None, reduce_only: bool = False) -> dict:
         if not self.exchange:
             raise ConnectionError("CCXT exchange not initialized.")
 
-        # Standardize symbol (e.g., BTC/USDT)
+        import ccxt
         ccxt_side = side.lower()
 
         params = {}
         if stop_loss_price is not None:
             params['stopPrice'] = stop_loss_price
+        if reduce_only:
+            params['reduceOnly'] = True
 
-        order = self.exchange.create_order(
-            symbol=symbol,
-            type=order_type,
-            side=ccxt_side,
-            amount=qty,
-            params=params
-        )
-        return {"status": "success", "order_id": str(order['id']), "status_details": order['status']}
+        try:
+            order = self.exchange.create_order(
+                symbol=symbol,
+                type=order_type,
+                side=ccxt_side,
+                amount=qty,
+                params=params
+            )
+            return {"status": "success", "order_id": str(order['id']), "status_details": order['status']}
+        except (ccxt.InsufficientFunds, ccxt.InvalidOrder, ccxt.NetworkError, ccxt.ExchangeError) as e:
+            logger.error(f"CCXT Order Placement failed for {symbol}: {e}")
+            return {"status": "failed", "error_message": str(e)}
 
     def cancel_order(self, symbol: str) -> bool:
         if not self.exchange:
