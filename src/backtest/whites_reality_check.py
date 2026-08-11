@@ -13,7 +13,7 @@ class WhitesRealityCheck:
         mean_excess_returns = excess_returns.mean(axis=0)
 
         best_actual_strategy = mean_excess_returns.idxmax()
-        best_actual_return = mean_excess_returns.max()
+        best_actual_return = mean_excess_returns.max()  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
 
         from src.backtest.validators.statistical import StatisticalValidator
 

@@ -54,7 +54,8 @@ class PortfolioOptimizer:
                 weights[weights > max_allowed] = max_allowed
                 excess = 1.0 - weights.sum()
                 under_max = weights < max_allowed
-                if not any(under_max): break
+                if not any(under_max):
+                    break
                 weights[under_max] += excess / under_max.sum()
 
             scaled_weights = weights * (1.0 - min_cash)

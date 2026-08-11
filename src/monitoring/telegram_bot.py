@@ -1,8 +1,10 @@
-import logging
-import requests
 import json
+import logging
 import os
 from typing import Dict
+
+import requests
+
 from src.utils.config import config
 
 logger = logging.getLogger(__name__)
@@ -76,8 +78,8 @@ class TelegramBot:
             try:
                 with open(self.approved_file, "r") as f:
                     approved = json.load(f)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Failed to read approved file: {e}")
 
         if cmd == '/approve':
             if strat_id not in approved:

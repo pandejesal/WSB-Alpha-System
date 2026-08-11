@@ -56,7 +56,8 @@ class PositionSizer:
         risk_amount = account_equity * adjusted_risk_pct
 
         stop_loss_dollar_distance = atr * stop_loss_atr_multiplier
-        if stop_loss_dollar_distance == 0: return {"quantity": 0.0}
+        if stop_loss_dollar_distance == 0:
+            return {"quantity": 0.0}
 
         quantity = risk_amount / stop_loss_dollar_distance
         notional_value = quantity * entry_price

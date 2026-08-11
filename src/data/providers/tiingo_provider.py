@@ -1,8 +1,8 @@
-import os
 import logging
-import requests
+import os
+
 import pandas as pd
-from typing import Optional
+import requests
 
 from src.data.providers.base import BaseDataProvider
 from src.data.schemas import OHLCVSchema

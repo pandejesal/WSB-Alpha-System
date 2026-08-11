@@ -157,7 +157,7 @@ class ResearchWorkflow:
             from RestrictedPython import compile_restricted
 
             try:
-                byte_code = compile_restricted(code, '<inline>', 'exec')
+                byte_code = compile_restricted(code, '<inline>', 'exec')  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
             except Exception as e:
                 raise ValueError(f"RestrictedPython failed to compile code safely: {e}")
 
@@ -202,7 +202,7 @@ class ResearchWorkflow:
         try:
             if "def generate_signals" in generated_code:
                 local_env = {}
-                exec(generated_code, {"__builtins__": {}}, local_env)
+                exec(generated_code, {"__builtins__": {}}, local_env)  # noqa: S102 - sandboxed execution of generated strategy code is intentional
 
             trades = run_backtest()
             if trades.empty:

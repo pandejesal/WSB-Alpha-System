@@ -3,7 +3,7 @@ import logging
 import os
 
 import pandas as pd
-import yfinance as yf
+
 from src.data.providers.chain import get_provider
 
 

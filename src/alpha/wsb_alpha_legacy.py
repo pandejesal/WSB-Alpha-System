@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # WSB DD SENTIMENT ANALYTICS & PLOTTER - UNIFIED INCREMENTAL SYSTEM
 # ============================================================================
-import nltk
+import nltk  # noqa: E402 - imports must happen after configuration / environment setup
 
 try:
     nltk.data.find('tokenizers/punkt_tab')
@@ -19,21 +19,27 @@ except LookupError:
     nltk.download('averaged_perceptron_tagger_eng')
 
 
-import json
-import os
-import re
-import defusedxml.ElementTree as ET
-from collections import defaultdict
-from datetime import datetime, timedelta
+import json  # noqa: E402 - imports must happen after configuration / environment setup
+import os  # noqa: E402 - imports must happen after configuration / environment setup
+import re  # noqa: E402 - imports must happen after configuration / environment setup
+from collections import defaultdict  # noqa: E402 - imports must happen after configuration / environment setup
+from datetime import (  # noqa: E402 - imports must happen after configuration / environment setup
+    datetime,
+    timedelta,
+)
 
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import requests
-import yfinance as yf
-from tqdm import tqdm
+import defusedxml.ElementTree as ET  # noqa: E402 - imports must happen after configuration / environment setup
+import matplotlib.pyplot as plt  # noqa: E402 - imports must happen after configuration / environment setup
+import numpy as np  # noqa: E402 - imports must happen after configuration / environment setup
+import pandas as pd  # noqa: E402 - imports must happen after configuration / environment setup
+import requests  # noqa: E402 - imports must happen after configuration / environment setup
+import yfinance as yf  # noqa: E402 - imports must happen after configuration / environment setup
+from tqdm import tqdm  # noqa: E402 - imports must happen after configuration / environment setup
 
-from src.alpha.indicators import compute_indicators, compute_regime_returns
+from src.alpha.indicators import (  # noqa: E402 - imports must happen after configuration / environment setup
+    compute_indicators,
+    compute_regime_returns,
+)
 
 # ============================================================================
 # DYNAMIC SYSTEM PATH CONFIGURATION
@@ -77,7 +83,7 @@ BLACKLIST = {
 }
 
 # ============================================================================
-def extract_tickers(text: str) -> list[str]:
+def extract_tickers(text: str) -> list[str]:  # noqa: F811 - redefinition of unused legacy function or duplicate import fallback
     if not text:
         return []
     raw_matches = TICKER_RE.findall(text)
@@ -113,7 +119,7 @@ def finbert_sentiment(text: str, tokenizer, model, device) -> dict:
     logger.warning("finbert_sentiment called but finbert is removed, returning neutral")
     return {"bullish": 0.0, "bearish": 0.0, "neutral": 1.0}
 
-import time
+import time  # noqa: E402 - imports must happen after configuration / environment setup
 
 
 def safe_write_csv(df, path):
@@ -129,12 +135,14 @@ def safe_write_csv(df, path):
 def safe_write_json(data, path):
     for i in range(3):
         try:
-            with open(path, "w") as f: json.dump(data, f)
+            with open(path, "w") as f:
+                json.dump(data, f)
             return
         except PermissionError:
             logger.info(f"Permission Denied {path}")
             time.sleep(2**i)
-    with open(f"{path}.tmp", "w") as f: json.dump(data, f)
+    with open(f"{path}.tmp", "w") as f:
+        json.dump(data, f)
 
 
 def fetch_rss_feed() -> list[dict]:
@@ -271,7 +279,8 @@ def run_sentiment_pipeline():
                         created = datetime.strptime(clean_ts[:19], "%Y-%m-%dT%H:%M:%S")
                     else:
                         created = datetime.fromisoformat(created_val.replace("Z", "+00:00"))
-                except Exception:
+                except Exception as e:
+                    logger.debug(f"Failed to parse datetime: {e}")
                     continue
             else:
                 continue
@@ -381,7 +390,7 @@ def run_sentiment_pipeline():
     if "regime_holding_days" not in combined.columns:
         combined["regime_holding_days"] = 5
 
-    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]
+    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]  # noqa: E712 - equality comparison needed for pandas filtering or explicit boolean type check
     logger.info(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
     if not needs_calculation.empty:
@@ -730,7 +739,7 @@ def run_trajectory_plotter(top_n_tickers=5):
     df['post_date'] = pd.to_datetime(df['post_date'])
     
     # Filter out tickers that are marked as pricing_failed to ensure we only select tickers with valid price data for plotting
-    valid_df = df[df['pricing_failed'] != True]
+    valid_df = df[df['pricing_failed'] != True]  # noqa: E712 - equality comparison needed for pandas filtering or explicit boolean type check
     top_tickers = valid_df['ticker'].value_counts().head(top_n_tickers).index.tolist()
     logger.info(f"Selected top {top_n_tickers} tickers for plotting: {top_tickers}")
     
@@ -759,7 +768,8 @@ def run_trajectory_plotter(top_n_tickers=5):
         try:
             px = yf.download([ticker, "SPY"], start=start_dl, end=end_dl, progress=False, auto_adjust=True)
             px_close = px["Close"] if (isinstance(px, pd.DataFrame) and "Close" in px) else px
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Failed to fetch yfinance data for plotting: {e}")
             continue
             
         if ticker not in px_close.columns or "SPY" not in px_close.columns:

@@ -1,15 +1,14 @@
 import logging
+
 import pandas as pd
-from datetime import datetime, timezone
-from typing import Optional
+from alpaca.data.historical.crypto import CryptoHistoricalDataClient
+from alpaca.data.historical.stock import StockHistoricalDataClient
+from alpaca.data.requests import CryptoBarsRequest, StockBarsRequest
+from alpaca.data.timeframe import TimeFrame
 
 from src.data.providers.base import BaseDataProvider
-from src.utils.config import config
-from alpaca.data.historical.stock import StockHistoricalDataClient
-from alpaca.data.historical.crypto import CryptoHistoricalDataClient
-from alpaca.data.requests import StockBarsRequest, CryptoBarsRequest
-from alpaca.data.timeframe import TimeFrame
 from src.data.schemas import OHLCVSchema
+from src.utils.config import config
 
 logger = logging.getLogger(__name__)
 

@@ -55,7 +55,7 @@ class ExecutionWrapper:
             logger.error(f"Fails-Closed triggered for {symbol}. Canceling open orders and blocking symbol.")
             try:
                 self.broker.cancel_order(symbol)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.warning(f"Failed to cancel order for {symbol} during halt: {e}")
             self.halted_symbols.add(symbol)
             return {}
