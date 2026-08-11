@@ -264,9 +264,13 @@ def main():
     wf_real_ret, wf_real_sharpe, wf_p_rets, wf_p_sharpes, wf_pval, wf_win_rate, num_windows = run_walk_forward_test(posts_df, stock_dfs, spy_close)
 
     # Hansen's SPA Test Execution
-    from src.backtest.validators.statistical import StatisticalValidator
+    try:
+        from src.backtest.validators.statistical import StatisticalValidator
+    except Exception as e:
+        print(f"StatisticalValidator unavailable (SPA test skipped): {e}")
+        StatisticalValidator = None
 
-    if len(is_real_ret_series) > 0 and len(spy_ret_series) > 0:
+    if len(is_real_ret_series) > 0 and len(spy_ret_series) > 0 and StatisticalValidator is not None:
         try:
             spa_result = StatisticalValidator.spa_test(is_real_ret_series.values, spy_ret_series.values)
             spa_pval = spa_result.get("p_value", 1.0)
@@ -371,4 +375,5 @@ def main():
         print(f"QuantStats tear sheet generation failed: {e}")
 
 if __name__ == "__main__":
+    np.random.seed(42)  # reproducible permutation draws
     main()
