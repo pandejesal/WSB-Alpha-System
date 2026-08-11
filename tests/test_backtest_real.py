@@ -5,8 +5,39 @@ import numpy as np
 class TestRealBacktest(unittest.TestCase):
     def test_run_backtest_returns_dataframe(self):
         from src.backtest.run_historic_backtest import run_backtest
-        res = run_backtest()
+        # run_backtest now requires explicit preloaded inputs (honest anti-lookahead
+        # guard): posts, per-ticker OHLCV frames, and the SPY close series.
+        posts = pd.DataFrame([{'post_date': pd.to_datetime('2023-01-04'), 'ticker': 'AAPL', 'sentiment_score': 1}])
+
+        dates = pd.date_range('2023-01-01', periods=30, freq='B')  # Business days
+        n = len(dates)
+        close = 100.0 + np.arange(n).astype(float)  # monotonically rising
+        stock_dfs = {
+            'AAPL': pd.DataFrame({
+                'Date': dates,
+                'Open': close,
+                'Close': close + 1,
+                'High': close + 2,
+                'Low': close,
+                'Volume': 2_000_000,
+                # Decision-bar indicators such that the confluence check fires
+                'RSI_14': 50.0,
+                'HA_Open': close,
+                'HA_Close': close + 1,
+                'EMA_20': close,
+                'MACD_Hist': 0.5,
+                'BB_Lower': close - 2,
+                'BB_Upper': close + 3,
+                'GK_Vol': 0.5,
+                'ATR_14': 1.0,
+            })
+        }
+        spy_close = pd.Series(100.0, index=dates)
+
+        res = run_backtest(posts, stock_dfs, spy_close)
         self.assertIsInstance(res, pd.DataFrame)
+        # The honest wrapper requires all three inputs; passing them must not raise.
+        self.assertGreater(len(res), 0, "Expected at least one executed trade")
         cols = res.columns.tolist()
         expected = ['post_date', 'ticker', 'sentiment_score', 'entry_price', 'exit_price', 'return', 'holding_days', 'regime', 'spy_return', 'excess_return']
         for c in expected:
