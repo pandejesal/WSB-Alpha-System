@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from src.risk.fred_macro_provider import FredMacroProvider
 
@@ -15,6 +16,25 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
     macro_provider = FredMacroProvider()
     historical_regimes = macro_provider.get_historical_regimes()
 
+    # Pre-normalize per-ticker frames and date arrays once (semantics-preserving
+    # speedup: replaces a full-frame boolean mask per post with np.searchsorted)
+    ticker_frames = {}
+    ticker_date_arrays = {}
+    for ticker, df in stock_dfs.items():
+        if df is None or df.empty:
+            continue
+        d = df
+        if "Date" not in d.columns:
+            d = d.reset_index()
+            if "Date" not in d.columns and "Datetime" in d.columns:
+                d = d.rename(columns={"Datetime": "Date"})
+        if "Date" not in d.columns:
+            continue
+        if not pd.api.types.is_datetime64_any_dtype(d["Date"]):
+            d["Date"] = pd.to_datetime(d["Date"])
+        ticker_frames[ticker] = d
+        ticker_date_arrays[ticker] = d["Date"].to_numpy()
+
     for idx, row in filtered_posts.iterrows():
         # Dynamic historical regime lookup
         post_date_str = pd.to_datetime(row["post_date"]).strftime("%Y-%m-%d")
@@ -23,31 +43,18 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
         ticker = row["ticker"]
         sentiment_score = row.get("sentiment_score", 0)
 
-        if ticker not in stock_dfs:
+        if ticker not in ticker_frames:
             continue
-        df = stock_dfs[ticker]
-        if df is None or df.empty:
-            continue
-
-        if "Date" not in df.columns:
-            df = df.reset_index()
-            if "Date" not in df.columns and "Datetime" in df.columns:
-                df.rename(columns={"Datetime": "Date"}, inplace=True)
-        if "Date" not in df.columns:
-            continue
-
-        if not pd.api.types.is_datetime64_any_dtype(df["Date"]):
-            df["Date"] = pd.to_datetime(df["Date"])
+        df = ticker_frames[ticker]
 
         exec_date = pd.to_datetime(post_date) + pd.tseries.offsets.BDay(1)
         exec_date = exec_date.normalize()
 
-        entry_row = df[df["Date"] >= exec_date]
-        if entry_row.empty:
+        pos = int(np.searchsorted(ticker_date_arrays[ticker], np.datetime64(exec_date)))
+        if pos >= len(df):
             continue
 
-        entry_idx = entry_row.index[0]
-        entry_iloc = df.index.get_loc(entry_idx)
+        entry_iloc = pos
 
         # Lookahead Fix: compute decision indicators using the last closed bar
         # before the entry bar
@@ -83,7 +90,8 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
         if score < min_confluence_score:
             continue
 
-        # Fill at Open of entry_idx
+        # Fill at Open of the entry bar
+        entry_idx = df.index[entry_iloc]
         entry_price = df.loc[entry_idx, "Open"]
 
         # ATR slippage (evaluated on t-1 for the entry)
