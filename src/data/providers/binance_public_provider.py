@@ -1,7 +1,7 @@
 import logging
-import requests
+
 import pandas as pd
-from datetime import datetime
+import requests
 
 from src.data.providers.base import BaseDataProvider
 from src.data.schemas import OHLCVSchema

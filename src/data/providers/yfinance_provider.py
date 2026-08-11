@@ -82,7 +82,7 @@ class YFinanceProvider(BaseDataProvider):
                             all_data.append(df)
                             self.cache.store_ohlcv(df)
                     except Exception as e:
-                        pass
+                        logger.debug(f"Failed to cache OHLCV: {e}")
         if not all_data:
             return pd.DataFrame()
 

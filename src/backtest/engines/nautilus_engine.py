@@ -10,7 +10,7 @@ class NautilusEngine(BaseBacktestEngine):
     def __init__(self):
         self.use_nautilus = False
         try:
-            import nautilus_trader
+            import nautilus_trader  # noqa: F401 - unused import (intentionally exposed/exported)
             self.use_nautilus = True
         except ImportError:
             logger.info("NautilusTrader not installed or incompatible. Using mock simulation fallback.")

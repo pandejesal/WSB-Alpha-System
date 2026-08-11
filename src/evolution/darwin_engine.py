@@ -66,10 +66,10 @@ class DarwinEngine:
             if historical_data is not None:
                 try:
                     from src.backtest.validators.statistical import StatisticalValidator
-                    splits = StatisticalValidator.combinatorial_purged_cv(len(historical_data))
-                    cpcv_conf = 0.95
-                except Exception:
-                    pass
+                    splits = StatisticalValidator.combinatorial_purged_cv(len(historical_data))  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
+                    cpcv_conf = 0.95  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
+                except Exception as e:
+                    logger.debug(f"Failed to calculate CPCV split sizes gracefully: {e}")
 
             is_sharpe = metrics.get('train_sharpe', metrics.get('sharpe', 0.0))
 

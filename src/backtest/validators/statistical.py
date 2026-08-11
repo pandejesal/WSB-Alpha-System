@@ -1,6 +1,5 @@
 import numpy as np
-from arch.bootstrap import StationaryBootstrap, SPA
-from scipy import stats
+from arch.bootstrap import SPA, StationaryBootstrap
 
 
 class StatisticalValidator:

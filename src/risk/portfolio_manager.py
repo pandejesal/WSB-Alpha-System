@@ -15,7 +15,8 @@ class PortfolioManager:
         return True
 
     def _rebalance_allocations(self):
-        if not self.active_strategies: return
+        if not self.active_strategies:
+            return
         total_allocation = sum(self.active_strategies.values())
         if total_allocation > 1.0:
             scale = 1.0 / total_allocation

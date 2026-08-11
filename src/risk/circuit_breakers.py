@@ -26,9 +26,12 @@ class CircuitBreaker:
         self.starting_equity_total = None
 
     def initialize_state(self, current_equity: float):
-        if self.starting_equity_daily is None: self.starting_equity_daily = current_equity
-        if self.starting_equity_weekly is None: self.starting_equity_weekly = current_equity
-        if self.starting_equity_total is None: self.starting_equity_total = current_equity
+        if self.starting_equity_daily is None:
+            self.starting_equity_daily = current_equity
+        if self.starting_equity_weekly is None:
+            self.starting_equity_weekly = current_equity
+        if self.starting_equity_total is None:
+            self.starting_equity_total = current_equity
 
     def _send_emergency_alert(self, msg: str):
         logger.critical(f"EMERGENCY ALERT: {msg}")

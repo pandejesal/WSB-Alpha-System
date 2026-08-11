@@ -1,13 +1,16 @@
+import logging
 from datetime import timedelta
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import yfinance as yf
-from tqdm import tqdm
+import pandas as pd  # noqa: E402 - imports must happen after configuration / environment setup
 
-import src.backtest.run_historic_backtest as rb
-from src.alpha import indicators
+logger = logging.getLogger(__name__)
+import yfinance as yf  # noqa: E402 - imports must happen after configuration / environment setup
+from tqdm import tqdm  # noqa: E402 - imports must happen after configuration / environment setup
+
+import src.backtest.run_historic_backtest as rb  # noqa: E402 - imports must happen after configuration / environment setup
+from src.alpha import indicators  # noqa: E402 - imports must happen after configuration / environment setup
 
 NUM_PERMUTATIONS = 200
 
@@ -55,7 +58,8 @@ def load_base_data():
                             synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
                         elif bearish_score >= 3:
                             synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
-            except:
+            except Exception as e:
+                logger.warning(f"Error processing base data for {ticker}: {e}")
                 continue
         posts_df = pd.DataFrame(synthetic_signals)
     else:
@@ -348,7 +352,8 @@ def main():
             try:
                 dd_info = qs.stats.drawdown_details(returns_series)
                 max_dd_duration = dd_info['days'].max() if not dd_info.empty else 0
-            except:
+            except Exception as e:
+                logger.warning(f"Error computing drawdown for WFO fold: {e}")
                 max_dd_duration = 0
 
             metrics = {

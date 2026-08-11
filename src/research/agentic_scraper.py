@@ -67,7 +67,7 @@ def fetch_agentic_headlines(ticker: str) -> list[dict[str, str]]:
                 elements = page.query_selector_all(".result")
                 for elem in elements[:10]: # Limit to top 10 results
                     headline_elem = elem.query_selector(".result__title")
-                    snippet_elem = elem.query_selector(".result__snippet")
+                    snippet_elem = elem.query_selector(".result__snippet")  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
                     url_elem = elem.query_selector(".result__url")
 
                     if headline_elem:

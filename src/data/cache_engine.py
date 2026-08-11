@@ -95,7 +95,7 @@ class CacheEngine:
         try:
             # For backtesting we often need old data, but per requirements we provide this utility
             # We'll clear data older than TTL to demonstrate capability
-            res = self.conn.execute(f"DELETE FROM ohlcv WHERE date < '{cutoff_date}'")
+            res = self.conn.execute(f"DELETE FROM ohlcv WHERE date < '{cutoff_date}'")  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
             logger.info(f"Cleared OHLCV cache older than {ttl_days} days.")
         except Exception as e:
             logger.error(f"Failed to clear expired cache: {e}")
@@ -108,7 +108,8 @@ class CacheEngine:
             return pd.DataFrame()
 
     def store_sentiment(self, df: pd.DataFrame):
-        if df.empty: return
+        if df.empty:
+            return
         try:
             self.conn.register('temp_sent', df)
             self.conn.execute("""

@@ -81,6 +81,6 @@ class RedditProvider(BaseDataProvider):
                     "content": entry.summary,
                     "score": 0.0
                 })
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Failed to parse reddit post: {e}")
         return posts

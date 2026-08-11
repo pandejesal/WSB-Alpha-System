@@ -2,13 +2,13 @@ import logging
 from pathlib import Path
 
 import pandas as pd
-import yfinance as yf
-from src.data.providers.chain import get_provider
 from nautilus_trader.core.datetime import dt_to_unix_nanos
 from nautilus_trader.model.data import Bar, BarType
 from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
 from nautilus_trader.model.objects import Price, Quantity
 from nautilus_trader.persistence.catalog import ParquetDataCatalog
+
+from src.data.providers.chain import get_provider
 
 logger = logging.getLogger(__name__)
 
