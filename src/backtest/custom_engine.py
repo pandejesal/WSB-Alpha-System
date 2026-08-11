@@ -31,7 +31,8 @@ class CustomEngine(BacktestEngine):
 
             avg_price = df['Close'].mean()
             avg_atr = df['ATR_14'].mean()
-            if pd.isna(avg_atr): avg_atr = 0
+            if pd.isna(avg_atr):
+                avg_atr = 0
             slippage_pct = min(max(0.05 * avg_atr / avg_price, 0.001), 0.025) if avg_price > 0 else 0.001
 
             df['Strategy_Return'] = df['signal'].shift(1) * df['Returns']

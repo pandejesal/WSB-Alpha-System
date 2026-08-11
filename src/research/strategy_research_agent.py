@@ -9,10 +9,14 @@ from google.genai import types
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("StrategyResearchAgent")
 
-from google.genai.types import FunctionDeclaration, GenerateContentConfig, Tool
+from google.genai.types import (  # noqa: E402 - imports must happen after configuration / environment setup
+    FunctionDeclaration,
+    GenerateContentConfig,
+    Tool,
+)
 
+from src.research.google_search_provider import DDGSearchProvider  # noqa: E402 - imports must happen after configuration / environment setup
 
-from src.research.google_search_provider import DDGSearchProvider
 
 def search_strategy_concepts_online(query: str) -> str:
     """Real implementation using DDGSearchProvider"""

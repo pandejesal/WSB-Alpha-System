@@ -143,7 +143,8 @@ def skill_run_sandbox_backtest(cvar_threshold: float, stop_loss_atr: float, take
         trades = []
 
         for i in range(len(bt_df)):
-            if i < 20: continue # need some history for cVaR
+            if i < 20:
+                continue # need some history for cVaR
 
             # Simple historical cVaR calculation (95% confidence)
             lookback = df['Return'].iloc[:df.index.get_loc(bt_df.index[i])]

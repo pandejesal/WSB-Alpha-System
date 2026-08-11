@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+
 from src.risk.fred_macro_provider import FredMacroProvider
 
 

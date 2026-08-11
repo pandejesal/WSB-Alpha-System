@@ -9,15 +9,18 @@ and automatically submits Buy/Short market orders to paper or live accounts.
 To run this in production, schedule this script to run daily at 3:55 PM EST via cron.
 """
 
+import logging
 import os
 import sys
 from datetime import datetime, timedelta
 
-import pandas as pd
-import requests
-import yfinance as yf
+logger = logging.getLogger(__name__)
 
-from src.risk import position_sizing as risk_config
+import pandas as pd  # noqa: E402 - imports must happen after configuration / environment setup
+import requests  # noqa: E402 - imports must happen after configuration / environment setup
+import yfinance as yf  # noqa: E402 - imports must happen after configuration / environment setup
+
+from src.risk import position_sizing as risk_config  # noqa: E402 - imports must happen after configuration / environment setup
 
 TECHNICAL_UNIVERSE = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMD', 'META', 'AMZN',
                       'GOOGL', 'JPM', 'V', 'UNH', 'JNJ', 'WMT', 'PG', 'MA',
@@ -61,7 +64,7 @@ def generate_technical_signals(stock_dfs: dict) -> pd.DataFrame:
 # ============================================================================
 # API CONFIGURATION
 # ============================================================================
-from src.utils.config import config
+from src.utils.config import config  # noqa: E402 - imports must happen after configuration / environment setup
 
 try:
     ALPACA_API_KEY_ID = config.api_keys.alpaca_api_key
@@ -224,7 +227,8 @@ def main():
                 t_px = px_data.loc[:, (slice(None), ticker)].copy()
                 t_px.columns = t_px.columns.get_level_values(0)
                 stock_dfs[ticker] = compute_indicators(t_px)
-            except:
+            except Exception as e:
+                logger.warning(f"Error computing indicators for {ticker}: {e}")
                 continue
         today_signals = generate_technical_signals(stock_dfs)
         # Use real latest date from downloaded market data

@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+
 def safe_sharpe(returns_series, periods=252):
     """
     Computes Sharpe ratio safely, guarding against near-zero standard deviation

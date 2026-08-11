@@ -133,7 +133,8 @@ class RateLimitedGeminiClient:
         self.lite_limiter.record_call()
         logger.info("Executing Gemini Flash Lite request...")
         config_kwargs = {}
-        if tools: config_kwargs['tools'] = tools
+        if tools:
+            config_kwargs['tools'] = tools
 
         response = self.client.models.generate_content(model='gemini-3.5-flash-lite', contents=prompt, config=config_kwargs if config_kwargs else None)
         return response.text

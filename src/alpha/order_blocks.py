@@ -8,7 +8,8 @@ from numba import njit
 def calculate_atr(high: np.ndarray, low: np.ndarray, close: np.ndarray, period: int = 14) -> np.ndarray:
     n = len(close)
     atr = np.zeros(n)
-    if n == 0: return atr
+    if n == 0:
+        return atr
     tr = np.zeros(n)
     tr[0] = high[0] - low[0]
     for i in range(1, n):

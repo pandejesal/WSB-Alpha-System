@@ -1,13 +1,14 @@
 import logging
-import pandas as pd
 from typing import List
 
-from src.data.providers.base import BaseDataProvider
-from src.data.providers.alpaca_data_provider import AlpacaDataProvider
-from src.data.providers.tiingo_provider import TiingoProvider
-from src.data.providers.binance_public_provider import BinancePublicProvider
-from src.data.providers.yfinance_provider import YFinanceProvider
+import pandas as pd
+
 from src.data.cache_engine import CacheEngine
+from src.data.providers.alpaca_data_provider import AlpacaDataProvider
+from src.data.providers.base import BaseDataProvider
+from src.data.providers.binance_public_provider import BinancePublicProvider
+from src.data.providers.tiingo_provider import TiingoProvider
+from src.data.providers.yfinance_provider import YFinanceProvider
 
 logger = logging.getLogger(__name__)
 
