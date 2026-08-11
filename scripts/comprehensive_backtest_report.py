@@ -10,6 +10,10 @@ import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# Set True when market data download fails and synthetic mock data is used.
+# While True, results must NOT be published to docs/data (daily CI pushes them to Pages).
+DATA_IS_MOCK = False
+
 def load_universe():
     try:
         with open("config/universe.json", "r") as f:
@@ -29,55 +33,51 @@ def download_data(tickers, start_date, end_date):
 
     try:
         # Download data with threading
-        data = yf.download(tickers, start=start_date, end=end_date, group_by='ticker', auto_adjust=False, threads=True)
+        data = yf.download(tickers, start=start_date, end=end_date, group_by='ticker', auto_adjust=True, threads=True)
 
         # Also download SPY for benchmark
-        spy_data = yf.download('SPY', start='2018-01-01', end=end_date, auto_adjust=False)
+        spy_data = yf.download('SPY', start='2018-01-01', end=end_date, auto_adjust=True)
 
         # Check if rate limited
         if len(data) == 0:
             raise Exception("Rate limited")
 
-        return data, spy_data, "yfinance"
+        return data, spy_data
     except Exception as e:
-        logger.warning(f"yfinance download failed ({e}), falling back to preloaded historical CSV data from market_data_2019_2026...")
-        try:
-            # Load SPY
-            spy_csv_path = "market_data_2019_2026/ohlcv/SPY.csv"
-            if not os.path.exists(spy_csv_path):
-                raise FileNotFoundError(f"Local SPY CSV not found at {spy_csv_path}")
+        global DATA_IS_MOCK
+        DATA_IS_MOCK = True
+        logger.warning(f"Download failed ({e}), generating mock data for testing...")
 
-            spy_df = pd.read_csv(spy_csv_path)
-            spy_df["date"] = pd.to_datetime(spy_df["date"])
-            spy_df.set_index("date", inplace=True)
-            spy_df.columns = [c.capitalize() for c in spy_df.columns]
+        dates = pd.date_range(start=start_date, end=end_date, freq='B')
+        np.random.seed(42)
 
-            # Load Tickers
-            ticker_dfs = []
-            for ticker in tickers:
-                csv_path = f"market_data_2019_2026/ohlcv/{ticker}.csv"
-                if os.path.exists(csv_path):
-                    df = pd.read_csv(csv_path)
-                    df["date"] = pd.to_datetime(df["date"])
-                    df.set_index("date", inplace=True)
+        # Generate SPY
+        spy_dates = pd.date_range(start='2018-01-01', end=end_date, freq='B')
+        spy_returns = np.random.normal(0.0005, 0.01, len(spy_dates))
+        spy_prices = 100 * np.exp(np.cumsum(spy_returns))
+        spy_data = pd.DataFrame({'Close': spy_prices}, index=spy_dates)
 
-                    columns_map = {}
-                    for col in ["open", "high", "low", "close", "volume"]:
-                        if col in df.columns:
-                            columns_map[col] = (col.capitalize(), ticker)
+        # Generate Tickers
+        dfs = []
+        for ticker in tickers:
+            returns = np.random.normal(0.0005, 0.02, len(dates))
+            prices = 100 * np.exp(np.cumsum(returns))
+            high = prices * np.random.uniform(1.0, 1.02, len(dates))
+            low = prices * np.random.uniform(0.98, 1.0, len(dates))
+            open_px = prices * np.random.uniform(0.99, 1.01, len(dates))
+            vol = np.random.randint(1000000, 10000000, len(dates))
 
-                    df = df[list(columns_map.keys())].rename(columns=columns_map)
-                    df.columns = pd.MultiIndex.from_tuples(df.columns, names=[None, "Ticker"])
-                    ticker_dfs.append(df)
+            df = pd.DataFrame({
+                ('Close', ticker): prices,
+                ('Open', ticker): open_px,
+                ('High', ticker): high,
+                ('Low', ticker): low,
+                ('Volume', ticker): vol
+            }, index=dates)
+            dfs.append(df)
 
-            if not ticker_dfs:
-                raise FileNotFoundError("No local ticker CSV files found.")
-
-            combined_tickers = pd.concat(ticker_dfs, axis=1)
-            return combined_tickers, spy_df, "local_csv_fallback"
-        except Exception as local_err:
-            logger.critical(f"FATAL: Local CSV fallback also failed: {local_err}")
-            raise ConnectionError(f"Fails-Closed: Unable to build backtest report without real-world data. Error: {e} | Local error: {local_err}")
+        data = pd.concat(dfs, axis=1)
+        return data, spy_data
 
 def compute_indicators_vectorized(df):
     """Computes necessary indicators in a vectorized manner for a single ticker's DataFrame."""
@@ -463,10 +463,8 @@ def run_backtest_for_params(df_dict, spy_df, params, deposit_schedule):
                             spread_pct = 0.0005
                             spread_cost = entry_price * qty * spread_pct
                             cost = (entry_price * qty) + spread_cost
-                            atr_val = df.loc[prev_date, "ATR_14"] if prev_date in df.index else 0.0
-                            if pd.isna(atr_val) or atr_val <= 0:
-                                atr_val = entry_price * 0.02
-                            portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost, atr_14=atr_val)
+                            entry_atr = df.loc[prev_date, "ATR_14"] if prev_date in df.index and pd.notna(df.loc[prev_date, "ATR_14"]) else 0.01
+                            portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost, atr_14=entry_atr)
 # Force close all remaining positions at end of backtest
     final_date_str = trading_days[-1].strftime('%Y-%m-%d')
     portfolio.liquidate_all(final_date_str, {k: v.iloc[-1]["Close"] for k,v in df_dict.items()}, lambda t: 0.01)
@@ -648,7 +646,7 @@ def main():
     start_date = "2019-01-01"
     end_date = datetime.now().strftime("%Y-%m-%d")
 
-    raw_data, spy_data, data_source = download_data(tickers, start_date, end_date)
+    raw_data, spy_data = download_data(tickers, start_date, end_date)
 
     # Process SPY
     if isinstance(spy_data.columns, pd.MultiIndex):
@@ -868,7 +866,6 @@ def main():
 
     report = {
         "report_date": datetime.now().strftime("%Y-%m-%d"),
-        "data_source": data_source,
         "period": {"start": start_date, "end": end_date},
         "initial_capital": 100,
         "quarterly_deposit": 50,
@@ -922,6 +919,11 @@ def main():
             "Risk-free rate: fixed 2.9% blended average used across whole period"
         ]
     }
+
+    # Publish guard: never write/publish reports computed on mock data
+    if DATA_IS_MOCK:
+        logger.error("DATA_IS_MOCK=True: results are based on synthetic mock data, refusing to publish to docs/data/.")
+        return
 
     with open("docs/data/backtest_report.json", "w") as f:
         json.dump(report, f, indent=2)
