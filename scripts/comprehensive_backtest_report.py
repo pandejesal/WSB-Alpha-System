@@ -10,6 +10,10 @@ import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+# Set True when market data download fails and synthetic mock data is used.
+# While True, results must NOT be published to docs/data (daily CI pushes them to Pages).
+DATA_IS_MOCK = False
+
 def load_universe():
     try:
         with open("config/universe.json", "r") as f:
@@ -29,10 +33,10 @@ def download_data(tickers, start_date, end_date):
 
     try:
         # Download data with threading
-        data = yf.download(tickers, start=start_date, end=end_date, group_by='ticker', auto_adjust=False, threads=True)
+        data = yf.download(tickers, start=start_date, end=end_date, group_by='ticker', auto_adjust=True, threads=True)
 
         # Also download SPY for benchmark
-        spy_data = yf.download('SPY', start='2018-01-01', end=end_date, auto_adjust=False)
+        spy_data = yf.download('SPY', start='2018-01-01', end=end_date, auto_adjust=True)
 
         # Check if rate limited
         if len(data) == 0:
@@ -40,6 +44,8 @@ def download_data(tickers, start_date, end_date):
 
         return data, spy_data
     except Exception as e:
+        global DATA_IS_MOCK
+        DATA_IS_MOCK = True
         logger.warning(f"Download failed ({e}), generating mock data for testing...")
 
         dates = pd.date_range(start=start_date, end=end_date, freq='B')
@@ -457,8 +463,8 @@ def run_backtest_for_params(df_dict, spy_df, params, deposit_schedule):
                             spread_pct = 0.0005
                             spread_cost = entry_price * qty * spread_pct
                             cost = (entry_price * qty) + spread_cost
-
-    portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost)
+                            entry_atr = df.loc[prev_date, "ATR_14"] if prev_date in df.index and pd.notna(df.loc[prev_date, "ATR_14"]) else 0.01
+                            portfolio.open_position(ticker, qty, entry_price, cost, date_str, regime, holding_days, spread_cost, atr_14=entry_atr)
 # Force close all remaining positions at end of backtest
     final_date_str = trading_days[-1].strftime('%Y-%m-%d')
     portfolio.liquidate_all(final_date_str, {k: v.iloc[-1]["Close"] for k,v in df_dict.items()}, lambda t: 0.01)
@@ -865,7 +871,7 @@ def main():
         "quarterly_deposit": 50,
         "total_deposits": best_portfolio.deposits_count,
         "total_deposited": best_portfolio.total_deposits,
-        "strategies_tested": 90,
+        "strategies_tested": total_combos,
         "best_strategy": {
             "name": best_name,
             "parameters": best_params,
@@ -913,6 +919,11 @@ def main():
             "Risk-free rate: fixed 2.9% blended average used across whole period"
         ]
     }
+
+    # Publish guard: never write/publish reports computed on mock data
+    if DATA_IS_MOCK:
+        logger.error("DATA_IS_MOCK=True: results are based on synthetic mock data, refusing to publish to docs/data/.")
+        return
 
     with open("docs/data/backtest_report.json", "w") as f:
         json.dump(report, f, indent=2)
