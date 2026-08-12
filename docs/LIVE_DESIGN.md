@@ -27,7 +27,7 @@ Connect / Disconnect / GetHistory` + order/account events; `IBrokerageFactory`
 
 ## 2. Close the order-gate audit gap
 
-`docs/OPENCODE_PARALLEL_AUDIT.md` flags that no `check_order_allowed()`
+The 2026 codebase audit (`AUDIT_REPORT.md`) flags that no `check_order_allowed()`
 exists at `alpaca_broker.py:82` / `ccxt_broker.py:88`. Make the gate a
 **must-run inside the broker**, not in the strategy (LEAN risk models are the
 plug-in reference).
