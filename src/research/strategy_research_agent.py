@@ -9,13 +9,15 @@ from google.genai import types
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("StrategyResearchAgent")
 
-from google.genai.types import (  # noqa: E402 - imports must happen after configuration / environment setup
+from google.genai.types import (
     FunctionDeclaration,
     GenerateContentConfig,
     Tool,
 )
 
-from src.research.google_search_provider import DDGSearchProvider  # noqa: E402 - imports must happen after configuration / environment setup
+from src.research.google_search_provider import (
+    DDGSearchProvider,
+)
 
 
 def search_strategy_concepts_online(query: str) -> str:
@@ -46,7 +48,7 @@ def save_generated_strategy(strategy_name: str, python_code: str) -> str:
             f.write(python_code)
         logger.info(f"Successfully saved new strategy to {filename}")
         return f"Successfully saved {filename}"
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         logger.error(f"Failed to save strategy: {e}")
         return f"Error saving strategy: {e}"
 
@@ -136,7 +138,7 @@ class StrategyResearchAgent:
              else:
                  logger.info(f"Agent response: {response.text}")
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
              logger.error(f"Agent failed: {e}")
 
 if __name__ == "__main__":

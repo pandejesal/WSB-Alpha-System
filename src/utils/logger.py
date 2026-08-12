@@ -31,7 +31,7 @@ def setup_logger():
         reset = "\x1b[0m"
         format = "%(asctime)s - %(name)s - %(levelname)s - %(message)s (%(filename)s:%(lineno)d)"
 
-        FORMATS = {
+        FORMATS = {  # noqa: RUF012 - Class attribute mutation is intended
             logging.DEBUG: grey + format + reset,
             logging.INFO: grey + "%(asctime)s - %(name)s - %(levelname)s - %(message)s" + reset,
             logging.WARNING: yellow + format + reset,

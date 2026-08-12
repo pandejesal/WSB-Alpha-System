@@ -6,7 +6,7 @@ class TradingHaltedException(Exception):
     pass
 
 class CircuitBreaker:
-    def __init__(self, regime="normal", daily_limit: float = None, weekly_limit: float = None, total_limit: float = None):
+    def __init__(self, regime="normal", daily_limit: float | None = None, weekly_limit: float | None = None, total_limit: float | None = None):
         base_daily = 0.05
         base_weekly = 0.10
         base_total = 0.15
@@ -39,7 +39,7 @@ class CircuitBreaker:
             from src.monitoring.telegram_bot import TelegramBot
             bot = TelegramBot()
             bot.send_message(f"🚨 <b>EMERGENCY HALT</b> 🚨\n\n{msg}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Failed to send emergency Telegram alert: {e}")
 
     def check_circuit_breakers(self, get_equity_func) -> bool:
@@ -47,7 +47,7 @@ class CircuitBreaker:
             current_equity = get_equity_func()
             if current_equity is None or current_equity <= 0:
                 raise ValueError("Invalid equity returned")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             msg = f"FAILS-CLOSED TRIGGERED: Unable to retrieve account equity. Error: {e}"
             self._send_emergency_alert(msg)
             raise TradingHaltedException(msg)

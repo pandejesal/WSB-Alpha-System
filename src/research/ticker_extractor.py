@@ -72,4 +72,4 @@ def extract_tickers(text: str) -> list[str]:
 
         valid_tickers.append(ticker)
 
-    return sorted(list(valid_tickers))
+    return sorted(valid_tickers)

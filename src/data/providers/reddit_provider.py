@@ -23,7 +23,7 @@ class RedditProvider(BaseDataProvider):
                     client_secret=config.api_keys.reddit_client_secret.get_secret_value(),
                     user_agent="WSB-Alpha-System/1.0"
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.error(f"Failed to initialize PRAW: {e}")
 
     def fetch_ohlcv(self, tickers: list[str], start_date: str, end_date: str) -> pd.DataFrame:
@@ -51,7 +51,7 @@ class RedditProvider(BaseDataProvider):
                         "content": submission.selftext,
                         "score": float(submission.score)
                     })
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"PRAW fetch failed, falling back to RSS: {e}")
                 posts = self._fetch_rss_fallback(limit)
         else:
@@ -81,6 +81,6 @@ class RedditProvider(BaseDataProvider):
                     "content": entry.summary,
                     "score": 0.0
                 })
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.debug(f"Failed to parse reddit post: {e}")
         return posts

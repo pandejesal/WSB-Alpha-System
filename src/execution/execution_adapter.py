@@ -23,7 +23,7 @@ class PaperTradeBroker(abc.ABC):
 class PaperbrokerClient(PaperTradeBroker):
     """Concrete implementation for the 'paperbroker' API."""
 
-    def __init__(self, base_url: str = "http://localhost:5000", api_key: str = None):
+    def __init__(self, base_url: str = "http://localhost:5000", api_key: str | None = None):
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key
         self.headers = {"Content-Type": "application/json"}

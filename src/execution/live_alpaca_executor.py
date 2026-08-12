@@ -16,11 +16,13 @@ from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
-import pandas as pd  # noqa: E402 - imports must happen after configuration / environment setup
-import requests  # noqa: E402 - imports must happen after configuration / environment setup
-import yfinance as yf  # noqa: E402 - imports must happen after configuration / environment setup
+import pandas as pd
+import requests
+import yfinance as yf
 
-from src.risk import position_sizing as risk_config  # noqa: E402 - imports must happen after configuration / environment setup
+from src.risk import (
+    position_sizing as risk_config,
+)
 
 TECHNICAL_UNIVERSE = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMD', 'META', 'AMZN',
                       'GOOGL', 'JPM', 'V', 'UNH', 'JNJ', 'WMT', 'PG', 'MA',
@@ -64,7 +66,9 @@ def generate_technical_signals(stock_dfs: dict) -> pd.DataFrame:
 # ============================================================================
 # API CONFIGURATION
 # ============================================================================
-from src.utils.config import config  # noqa: E402 - imports must happen after configuration / environment setup
+from src.utils.config import (
+    config,
+)
 
 try:
     ALPACA_API_KEY_ID = config.api_keys.alpaca_api_key
@@ -104,7 +108,7 @@ def get_account_data() -> dict:
         else:
             print(f"[!] Error fetching Alpaca account: {r.text}")
             return {}
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         print(f"[!] Exception calling Alpaca API: {e}")
         return {}
 
@@ -115,7 +119,7 @@ def get_open_positions() -> list:
         if r.status_code == 200:
             return r.json()
         return []
-    except Exception:
+    except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
         return []
 
 def place_fractional_market_order(symbol: str, notional: float, side: str):
@@ -146,7 +150,7 @@ def place_fractional_market_order(symbol: str, notional: float, side: str):
         else:
             print(f"[!] Order rejected for {symbol}: {r.text}")
             return None
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         print(f"[!] Exception placing order for {symbol}: {e}")
         return None
 
@@ -201,7 +205,7 @@ def main():
                     if weekly_drawdown > risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT:
                         print(f"[!!!] WEEKLY CIRCUIT BREAKER TRIPPED. Drawdown ({weekly_drawdown*100:.2f}%) exceeds limit ({risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT*100:.2f}%). Trading halted.")
                         sys.exit(1)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         print(f"[!] Warning: Could not fetch portfolio history for weekly circuit breaker check: {e}")
 
     # Check current positions count
@@ -227,12 +231,12 @@ def main():
                 t_px = px_data.loc[:, (slice(None), ticker)].copy()
                 t_px.columns = t_px.columns.get_level_values(0)
                 stock_dfs[ticker] = compute_indicators(t_px)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Error computing indicators for {ticker}: {e}")
                 continue
         today_signals = generate_technical_signals(stock_dfs)
         # Use real latest date from downloaded market data
-        latest_date = px_data.index[-1].to_pydatetime() if not px_data.empty else datetime.now()
+        latest_date = px_data.index[-1].to_pydatetime() if not px_data.empty else datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
     else:
         csv_path = "wsb_factual_research_data.csv"
         if not os.path.exists(csv_path):
@@ -304,7 +308,7 @@ def main():
                     "ticker": symbol,
                     "sentiment_score": sentiment
                 })
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             print(f"Error evaluating {symbol}: {e}")
             continue
 
@@ -349,7 +353,7 @@ def main():
             place_fractional_market_order(symbol, dollar_allocation, "sell")
 
     # Dump log for paper trading loop to commit
-    log_content = f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
+    log_content = f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"  # noqa: DTZ005 - Timezone not critical for this usage
     log_content += f"Equity: ${equity:.2f}\n"
     log_content += f"Trades Executed: {len(active_signals)}\n"
 

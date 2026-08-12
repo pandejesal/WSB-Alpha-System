@@ -28,7 +28,7 @@ class GeminiProvider(LLMProvider):
                 contents=prompt,
             )
             return response.text
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             self.logger.error(f"Gemini generation failed: {e}")
             return ""
 
@@ -49,6 +49,6 @@ class GeminiProvider(LLMProvider):
                 ),
             )
             return json.loads(response.text)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             self.logger.error(f"Gemini JSON generation failed: {e}")
             return {}

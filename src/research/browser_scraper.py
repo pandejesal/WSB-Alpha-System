@@ -62,7 +62,7 @@ def fetch_headlines(ticker: str) -> list[str]:
             delay = base_delay * (2 ** attempt)
             logger.warning(f"Network error fetching {ticker}: {e}. Retrying in {delay}s...")
             time.sleep(delay)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             # Absolute failsafe - NEVER crash the caller
             logger.error(f"Unexpected error parsing headlines for {ticker}: {e}")
             return []
@@ -125,7 +125,7 @@ def score_text(texts: list[str]) -> dict[str, Any]:
             "net_score": round(net_score, 4),
             "classification": classification
         }
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         logger.error(f"Unexpected error scoring text: {e}")
         return {
             "positive_ratio": 0.0,

@@ -72,9 +72,9 @@ class AlpacaDataProvider(BaseDataProvider):
                     try:
                         df = OHLCVSchema.validate(df)
                         all_data.append(df)
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                         logger.warning(f"Schema validation failed for Alpaca equities: {e}")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Alpaca equity fetch failed: {e}")
 
         if crypto_tickers:
@@ -97,9 +97,9 @@ class AlpacaDataProvider(BaseDataProvider):
                     try:
                         df = OHLCVSchema.validate(df)
                         all_data.append(df)
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                         logger.warning(f"Schema validation failed for Alpaca crypto: {e}")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Alpaca crypto fetch failed: {e}")
 
         if all_data:

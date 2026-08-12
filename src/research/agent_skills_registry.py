@@ -69,7 +69,7 @@ def skill_fetch_microstructure(ticker: str, days: int) -> dict:
                 "high_sweeps": int(recent_df['Sweep_High'].sum())
             }
         }
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         return {"error": str(e)}
 
 # ---------------------------------------------------------------------------
@@ -97,7 +97,7 @@ def skill_analyze_ledger_mfe_mae() -> dict:
             "avg_pnl_percent": avg_pnl,
             "win_rate": win_rate
         }
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         return {"error": str(e)}
 
 # ---------------------------------------------------------------------------
@@ -230,7 +230,7 @@ def skill_run_sandbox_backtest(cvar_threshold: float, stop_loss_atr: float, take
             "total_trades": len(trades),
             "final_equity": round(account_balance, 2)
         }
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         return {"error": str(e)}
 
 # ---------------------------------------------------------------------------

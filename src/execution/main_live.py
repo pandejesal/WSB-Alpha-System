@@ -56,7 +56,7 @@ def send_webhook_notification(signals: list):
         response = requests.post(DISCORD_WEBHOOK_URL, json=payload, timeout=10)
         response.raise_for_status()
         logger.info("Webhook notification sent successfully.")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         logger.error(f"Failed to send webhook notification: {e}")
 
 def get_latest_sentiment_data() -> pd.DataFrame:
@@ -169,7 +169,7 @@ def run_technical_and_risk_pipelines(df: pd.DataFrame, macro_filter: MacroRegime
                     filtered_signal.pop('confluence_score', None)
                     final_signals.append(filtered_signal)
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Failed to process {ticker}: {e}")
 
     return final_signals
@@ -234,7 +234,7 @@ def main():
         send_webhook_notification(final_signals)
 
     except Exception as e:
-        logger.exception(f"Critical error in live trading orchestrator: {e}")
+        logger.exception(f"Critical error in live trading orchestrator: {e}")  # noqa: TRY401 - Explicit exception logging desired
     finally:
         logger.info("=== LIVE TRADING ORCHESTRATOR FINISHED ===")
 

@@ -17,7 +17,7 @@ class NautilusCatalogBuilder:
         self.catalog_path = Path(catalog_path)
         self.catalog = ParquetDataCatalog(self.catalog_path.as_posix())
 
-    def build_catalog(self, tickers: list[str], start_date: str = "2018-01-01", end_date: str = None):
+    def build_catalog(self, tickers: list[str], start_date: str = "2018-01-01", end_date: str | None = None):
         if end_date is None:
             end_date = pd.Timestamp.now(tz="UTC").strftime("%Y-%m-%d")
 
@@ -27,7 +27,7 @@ class NautilusCatalogBuilder:
             try:
                 df = provider.fetch_ohlcv([ticker], start_date, end_date)
                 if df.empty:
-                    raise Exception(f"No data returned for {ticker}")
+                    raise Exception(f"No data returned for {ticker}")  # noqa: TRY002 - Standard exception is sufficient here
 
                 if 'Ticker' in df.columns:
                     df = df[df['Ticker'] == ticker]
@@ -36,7 +36,7 @@ class NautilusCatalogBuilder:
 
                 logger.info(f"Successfully downloaded {len(df)} rows for {ticker}")
                 self._process_and_write(ticker, df)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Download failed for {ticker}: {e!s}. Skipping ticker.")
                 continue
 

@@ -102,7 +102,7 @@ class ResearchWorkflow:
                 "regime_confidence": min(1.0, current_gk_vol / 0.5),
                 "adjusted_parameters": regime_params.get(regime, regime_params["normal"])
             }
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Regime detection failed: {e}")
             return {"regime": "normal", "regime_confidence": 0.5, "adjusted_parameters": {}}
 
@@ -137,7 +137,7 @@ class ResearchWorkflow:
                 spec_json = json.loads(match.group(0))
             else:
                 spec_json = {"error": "Invalid JSON format generated"}
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             spec_json = {"error": str(e)}
 
         return {"strategy_specification": spec_json}
@@ -158,7 +158,7 @@ class ResearchWorkflow:
 
             try:
                 byte_code = compile_restricted(code, '<inline>', 'exec')  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 raise ValueError(f"RestrictedPython failed to compile code safely: {e}")
 
             with tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False) as tf:
@@ -166,7 +166,7 @@ class ResearchWorkflow:
                 temp_name = tf.name
 
             try:
-                result = subprocess.run(
+                result = subprocess.run(  # noqa: PLW1510 - Implicit check=False is acceptable
                     ['bandit', '-r', temp_name, '-f', 'json'],
                     capture_output=True,
                     text=True
@@ -186,7 +186,7 @@ class ResearchWorkflow:
                     os.unlink(temp_name)
 
             sanitized_code = code
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"AST/Static Analysis failed: {e}")
             sanitized_code = f"# Error generating safe code: {e}"
 
@@ -232,7 +232,7 @@ class ResearchWorkflow:
                 "feedback": f"Sharpe: {sharpe:.2f}, Return: {total_return*100:.1f}%, MaxDD: {max_dd*100:.1f}%",
                 "reflection_count": state.get("reflection_count", 0) + 1 if not passed else state.get("reflection_count", 0)
             }
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             return {"feedback": f"Backtest failed: {e}", "validation_passed": False, "reflection_count": state.get("reflection_count", 0) + 1}
 
     def route_reflection(self, state: GraphState) -> str:

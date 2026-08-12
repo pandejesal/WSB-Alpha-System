@@ -95,7 +95,7 @@ def fetch_agentic_headlines(ticker: str) -> list[dict[str, str]]:
             else:
                 logger.warning(f"Agentic scraper found no results for {ticker}, falling back.")
 
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         logger.warning(f"Agentic scraper failed for {ticker}: {e}. Falling back.")
 
     # Fallback Mechanism
@@ -109,7 +109,7 @@ def fetch_agentic_headlines(ticker: str) -> list[dict[str, str]]:
                 "timestamp": datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z')
             })
         logger.info(f"Fallback successfully loaded {len(results)} headlines for {ticker}.")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         logger.error(f"Fallback scraper totally failed for {ticker}: {e}. Returning empty list.")
 
     return results

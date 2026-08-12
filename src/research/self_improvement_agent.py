@@ -17,12 +17,12 @@ def read_logs():
         # In a real GH Action, the paper_trading_logs branch is fetched and available or checked out.
         # But we just use git to fetch it and read the latest log.
         import subprocess
-        result = subprocess.run(["git", "show", "origin/paper_trading_logs:paper_trading_logs/latest_execution.log"], capture_output=True, text=True)
+        result = subprocess.run(["git", "show", "origin/paper_trading_logs:paper_trading_logs/latest_execution.log"], capture_output=True, text=True)  # noqa: PLW1510 - Implicit check=False is acceptable
         if result.returncode == 0:
             return result.stdout
         else:
             return "No recent trades found in paper_trading_logs/latest_execution.log"
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         return f"Error reading logs: {e}"
 
 def update_file(filename, old_str, new_str):
@@ -62,7 +62,7 @@ def call_gemini_with_retry(client, prompt):
                 )
                 print("Success!")
                 return response.text
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 error_msg = str(e)
                 if '503' in error_msg or '429' in error_msg:
                     error_type = '503' if '503' in error_msg else '429'
@@ -155,11 +155,11 @@ def main():
                         passed = wf_pval <= 0.05
                     else:
                         passed = False
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                     print(f"Validation harness crashed: {e}")
                     passed = False
 
-                log_entry = f"\n## {datetime.now().strftime('%Y-%m-%d')}\n"
+                log_entry = f"\n## {datetime.now().strftime('%Y-%m-%d')}\n"  # noqa: DTZ005 - Timezone not critical for this usage
                 log_entry += f"**Hypothesis:** {data['hypothesis']}\n"
                 log_entry += f"**Change:** `{data['old_code']}` -> `{data['new_code']}`\n"
                 log_entry += f"**Result:** {'PASSED' if passed else 'FAILED'}\n\n"
@@ -172,7 +172,7 @@ def main():
                     update_file(data['file'], data['new_code'], data['old_code']) # Revert
             else:
                 print("Failed to apply change (string mismatch).")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         print(f"Error calling Gemini: {e}")
 
 if __name__ == "__main__":

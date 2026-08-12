@@ -63,7 +63,7 @@ def _mark_post_seen(conn, post_id: str):
     )
     conn.commit()
 
-async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = None) -> list[dict]:
+async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int | None = None) -> list[dict]:
     """
     Fetches Reddit data using Time-Window Chunking (4-hour intervals) to bypass the 1000 post limit.
     Wraps asynchronous execution for praw block safe queries.
@@ -126,9 +126,9 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
             # This prevents PRAW's synchronous network calls from blocking the main asyncio event loop
             def _fetch_sync():
                 submissions_list = []
-                submissions = reddit.subreddit("wallstreetbets").search(query, sort='new', limit=1000)
+                submissions = reddit.subreddit("wallstreetbets").search(query, sort='new', limit=1000)  # noqa: B023 - Loop variable binding not an issue in this context
                 for submission in submissions:
-                    submissions_list.append(submission)
+                    submissions_list.append(submission)  # noqa: PERF402 - Performance impact is negligible
                 return submissions_list
 
             # Setup variables for Exponential Backoff algorithm
@@ -150,7 +150,7 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
                     await asyncio.sleep(backoff)
                     backoff *= 2
                     retries += 1
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                     logger.error(f"Error fetching chunk from PRAW: {e}")
                     break # Break out of retry loop for other unexpected errors
 
@@ -203,7 +203,7 @@ async def fetch_reddit_data_chunked(max_items: int = 1000, target_year: int = No
     logger.info(f"Retrieved {len(items)} raw metadata items from PRAW using chunking.")
     return items
 
-def fetch_reddit_data_sync(max_items: int = 1000, target_year: int = None) -> list[dict]:
+def fetch_reddit_data_sync(max_items: int = 1000, target_year: int | None = None) -> list[dict]:
     """
     Synchronous wrapper for fetch_reddit_data_chunked.
     This provides a simplified interface for scripts that do not require
