@@ -71,7 +71,7 @@ paper loop is owned by CI, not by this machine.
     "circuit_breaker": "PASS",            // daily/weekly/total + regime
     "position_cap": "PASS",               // <= MAX_CONCURRENT_POSITIONS
     "risk_per_trade": "PASS",             // <= MAX_RISK_PER_TRADE_PCT
-    "broker_capability": "PASS"           // check_order_allowed() gate
+    "broker_capability": "PENDING_IMPLEMENTATION"  // check_order_allowed() gate — does not exist yet; ships with the LIVE_DESIGN §2 order gate
   },
   "order": {
     "venue_order_id": "..." ,
@@ -103,7 +103,7 @@ paper loop is owned by CI, not by this machine.
     "circuit_breaker": "PASS",
     "position_cap": "PASS",
     "risk_per_trade": "PASS",
-    "broker_capability": "PASS"
+    "broker_capability": "PENDING_IMPLEMENTATION"  // gate not yet in codebase (LIVE_DESIGN §2)
   },
   "order": {"venue_order_id": "paper-0001", "status": "SUBMITTED", "fill_events": []},
   "reconcile": {"order_status_report": "MATCH", "fill_report": "MATCH",
