@@ -111,5 +111,5 @@ class CCXTBroker(BaseBroker):
         try:
             self.exchange.cancel_all_orders(symbol)
             return True
-        except Exception:
+        except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             return False

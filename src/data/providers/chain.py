@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 import pandas as pd
 
@@ -22,7 +21,7 @@ class DataProviderChain(BaseDataProvider):
         self.cache = cache_engine or CacheEngine()
 
         # Initialize providers (lazy load logic where applicable is inside them)
-        self.providers: List[BaseDataProvider] = [
+        self.providers: list[BaseDataProvider] = [
             AlpacaDataProvider(),
             TiingoProvider(),
             BinancePublicProvider(),
@@ -76,7 +75,7 @@ class DataProviderChain(BaseDataProvider):
                     remaining_tickers -= fetched_tickers
                 else:
                     logger.debug(f"{provider_name} returned empty DataFrame.")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Provider {provider_name} failed: {e}")
 
         if fetched_dfs:

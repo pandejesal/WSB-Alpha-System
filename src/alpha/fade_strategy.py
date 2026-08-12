@@ -12,7 +12,7 @@ class FadeStrategy:
     2. Technical Confluence shows momentum breaking down.
     """
 
-    def __init__(self, historical_90th_percentile: float = None):
+    def __init__(self, historical_90th_percentile: float | None = None):
         """
         Initialize with the pre-calculated 90th percentile of sentiment scores from the trailing 30 days.
         """
@@ -49,7 +49,7 @@ class FadeStrategy:
                 logger.info("FADE STRATEGY TRIGGERED! Sentiment is euphoric and momentum is breaking.")
                 return True
             return False
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error evaluating Fade Strategy technicals: {e}")
             return False
 

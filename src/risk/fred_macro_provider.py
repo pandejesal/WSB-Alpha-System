@@ -63,7 +63,7 @@ class FredMacroProvider:
                 delay = base_delay * (2 ** attempt)
                 logger.warning(f"Network error fetching {series_id}: {e}. Retrying in {delay}s...")
                 time.sleep(delay)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.error(f"Unexpected error fetching {series_id}: {e}")
                 return None
 
@@ -175,6 +175,6 @@ class FredMacroProvider:
                         regime = "NEUTRAL"
                 regimes[dt_str] = regime
             return regimes
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.warning(f"Failed to fetch historical FRED data: {e}. Defaulting to NEUTRAL regimes.")
             return {}

@@ -24,7 +24,7 @@ class WalkForwardValidator:
             try:
                 metric = strategy_eval_func(test_df)
                 test_metrics.append(metric)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 return {"status": "FAILED", "reason": f"Evaluation error: {e}"}
             start_idx += self.test_window
 

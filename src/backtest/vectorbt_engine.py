@@ -48,6 +48,6 @@ class VectorBTEngine(BacktestEngine):
             }
             return {"status": "success", "metrics": metrics, "portfolio": portfolio}
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             self.logger.error(f"VectorBT simulation failed: {e}")
             return {"status": "error", "message": str(e), "metrics": {}}

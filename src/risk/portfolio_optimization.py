@@ -61,7 +61,7 @@ class PortfolioOptimizer:
             scaled_weights = weights * (1.0 - min_cash)
             return scaled_weights
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Portfolio CVaR optimization failed: {e}")
             return pd.Series(dtype=float)
 
@@ -92,6 +92,6 @@ class PortfolioOptimizer:
             scaled_weights = w['weights'] * (1.0 - min_cash)
             return scaled_weights
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Portfolio ERC optimization failed: {e}")
             return pd.Series(dtype=float)

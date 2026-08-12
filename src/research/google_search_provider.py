@@ -23,7 +23,7 @@ class DDGSearchProvider(SearchProvider):
                         "url": r.get("href", ""),
                         "snippet": r.get("body", "")
                     })
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             self.logger.error(f"DDG Search failed: {e}")
         return results
 
@@ -38,6 +38,6 @@ class DDGSearchProvider(SearchProvider):
             # Extract basic text
             text = ' '.join(p.get_text() for p in soup.find_all('p'))
             return text[:5000] # Limit to avoid massive tokens
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             self.logger.error(f"Failed to fetch content from {url}: {e}")
             return ""

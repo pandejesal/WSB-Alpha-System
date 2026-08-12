@@ -62,7 +62,7 @@ def detect_order_blocks_and_entries(
         # Bullish OB (Down-close candidate at i-2, Displacement at i-1, FVG at i)
         if close[i-2] < open_p[i-2]:
             disp_body = close[i-1] - open_p[i-1]
-            if disp_body > atr[i-1]: # Momentum Threshold (Displacement body > 1.0 ATR)
+            if disp_body > atr[i-1]: # Momentum Threshold (Displacement body > 1.0 ATR)  # noqa: SIM102 - Nested if is more readable here
                 if low[i] > high[i-2]: # FVG Creation
                     rng = high[i-2] - low[i-2]
                     if rng >= 0.1 * atr[i-2]: # Size Filter
@@ -74,7 +74,7 @@ def detect_order_blocks_and_entries(
         # Bearish OB (Up-close candidate at i-2, Displacement at i-1, FVG at i)
         if close[i-2] > open_p[i-2]:
             disp_body = open_p[i-1] - close[i-1]
-            if disp_body > atr[i-1]: # Momentum Threshold
+            if disp_body > atr[i-1]: # Momentum Threshold  # noqa: SIM102 - Nested if is more readable here
                 if high[i] < low[i-2]: # FVG Creation
                     rng = high[i-2] - low[i-2]
                     if rng >= 0.1 * atr[i-2]: # Size Filter
@@ -90,7 +90,7 @@ def detect_order_blocks_and_entries(
                 continue
 
             if ob_type[j] == 1: # Bullish OB
-                if ob_state[j] == 0:
+                if ob_state[j] == 0:  # noqa: SIM102 - Nested if is more readable here
                     if low[i] <= ob_high[j]: # Wick touches OB
                         if close[i] < ob_low[j]:
                             ob_state[j] = 2 # Invalidated due to structural break
@@ -140,12 +140,11 @@ def detect_order_blocks_and_entries(
                             ob_state[j] = 2
 
             elif ob_type[j] == -1: # Bearish OB
-                if ob_state[j] == 0:
-                    if high[i] >= ob_low[j]:
-                        if close[i] > ob_high[j]:
-                            ob_state[j] = 2
-                        else:
-                            ob_state[j] = 1
+                if ob_state[j] == 0 and high[i] >= ob_low[j]:
+                    if close[i] > ob_high[j]:
+                        ob_state[j] = 2
+                    else:
+                        ob_state[j] = 1
 
                 if ob_state[j] == 1:
                     if close[i] > ob_high[j]:

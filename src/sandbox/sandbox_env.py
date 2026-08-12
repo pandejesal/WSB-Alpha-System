@@ -111,7 +111,7 @@ with open('{result_path}', 'w') as f:
                 f.write(self._get_runner_script(code_path, result_path))
 
             try:
-                subprocess.run(
+                subprocess.run(  # noqa: PLW1510 - Implicit check=False is acceptable
                     [sys.executable, runner_path],
                     capture_output=True,
                     text=True,
@@ -129,5 +129,5 @@ with open('{result_path}', 'w') as f:
 
             except subprocess.TimeoutExpired:
                 return False, f"Execution timed out after {self.timeout} seconds."
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 return False, f"Sandbox error: {e!s}"

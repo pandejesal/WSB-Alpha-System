@@ -66,7 +66,7 @@ class GeminiSkillEngine:
         # 1. Create Cache
         try:
             self.cached_content = self._create_context_cache(system_instruction)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             # If we don't have an API key or hit an error, we can't actually hit the cache endpoint in mock
             print(f"Warning: Failed to create cache (expected in mock environment without valid key). Error: {e}")
             return
@@ -100,7 +100,7 @@ class GeminiSkillEngine:
                         cached_content=self.cached_content.name
                     )
                 )
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 print(f"API Error during generation: {e}")
                 break
 
@@ -140,7 +140,7 @@ class GeminiSkillEngine:
                     # We can use asyncio.to_thread if we want true async offloading.
                     try:
                         result = await asyncio.to_thread(skills_registry[func_name], **func_args)
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                         result = {"error": str(e)}
                 else:
                     result = {"error": f"Unknown function {func_name}"}
@@ -170,7 +170,7 @@ class GeminiSkillEngine:
 async def main():
     engine = GeminiSkillEngine()
 
-    with open("PROMPT_ENGINEERING.md", "r") as f:
+    with open("PROMPT_ENGINEERING.md", "r") as f:  # noqa: ASYNC230 - File IO block is minimal
         sys_inst = f.read()
 
     prompt = (

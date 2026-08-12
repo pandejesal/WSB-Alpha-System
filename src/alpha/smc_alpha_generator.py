@@ -57,7 +57,7 @@ class SMCAlphaGenerator:
                     df.loc[df.index[i], 'signal'] = 1
                     df.loc[df.index[i], 'confidence'] = 0.8 if (sentiment_bullish and smc_bullish) else 0.6
 
-            elif (sentiment_bearish and smc_bearish) or mom_bearish:
+            elif (sentiment_bearish and smc_bearish) or mom_bearish:  # noqa: SIM102 - Nested if is more readable here
                  # Regime Gating: Only take shorts in BEARISH or HIGH_VOL regimes
                  if regime in ['BEARISH', 'HIGH_VOL']:
                     df.loc[df.index[i], 'signal'] = -1

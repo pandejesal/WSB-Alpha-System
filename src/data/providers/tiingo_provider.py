@@ -76,12 +76,12 @@ class TiingoProvider(BaseDataProvider):
                 try:
                     df = OHLCVSchema.validate(df)
                     all_data.append(df)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                     logger.warning(f"Schema validation failed for Tiingo ticker {ticker}: {e}")
 
             except requests.exceptions.RequestException as e:
                 logger.warning(f"Tiingo fetch failed for {ticker}: {e}")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Tiingo unexpected error for {ticker}: {e}")
 
         if all_data:

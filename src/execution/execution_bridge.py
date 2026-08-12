@@ -28,7 +28,7 @@ class ExecutionBridge:
             if not self.circuit_breaker.starting_equity_daily and self.daily_starting_equity:
                 self.circuit_breaker.starting_equity_daily = self.daily_starting_equity
             self.circuit_breaker.check_circuit_breakers(lambda: current_equity)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             return {"status": "rejected", "reason": str(e)}
 
 

@@ -27,7 +27,7 @@ class ExecutionWrapper:
                 retries += 1
                 if retries > self.max_retries:
                     logger.error(f"Execution failed after {self.max_retries} retries: {e!s}")
-                    raise e
+                    raise
 
                 # Exponential backoff with jitter
                 sleep_time = (self.base_timeout * (2 ** (retries - 1))) + random.uniform(0, 1)
@@ -43,19 +43,19 @@ class ExecutionWrapper:
     def cancel_order(self, symbol: str) -> bool:
         return self._execute_with_retry(self.broker.cancel_order, symbol)
 
-    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float = None) -> dict:
+    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float | None = None) -> dict:
         if symbol in self.halted_symbols:
             logger.error(f"Fails-Closed constraint: Cannot place order for halted symbol {symbol}.")
             return {}
 
         try:
             return self._execute_with_retry(self.broker.place_order, symbol, qty, side, order_type, stop_loss_price)
-        except Exception:
+        except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             # FAILS CLOSED PROTOCOL
             logger.error(f"Fails-Closed triggered for {symbol}. Canceling open orders and blocking symbol.")
             try:
                 self.broker.cancel_order(symbol)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Failed to cancel order for {symbol} during halt: {e}")
             self.halted_symbols.add(symbol)
             return {}

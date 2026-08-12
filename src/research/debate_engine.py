@@ -20,21 +20,21 @@ class DebateEngine:
             bull_output = self._simulate_bull_agent(ticker, headlines, base_score)
             if bull_output:
                 agents_output.append(bull_output)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error executing Bull Agent: {e}")
 
         try:
             bear_output = self._simulate_bear_agent(ticker, headlines, base_score)
             if bear_output:
                 agents_output.append(bear_output)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error executing Bear Agent: {e}")
 
         try:
             neutral_output = self._simulate_neutral_agent(ticker, headlines, base_score)
             if neutral_output:
                 agents_output.append(neutral_output)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error executing Neutral Agent: {e}")
 
         # Compute Consensus Q-Score
@@ -99,7 +99,7 @@ class DebateEngine:
                 "confidence": round(confidence, 2),
                 "reasoning": reasoning
             }
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Bull agent failed: {e}")
             return None
 
@@ -129,7 +129,7 @@ class DebateEngine:
                 "confidence": round(confidence, 2),
                 "reasoning": reasoning
             }
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Bear agent failed: {e}")
             return None
 
@@ -161,6 +161,6 @@ class DebateEngine:
                 "confidence": round(confidence, 2),
                 "reasoning": reasoning
             }
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Neutral agent failed: {e}")
             return None
