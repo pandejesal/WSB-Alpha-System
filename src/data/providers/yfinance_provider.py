@@ -56,7 +56,7 @@ class YFinanceProvider(BaseDataProvider):
                     df = OHLCVSchema.validate(df)
                     all_data.append(df)
                     self.cache.store_ohlcv(df)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.error(f"Batch download failed: {e}")
                 # Fallback to smaller chunks
                 chunk_size = 100
@@ -81,7 +81,7 @@ class YFinanceProvider(BaseDataProvider):
                             df = OHLCVSchema.validate(df)
                             all_data.append(df)
                             self.cache.store_ohlcv(df)
-                    except Exception as e:
+                    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                         logger.debug(f"Failed to cache OHLCV: {e}")
         if not all_data:
             return pd.DataFrame()
@@ -122,7 +122,7 @@ class YFinanceProvider(BaseDataProvider):
                         rename_map_fb = {c: c.capitalize() for c in cols_fb if c.lower() in ['open', 'high', 'low', 'close', 'volume', 'date', 'ticker']}
                         df_fb.rename(columns=rename_map_fb, inplace=True)
                         final_df = pd.concat([final_df, df_fb], ignore_index=True)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                     logger.error(f"Fallback universe failed: {e}")
 
         return final_df

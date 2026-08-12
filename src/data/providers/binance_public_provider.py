@@ -66,12 +66,12 @@ class BinancePublicProvider(BaseDataProvider):
                 try:
                     df = OHLCVSchema.validate(df)
                     all_data.append(df)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                     logger.warning(f"Schema validation failed for Binance ticker {ticker}: {e}")
 
             except requests.exceptions.RequestException as e:
                 logger.warning(f"Binance fetch failed for {ticker}: {e}")
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Binance unexpected error for {ticker}: {e}")
 
         if all_data:

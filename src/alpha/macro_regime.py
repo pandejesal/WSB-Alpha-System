@@ -48,7 +48,7 @@ class MacroRegimeFilter:
             logger.info(f"Macro Regime: {self.regime} (SPY Price: {self.current_price:.2f}, 200 SMA: {self.sma_200:.2f})")
             return self.regime
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error fetching macro regime: {e}")
             return "BULL" # Default to bull on failure
 

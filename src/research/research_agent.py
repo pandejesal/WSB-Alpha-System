@@ -43,6 +43,6 @@ class ResearchAgent:
                 schema={"type": "object", "properties": {"hypothesis": {"type": "string"}, "edge": {"type": "string"}}}
             )
             return hypothesis
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             self.logger.error(f"Failed to generate hypothesis: {e}")
             return {}

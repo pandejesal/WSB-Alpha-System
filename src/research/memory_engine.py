@@ -50,7 +50,7 @@ class MemoryEngine:
                 """, (combo_str, reason))
                 conn.commit()
                 logger.info(f"Blocked combo: {combo_str} Reason: {reason}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error blocking combo: {e}")
 
     def record_outcome(self, combo: dict[str, Any], performance: dict[str, Any]):
@@ -65,7 +65,7 @@ class MemoryEngine:
                 """, (combo_str, perf_str))
                 conn.commit()
                 logger.info(f"Recorded outcome for: {combo_str}")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error recording outcome: {e}")
 
     def is_blocked(self, combo: dict[str, Any]) -> bool:
@@ -75,7 +75,7 @@ class MemoryEngine:
                 cursor = conn.cursor()
                 cursor.execute("SELECT 1 FROM blocked_combos WHERE combo_json = ?", (combo_str,))
                 return cursor.fetchone() is not None
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error checking if blocked: {e}")
             return False
 

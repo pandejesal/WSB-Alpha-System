@@ -44,14 +44,14 @@ class RateLimiter:
         self.last_call_time = None
 
     def wait_if_needed(self):
-        now = datetime.now()
+        now = datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
 
         # Enforce min delay
         if self.last_call_time:
             elapsed = (now - self.last_call_time).total_seconds()
             if elapsed < self.min_delay_sec:
                 time.sleep(self.min_delay_sec - elapsed)
-                now = datetime.now()
+                now = datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
 
         # Token bucket for burst limit
         self.bucket.wait_if_needed(1)
@@ -64,7 +64,7 @@ class RateLimiter:
             sleep_time = 60 - (now - self.minute_calls[0]).total_seconds()
             if sleep_time > 0:
                 time.sleep(sleep_time)
-                now = datetime.now()
+                now = datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
 
         # Enforce RPD
         while self.day_calls and (now - self.day_calls[0]).total_seconds() > 86400:
@@ -75,7 +75,7 @@ class RateLimiter:
             pass
 
     def record_call(self):
-        now = datetime.now()
+        now = datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
         self.last_call_time = now
         self.minute_calls.append(now)
         self.day_calls.append(now)
@@ -110,14 +110,14 @@ class RateLimitedGeminiClient:
                 logger.info("Executing Gemini Flash request...")
                 response = self.client.models.generate_content(model='gemini-3.5-flash', contents=prompt)
                 return response.text
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Flash failed: {e}. Attempting fallback chain...")
                 time.sleep(2.0)
 
         # Try Gemini Flash Lite
         try:
             return self._generate_lite(prompt, search_grounding)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.warning(f"Flash Lite failed: {e}. Falling back to local model...")
             time.sleep(2.0)
 
@@ -153,7 +153,7 @@ class RateLimitedGeminiClient:
             }, timeout=2.0)
             if response.status_code == 200:
                 return response.json().get("response", "")
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Local LLM fallback also failed: {e}")
 
         # Graceful total failure

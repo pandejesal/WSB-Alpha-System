@@ -111,9 +111,9 @@ def evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="total
             adaptive_holding_days = short_holding_days
 
         # Precompute target exit returns for each strategy
-        ret_stock_short, ret_spy_short = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, short_holding_days)
-        ret_stock_midlong, ret_spy_midlong = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, midlong_holding_days)
-        ret_stock_longterm, ret_spy_longterm = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, longterm_holding_days)
+        ret_stock_short, _ret_spy_short = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, short_holding_days)
+        ret_stock_midlong, _ret_spy_midlong = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, midlong_holding_days)
+        ret_stock_longterm, _ret_spy_longterm = compute_regime_returns(ind_df, spy_close, entry_idx, entry_px, spy_entry_px, sentiment_score, longterm_holding_days)
 
         if adaptive_mode == "long_term":
             ret_stock_adaptive = ret_stock_longterm
@@ -316,7 +316,7 @@ def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_prelo
     # Cumulative Performance curves over time
     trades_sorted = trades_df.sort_values(by="post_date").reset_index(drop=True)
 
-    fig, axes = plt.subplots(2, 2, figsize=(18, 14))
+    _fig, axes = plt.subplots(2, 2, figsize=(18, 14))
 
     terms_to_plot = [
         ("Short-Term (5d) Horizon", "raw_ret_5d", "short_ret_5d", "adaptive_ret_5d", "Short-Term Strategy", axes[0, 0]),

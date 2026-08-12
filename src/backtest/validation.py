@@ -3,14 +3,18 @@ from datetime import timedelta
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd  # noqa: E402 - imports must happen after configuration / environment setup
+import pandas as pd
 
 logger = logging.getLogger(__name__)
-import yfinance as yf  # noqa: E402 - imports must happen after configuration / environment setup
-from tqdm import tqdm  # noqa: E402 - imports must happen after configuration / environment setup
+import yfinance as yf
+from tqdm import (
+    tqdm,
+)
 
-import src.backtest.run_historic_backtest as rb  # noqa: E402 - imports must happen after configuration / environment setup
-from src.alpha import indicators  # noqa: E402 - imports must happen after configuration / environment setup
+import src.backtest.run_historic_backtest as rb
+from src.alpha import (
+    indicators,
+)
 
 NUM_PERMUTATIONS = 200
 
@@ -58,7 +62,7 @@ def load_base_data():
                             synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
                         elif bearish_score >= 3:
                             synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Error processing base data for {ticker}: {e}")
                 continue
         posts_df = pd.DataFrame(synthetic_signals)
@@ -238,7 +242,7 @@ def run_walk_forward_test(posts_df, stock_dfs, spy_close):
 
         for i, (w_start, w_end) in enumerate(windows):
             pw_trades = p_trades[(p_trades["post_date"] >= w_start) & (p_trades["post_date"] < w_end)]
-            pwr, pws = compute_metrics(pw_trades)
+            pwr, _pws = compute_metrics(pw_trades)
             window_permuted_rets[i].append(pwr)
 
     pooled_permuted_rets = np.array(pooled_permuted_rets)
@@ -264,13 +268,13 @@ def run_walk_forward_test(posts_df, stock_dfs, spy_close):
 def main():
     posts_df, stock_dfs, spy_close = load_base_data()
 
-    is_real_ret, is_real_sharpe, is_p_rets, is_p_sharpes, is_pval, is_real_ret_series, spy_ret_series = run_in_sample_test(posts_df, stock_dfs, spy_close)
-    wf_real_ret, wf_real_sharpe, wf_p_rets, wf_p_sharpes, wf_pval, wf_win_rate, num_windows = run_walk_forward_test(posts_df, stock_dfs, spy_close)
+    is_real_ret, _is_real_sharpe, is_p_rets, _is_p_sharpes, is_pval, is_real_ret_series, spy_ret_series = run_in_sample_test(posts_df, stock_dfs, spy_close)
+    wf_real_ret, _wf_real_sharpe, wf_p_rets, _wf_p_sharpes, wf_pval, wf_win_rate, _num_windows = run_walk_forward_test(posts_df, stock_dfs, spy_close)
 
     # Hansen's SPA Test Execution
     try:
         from src.backtest.validators.statistical import StatisticalValidator
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         print(f"StatisticalValidator unavailable (SPA test skipped): {e}")
         StatisticalValidator = None
 
@@ -278,7 +282,7 @@ def main():
         try:
             spa_result = StatisticalValidator.spa_test(is_real_ret_series.values, spy_ret_series.values)
             spa_pval = spa_result.get("p_value", 1.0)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             print(f"Hansen's SPA test failed: {e}")
             spa_pval = 1.0
     else:
@@ -287,7 +291,7 @@ def main():
     print(f"Hansen's SPA P-value (In-Sample): {spa_pval:.4f}")
 
     # Plotting
-    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    _fig, axes = plt.subplots(1, 2, figsize=(14, 6))
 
     # In-Sample Plot
     axes[0].hist(is_p_rets * 100, bins=30, color='skyblue', alpha=0.7, edgecolor='black', label="Permuted Returns")
@@ -337,7 +341,7 @@ def main():
             returns_series.index = pd.to_datetime(returns_series.index)
 
             os.makedirs("docs/reports", exist_ok=True)
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")  # noqa: DTZ005 - Timezone not critical for this usage
             report_path = f"docs/reports/strategy-{timestamp}.html"
             qs.reports.html(returns_series, output=report_path)
             print(f"Tearsheet saved to: {report_path}")
@@ -352,7 +356,7 @@ def main():
             try:
                 dd_info = qs.stats.drawdown_details(returns_series)
                 max_dd_duration = dd_info['days'].max() if not dd_info.empty else 0
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"Error computing drawdown for WFO fold: {e}")
                 max_dd_duration = 0
 
@@ -376,7 +380,7 @@ def main():
 
     except ImportError:
         print("QuantStats not installed, skipping tear sheet generation.")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         print(f"QuantStats tear sheet generation failed: {e}")
 
 if __name__ == "__main__":

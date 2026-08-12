@@ -39,7 +39,7 @@ class OpenBBProvider(BaseDataProvider):
                 final_df.rename(columns=rename_map, inplace=True)
                 return final_df
 
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.warning(f"OpenBB fetch failed, falling back to yfinance: {e}")
                 return self.fallback_provider.fetch_ohlcv(tickers, start_date, end_date)
         else:

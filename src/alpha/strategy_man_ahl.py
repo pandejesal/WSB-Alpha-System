@@ -7,7 +7,9 @@ from src.alpha.base_strategy import BaseStrategy
 
 
 class ManAHLStrategy(BaseStrategy):
-    def __init__(self, windows=[5, 10, 21, 42], vol_window=63):
+    def __init__(self, windows=None, vol_window=63):
+        if windows is None:
+            windows = [5, 10, 21, 42]
         self.windows = windows
         self.vol_window = vol_window
         self.logger = logging.getLogger(__name__)

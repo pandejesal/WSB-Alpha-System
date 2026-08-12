@@ -7,9 +7,7 @@ def safe_sharpe(returns_series, periods=252):
     Computes Sharpe ratio safely, guarding against near-zero standard deviation
     which causes astronomical results.
     """
-    if isinstance(returns_series, list):
-        returns_series = pd.Series(returns_series)
-    elif not isinstance(returns_series, pd.Series):
+    if isinstance(returns_series, list) or not isinstance(returns_series, pd.Series):
         returns_series = pd.Series(returns_series)
 
     returns_series = returns_series.fillna(0)
@@ -28,9 +26,7 @@ def safe_sortino(returns_series, periods=252):
     """
     Computes Sortino ratio safely.
     """
-    if isinstance(returns_series, list):
-        returns_series = pd.Series(returns_series)
-    elif not isinstance(returns_series, pd.Series):
+    if isinstance(returns_series, list) or not isinstance(returns_series, pd.Series):
         returns_series = pd.Series(returns_series)
 
     returns_series = returns_series.fillna(0)

@@ -16,7 +16,7 @@ class BaseBroker(ABC):
         """
 
     @abstractmethod
-    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float = None) -> dict[str, Any]:
+    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float | None = None) -> dict[str, Any]:
         """
         Places an order.
         """

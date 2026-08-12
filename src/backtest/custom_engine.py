@@ -57,6 +57,6 @@ class CustomEngine(BacktestEngine):
                 "portfolio": df
             }
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             self.logger.error(f"CustomEngine simulation failed: {e}")
             return {"status": "error", "message": str(e), "metrics": {}}

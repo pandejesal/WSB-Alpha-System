@@ -26,13 +26,13 @@ async def send_telegram_alert(message: str):
     }
 
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession() as session:  # noqa: SIM117 - Nested with is more readable here
             async with session.post(url, json=payload) as response:
                 if response.status != 200:
                     logger.error(f"Failed to send Telegram alert: {await response.text()}")
                 else:
                     logger.info("Telegram alert sent successfully.")
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         logger.error(f"Exception during Telegram alert: {e}")
 
 # --- Abstract Base Interface ---

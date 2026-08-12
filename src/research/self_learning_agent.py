@@ -179,11 +179,7 @@ class SelfOptimizer:
             logger.error("LLM did not return the expected tool call.")
             return None
 
-        except Exception as e:
-            logger.error(f"Error querying LLM: {e}")
-            return None
-
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Error querying LLM: {e}")
             return None
 

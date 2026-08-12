@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-from typing import Dict
 
 import requests
 
@@ -35,7 +34,7 @@ class TelegramBot:
             res = requests.post(url, json=payload, timeout=10)
             res.raise_for_status()
             return True
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Telegram send failed: {e}")
             return False
 
@@ -48,7 +47,7 @@ class TelegramBot:
         )
         self.send_message(msg)
 
-    def request_strategy_approval(self, strategy_id: str, metrics: Dict):
+    def request_strategy_approval(self, strategy_id: str, metrics: dict):
         msg = (
             f"🤖 <b>Strategy Approval Required</b> 🤖\n\n"
             f"Strategy ID: <code>{strategy_id}</code>\n"
@@ -78,7 +77,7 @@ class TelegramBot:
             try:
                 with open(self.approved_file, "r") as f:
                     approved = json.load(f)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.debug(f"Failed to read approved file: {e}")
 
         if cmd == '/approve':
@@ -103,5 +102,5 @@ class TelegramBot:
             with open(self.approved_file, "r") as f:
                 approved = json.load(f)
             return strategy_id in approved
-        except Exception:
+        except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             return False

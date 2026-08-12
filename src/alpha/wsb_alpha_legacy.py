@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # WSB DD SENTIMENT ANALYTICS & PLOTTER - UNIFIED INCREMENTAL SYSTEM
 # ============================================================================
-import nltk  # noqa: E402 - imports must happen after configuration / environment setup
+import nltk
 
 try:
     nltk.data.find('tokenizers/punkt_tab')
@@ -19,24 +19,28 @@ except LookupError:
     nltk.download('averaged_perceptron_tagger_eng')
 
 
-import json  # noqa: E402 - imports must happen after configuration / environment setup
-import os  # noqa: E402 - imports must happen after configuration / environment setup
-import re  # noqa: E402 - imports must happen after configuration / environment setup
-from collections import defaultdict  # noqa: E402 - imports must happen after configuration / environment setup
-from datetime import (  # noqa: E402 - imports must happen after configuration / environment setup
+import json
+import os
+import re
+from collections import (
+    defaultdict,
+)
+from datetime import (
     datetime,
     timedelta,
 )
 
-import defusedxml.ElementTree as ET  # noqa: E402 - imports must happen after configuration / environment setup
-import matplotlib.pyplot as plt  # noqa: E402 - imports must happen after configuration / environment setup
-import numpy as np  # noqa: E402 - imports must happen after configuration / environment setup
-import pandas as pd  # noqa: E402 - imports must happen after configuration / environment setup
-import requests  # noqa: E402 - imports must happen after configuration / environment setup
-import yfinance as yf  # noqa: E402 - imports must happen after configuration / environment setup
-from tqdm import tqdm  # noqa: E402 - imports must happen after configuration / environment setup
+import defusedxml.ElementTree as ET
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import requests
+import yfinance as yf
+from tqdm import (
+    tqdm,
+)
 
-from src.alpha.indicators import (  # noqa: E402 - imports must happen after configuration / environment setup
+from src.alpha.indicators import (
     compute_indicators,
     compute_regime_returns,
 )
@@ -107,7 +111,7 @@ def extract_tickers(text: str) -> list[str]:  # noqa: F811 - redefinition of unu
             if not tags or any(t not in rejected_tags for t in tags):
                 final_tickers.add(token)
         return list(final_tickers)
-    except Exception:
+    except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
         return list(set(pre_filtered))
 
 
@@ -119,7 +123,7 @@ def finbert_sentiment(text: str, tokenizer, model, device) -> dict:
     logger.warning("finbert_sentiment called but finbert is removed, returning neutral")
     return {"bullish": 0.0, "bearish": 0.0, "neutral": 1.0}
 
-import time  # noqa: E402 - imports must happen after configuration / environment setup
+import time
 
 
 def safe_write_csv(df, path):
@@ -194,7 +198,7 @@ def fetch_rss_feed() -> list[dict]:
             })
         logger.info(f"Successfully parsed {len(items)} posts from the public RSS Feed.")
         return items
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         logger.info(f"Error fetching RSS feed: {e}")
         return []
 
@@ -269,17 +273,17 @@ def run_sentiment_pipeline():
                 continue
                 
             if isinstance(created_val, (int, float)):
-                created = datetime.fromtimestamp(created_val / 1000 if created_val > 1e12 else created_val)
+                created = datetime.fromtimestamp(created_val / 1000 if created_val > 1e12 else created_val)  # noqa: DTZ006 - Timezone not critical for this usage
             elif isinstance(created_val, str):
                 try:
                     # Robust ISO or custom timestamp parsing
                     if "T" in created_val:
                         # Clean trailing offsets
                         clean_ts = created_val.split("+")[0].split("Z")[0]
-                        created = datetime.strptime(clean_ts[:19], "%Y-%m-%dT%H:%M:%S")
+                        created = datetime.strptime(clean_ts[:19], "%Y-%m-%dT%H:%M:%S")  # noqa: DTZ007 - Timezone not critical for this usage
                     else:
                         created = datetime.fromisoformat(created_val.replace("Z", "+00:00"))
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                     logger.debug(f"Failed to parse datetime: {e}")
                     continue
             else:
@@ -390,7 +394,7 @@ def run_sentiment_pipeline():
     if "regime_holding_days" not in combined.columns:
         combined["regime_holding_days"] = 5
 
-    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]  # noqa: E712 - equality comparison needed for pandas filtering or explicit boolean type check
+    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]
     logger.info(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
     if not needs_calculation.empty:
@@ -410,7 +414,7 @@ def run_sentiment_pipeline():
                 chunk_px = yf.download(chunk_tickers + ["SPY"], start=start_date, end=end_date, progress=False, auto_adjust=True)
                 if not chunk_px.empty:
                     all_px.append(chunk_px)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 logger.info(f"Warning: Price retrieval chunk failed: {e}.")
 
         if all_px:
@@ -694,7 +698,7 @@ def run_sentiment_pipeline():
         for date, group in df.groupby("post_date"):
             post_tickers = group.groupby("post_id")["ticker"].apply(list)
             for ticker_list in post_tickers:
-                unique_t = sorted(list(set(ticker_list)))
+                unique_t = sorted(set(ticker_list))
                 for i, t1 in enumerate(unique_t):
                     for t2 in unique_t[i+1:]:
                         new_co_mentions[str(date)][f"{t1}_{t2}"] += 1
@@ -739,7 +743,7 @@ def run_trajectory_plotter(top_n_tickers=5):
     df['post_date'] = pd.to_datetime(df['post_date'])
     
     # Filter out tickers that are marked as pricing_failed to ensure we only select tickers with valid price data for plotting
-    valid_df = df[df['pricing_failed'] != True]  # noqa: E712 - equality comparison needed for pandas filtering or explicit boolean type check
+    valid_df = df[df['pricing_failed'] != True]
     top_tickers = valid_df['ticker'].value_counts().head(top_n_tickers).index.tolist()
     logger.info(f"Selected top {top_n_tickers} tickers for plotting: {top_tickers}")
     
@@ -754,7 +758,7 @@ def run_trajectory_plotter(top_n_tickers=5):
         
     # sns.set_theme(style="whitegrid") # Removed seaborn dependency
     plt.style.use("seaborn-v0_8-whitegrid") if "seaborn-v0_8-whitegrid" in plt.style.available else plt.grid(True)
-    fig, ax = plt.subplots(figsize=(12, 7))
+    _fig, ax = plt.subplots(figsize=(12, 7))
     
     spy_trajectories = []
     
@@ -768,7 +772,7 @@ def run_trajectory_plotter(top_n_tickers=5):
         try:
             px = yf.download([ticker, "SPY"], start=start_dl, end=end_dl, progress=False, auto_adjust=True)
             px_close = px["Close"] if (isinstance(px, pd.DataFrame) and "Close" in px) else px
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.debug(f"Failed to fetch yfinance data for plotting: {e}")
             continue
             

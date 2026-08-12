@@ -17,7 +17,7 @@ class PerformanceReporter:
         try:
             qs.reports.html(strategy_returns, benchmark=benchmark_returns, title=title, output=output_file)
             return output_file
-        except Exception:
+        except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             return None
 
     def plot_trajectories(self, returns_dict: dict, title: str = "Strategy Trajectories"):

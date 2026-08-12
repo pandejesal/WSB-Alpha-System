@@ -27,7 +27,7 @@ class MarketDataManager:
                 df = pd.read_parquet(cache_file)
                 if not df.empty:
                     return df
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 self.logger.warning(f"Cache corrupted for {ticker}: {e}")
 
         self.logger.info(f"Downloading {ticker} from {start_date} to {end_date}")
@@ -52,7 +52,7 @@ class MarketDataManager:
         if use_cache:
             try:
                 df.to_parquet(cache_file)
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 self.logger.warning(f"Failed to write cache for {ticker}: {e}")
 
         return df

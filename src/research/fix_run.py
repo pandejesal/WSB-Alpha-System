@@ -6,7 +6,7 @@ import_str = "from indicators import compute_indicators, compute_regime_returns\
 if "from indicators import" not in content:
     content = content.replace("import matplotlib.pyplot as plt", "import matplotlib.pyplot as plt\n" + import_str)
 
-import re  # noqa: E402 - imports must happen after configuration / environment setup
+import re
 
 # Remove compute_indicators
 content = re.sub(r'def compute_indicators\(df\):.*?return df', '', content, flags=re.DOTALL)

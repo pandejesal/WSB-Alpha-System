@@ -1,4 +1,5 @@
 import logging
+
 logger = logging.getLogger(__name__)
 """
 🤖 Live Bybit Perpetual Broker Execution Template: Man AHL Multi-Horizon Momentum
@@ -16,23 +17,27 @@ To run this in production, schedule this script to run daily at 00:01 UTC via cr
 $ python live_crypto_executor.py
 """
 
-import json  # noqa: E402 - imports must happen after configuration / environment setup
-import os  # noqa: E402 - imports must happen after configuration / environment setup
+import json
+import os
 
 try:
     import ccxt
 except ImportError:
     ccxt = None
-import pandas as pd  # noqa: E402 - imports must happen after configuration / environment setup
-from dotenv import load_dotenv  # noqa: E402 - imports must happen after configuration / environment setup
+import pandas as pd
+from dotenv import (
+    load_dotenv,
+)
 
-from src.alpha.man_ahl_legacy import (  # noqa: E402 - imports must happen after configuration / environment setup
+from src.alpha.man_ahl_legacy import (
     calculate_momentum_score,
     calculate_target_position_sizes,
     calculate_volatility_and_atr,
     check_rebalance_required,
 )
-from src.risk import position_sizing as risk_config  # noqa: E402 - imports must happen after configuration / environment setup
+from src.risk import (
+    position_sizing as risk_config,
+)
 
 # Load environment variables
 load_dotenv()
@@ -40,7 +45,9 @@ load_dotenv()
 # ============================================================================
 # BYBIT CONFIGURATION
 # ============================================================================
-from src.utils.config import config  # noqa: E402 - imports must happen after configuration / environment setup
+from src.utils.config import (
+    config,
+)
 
 BYBIT_API_KEY = config.api_keys.binance_api_key  # Assume binance/ccxt key map for now, or fallback
 try:
@@ -243,7 +250,7 @@ def execute_bybit_order(exchange, symbol: str, target_size: float, current_pos: 
 
 def main():
     STATE_FILE = 'crypto_state.json'
-    if USE_SANDBOX is False and risk_config.LIVE_TRADING_ENABLED is False:  # noqa: E712 - equality comparison needed for pandas filtering or explicit boolean type check
+    if USE_SANDBOX is False and risk_config.LIVE_TRADING_ENABLED is False:
         print("[!] ERROR: LIVE_TRADING_ENABLED is False but sandbox is false. Aborting for safety.")
         return
 
@@ -284,7 +291,7 @@ def main():
                 state_data = json.load(f)
                 last_equity = state_data.get("last_equity", equity)
                 high_water_mark = state_data.get("high_water_mark", equity)
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.warning(f"Failed to load crypto state: {e}")
 
     # Update high water mark
@@ -348,7 +355,7 @@ def main():
                     prev_scores = loaded["scores"]
                 elif isinstance(loaded, dict):
                     prev_scores = loaded # fallback for old schema
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.warning(f"Failed to load fade state: {e}")
 
     rebalance_required = check_rebalance_required(
@@ -381,7 +388,7 @@ def main():
         }
         with open(STATE_FILE, "w") as f:
             json.dump(state_out, f)
-    except Exception as e:
+    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         print(f"Error saving state: {e}")
 
     print("\n" + "=" * 60)

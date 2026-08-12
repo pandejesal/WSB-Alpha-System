@@ -31,7 +31,7 @@ class PositionSizer:
         # Instantiate FRED provider safely
         try:
             self.macro_provider = FredMacroProvider()
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             self.logger.warning(f"Could not initialize FredMacroProvider: {e}")
             self.macro_provider = None
 
@@ -49,7 +49,7 @@ class PositionSizer:
                 macro_regime_data = self.macro_provider.get_regime()
                 if macro_regime_data.get("regime") != "NEUTRAL" and macro_regime_data.get("confidence", 0.0) >= 0.5:
                     macro_multiplier = self.macro_provider.regime_multiplier()
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                 self.logger.warning(f"Error fetching macro regime multiplier: {e}. Defaulting to 1.0.")
 
         adjusted_risk_pct = self.base_risk_pct * normalized_confidence * vol_regime_multiplier * macro_multiplier

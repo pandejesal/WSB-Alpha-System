@@ -125,9 +125,7 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
                 h_high = df.loc[h_date, "High"]
 
                 is_breached = False
-                if direction == 1 and h_low <= stop_price:
-                    is_breached = True
-                elif direction == -1 and h_high >= stop_price:
+                if direction == 1 and h_low <= stop_price or direction == -1 and h_high >= stop_price:
                     is_breached = True
 
                 if is_breached:

@@ -13,7 +13,7 @@ class DarwinEngine:
     """
 
     @staticmethod
-    def calculate_fitness(metrics: dict[str, float], spec: dict = None) -> float:
+    def calculate_fitness(metrics: dict[str, float], spec: dict | None = None) -> float:
         """
         Calculates fitness with AIC/BIC-informed complexity penalty.
         Fitness = Score_oos + lambda * complexity_penalty
@@ -68,7 +68,7 @@ class DarwinEngine:
                     from src.backtest.validators.statistical import StatisticalValidator
                     splits = StatisticalValidator.combinatorial_purged_cv(len(historical_data))  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
                     cpcv_conf = 0.95  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
-                except Exception as e:
+                except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                     logger.debug(f"Failed to calculate CPCV split sizes gracefully: {e}")
 
             is_sharpe = metrics.get('train_sharpe', metrics.get('sharpe', 0.0))
@@ -154,7 +154,7 @@ class DarwinEngine:
 
                 new_value = value * multiplier
                 if isinstance(value, int):
-                    mutated_spec['parameters'][key] = int(round(new_value))
+                    mutated_spec['parameters'][key] = round(new_value)
                 else:
                     mutated_spec['parameters'][key] = new_value
 
@@ -186,7 +186,7 @@ class DarwinEngine:
             if match:
                 return json.loads(match.group(0))
             return {"error": "Invalid crossover JSON"}
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
             logger.error(f"Crossover failed: {e}")
             return {"error": str(e)}
 
