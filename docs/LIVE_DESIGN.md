@@ -25,6 +25,12 @@ Connect / Disconnect / GetHistory` + order/account events; `IBrokerageFactory`
 - Our `BaseBroker` + `BaseExecutor` (`universal_broker.py`) already match the
   shape — add capability flags and canonical order-ID mapping.
 
+> **Status (2026-08-13):** `get_capabilities()` is implemented on
+> `BaseBroker` (abstract) with concrete maps in `AlpacaBroker` (all true) and
+> `CCXTBroker` (derived from the exchange `has` map). Conformance tests in
+> `tests/brokers/test_broker_capability.py`. The "checked before every order
+> type" enforcement in the entry gate (§2) remains pending.
+
 ## 2. Close the order-gate audit gap
 
 The 2026 codebase audit (`AUDIT_REPORT.md`) flags that no `check_order_allowed()`
