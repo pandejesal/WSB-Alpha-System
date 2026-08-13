@@ -23,7 +23,7 @@ Connect / Disconnect / GetHistory` + order/account events; `IBrokerageFactory`
   Hummingbot's `ConnectorBase` + `InFlightOrder` per-venue class is the model
   for crypto (140+ venues via CCXT).
 - Our `BaseBroker` + `BaseExecutor` (`universal_broker.py`) already match the
-  shape — add capability flags and canonical order-ID mapping.
+  shape — **IMPLEMENTED:** capability flags via `get_capabilities()` and canonical order-ID mapping.
 
 ## 2. Close the order-gate audit gap
 
