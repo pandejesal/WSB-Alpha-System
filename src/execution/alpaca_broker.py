@@ -91,3 +91,14 @@ class AlpacaBroker(BaseBroker):
             return True
         except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             return False
+
+    def get_capabilities(self) -> dict[str, bool]:
+        """
+        Returns capability map for Alpaca.
+        Paper supports all standard features.
+        """
+        return {
+            "supports_market_orders": True,
+            "supports_stop_limit": True,
+            "supports_paper": True
+        }

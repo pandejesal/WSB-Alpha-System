@@ -33,3 +33,10 @@ class BaseBroker(ABC):
         Cancels any open/working orders for a symbol.
         Used primarily during fails-closed events.
         """
+
+    @abstractmethod
+    def get_capabilities(self) -> dict[str, bool]:
+        """
+        Returns a dictionary of broker capabilities (e.g. market orders, stop limit, paper trading).
+        Example: {'supports_market_orders': True, 'supports_stop_limit': True, 'supports_paper': True}
+        """
