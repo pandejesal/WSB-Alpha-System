@@ -91,3 +91,15 @@ class AlpacaBroker(BaseBroker):
             return True
         except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             return False
+
+    def get_capabilities(self) -> dict[str, bool]:
+        return {
+            'auth': True,
+            'balance': True,
+            'order placement': True,
+            'order status': True,
+            'cancel': True,
+            'supports_market_orders': True,
+            'supports_stop_limit': True,
+            'supports_paper': True,
+        }

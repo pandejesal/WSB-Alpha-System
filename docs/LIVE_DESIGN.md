@@ -3,6 +3,7 @@
 > **Status:** draft — consolidated from research run 2026-08-12 (vault
 > `oss-live-design-reference.md`, four questions: multi-broker abstraction,
 > capital floor, approval gates + paper→live reconciliation, hedges).
+> Note: broker_capability gate is now implemented.
 > Research PR #116 (recon skeleton) is the paper-loop evidence trail; this
 > file folds the OSS findings into a design. No code changes in this PR.
 
