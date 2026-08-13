@@ -84,7 +84,7 @@ The system takes an aggressive anti-overfit stance:
 | Sandbox | `sandbox.yml` | 5-day scripted sandbox (pre-trading simulations) |
 | Live (optional) | `live_alpaca_executor.py`, `live_crypto_executor.py` | Requires `LIVE_TRADING_ENABLED=True` and real broker credentials; defaults to **disabled** |
 
-All brokers implement risk controls: position sizing (`position_sizing.py`), ATR-based stops, circuit breakers, and fails-closed behavior when credentials are missing (no dummy/mock credentials or silent mock fallbacks -- ccxt broker raises `ValueError`/`ImportError` on config miss).
+All brokers implement risk controls: position sizing (`position_sizing.py`), ATR-based stops, circuit breakers, broker capability gates, and fails-closed behavior when credentials are missing (no dummy/mock credentials or silent mock fallbacks -- ccxt broker raises `ValueError`/`ImportError` on config miss).
 
 ## GitHub Actions pipelines
 

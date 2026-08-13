@@ -1,0 +1,9 @@
+--- src/execution/base_broker.py
++++ src/execution/base_broker.py
+@@ -38,5 +38,5 @@
+     @abstractmethod
+     def get_capabilities(self) -> dict[str, bool]:
+         """
+         Returns a dictionary of broker capabilities.
+-        Expected keys: 'supports_market_orders', 'supports_stop_limit', 'supports_paper'.
++        Expected keys: 'auth', 'balance', 'order placement', 'order status', 'cancel', 'supports_market_orders', 'supports_stop_limit', 'supports_paper'.

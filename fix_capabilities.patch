@@ -1,0 +1,67 @@
+--- src/execution/base_broker.py
++++ src/execution/base_broker.py
+@@ -38,5 +38,5 @@
+     @abstractmethod
+     def get_capabilities(self) -> dict[str, bool]:
+         """
+         Returns a dictionary of broker capabilities.
+-        Expected keys: 'supports_market_orders', 'supports_stop_limit', 'supports_paper'.
++        Expected keys: 'auth', 'balance', 'order placement', 'order status', 'cancel', 'supports_market_orders', 'supports_stop_limit', 'supports_paper'.
+         """
+
+--- src/execution/alpaca_broker.py
++++ src/execution/alpaca_broker.py
+@@ -94,6 +94,11 @@
+
+     def get_capabilities(self) -> dict[str, bool]:
+         return {
++            'auth': True,
++            'balance': True,
++            'order placement': True,
++            'order status': True,
++            'cancel': True,
+             'supports_market_orders': True,
+             'supports_stop_limit': True,
+             'supports_paper': True,
+
+--- src/execution/ccxt_broker.py
++++ src/execution/ccxt_broker.py
+@@ -116,6 +116,11 @@
+
+     def get_capabilities(self) -> dict[str, bool]:
+         return {
++            'auth': True,
++            'balance': True,
++            'order placement': True,
++            'order status': True,
++            'cancel': True,
+             'supports_market_orders': True,
+             'supports_stop_limit': True,
+             'supports_paper': True,
+
+--- tests/test_broker_capability.py
++++ tests/test_broker_capability.py
+@@ -23,6 +23,11 @@
+
+     def get_capabilities(self) -> dict[str, bool]:
+         return {
++            'auth': True,
++            'balance': True,
++            'order placement': True,
++            'order status': True,
++            'cancel': True,
+             'supports_market_orders': True,
+             'supports_stop_limit': False,
+             'supports_paper': True,
+@@ -33,6 +38,11 @@
+     broker = SandboxBroker()
+     capabilities = broker.get_capabilities()
+     assert isinstance(capabilities, dict)
++    assert 'auth' in capabilities
++    assert 'balance' in capabilities
++    assert 'order placement' in capabilities
++    assert 'order status' in capabilities
++    assert 'cancel' in capabilities
+     assert 'supports_market_orders' in capabilities
+     assert 'supports_stop_limit' in capabilities
+     assert 'supports_paper' in capabilities

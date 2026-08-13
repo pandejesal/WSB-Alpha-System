@@ -1,0 +1,78 @@
+import pytest
+
+from src.execution.base_broker import BaseBroker
+from src.execution.alpaca_broker import AlpacaBroker
+from src.execution.ccxt_broker import CCXTBroker
+from src.utils.config import config
+
+
+class SandboxBroker(BaseBroker):
+    """
+    A dummy implementation of BaseBroker for testing capabilities.
+    """
+    def get_account_balance(self) -> dict:
+        return {'equity': 100.0, 'cash': 100.0}
+
+    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float | None = None) -> dict:
+        return {"status": "success"}
+
+    def get_positions(self) -> list[dict]:
+        return []
+
+    def cancel_order(self, symbol: str) -> bool:
+        return True
+
+    def get_capabilities(self) -> dict[str, bool]:
+        return {
+            'supports_market_orders': True,
+            'supports_stop_limit': False,
+            'supports_paper': True,
+        }
+
+
+def test_base_broker_contract_sandbox():
+    """Verify SandboxBroker returns proper capability map."""
+    broker = SandboxBroker()
+    capabilities = broker.get_capabilities()
+    assert isinstance(capabilities, dict)
+    assert 'supports_market_orders' in capabilities
+    assert 'supports_stop_limit' in capabilities
+    assert 'supports_paper' in capabilities
+    assert capabilities['supports_market_orders'] is True
+    assert capabilities['supports_stop_limit'] is False
+    assert capabilities['supports_paper'] is True
+
+
+@pytest.fixture(autouse=True)
+def _mock_config(monkeypatch):
+    """Ensure tests run without real credentials."""
+    monkeypatch.setattr(config.trading, "live_trading_enabled", False)
+    monkeypatch.setattr(config.api_keys, "alpaca_api_key", "test_key")
+    monkeypatch.setattr(config.api_keys, "alpaca_secret_key", "test_secret")
+    monkeypatch.setattr(config.api_keys, "binance_api_key", "test_key")
+    monkeypatch.setattr(config.api_keys, "binance_secret_key", "test_secret")
+
+    # For testing CCXTBroker we need ccxt imported but mock out the client init
+    def mock_init_client(self):
+        self.exchange = None
+    monkeypatch.setattr(CCXTBroker, "_initialize_client", mock_init_client)
+
+
+def test_alpaca_broker_capabilities():
+    """Verify AlpacaBroker returns expected capability map."""
+    broker = AlpacaBroker()
+    capabilities = broker.get_capabilities()
+    assert isinstance(capabilities, dict)
+    assert capabilities['supports_market_orders'] is True
+    assert capabilities['supports_stop_limit'] is True
+    assert capabilities['supports_paper'] is True
+
+
+def test_ccxt_broker_capabilities():
+    """Verify CCXTBroker returns expected capability map."""
+    broker = CCXTBroker()
+    capabilities = broker.get_capabilities()
+    assert isinstance(capabilities, dict)
+    assert capabilities['supports_market_orders'] is True
+    assert capabilities['supports_stop_limit'] is True
+    assert capabilities['supports_paper'] is True
