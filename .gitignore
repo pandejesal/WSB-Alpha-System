@@ -16,14 +16,13 @@ database/cache/*
 tests/mock_reports/*
 *.duckdb
 .coverage
+permutation_histogram.png
 
 # Runtime artifacts, caches and agent-local config
 archive/
 launch/runlog
-run-logs/*.err
-run-logs/*.pid
-cache/13f/
-cache/company_tickers.json
+run-logs/
+cache/
 .opencode/
 skills/
 .acp-ping.txt
