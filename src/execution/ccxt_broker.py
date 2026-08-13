@@ -113,3 +113,15 @@ class CCXTBroker(BaseBroker):
             return True
         except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             return False
+
+    def get_capabilities(self) -> dict[str, bool]:
+        supports_market = True
+        supports_stop_limit = False
+        if self.exchange and hasattr(self.exchange, 'has'):
+            supports_market = bool(self.exchange.has.get('createMarketOrder', True))
+            supports_stop_limit = bool(self.exchange.has.get('createStopLimitOrder', False))
+        return {
+            "supports_market_orders": supports_market,
+            "supports_stop_limit": supports_stop_limit,
+            "supports_paper": self.is_paper
+        }
