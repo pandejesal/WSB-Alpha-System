@@ -113,3 +113,12 @@ class CCXTBroker(BaseBroker):
             return True
         except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             return False
+
+    def get_capabilities(self) -> dict[str, bool]:
+        """Capability flags derived from the CCXT exchange's `has` map (freqtrade-style)."""
+        has = self.exchange.has if self.exchange is not None else {}
+        return {
+            'supports_market_orders': bool(has.get('market', True)),
+            'supports_stop_limit': bool(has.get('stopLimit', False)),
+            'supports_paper': bool(has.get('sandbox', True)),
+        }
