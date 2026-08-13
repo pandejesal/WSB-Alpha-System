@@ -33,3 +33,12 @@ class BaseBroker(ABC):
         Cancels any open/working orders for a symbol.
         Used primarily during fails-closed events.
         """
+
+    @abstractmethod
+    def get_capabilities(self) -> dict[str, bool]:
+        """
+        Returns broker capability flags, mirroring freqtrade's exchange_has/_ft_has.
+        Must return a dict containing at minimum:
+        'supports_market_orders', 'supports_stop_limit', 'supports_paper'.
+        Capabilities are checked before every order type (LIVE_DESIGN section 2).
+        """
