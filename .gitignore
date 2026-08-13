@@ -28,3 +28,13 @@ cache/company_tickers.json
 skills/
 .acp-ping.txt
 
+
+# Additional rules from issue description
+run-logs/
+archive/
+AUDIT_REPORT.md
+market_data_2019_2026/institutions/13f/
+market_data_2019_2026/cache/
+test_gdelt.py
+run_worker_a.py
+cache/
