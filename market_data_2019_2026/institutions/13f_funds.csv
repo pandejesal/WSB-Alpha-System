@@ -1,0 +1,51 @@
+fund_slug,fund_name,cik,quarters_covered,most_valued_issuer,top_value_usd_m
+renaissance,Renaissance Technologies LLC,0001037389,26,PALANTIR TECHNOLOGIES INC,1840598.25
+bridgewater,Bridgewater Associates LP,0001350694,29,SPDR S&P 500 ETF TR,4824639.28
+point72,Point72 Asset Management LP,0001603466,29,NVIDIA CORPORATION,1862622.12
+citadel,Citadel Advisors LLC,0001423053,29,SPDR S&P 500 ETF TR,33123483.36
+millennium,Millennium Management LLC,0001273087,29,SPDR  S&P    500   ETF  TR,16556818.30
+tiger_global,Tiger Global Management LLC,0001167483,29,META PLATFORMS INC,5560419.47
+soros,Soros Fund Management LLC,0001029160,29,SPDR S&P 500 ETF TR,1218092.48
+aqr,AQR Capital Management LLC,0001167557,29,NVIDIA CORPORATION,5171470.05
+de_shaw,D.E. Shaw & Co. LP,0001009207,29,SPDR S&P 500 ETF TR,2557949.43
+two_sigma,"Two Sigma Investments, LP",0001179392,29,NVIDIA CORPORATION,1959252.33
+viking,Viking Global Investors LP,0001103804,28,VISA INC,1912630.63
+lone_pine,Lone Pine Capital LLC,0001061165,29,VISTRA CORP,1253896.24
+pershing_square,Pershing Square Capital Management LP,0001336528,29,UBER TECHNOLOGIES INC,2965602.65
+appaloosa,Appaloosa LP,0001656456,29,SPDR SER TR,2517255.00
+coatue,Coatue Management LLC,0001135730,29,COREWEAVE INC,2841299.31
+third_point,Third Point LLC,0001040273,29,PG&E CORP,1043215.80
+tci,TCI Fund Management Ltd,0001647251,29,GE AEROSPACE,14634638.06
+berkshire,Berkshire Hathaway Inc,0001067983,29,OCCIDENTAL PETE CORP,17221193.02
+greenlight,Greenlight Capital Inc,0001079112,30,VANGUARD INTL EQUITY INDEX F,183247.51
+baupost,Baupost Group LLC,0001061768,29,EBAY INC.,1682.91
+elliott,Elliott Investment Management L.P.,0001791786,25,TRIPLE FLAG PRECIOUS METAL,4625045.54
+valueact,ValueAct Holdings LP,0001418814,29,FISERV INC,1480450.72
+canyon,Canyon Capital Advisors LLC,0001074034,29,CBL & ASSOC PPTYS INC,325359.68
+farallon,Farallon Capital Management LLC,0000909661,29,SPDR S&P 500 ETF TR,6036227.80
+magnetar,Magnetar Financial LLC,0001352851,29,COREWEAVE INC,15624123.52
+king_street,King Street Capital Management LP,0001218199,29,ISHARES TR,771305.00
+davidson_kempner,Davidson Kempner Capital Management LP,0001595082,29,ACTIVISION BLIZZARD INC,1368793.94
+goldentree,GoldenTree Asset Management LP,0001278951,29,ISHARES TR,320896.00
+jane_street,"Jane Street Group, LLC",0001595888,29,STATE STR SPDR S&P 500 ETF T,42709323.58
+susquehanna,Susquehanna International Group Ltd.,0001765924,23,CRH PLC,134987.82
+balyasny,Balyasny Asset Management L.P.,0001218710,29,ISHARES TR,1132762.68
+anchorage,"Anchorage Capital Group, L.L.C.",0001300714,29,SPDR S&P 500 ETF TR,465444.00
+oaktree,Oaktree Capital Management LP,0000949509,29,TORM PLC,1728158.97
+silver_lake,"Silver Lake Group, L.L.C.",0001418226,29,VMWARE INC,7000620.18
+sequoia,"SC US (TTGP), LTD.",0001607841,29,DOORDASH INC,8480720.55
+artisan,Artisan Partners Limited Partnership,0001466153,29,ARCH CAP GROUP LTD,2652016.61
+fisher,"Fisher Asset Management, LLC",0000850529,30,NVIDIA CORP COM,18195373.85
+jennison,Jennison Associates LLC,0000053417,30,NVIDIA CORPORATION,16063625.65
+wellington,Wellington Management Group LLP,0000902219,29,MICROSOFT CORP,23084284.10
+geode,Geode Capital Management LLC,0001214717,29,NVIDIA CORP,96712003.33
+blackrock,BlackRock Inc,0001364742,3,MICROSOFT CORP,6837379.87
+vanguard,Vanguard Group Inc,0000102909,4,NVIDIA CORPORATION,371494054.98
+state_street,State Street Corp,0000093751,8,NVIDIA CORPORATION,202047567.91
+fmr,FMR LLC,0000315066,4,NVIDIA CORPORATION,129252145.84
+morgan_stanley,Morgan Stanley,0000895421,4,ALPHABET INC,16005188.28
+goldman_sachs,Goldman Sachs Group Inc,0000886982,3,NVIDIA CORPORATION,27336660.30
+t_rowe,T. Rowe Price Associates Inc,0001116597,0,,0
+capital_world,Capital World Investors,0001422849,26,BROADCOM INC,45666961.59
+northern_trust,Northern Trust Corp,0000073124,25,APPLE INC,7332016.41
+jp_morgan,JPMorgan Chase & Co,0000019617,4,SPDR S&P 500 ETF TR,13600417.06
