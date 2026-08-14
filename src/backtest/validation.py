@@ -23,49 +23,8 @@ def load_base_data():
     csv_path = "wsb_factual_research_data.csv"
 
     if not os.path.exists(csv_path):
-        print("No sentiment data found. Using technical-only universe.")
-        import json
-        with open("config/universe.json") as f:
-            universe = json.load(f).get("tickers", [])
-
-        # Create synthetic signals from technical indicators
-        print("Downloading baseline pricing data for synthetic signals...")
-        px_data = yf.download(universe, period="2y", progress=False, auto_adjust=True)
-        synthetic_signals = []
-        for ticker in universe:
-            try:
-                t_px = px_data.loc[:, (slice(None), ticker)].copy()
-                t_px.columns = t_px.columns.get_level_values(0)
-                t_px = t_px.dropna(subset=["Close", "Open", "High", "Low"])
-                if len(t_px) < 50:
-                    continue
-                ind_df = indicators.compute_indicators(t_px)
-
-                # Generate synthetic signals for backtesting
-                for idx, row in ind_df.iterrows():
-                    rsi = row.get('RSI_14', 50)
-                    macd_hist = row.get('MACD_Hist', 0)
-                    close = row['Close']
-                    bb_lower = row.get('BB_Lower', close * 0.95)
-                    bb_upper = row.get('BB_Upper', close * 1.05)
-                    ha_close = row.get('HA_Close', close)
-                    ha_open = row.get('HA_Open', close)
-                    gk_vol = row.get('GK_Vol', 0.50)
-                    ema_20 = row.get('EMA_20', close)
-
-                    volatility_shield_passed = gk_vol < 1.20
-                    bullish_score = int(ha_close > ha_open) + int((close > ema_20) and (macd_hist > 0)) + int(30 < rsi < 70) + int(close > bb_lower)
-                    bearish_score = int(ha_close < ha_open) + int((close < ema_20) and (macd_hist < 0)) + int(30 < rsi < 70) + int(close < bb_upper)
-
-                    if volatility_shield_passed:
-                        if bullish_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
-                        elif bearish_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
-            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
-                logger.warning(f"Error processing base data for {ticker}: {e}")
-                continue
-        posts_df = pd.DataFrame(synthetic_signals)
+        print("Sentiment data not found. Skipping signal fabrication.")
+        posts_df = pd.DataFrame(columns=["ticker", "post_date", "sentiment_score"])
     else:
         posts_df = pd.read_csv(csv_path)
         posts_df["post_date"] = pd.to_datetime(posts_df["post_date"])
