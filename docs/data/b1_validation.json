@@ -6,14 +6,13 @@
       "signal_data": {
         "top_5": [
           "AAPL",
-          "V",
           "NVDA",
           "JPM",
-          "GOOGL"
+          "GOOGL",
+          "META"
         ],
         "momenta": {
           "AAPL": 0.279,
-          "V": 0.1182,
           "NVDA": 0.1176,
           "JPM": 0.1144,
           "GOOGL": 0.0564,
@@ -53,9 +52,9 @@
     "details": {
       "schema_check": "PASS",
       "signal_data": {
-        "realized_vol": 0.21796931836877473,
-        "sma100": 66700.218359375,
-        "last_close": 63107.3203125,
+        "realized_vol": 0.2179090774665394,
+        "sma100": 66699.7021484375,
+        "last_close": 63055.69921875,
         "target_exposure": 0.0
       }
     }
