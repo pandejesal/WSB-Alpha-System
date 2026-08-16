@@ -1,0 +1,49 @@
+id: us_momentum_top5
+name: US Cross-Sectional Momentum Top-5 (no regime filter)
+family: momentum
+venue: alpaca
+universe: broad US large-cap liquid equities (~100 names from yfinance, price > $1)
+indicators:
+  - momentum: 6-month (126 trading day) return, skipping last 21 trading days
+parameters:
+  top_n: 5
+  lookback_days: 126
+  skip_days: 21
+  warmup_days: 340
+  rebalance: monthly (last trading day of month)
+  drift_rebal: 0.05
+  exec_delay: 1
+entry_rules:
+  - on each month-end: pick the top 5 universe members by 6m momentum (skip 1m)
+  - equal weight 1/5 each; buy only with settled cash
+  - no regime filter
+exit_rules:
+  - a name is dropped when it falls out of the top-5 at the next month-end
+  - drift-based rebalance only (>5% deviation), so positions persist between month-ends
+position_sizing:
+  - $100 account: 5 x ~$20 equal-weight positions; fractional shares on Alpaca
+  - min order notional $1 enforced; no margin, no PDT
+fee_model:
+  - commission: $0 (Alpaca)
+  - slippage: 0.05% per side
+  - settlement: T+1 cash; min $1
+benchmark_result:
+  - benchmark: SPY buy-and-hold, same engine, same window
+  - full: CAGR 57.0%, Sharpe 1.45, Sortino 1.95, maxDD -38.4%, 2729 trades / 965 round trips, win 79.5%
+  - oos_2023plus: CAGR 95.1%, Sharpe 1.74 vs SPY 1.47, Sortino 2.65, maxDD -35.1%
+  - beats SPY risk-adjusted on full period (1.45 vs 0.85) and OOS (1.74 vs 1.47)
+robustness_notes:
+  - slippage stress 5/10/15/25 bps: gate verdicts identical at every level; edge not cost-bound
+  - regime sweep {none, SMA100, SMA150, SMA200, SMA250}: none/SMA150/SMA200/SMA250 pass gates 1-4; SMA100 fails gate 2; unfiltered adopted
+  - family sweep top_n {3,5,8} x lookback {84,126,189}: top_n 5 and 8 pass at every lookback; top_n 3 fails gate 2 -> do not go below 5 names
+  - conservative alternative: SMA250 gate (OOS Sharpe 1.58, maxDD -35.1%) if a defensive regime filter is desired anyway
+feasibility_at_100:
+  - 5 x ~$20 positions fine with fractional shares and $0 commissions
+  - monthly rebalance: ~2 rebalances/mo x 5 orders; fee drag ~$0
+  - cash account avoids PDT; no margin used
+risks:
+  - momentum crash / crowding reversal
+  - -38.4% maxDD sits close to the 40% gate; concentrated 5-name bets = high variance
+  - survivorship bias: universe is today's liquid large-caps -> real results will be lower
+  - OOS 2023-26 includes the AI mega-cap melt-up; do not extrapolate the 95% OOS CAGR
+  - live universe drift can degrade results vs backtest universe

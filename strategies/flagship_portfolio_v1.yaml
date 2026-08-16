@@ -1,0 +1,45 @@
+id: flagship_portfolio_v1
+name: Flagship Multi-Strategy Portfolio (vol-parity, $100)
+type: portfolio
+created: 2026-08-16
+source: 02-Research/Findings/Portfolio-Construction-2026-08-16
+members:
+  - strategy: us_momentum_top5
+    spec: strategies/us_momentum_top5.yaml
+  - strategy: spy_sma200
+    spec: strategies/spy_sma200.yaml
+  - strategy: spy_rsi2
+    spec: strategies/spy_rsi2.yaml
+  - strategy: btc_vol_target_sma100
+    spec: strategies/btc_vol_target_sma100.yaml
+  - strategy: dual_momentum
+    spec: strategies/dual_momentum.yaml
+allocation:
+  scheme: inverse_volatility
+  vol_source: monthly_returns
+  vol_window_months: 12
+  rebalance: monthly
+  drift_band: 0.05
+  min_allocation:
+    alpaca_min: 1.0
+    binance_min: 5.0
+  btc_floor: 0.05
+fees:
+  - alpaca: $0 commission, 0.05% slippage per side
+  - binance: 0.10% taker, 0.05% slippage per side
+constraints:
+  - cash_account, fractional shares, T+1 settlement
+  - no margin, no shorting, no options (until >= $2k)
+expected_metrics:
+  cagr: 0.195
+  sharpe: 1.632
+  max_dd: -0.145
+  oos_sharpe_2023plus: 1.585
+gates:
+  - portfolio_oos_sharpe_ge_1.0: PASS
+  - max_dd_le_40pct: PASS
+  - trades_ge_50: PASS
+  - beats_each_constituent_full_period: PASS
+  - beats_each_constituent_oos_2023plus: FAIL
+  - max_dd_le_best_constituent_dd_plus_5pp: FAIL
+  - feasible_at_100: PASS

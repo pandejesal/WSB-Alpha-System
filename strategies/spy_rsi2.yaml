@@ -1,0 +1,43 @@
+id: spy_rsi2
+name: SPY RSI(2) Mean Reversion (buy-the-dip)
+family: mean_reversion
+venue: alpaca
+universe: SPY (single liquid index ETF)
+indicators:
+  - rsi2: 2-period RSI of SPY close (Wilder)
+  - sma5: 5-day simple moving average of SPY close
+parameters:
+  entry: 10
+  exit_rsi: 70
+  hold_days: 5
+  exec_delay: 1
+entry_rules:
+  - buy SPY when RSI(2) < 10 (short-term oversold on a liquid index)
+exit_rules:
+  - sell if close > SMA(5), OR RSI(2) > 70, OR 5 trading days elapsed
+  - each position independent; in/out within 1-10 days
+position_sizing:
+  - $100 account: full notional per trade; fractional shares
+  - cash account means each day's proceeds settle T+1 - fine for 1-10 day holds
+fee_model:
+  - commission: "$0 (Alpaca) - critical: 762 trades would be impossible with per-trade fees"
+  - slippage: 0.05% per side
+  - settlement: T+1 cash; min $1
+benchmark_result:
+  - benchmark: SPY buy-and-hold, same engine, same window
+  - full: CAGR 8.7%, Sharpe 0.77 (vs SPY 0.85), Sortino 0.75, maxDD -23.7% (vs SPY -33.7%)
+  - oos_2023plus: CAGR 14.1%, Sharpe 1.32 (vs SPY 1.47), maxDD -10.7%
+  - 762 trades / 381 round trips, win rate 65.1%
+  - fails gate 4: full Sharpe 0.77 vs SPY 0.85
+robustness_notes:
+  - parameter sweep entry in {5,10,15} x hold in {5,10}: all 6 OOS Sharpe 1.19-1.45
+  - high trade count gives the strongest statistical confidence of any candidate
+feasibility_at_100:
+  - $0 commissions make 762 trades affordable
+  - buy-the-dip on SPY is simple to execute; holds are 1-10 days so no PDT conflict
+  - T+1 settlement fine (never needs same-day reuse of proceeds)
+risks:
+  - fails gate 4 (risk-adjusted underperformance vs buy-hold)
+  - mean-reversion into a crashing market (2018/2020/2022 all show -23.7% DD)
+  - real fills on volatile days can be worse than modeled 0.05% slippage
+  - requires daily attention to catch RSI < 10 dips
