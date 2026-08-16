@@ -1,0 +1,83 @@
+{
+  "us_momentum_top5": {
+    "passed": true,
+    "details": {
+      "schema_check": "PASS",
+      "signal_data": {
+        "top_5": [
+          "AAPL",
+          "V",
+          "NVDA",
+          "JPM",
+          "GOOGL"
+        ],
+        "momenta": {
+          "AAPL": 0.279,
+          "V": 0.1182,
+          "NVDA": 0.1176,
+          "JPM": 0.1144,
+          "GOOGL": 0.0564,
+          "META": 0.0549,
+          "AMZN": 0.03,
+          "WMT": -0.0412,
+          "TSLA": -0.1255,
+          "MSFT": -0.144
+        }
+      }
+    }
+  },
+  "spy_sma200": {
+    "passed": true,
+    "details": {
+      "schema_check": "PASS",
+      "signal_data": {
+        "sma200": 702.7530749511719,
+        "last_close": 776.3400268554688,
+        "signal": "BUY"
+      }
+    }
+  },
+  "spy_rsi2": {
+    "passed": true,
+    "details": {
+      "schema_check": "PASS",
+      "signal_data": {
+        "rsi2": 77.7780713574832,
+        "sma5": 774.060009765625,
+        "last_close": 776.3400268554688
+      }
+    }
+  },
+  "btc_vol_target_sma100": {
+    "passed": true,
+    "details": {
+      "schema_check": "PASS",
+      "signal_data": {
+        "realized_vol": 0.21796931836877473,
+        "sma100": 66700.218359375,
+        "last_close": 63107.3203125,
+        "target_exposure": 0.0
+      }
+    }
+  },
+  "dual_momentum": {
+    "passed": true,
+    "details": {
+      "schema_check": "PASS",
+      "signal_data": {
+        "momenta": {
+          "SPY": -0.0029,
+          "QQQ": -0.0501
+        },
+        "signal": "AGG"
+      }
+    }
+  },
+  "flagship_portfolio_v1": {
+    "passed": true,
+    "details": {
+      "schema_check": "PASS",
+      "members": 5
+    }
+  }
+}

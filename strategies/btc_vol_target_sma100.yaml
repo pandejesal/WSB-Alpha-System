@@ -1,0 +1,48 @@
+id: btc_vol_target_sma100
+name: BTC Vol-Targeting (30% annualized) with SMA(100) Regime Gate
+family: vol_targeting
+venue: alpaca            # ported from binance venue: single-venue ops design trades BTC/USD on Alpaca; keep min order $5
+universe: BTC (single liquid coin; BTC-USD)
+indicators:
+  - realized_vol: 30-day rolling std of daily BTC returns, annualized x sqrt(365)
+  - sma100: 100-day simple moving average of BTC close (regime gate)
+parameters:
+  target_vol: 0.30
+  vol_window: 30
+  gate_window: 100
+  exec_delay: 1
+  drift_rebal: 0.05
+entry_rules:
+  - daily: exposure = clamp(target_vol / realized_vol, 0, 1) applied to BTC
+  - when BTC > SMA(100): hold the scaled BTC position
+exit_rules:
+  - when BTC <= SMA(100): go flat (stablecoin) - regime gate off
+  - exposure is scaled down mechanically when realized vol spikes (crashes)
+position_sizing:
+  - $100 account: position = exposure x equity in BTC; fractional; stablecoin otherwise
+  - min order $5; T+0
+fee_model:
+  - commission: 0.10% taker
+  - slippage: 0.05% per side
+  - settlement: T+0; min $5
+benchmark_result:
+  - benchmark: BTC HODL, same engine, same window
+  - full: CAGR 24.4%, Sharpe 1.09 (vs BTC HODL 0.80), Sortino 1.34
+  - full maxDD -33.4% (vs HODL -83.4%)
+  - oos_2023plus: CAGR 16.1%, Sharpe 0.82 (vs HODL 0.85), maxDD -25.0%
+  - 993 trades / 362 round trips, win rate 86.2%, final $4,335
+  - FAILS gate 3 only: OOS Sharpe 0.82 < 1.0
+robustness_notes:
+  - family sweep target_vol {0.30,0.40,0.50} x gate {none, SMA100, SMA200}: all SMA100-gated variants full Sharpe >= 1.00; 0.50 variant fails gate 2 (DD -44.9%)
+  - SMA100 gate beats SMA200 on OOS Sharpe (0.82-0.84 vs 0.61-0.66)
+  - higher target_vol raises CAGR and DD together; 0.30 is the gate-safe choice
+feasibility_at_100:
+  - single position BTC; exposure scaling is fractional-friendly; T+0
+  - drift band + min-notional keep actual trades to ~80/yr, fees affordable
+  - does not need margin; works on a cash-style spot account
+risks:
+  - OOS Sharpe below 1.0 - fails gate 3 honestly
+  - exposure scaling reduces upside participation in strong bulls
+  - vol estimates lag: a gap-down crash can hit before vol re-scales (DD still -33% worst case)
+  - exchange/custody/regulatory risk of holding BTC
+  - satellite allocation only - size so the account can survive a -33% swing
