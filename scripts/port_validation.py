@@ -20,6 +20,14 @@ def check_schema(spec, required_keys):
         return False, f"Missing keys: {missing}"
     return True, "OK"
 
+from src.ops.signals import (
+    get_us_momentum_top5_signal,
+    get_spy_sma200_signal,
+    get_spy_rsi2_signal,
+    get_btc_vol_target_sma100_signal,
+    get_dual_momentum_signal
+)
+
 def validate_us_momentum_top5():
     spec = load_yaml("strategies/us_momentum_top5.yaml")
     if not spec: return False, {"error": "Failed to load"}
@@ -33,8 +41,6 @@ def validate_us_momentum_top5():
         return False, {"param_check": f"Invalid params: {params}"}
 
     signal_data = {}
-
-    # Download data for universe (simplifying to a few representative tickers for fast validation)
     tickers = ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]
 
     try:
@@ -42,28 +48,7 @@ def validate_us_momentum_top5():
         if data.empty:
              signal_data["data_unavailable"] = True
         else:
-             closes = data['Close'] if 'Close' in data else data
-             # Need at least lookback_days + skip_days = 147 days
-             if len(closes) > 147:
-                 # 6-month return skipping last 21 days
-                 # return = (Price_{t-21} / Price_{t-147}) - 1
-                 current_idx = -1
-                 skip_idx = current_idx - 21
-                 lookback_idx = skip_idx - 126
-
-                 momenta = {}
-                 for t in tickers:
-                     if pd.notna(closes[t].iloc[skip_idx]) and pd.notna(closes[t].iloc[lookback_idx]):
-                         p_skip = closes[t].iloc[skip_idx]
-                         p_lookback = closes[t].iloc[lookback_idx]
-                         if p_lookback > 0:
-                             momenta[t] = float((p_skip / p_lookback) - 1)
-
-                 sorted_mom = sorted(momenta.items(), key=lambda x: x[1], reverse=True)
-                 signal_data["top_5"] = [t for t, _ in sorted_mom[:5]]
-                 signal_data["momenta"] = {t: round(m, 4) for t, m in sorted_mom}
-             else:
-                 signal_data["data_unavailable"] = True
+             signal_data = get_us_momentum_top5_signal(data, tickers)
     except Exception as e:
         signal_data["data_unavailable"] = True
         signal_data["error"] = str(e)
@@ -86,16 +71,10 @@ def validate_spy_sma200():
     signal_data = {}
     try:
         data = yf.download("SPY", period="1y", interval="1d", auto_adjust=True, progress=False)
-        if data.empty or len(data) < 200:
+        if data.empty:
             signal_data["data_unavailable"] = True
         else:
-            close = data['Close'] if 'Close' in data else data
-            if isinstance(close, pd.DataFrame): close = close.squeeze()
-            sma200 = close.rolling(window=200).mean().iloc[-1]
-            last_close = close.iloc[-1]
-            signal_data["sma200"] = float(sma200)
-            signal_data["last_close"] = float(last_close)
-            signal_data["signal"] = "BUY" if last_close > sma200 else "CASH"
+            signal_data = get_spy_sma200_signal(data)
     except Exception as e:
         signal_data["data_unavailable"] = True
         signal_data["error"] = str(e)
@@ -117,26 +96,10 @@ def validate_spy_rsi2():
     signal_data = {}
     try:
         data = yf.download("SPY", period="1mo", interval="1d", auto_adjust=True, progress=False)
-        if data.empty or len(data) < 5:
+        if data.empty:
             signal_data["data_unavailable"] = True
         else:
-            close = data['Close'] if 'Close' in data else data
-            if isinstance(close, pd.DataFrame): close = close.squeeze()
-
-            # Simple RSI calculation
-            delta = close.diff()
-            gain = (delta.where(delta > 0, 0)).rolling(window=2).mean()
-            loss = (-delta.where(delta < 0, 0)).rolling(window=2).mean()
-            rs = gain / loss
-            rsi = 100 - (100 / (1 + rs))
-
-            last_rsi = rsi.iloc[-1]
-            sma5 = close.rolling(window=5).mean().iloc[-1]
-            last_close = close.iloc[-1]
-
-            signal_data["rsi2"] = float(last_rsi) if pd.notna(last_rsi) else None
-            signal_data["sma5"] = float(sma5) if pd.notna(sma5) else None
-            signal_data["last_close"] = float(last_close)
+            signal_data = get_spy_rsi2_signal(data)
     except Exception as e:
         signal_data["data_unavailable"] = True
         signal_data["error"] = str(e)
@@ -158,24 +121,10 @@ def validate_btc_vol_target_sma100():
     signal_data = {}
     try:
         data = yf.download("BTC-USD", period="1y", interval="1d", auto_adjust=True, progress=False)
-        if data.empty or len(data) < 100:
+        if data.empty:
             signal_data["data_unavailable"] = True
         else:
-            close = data['Close'] if 'Close' in data else data
-            if isinstance(close, pd.DataFrame): close = close.squeeze()
-
-            returns = close.pct_change()
-            realized_vol = returns.rolling(window=30).std() * np.sqrt(365)
-            last_vol = realized_vol.iloc[-1]
-            sma100 = close.rolling(window=100).mean().iloc[-1]
-            last_close = close.iloc[-1]
-
-            signal_data["realized_vol"] = float(last_vol) if pd.notna(last_vol) else None
-            signal_data["sma100"] = float(sma100) if pd.notna(sma100) else None
-            signal_data["last_close"] = float(last_close)
-            exposure = min(0.30 / last_vol, 1.0) if pd.notna(last_vol) and last_vol > 0 else 0
-            signal_data["target_exposure"] = float(exposure) if last_close > sma100 else 0.0
-
+            signal_data = get_btc_vol_target_sma100_signal(data)
     except Exception as e:
         signal_data["data_unavailable"] = True
         signal_data["error"] = str(e)
@@ -198,32 +147,10 @@ def validate_dual_momentum():
     try:
         tickers = ["SPY", "QQQ"]
         data = yf.download(tickers, period="3mo", interval="1d", auto_adjust=True, progress=False)
-        if data.empty or len(data) < 42:
+        if data.empty:
             signal_data["data_unavailable"] = True
         else:
-            closes = data['Close'] if 'Close' in data else data
-
-            current_idx = -1
-            skip_idx = current_idx - 21
-            lookback_idx = skip_idx - 21
-
-            momenta = {}
-            for t in tickers:
-                if pd.notna(closes[t].iloc[skip_idx]) and pd.notna(closes[t].iloc[lookback_idx]):
-                    p_skip = closes[t].iloc[skip_idx]
-                    p_lookback = closes[t].iloc[lookback_idx]
-                    if p_lookback > 0:
-                        momenta[t] = float((p_skip / p_lookback) - 1)
-
-            signal_data["momenta"] = {t: round(m, 4) for t, m in momenta.items()}
-            spy_mom = momenta.get("SPY", -1)
-            qqq_mom = momenta.get("QQQ", -1)
-
-            if spy_mom > 0 or qqq_mom > 0:
-                signal_data["signal"] = "SPY" if spy_mom > qqq_mom else "QQQ"
-            else:
-                signal_data["signal"] = "AGG"
-
+            signal_data = get_dual_momentum_signal(data, tickers)
     except Exception as e:
         signal_data["data_unavailable"] = True
         signal_data["error"] = str(e)

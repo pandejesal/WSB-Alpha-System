@@ -1,0 +1,37 @@
+name: ops_daily
+on:
+  schedule:
+    - cron: '0 21 * * 1-5'
+  workflow_dispatch:
+
+concurrency:
+  group: ops-runner
+  cancel-in-progress: false
+
+jobs:
+  daily-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install yfinance pandas numpy pyyaml
+
+      - name: Run Daily Check Mode
+        run: python -m src.ops.daily --mode check
+
+      - name: Commit and Push Changes
+        run: |
+          git config user.name "ops-bot"
+          git config user.email "ops-bot@users.noreply.github.com"
+          git add docs/data/ops/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "ops: daily check run $(date +'%Y-%m-%d')" && git push origin HEAD:ops-phase-a-check-mode)
