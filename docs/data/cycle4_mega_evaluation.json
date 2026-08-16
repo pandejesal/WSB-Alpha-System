@@ -1,0 +1,96 @@
+{
+  "claim": "C5 Mega composite meta-model",
+  "legs": {
+    "l1_481": {
+      "gates": {
+        "train_consistency": {
+          "pass": true,
+          "value": 0.00039872014598347203
+        },
+        "oos_median_3of4_years": {
+          "pass": false,
+          "value": {
+            "2024": true,
+            "2025": false,
+            "2026": true,
+            "2027": false
+          },
+          "note": "2026 partial, 2027 not computable; earliest possible pass end-2027 (pre-registered)"
+        },
+        "oos_sharpe_ge_1": {
+          "pass": false,
+          "value": 0.19552403754426192
+        },
+        "oos_maxdd_le_25": {
+          "pass": false,
+          "value": -0.26023808542677973
+        },
+        "oos_cagr_ge_15_net": {
+          "pass": false,
+          "value": 0.01905801075238389
+        },
+        "null_p95": {
+          "pass": false,
+          "value": 0.0032595761696477513
+        }
+      },
+      "bar_pass": false
+    },
+    "l2_multiasset": {
+      "gates": {
+        "train_consistency": {
+          "pass": true,
+          "value": 0.003321674175782025
+        },
+        "oos_median_3of4_years": {
+          "pass": false,
+          "value": {
+            "2024": false,
+            "2025": true,
+            "2026": false,
+            "2027": false
+          },
+          "note": "2026 partial, 2027 not computable; earliest possible pass end-2027 (pre-registered)"
+        },
+        "oos_sharpe_ge_1": {
+          "pass": false,
+          "value": -1.117337544352777
+        },
+        "oos_maxdd_le_25": {
+          "pass": false,
+          "value": -0.6536307171664999
+        },
+        "oos_cagr_ge_15_net": {
+          "pass": false,
+          "value": -0.3045305372815986
+        },
+        "null_p95": {
+          "pass": false,
+          "value": 0.003918688728996912
+        }
+      },
+      "bar_pass": false
+    }
+  },
+  "bar_pass": false,
+  "note": "Q17: BOTH legs must pass the full bar.",
+  "pending": {
+    "note": "2026 weeks after 2026-08-07 and 2027 not yet computable"
+  },
+  "data_handling_log": [
+    "Pre-reg: docs/data/cycle4_prereg_mega.md frozen 2026-08-16 BEFORE any backtest. No tuning.",
+    "Installed-version delta (Appendix B.1): sklearn 1.6.1 / numpy 2.4.6 / pandas 3.0.5 used (frozen versions 1.9.0/2.2.0/2.2.3 not installed); declared BEFORE any run.",
+    "L1 features (26, all rank-normalized per rebalance date): 12 C4 price features; 11 TA from compute_indicators (EMA20 dist, ATR14 rel, RSI14 daily, MACD/MACD_Signal/MACD_Hist rel, HA_Close dist, BB position, GK_Vol, VaR95, CVaR95); 13F accumulation carry-forward (latest quarter with entry date = q_end+45d+1d <= rebalance date, Claim 1 pipeline); MOM12-1/REV1 monthly (row M usable for signal bars in month M, C2 factor_engine.py).",
+    "L2 features (23): price+TA only (13F/MOM12-1/REV1 excluded \u2014 not defined for ETFs/crypto, pre-reg A.4/Q15).",
+    "Target (both legs): forward 1-week Friday-to-Friday return, rank-normalized within each rebalance date (norm.ppf(rank/(n+1))).",
+    "Model (both legs, one frozen spec, SEPARATE fitted models): GradientBoostingRegressor(n_estimators=200, learning_rate=0.05, max_depth=3, min_samples_leaf=20, subsample=0.8, random_state=7); refit annually (every 52 rebalance dates) on the EXPANDING train window; last anchor <= 2023-12-31; OOS predicted with final train-fitted model only.",
+    "L1 portfolio: decile L/S (top decile long, bottom decile short), equal weight, MIN_N=20; costs 10 bps/side turnover-based both legs (C4 convention).",
+    "L2 portfolio: top/bottom QUARTILE L/S (top 3 long / bottom 3 short, equal weight), ALL 12 instruments required (MIN_N=12); costs C2 tiered: 5 bps/side equity/index, 10 bps/side crypto, turnover-based vs prior weights.",
+    "L1 rebalance: last trading bar of each ISO week on the union of snapshot calendars. L2 rebalance: last trading bar of each ISO week on the SPY calendar; crypto reindexed to the same Fridays.",
+    "Rows with ANY NaN feature or forward return dropped (no imputation, no feature selection \u2014 pre-reg A.3).",
+    "First full-feature L1 row ~2020-01 (52w lag + 200d SMA + 12-month MOM12-1 warm-up; 13F first entry ~2019-05-16) \u2014 declared availability fact.",
+    "OOS window 2024-01-01..2026-08-07: 2024, 2025 complete; 2026 partial; 2027 empty -> 3-of-4-complete-year rule cannot pass before end-2027 (pre-registered structural constraint).",
+    "Null (per leg): 1000x permutation of the leg's weekly factor return series (block-shuffle on weekly rebalance dates), OOS-mean statistic, RNG seed 7.",
+    "C5 verdict rule (Q17): BOTH legs must pass the full bar."
+  ]
+}
