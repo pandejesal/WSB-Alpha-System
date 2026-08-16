@@ -1,0 +1,50 @@
+{
+  "us_momentum_top5": {
+    "schema_passed": true,
+    "top_5_momentum": [
+      [
+        "UNH",
+        0.28502509784975083
+      ],
+      [
+        "AAPL",
+        0.2789856597191491
+      ],
+      [
+        "JNJ",
+        0.182981992310272
+      ],
+      [
+        "XOM",
+        0.16895879029303784
+      ],
+      [
+        "V",
+        0.11824895145910874
+      ]
+    ]
+  },
+  "spy_sma200": {
+    "schema_passed": true,
+    "sma200": 702.7530743408203,
+    "close": 776.3400268554688
+  },
+  "spy_rsi2": {
+    "schema_passed": true,
+    "rsi2": 77.7780713574832
+  },
+  "btc_vol_target_sma100": {
+    "schema_passed": true,
+    "realized_vol": 0.21794166344579127,
+    "sma100": 66700.019375,
+    "close": 63087.421875
+  },
+  "dual_momentum": {
+    "schema_passed": true,
+    "momentum_SPY": -0.0028827704688862976,
+    "momentum_QQQ": -0.05011319105985679
+  },
+  "flagship_portfolio_v1": {
+    "schema_passed": true
+  }
+}

@@ -1,0 +1,45 @@
+id: dual_momentum
+name: Dual Momentum SPY/QQQ with AGG as cash
+family: momentum
+venue: alpaca
+universe: SPY, QQQ (equity momentum legs), AGG (bond aggregate = "cash" when momentum negative)
+indicators:
+  - momentum: 1-month (21 trading day) return, skipping last 21 trading days, on SPY and QQQ
+parameters:
+  lookback_days: 21
+  skip_days: 21
+  warmup_days: 400
+  rebalance: monthly (last trading day of month)
+  exec_delay: 1
+entry_rules:
+  - each month-end: compute 1m momentum (skip 1m) of SPY and QQQ
+  - if max(momentum_SPY, momentum_QQQ) > 0: go 100% into the stronger of SPY/QQQ
+  - if both <= 0: go 100% AGG (bond aggregate) - capital preservation mode
+exit_rules:
+  - monthly re-check; switch legs when the momentum ranking changes
+  - drift-based rebalance (>5% deviation) between month-ends
+position_sizing:
+  - $100 account: 100% in one of SPY/QQQ/AGG at a time; fractional shares
+  - min $1; no margin; no PDT (monthly holds)
+fee_model:
+  - commission: $0 (Alpaca)
+  - slippage: 0.05% per side
+  - settlement: T+1 cash; min $1
+benchmark_result:
+  - benchmark: SPY buy-and-hold, same engine, same window
+  - full: CAGR 8.5%, Sharpe 0.58 (vs SPY 0.85), Sortino 0.63, maxDD -28.5% (vs SPY -33.7%)
+  - oos_2023plus: CAGR 13.2%, Sharpe 0.91 (vs SPY 1.47), maxDD -15.2%
+  - 161 trades / 80 round trips, win rate 62.5%
+  - FAILS gate 3 (OOS Sharpe 0.91 < 1.0) and gate 4 (full Sharpe 0.58 < 0.85)
+robustness_notes:
+  - AGG "cash" leg drags returns (bonds barely beat cash in the window)
+  - underperforms simple SPY buy-hold on risk-adjusted basis in this period
+  - survives as a behavioral tool (forces selling after sustained downtrends), not an alpha source
+feasibility_at_100:
+  - monthly decision, 3 liquid ETFs, fractional shares, $0 fees, no PDT
+  - ideal for a beginner with $100 who wants forced-discipline selling
+risks:
+  - fails gates 3 and 4 - no risk-adjusted edge over buy-hold
+  - bond leg offers low return in a window where cash-like assets lagged equities
+  - switching legs monthly in chop can whipsaw
+  - outperformance is regime-dependent (works in strong trends, not sideways)

@@ -1,0 +1,40 @@
+id: spy_sma200
+name: SPY SMA-200 Trend Timing
+family: trend
+venue: alpaca
+universe: SPY (single liquid index ETF)
+indicators:
+  - sma200: 200-day simple moving average of SPY close
+parameters:
+  window: 200
+  exec_delay: 1
+  drift_rebal: 0.05
+entry_rules:
+  - enter all-in SPY when SPY close > SMA(200) (transition from below to above)
+exit_rules:
+  - exit to cash when SPY close < SMA(200) (transition from above to below)
+  - single position, full notional
+position_sizing:
+  - $100 account: full $100 in SPY when in market, 100% cash when flat
+  - min order $1; no margin; no PDT
+fee_model:
+  - commission: $0 (Alpaca)
+  - slippage: 0.05% per side
+  - settlement: T+1 cash; min $1
+benchmark_result:
+  - benchmark: SPY buy-and-hold, same engine, same window
+  - full: CAGR 9.3%, Sharpe 0.84 (vs SPY 0.85), Sortino 0.94, maxDD -22.7% (vs SPY -33.7%)
+  - oos_2023plus: CAGR 16.3%, Sharpe 1.32 (vs SPY 1.47), maxDD -11.6%
+  - 63 trades / 31 round trips, win rate 41.9%
+  - fails gate 4 narrowly: full Sharpe 0.84 vs SPY 0.85
+robustness_notes:
+  - parameter sweep window in {150,200,250}: OOS Sharpe 1.15-1.66 (150 best OOS)
+  - strongest drawdown reduction per dollar of the equity set
+feasibility_at_100:
+  - single SPY position; 2-4 trades/year; $0 commissions; long holds
+  - best drawdown control for a $100 account
+risks:
+  - whipsaw losses in sideways chop (win rate ~42%)
+  - misses early bounces (waits for close above 200-day MA)
+  - all eggs in one index; no sector diversification
+  - does not beat buy-and-hold on full-period risk-adjusted Sharpe
