@@ -3,6 +3,11 @@
 Paper trading sandbox script.
 Downloads current day pricing, generates signals, tracks simulated portfolio,
 and saves results/logs for the dashboard sandbox interface.
+
+E-6 fix (audit): this sandbox is mark-to-model simulation — fills are NOT
+broker fills and P&L is model-based. All artifacts are labeled TOY_SANDBOX /
+simulated so dashboards and reports can exclude them from paper-performance
+reporting.
 """
 import os
 import json
@@ -14,6 +19,22 @@ from datetime import datetime, timedelta, timezone
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+TOY_SANDBOX_LABEL = "TOY_SANDBOX"
+
+
+def _new_sandbox_state():
+    """Fresh sandbox state carrying the E-6 exclusion label."""
+    return {
+        "mode": TOY_SANDBOX_LABEL,
+        "simulated": True,
+        "days_completed": 0,
+        "last_run": None,
+        "portfolio_value": 100.0,
+        "trades": [],
+        "realized_pnl": 0.0,
+        "cash": 100.0,
+    }
 
 def main():
     parser = argparse.ArgumentParser(description="Paper Trading Sandbox")
@@ -102,8 +123,10 @@ def main():
         if os.path.exists(state_file):
             with open(state_file, "r") as f:
                 state = json.load(f)
+            state.setdefault("mode", TOY_SANDBOX_LABEL)
+            state.setdefault("simulated", True)
         else:
-            state = {"days_completed": 0, "last_run": None, "portfolio_value": 100.0, "trades": [], "realized_pnl": 0.0, "cash": 100.0}
+            state = _new_sandbox_state()
 
         from src.risk.position_sizing import PositionSizer
 
@@ -181,6 +204,8 @@ def main():
 
         # Save signals log
         signal_log = {
+            "mode": TOY_SANDBOX_LABEL,
+            "simulated": True,
             "day": current_day,
             "date": pd.Timestamp.now().strftime("%Y-%m-%d"),
             "signals": signals,

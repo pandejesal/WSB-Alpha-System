@@ -7,6 +7,11 @@ import yfinance as yf
 
 from src.alpha.indicators import compute_indicators, compute_regime_returns
 
+# E-1 audit marker (2026-08-17 build): this engine is retained for reference
+# only. Reporting/validation MUST bind src.backtest.run_historic_backtest —
+# see validation.py TEARSHEET_ENGINE guard.
+LEGACY_REFERENCE_ONLY = True
+
 
 def evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="total_return"):
     trades = []
@@ -25,9 +30,17 @@ def evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="total
         if entry_idx >= len(ind_df):
             continue
 
+        # E-2 fix (audit): decide on the last CLOSED bar (t), fill at Open[t+1].
+        # The old code gated AND filled on the same bar's Close — lookahead:
+        # the fill price was known before the decision could have been made.
+        decision_idx = entry_idx - 1
+        if decision_idx < 0:
+            continue
+        decision_date = ind_df.index[decision_idx]
+
         entry_date = ind_df.index[entry_idx]
-        entry_px = ind_df["Close"].iloc[entry_idx]
-        entry_row = ind_df.iloc[entry_idx]
+        entry_px = ind_df["Open"].iloc[entry_idx]
+        entry_row = ind_df.iloc[decision_idx]
 
         spy_entry_idx = spy_close.index.searchsorted(entry_date, side="left")
         if spy_entry_idx >= len(spy_close):
@@ -90,9 +103,14 @@ def evaluate_strategy_on_data(posts_df, stock_dfs, spy_close, return_type="total
         longterm_holding_days = 252 if gk_vol < 0.30 else 10
 
         # S&P 500 Market Regime Detection for Auto-Regime Switching
-        spy_window = spy_close.iloc[max(0, spy_entry_idx-19):spy_entry_idx+1]
-        if spy_entry_idx >= 20:
-            spy_ret_20d = (spy_entry_px - spy_close.iloc[spy_entry_idx-20]) / spy_close.iloc[spy_entry_idx-20]
+        # (E-2: window ends at the decision-bar close; no entry-bar info)
+        spy_decision_idx = spy_close.index.searchsorted(decision_date, side="right")
+        if spy_decision_idx >= len(spy_close):
+            spy_decision_idx = len(spy_close) - 1
+        spy_decision_px = spy_close.iloc[max(0, spy_decision_idx - 1)]
+        if spy_decision_idx >= 20:
+            spy_ret_20d = (spy_decision_px - spy_close.iloc[spy_decision_idx - 20]) / spy_close.iloc[spy_decision_idx - 20]
+            spy_window = spy_close.iloc[max(0, spy_decision_idx - 19):spy_decision_idx]
             spy_pct_rets = spy_window.pct_change().dropna()
             spy_vol_20d = spy_pct_rets.std() * np.sqrt(252)
         else:

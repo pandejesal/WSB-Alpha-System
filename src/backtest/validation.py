@@ -16,6 +16,19 @@ from src.alpha import (
     indicators,
 )
 
+# E-1 fix (audit): the tearsheet/reporting block previously rebound to the
+# legacy engine (src.backtest.legacy_backtest), so the weekly report mixed
+# engines — permutation p-values from the honest T+1 engine, tearsheet numbers
+# from the same-bar-close engine. The tearsheet must use the SAME engine as
+# the permutation tests. Loud-fail guard: if the binding is ever pointed back
+# at a legacy/stub engine, fail before producing a report.
+TEARSHEET_ENGINE = rb
+if getattr(TEARSHEET_ENGINE, "LEGACY_REFERENCE_ONLY", False):
+    raise RuntimeError(
+        "E-1: tearsheet engine rebound to legacy engine — reporting must use "
+        "run_historic_backtest (fills at Open[t+1])"
+    )
+
 NUM_PERMUTATIONS = 200
 
 def load_base_data():
@@ -332,9 +345,7 @@ def main():
         import pandas as pd
         import quantstats as qs
 
-        import src.backtest.legacy_backtest as rb
-
-        real_trades = rb.run_backtest(custom_posts_df=posts_df, stock_dfs_preloaded=stock_dfs, spy_close_preloaded=spy_close)
+        real_trades = TEARSHEET_ENGINE.run_backtest(custom_posts_df=posts_df, stock_dfs_preloaded=stock_dfs, spy_close_preloaded=spy_close)
         if len(real_trades) > 0:
             real_trades_sorted = real_trades.sort_values(by="post_date").reset_index(drop=True)
             returns_series = real_trades_sorted.groupby('post_date')['return'].sum()
