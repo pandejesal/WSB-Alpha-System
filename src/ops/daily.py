@@ -16,7 +16,19 @@ from src.ops.signals import (
 )
 
 # Constants
-MOMENTUM_UNIVERSE = ["AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]
+# ~100-name liquid US large-cap universe (S&P 100 style; uppercase, no ADRs/penny names)
+MOMENTUM_UNIVERSE = [
+    "AAPL", "MSFT", "AMZN", "NVDA", "GOOGL", "GOOG", "META", "TSLA", "AVGO", "JPM",
+    "V", "WMT", "XOM", "UNH", "MA", "PG", "HD", "COST", "JNJ", "ORCL",
+    "ABBV", "MRK", "CVX", "BAC", "KO", "PEP", "AMD", "ADBE", "NFLX", "CRM",
+    "LIN", "TMO", "ACN", "MCD", "PFE", "CSCO", "ABT", "IBM", "QCOM", "INTU",
+    "DIS", "CAT", "GE", "AMGN", "TXN", "NOW", "AXP", "RTX", "SPGI", "PM",
+    "COP", "UNP", "GS", "NEE", "MS", "LLY", "HON", "ISRG", "LOW", "TJX",
+    "BKNG", "BLK", "BSX", "VZ", "PLD", "AMAT", "LMT", "MDT", "ADP", "C",
+    "PGR", "T", "CB", "DE", "MMC", "SBUX", "SYK", "MDLZ", "GILD", "ADI",
+    "DHR", "MO", "BA", "EL", "CMCSA", "CL", "CI", "ETN", "WM", "NKE",
+    "SO", "CVS", "APD", "EMR", "F", "GD", "USB", "TGT", "FDX", "GPN"
+]
 
 def load_yaml(filepath):
     if not os.path.exists(filepath):
