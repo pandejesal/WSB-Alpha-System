@@ -1,8 +1,5 @@
 import yfinance as yf
-import pandas as pd
-import json
 import logging
-import os
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
