@@ -12,7 +12,9 @@ class GeminiSkillEngine:
     def __init__(self):
         # We need an API key for GenAI. Normally we'd get this from os.environ
         # The prompt says: "The user has a Google AI Pro Plan linked to AI Studio"
-        self.api_key = os.environ.get("GEMINI_API_KEY", "mock_key")
+        self.api_key = os.environ.get("GEMINI_API_KEY")
+        if not self.api_key:
+            raise ValueError("GEMINI_API_KEY is not set. Real API key is required.")
         self.client = genai.Client(api_key=self.api_key)
         self.model_name = os.environ.get("GEMINI_MODEL", "gemini-3.5-flash")
         self.cached_content = None
@@ -67,8 +69,7 @@ class GeminiSkillEngine:
         try:
             self.cached_content = self._create_context_cache(system_instruction)
         except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
-            # If we don't have an API key or hit an error, we can't actually hit the cache endpoint in mock
-            print(f"Warning: Failed to create cache (expected in mock environment without valid key). Error: {e}")
+            print(f"Warning: Failed to create cache. Error: {e}")
             return
 
         print("Starting optimization loop...")
