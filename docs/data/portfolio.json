@@ -1,14 +1,79 @@
 {
-  "last_updated": "2026-08-14T21:11:51Z",
-  "equity": 100000.0,
+  "last_updated": "2026-08-17T21:11:38Z",
+  "equity": 99996.3,
   "initial_capital": 100000.0,
-  "total_pnl": 0.0,
-  "total_pnl_pct": 0.0,
-  "daily_pnl": 0.0,
-  "daily_pnl_pct": 0.0,
+  "total_pnl": -3.6999999999970896,
+  "total_pnl_pct": -0.0036999999999953737,
+  "daily_pnl": -3.6999999999970896,
+  "daily_pnl_pct": -0.0036999999999953737,
   "win_rate": 0.0,
   "total_trades": 0,
-  "open_positions": [],
+  "open_positions": [
+    {
+      "ticker": "AAPL",
+      "qty": 6.0,
+      "entry_price": 305.798333,
+      "current_price": 305.2505,
+      "unrealized_pl": -3.286998,
+      "side": "buy"
+    },
+    {
+      "ticker": "AGG",
+      "qty": 0.205278291,
+      "entry_price": 97.38,
+      "current_price": 97.2286,
+      "unrealized_pl": -0.031079,
+      "side": "buy"
+    },
+    {
+      "ticker": "AMD",
+      "qty": 0.00776325,
+      "entry_price": 513.96,
+      "current_price": 506.1999,
+      "unrealized_pl": -0.060244,
+      "side": "buy"
+    },
+    {
+      "ticker": "ARM",
+      "qty": 0.014,
+      "entry_price": 285.0,
+      "current_price": 272.4,
+      "unrealized_pl": -0.1764,
+      "side": "buy"
+    },
+    {
+      "ticker": "INTC",
+      "qty": 0.038380146,
+      "entry_price": 103.96,
+      "current_price": 103.6199,
+      "unrealized_pl": -0.013053,
+      "side": "buy"
+    },
+    {
+      "ticker": "MU",
+      "qty": 0.00399,
+      "entry_price": 1000.0,
+      "current_price": 1010.0,
+      "unrealized_pl": 0.0399,
+      "side": "buy"
+    },
+    {
+      "ticker": "PANW",
+      "qty": 0.010410958,
+      "entry_price": 383.25,
+      "current_price": 375.76,
+      "unrealized_pl": -0.077978,
+      "side": "buy"
+    },
+    {
+      "ticker": "SPY",
+      "qty": 0.025751349,
+      "entry_price": 776.27,
+      "current_price": 772.51,
+      "unrealized_pl": -0.096825,
+      "side": "buy"
+    }
+  ],
   "regime": "normal",
   "regime_gk_vol": 0.35
 }
