@@ -139,3 +139,64 @@ def get_dual_momentum_signal(data: pd.DataFrame, tickers: list[str] = None) -> d
         signal_data["signal"] = "AGG"
 
     return signal_data
+
+
+import os
+import time
+import random
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
+from yfinance.exceptions import YFRateLimitError
+
+_orig_download = yf.download
+
+# Use a single persistent Session across calls
+_shared_session = None
+
+def _get_shared_session():
+    global _shared_session
+    if _shared_session is None:
+        _shared_session = requests.Session()
+        adapter_retries = int(os.environ.get("OPS_FETCH_ADAPTER_RETRIES", "3"))
+        adapter_backoff = float(os.environ.get("OPS_FETCH_ADAPTER_BACKOFF", "2.0"))
+
+        retry_strategy = Retry(
+            total=adapter_retries,
+            connect=adapter_retries,
+            read=adapter_retries,
+            backoff_factor=adapter_backoff,
+            status_forcelist=[429, 500, 502, 503, 504],
+            allowed_methods=["HEAD", "GET", "OPTIONS"]
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        _shared_session.mount("https://", adapter)
+        _shared_session.mount("http://", adapter)
+    return _shared_session
+
+def _fetch_with_retry(*args, **kwargs):
+    retries = int(os.environ.get("OPS_FETCH_RETRIES", "4"))
+    backoff_base = float(os.environ.get("OPS_FETCH_BACKOFF_BASE", "30.0"))
+
+    kwargs["session"] = _get_shared_session()
+
+    attempt = 1
+    while attempt <= retries:
+        try:
+            return _orig_download(*args, **kwargs)
+        except Exception as e:
+            err_name = type(e).__name__
+            is_transient = err_name in ["YFRateLimitError", "ConnectionError", "ReadTimeout"]
+            if not is_transient or attempt == retries:
+                raise e
+
+            delay = backoff_base * (2 ** (attempt - 1))
+            jitter = delay * 0.2
+            delay += random.uniform(-jitter, jitter)
+
+            print(f"Fetch failed (attempt {attempt}), waited {delay:.2f}s, error class: {err_name}")
+
+            time.sleep(max(0, delay))
+            attempt += 1
+
+yf.download = _fetch_with_retry
