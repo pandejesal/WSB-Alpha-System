@@ -467,7 +467,6 @@ def test_v8_json_parse(monkeypatch):
     assert df.iloc[0]['Close'] == 426.65
     assert df.iloc[1]['Close'] == 422.14
 
-
 from src.ops.signals import get_us_momentum_top5_signal, get_dual_momentum_signal
 from src.ops.daily import MOMENTUM_UNIVERSE
 import numpy as np
@@ -539,3 +538,63 @@ def test_momentum_universe_size():
     assert len(MOMENTUM_UNIVERSE) >= 100
     assert len(set(MOMENTUM_UNIVERSE)) == len(MOMENTUM_UNIVERSE)
     assert all(t == t.upper() for t in MOMENTUM_UNIVERSE)
+
+@patch("src.ops.signals.fetch_daily_yahoo_v8")
+@patch("src.ops.signals._fetch_single_stooq")
+@patch("src.ops.signals._orig_download")
+def test_momentum_signals_with_hybrid_shape(mock_orig_download, mock_fetch_single_stooq, mock_fetch_v8, tmp_path, monkeypatch):
+    from src.ops.daily import MOMENTUM_UNIVERSE
+    tickers = ["SPY", "QQQ", "AGG", "BTC-USD"] + MOMENTUM_UNIVERSE
+    mock_fetch_v8.return_value = {t: None for t in tickers}
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("OPS_FETCH_RETRIES", "1")
+    os.makedirs("strategies", exist_ok=True)
+    os.makedirs("docs/data/portfolio", exist_ok=True)
+    for name in ["flagship_portfolio_v1", "us_momentum_top5", "spy_sma200", "spy_rsi2", "btc_vol_target_sma100", "dual_momentum"]:
+        with open(f"strategies/{name}.yaml", "w") as f:
+             f.write("id: " + name)
+    with open("docs/data/portfolio/monthly_returns.csv", "w") as f:
+         f.write(",us_momentum_top5,spy_sma200,spy_rsi2,btc_vol_target_sma100,dual_momentum\n")
+
+    recent_date = pd.Timestamp.now().normalize()
+    dates = pd.date_range(end=recent_date, periods=200)
+
+    frames = []
+    for t in tickers:
+        df = pd.DataFrame({'Close': [100.0 - i*0.1 for i in range(200)], 'Open': [100.0]*200, 'High': [100.0]*200, 'Low': [100.0]*200, 'Volume': [1000]*200}, index=dates)
+        if t == "AAPL":
+            df["Close"] = [100.0 + i*0.1 for i in range(200)]
+        elif t == "MSFT":
+            df["Close"] = [100.0 + i*0.2 for i in range(200)]
+
+        df.index.name = 'Date'
+        df.columns = pd.MultiIndex.from_product([df.columns, [t]])
+        frames.append(df)
+
+    mock_df = pd.concat(frames, axis=1)
+    mock_df = mock_df.sort_index(axis=1)
+
+    mock_fetch_single_stooq.side_effect = ValueError("No data")
+    mock_orig_download.return_value = mock_df
+
+    try:
+        run_check_mode()
+    except SystemExit as e:
+        assert e.code == 0
+
+    with open("docs/data/ops/plan.json", "r") as f:
+        plan = json.load(f)
+
+    assert "STALE_DATA" not in plan.get("blocked", [])
+
+    sleeves = plan.get("sleeves", [])
+    mom_sleeve = next((s for s in sleeves if s["id"] == "us_momentum_top5"), None)
+    assert mom_sleeve is not None
+    assert len(mom_sleeve["signal"]["top5"]) >= 5
+    assert "MSFT" in mom_sleeve["signal"]["top5"]
+
+    dual_mom_sleeve = next((s for s in sleeves if s["id"] == "dual_momentum"), None)
+    assert dual_mom_sleeve is not None
+    assert dual_mom_sleeve["signal"]["leg"] == "AGG"
+    assert dual_mom_sleeve["signal"]["mom_spy"] < 0
+    assert dual_mom_sleeve["signal"]["mom_qqq"] < 0
