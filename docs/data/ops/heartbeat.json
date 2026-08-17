@@ -1,10 +1,8 @@
 {
-  "run_id": "2026-08-17T12:06:17Z-53b22fe",
-  "ts": "2026-08-17T12:06:17Z",
+  "run_id": "2026-08-17T12:53:24Z-978b7d2",
+  "ts": "2026-08-17T12:53:24Z",
   "mode": "check",
   "result": "ok",
   "orders_submitted": 0,
-  "alerts": [
-    "WARN: Failed to fetch market data."
-  ]
+  "alerts": []
 }
