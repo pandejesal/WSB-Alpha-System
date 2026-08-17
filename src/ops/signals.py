@@ -142,16 +142,17 @@ def get_dual_momentum_signal(data: pd.DataFrame, tickers: list[str] = None) -> d
 
 
 import os
+import io
 import time
 import random
 import requests
+import pandas as pd
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 from yfinance.exceptions import YFRateLimitError
 
 _orig_download = yf.download
 
-# Use a single persistent Session across calls
 _shared_session = None
 
 def _get_shared_session():
@@ -174,19 +175,17 @@ def _get_shared_session():
         _shared_session.mount("http://", adapter)
     return _shared_session
 
-def _fetch_with_retry(*args, **kwargs):
+def _retry_wrapper(func, *args, **kwargs):
     retries = int(os.environ.get("OPS_FETCH_RETRIES", "4"))
     backoff_base = float(os.environ.get("OPS_FETCH_BACKOFF_BASE", "30.0"))
-
-    kwargs["session"] = _get_shared_session()
 
     attempt = 1
     while attempt <= retries:
         try:
-            return _orig_download(*args, **kwargs)
+            return func(*args, **kwargs)
         except Exception as e:
             err_name = type(e).__name__
-            is_transient = err_name in ["YFRateLimitError", "ConnectionError", "ReadTimeout"]
+            is_transient = err_name in ["YFRateLimitError", "ConnectionError", "ReadTimeout", "HTTPError"]
             if not is_transient or attempt == retries:
                 raise e
 
@@ -199,4 +198,91 @@ def _fetch_with_retry(*args, **kwargs):
             time.sleep(max(0, delay))
             attempt += 1
 
-yf.download = _fetch_with_retry
+def _fetch_single_stooq(ticker: str):
+    session = _get_shared_session()
+    if ticker == 'BTC-USD':
+        stooq_sym = 'btcusd'
+    else:
+        stooq_sym = ticker.lower().replace('.', '-') + '.us'
+    url = f"https://stooq.com/q/d/l/?s={stooq_sym}&i=d"
+    headers = {"User-Agent": "Mozilla/5.0"}
+    resp = session.get(url, headers=headers, timeout=10)
+    resp.raise_for_status()
+    if 'Date,Open,High,Low,Close,Volume' not in resp.text:
+        raise ValueError(f"Invalid Stooq data or No data for {ticker}")
+    df = pd.read_csv(io.StringIO(resp.text), parse_dates=['Date'])
+    df.set_index('Date', inplace=True)
+    df = df.sort_index()
+    return df
+
+def fetch_daily_stooq(tickers: list[str]) -> dict:
+    results = {}
+    for t in tickers:
+        try:
+            results[t] = _retry_wrapper(_fetch_single_stooq, t)
+        except Exception as e:
+            print(f"Stooq fetch failed for {t}: {e}")
+            results[t] = None
+    return results
+
+def _hybrid_download(tickers, *args, **kwargs):
+    if isinstance(tickers, str):
+        tickers_list = [tickers]
+        is_string = True
+    else:
+        tickers_list = list(tickers)
+        is_string = False
+
+    if not tickers_list:
+        return pd.DataFrame()
+
+    stooq_data = fetch_daily_stooq(tickers_list)
+    failed_tickers = [t for t, df in stooq_data.items() if df is None or df.empty]
+
+    yf_data = {}
+    if failed_tickers:
+        kwargs["session"] = _get_shared_session()
+        try:
+            yf_df = _retry_wrapper(_orig_download, failed_tickers, *args, **kwargs)
+            if yf_df is not None and not yf_df.empty:
+                for t in failed_tickers:
+                    if isinstance(yf_df.columns, pd.MultiIndex):
+                        if ('Close', t) in yf_df.columns:
+                            try:
+                                df_t = yf_df.xs(t, level=1, axis=1)
+                                yf_data[t] = df_t
+                            except KeyError:
+                                pass
+                    else:
+                        if len(failed_tickers) == 1:
+                            yf_data[t] = yf_df
+        except Exception as e:
+            print(f"Fallback YF failed for {failed_tickers}: {e}")
+
+    frames = []
+    for t in tickers_list:
+        df = stooq_data.get(t)
+        if df is None or df.empty:
+            df = yf_data.get(t)
+
+        if df is not None and not df.empty:
+            cols = [c for c in ['Open', 'High', 'Low', 'Close', 'Volume'] if c in df.columns]
+            df = df[cols]
+            df.columns = pd.MultiIndex.from_product([df.columns, [t]])
+            if df.index.tz is not None:
+                df.index = df.index.tz_localize(None)
+            frames.append(df)
+
+    if not frames:
+        return pd.DataFrame()
+
+    combined = pd.concat(frames, axis=1)
+    combined = combined.sort_index()
+    combined.columns.names = ['Price', 'Ticker']
+
+    if is_string:
+        combined.columns = combined.columns.get_level_values(0)
+
+    return combined
+
+yf.download = _hybrid_download
