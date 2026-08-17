@@ -11,6 +11,8 @@ concurrency:
 jobs:
   daily-check:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -34,4 +36,4 @@ jobs:
           git config user.name "ops-bot"
           git config user.email "ops-bot@users.noreply.github.com"
           git add docs/data/ops/
-          git diff --quiet && git diff --staged --quiet || (git commit -m "ops: daily check run $(date +'%Y-%m-%d')" && git push origin HEAD:ops-phase-a-check-mode)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "ops: daily check run $(date +'%Y-%m-%d')" && git push origin HEAD:${GITHUB_REF_NAME})
