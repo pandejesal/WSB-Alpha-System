@@ -466,3 +466,76 @@ def test_v8_json_parse(monkeypatch):
     assert df.index[0] == pd.to_datetime(1660743000, unit='s')
     assert df.iloc[0]['Close'] == 426.65
     assert df.iloc[1]['Close'] == 422.14
+
+
+from src.ops.signals import get_us_momentum_top5_signal, get_dual_momentum_signal
+from src.ops.daily import MOMENTUM_UNIVERSE
+import numpy as np
+
+def _make_padded_mock_df(tickers, n_weekdays=200):
+    # Simulate the hybrid download output: equity rows NaN on BTC-style weekend padding
+    recent_date = pd.Timestamp.now().normalize()
+    weekdays = pd.date_range(end=recent_date, periods=n_weekdays, freq="B")
+    full_idx = pd.DatetimeIndex(
+        sorted(set(weekdays) | set(pd.date_range(end=recent_date, periods=14, freq="D")))
+    )
+    cols = [("Close", t) for t in tickers]
+    df = pd.DataFrame(index=full_idx, columns=pd.MultiIndex.from_tuples(cols))
+    df.columns.names = ["Price", "Ticker"]
+    for i, t in enumerate(tickers):
+        base = 100.0 + i * 5.0
+        series = pd.Series(base + np.arange(n_weekdays, dtype=float), index=weekdays)
+        df[("Close", t)] = series.reindex(full_idx)
+    return df
+
+def test_momentum_robust_to_padded_index():
+    tickers = ["AAPL", "MSFT", "NVDA", "JPM", "V", "WMT", "TSLA", "AMZN", "META", "GOOGL"]
+    df = _make_padded_mock_df(tickers)
+    mom = get_us_momentum_top5_signal(df, tickers)
+    assert "top_5" in mom
+    assert len(mom["top_5"]) == 5
+    assert len(mom["momenta"]) >= 5
+    assert all(m > 0 for m in mom["momenta"].values())
+
+def test_dual_momentum_robust_to_padded_index():
+    df = _make_padded_mock_df(["SPY", "QQQ"])
+    dm = get_dual_momentum_signal(df)
+    assert dm.get("momenta", {}).get("SPY", 0) > 0
+    assert dm.get("momenta", {}).get("QQQ", 0) > 0
+    assert dm.get("signal") in ("SPY", "QQQ")  # both positive -> risk-on leg, not AGG
+
+def test_momentum_data_unavailable_flagged(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    os.makedirs("strategies", exist_ok=True)
+    os.makedirs("docs/data/portfolio", exist_ok=True)
+    for name in ["flagship_portfolio_v1", "us_momentum_top5", "spy_sma200", "spy_rsi2", "btc_vol_target_sma100", "dual_momentum"]:
+        with open(f"strategies/{name}.yaml", "w") as f:
+             f.write("id: " + name)
+    with open("docs/data/portfolio/monthly_returns.csv", "w") as f:
+         f.write(",us_momentum_top5,spy_sma200,spy_rsi2,btc_vol_target_sma100,dual_momentum\n")
+
+    recent_date = pd.Timestamp.now().normalize()
+    # Only index/sleeve tickers present; NO momentum-universe names
+    fake_df = pd.DataFrame(
+        {'SPY': [100.0]*200, 'BTC-USD': [1000.0]*200, 'AGG': [100.0]*200, 'QQQ': [100.0]*200},
+        index=pd.date_range(end=recent_date, periods=200)
+    )
+    cols = [('Close', c) for c in fake_df.columns]
+    mock_df = pd.DataFrame(index=fake_df.index, columns=pd.MultiIndex.from_tuples(cols))
+    for c in fake_df.columns:
+        mock_df[('Close', c)] = fake_df[c]
+
+    with patch("src.ops.daily.yf.download", return_value=mock_df):
+        run_check_mode()
+
+    with open("docs/data/ops/plan.json", "r") as f:
+        plan = json.load(f)
+    assert "us_momentum_top5" in plan["data_unavailable"]
+    sleeve = next(s for s in plan["sleeves"] if s["id"] == "us_momentum_top5")
+    assert sleeve["signal"]["top5"] == []
+    assert sleeve["targets"] == []
+
+def test_momentum_universe_size():
+    assert len(MOMENTUM_UNIVERSE) >= 100
+    assert len(set(MOMENTUM_UNIVERSE)) == len(MOMENTUM_UNIVERSE)
+    assert all(t == t.upper() for t in MOMENTUM_UNIVERSE)

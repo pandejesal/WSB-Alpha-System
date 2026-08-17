@@ -10,24 +10,24 @@ def get_us_momentum_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
          return signal_data
 
     closes = data['Close'] if 'Close' in data else data
-    if len(closes) > 147:
-         current_idx = -1
-         skip_idx = current_idx - 21
-         lookback_idx = skip_idx - 126
 
-         momenta = {}
-         for t in tickers:
-             if t in closes and pd.notna(closes[t].iloc[skip_idx]) and pd.notna(closes[t].iloc[lookback_idx]):
-                 p_skip = closes[t].iloc[skip_idx]
-                 p_lookback = closes[t].iloc[lookback_idx]
-                 if p_lookback > 0:
-                     momenta[t] = float((p_skip / p_lookback) - 1)
+    momenta = {}
+    for t in tickers:
+        if t in closes:
+            s = closes[t].dropna()
+            if len(s) > 148:
+                p_skip = s.iloc[-22]
+                p_lookback = s.iloc[-148]
+                if p_lookback > 0:
+                    momenta[t] = float((p_skip / p_lookback) - 1)
 
-         sorted_mom = sorted(momenta.items(), key=lambda x: x[1], reverse=True)
-         signal_data["top_5"] = [t for t, _ in sorted_mom[:5]]
-         signal_data["momenta"] = {t: round(m, 4) for t, m in sorted_mom}
-    else:
-         signal_data["data_unavailable"] = True
+    if not momenta:
+        signal_data["data_unavailable"] = True
+        return signal_data
+
+    sorted_mom = sorted(momenta.items(), key=lambda x: x[1], reverse=True)
+    signal_data["top_5"] = [t for t, _ in sorted_mom[:5]]
+    signal_data["momenta"] = {t: round(m, 4) for t, m in sorted_mom}
 
     return signal_data
 
@@ -117,17 +117,15 @@ def get_dual_momentum_signal(data: pd.DataFrame, tickers: list[str] = None) -> d
 
     closes = data['Close'] if 'Close' in data else data
 
-    current_idx = -1
-    skip_idx = current_idx - 21
-    lookback_idx = skip_idx - 21
-
     momenta = {}
     for t in tickers:
-        if t in closes and pd.notna(closes[t].iloc[skip_idx]) and pd.notna(closes[t].iloc[lookback_idx]):
-            p_skip = closes[t].iloc[skip_idx]
-            p_lookback = closes[t].iloc[lookback_idx]
-            if p_lookback > 0:
-                momenta[t] = float((p_skip / p_lookback) - 1)
+        if t in closes:
+            s = closes[t].dropna()
+            if len(s) > 42:
+                p_skip = s.iloc[-22]
+                p_lookback = s.iloc[-43]
+                if p_lookback > 0:
+                    momenta[t] = float((p_skip / p_lookback) - 1)
 
     signal_data["momenta"] = {t: round(m, 4) for t, m in momenta.items()}
     spy_mom = momenta.get("SPY", -1)
@@ -257,8 +255,11 @@ def _fetch_single_yahoo_v8(ticker: str):
         return None
 
 def fetch_daily_yahoo_v8(tickers: list[str]) -> dict:
+    spacing = float(os.environ.get("OPS_V8_SPACING", "0.75"))
     results = {}
-    for t in tickers:
+    for i, t in enumerate(tickers):
+        if i > 0 and spacing > 0:
+            time.sleep(spacing)
         try:
             res = _retry_wrapper(_fetch_single_yahoo_v8, t)
             results[t] = res
