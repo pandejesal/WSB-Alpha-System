@@ -358,7 +358,7 @@ def _hybrid_download(tickers, *args, **kwargs):
         return pd.DataFrame()
 
     combined = pd.concat(frames, axis=1)
-    combined = combined.sort_index()
+    combined = combined.sort_index(axis=1)
     combined.columns.names = ['Price', 'Ticker']
 
     if is_string:

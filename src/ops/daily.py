@@ -16,18 +16,18 @@ from src.ops.signals import (
 )
 
 # Constants
-# ~100-name liquid US large-cap universe (S&P 100 style; uppercase, no ADRs/penny names)
+# Top ~100 US large-cap liquid equities (from S&P 100), no penny/ADR/REITs
 MOMENTUM_UNIVERSE = [
-    "AAPL", "MSFT", "AMZN", "NVDA", "GOOGL", "GOOG", "META", "TSLA", "AVGO", "JPM",
-    "V", "WMT", "XOM", "UNH", "MA", "PG", "HD", "COST", "JNJ", "ORCL",
-    "ABBV", "MRK", "CVX", "BAC", "KO", "PEP", "AMD", "ADBE", "NFLX", "CRM",
-    "LIN", "TMO", "ACN", "MCD", "PFE", "CSCO", "ABT", "IBM", "QCOM", "INTU",
-    "DIS", "CAT", "GE", "AMGN", "TXN", "NOW", "AXP", "RTX", "SPGI", "PM",
-    "COP", "UNP", "GS", "NEE", "MS", "LLY", "HON", "ISRG", "LOW", "TJX",
-    "BKNG", "BLK", "BSX", "VZ", "PLD", "AMAT", "LMT", "MDT", "ADP", "C",
-    "PGR", "T", "CB", "DE", "MMC", "SBUX", "SYK", "MDLZ", "GILD", "ADI",
-    "DHR", "MO", "BA", "EL", "CMCSA", "CL", "CI", "ETN", "WM", "NKE",
-    "SO", "CVS", "APD", "EMR", "F", "GD", "USB", "TGT", "FDX", "GPN"
+    "AAPL", "MSFT", "NVDA", "AMZN", "META", "GOOGL", "GOOG", "BRK-B", "LLY", "AVGO",
+    "JPM", "TSLA", "WMT", "UNH", "XOM", "V", "PG", "MA", "JNJ", "HD",
+    "COST", "MRK", "ABBV", "CVX", "CRM", "BAC", "KO", "NFLX", "AMD", "PEP",
+    "TMO", "LIN", "WFC", "DIS", "ADBE", "MCD", "CSCO", "ABT", "INTU", "QCOM",
+    "IBM", "GE", "CAT", "AMAT", "TXN", "DHR", "AXP", "PFE", "PM", "NOW",
+    "ISRG", "SYK", "SPGI", "HON", "BA", "COP", "RTX", "LMT", "NEE", "UPS",
+    "BLK", "GS", "MS", "MDT", "C", "SBUX", "BMY", "DE", "BKNG", "GILD",
+    "CVS", "INTC", "ADP", "CI", "MDLZ", "TJX", "CB", "MMC", "VRTX", "REGN",
+    "ADI", "ZTS", "BSX", "PGR", "FI", "KLAC", "SNPS", "CDNS", "ETN", "PANW",
+    "MU", "LRCX", "GPN", "TGT", "SLB", "MO", "USB", "PNC", "T", "VZ"
 ]
 
 def load_yaml(filepath):
@@ -135,15 +135,21 @@ def run_check_mode():
     targets = []
     if mom_data.get("data_unavailable"):
         plan_data["data_unavailable"].append("us_momentum_top5")
-    elif "top_5" in mom_data:
-        for t in mom_data["top_5"]:
-             targets.append({"symbol": t, "notional_pct": 0.2, "side": "buy", "drift_ok": True})
+        plan_data["sleeves"].append({
+            "id": "us_momentum_top5",
+            "signal": {"top5": [], "momentum_scores": {}},
+            "targets": []
+        })
+    else:
+        if "top_5" in mom_data:
+            for t in mom_data["top_5"]:
+                 targets.append({"symbol": t, "notional_pct": 0.2, "side": "buy", "drift_ok": True})
 
-    plan_data["sleeves"].append({
-        "id": "us_momentum_top5",
-        "signal": {"top5": mom_data.get("top_5", []), "momentum_scores": mom_data.get("momenta", {})},
-        "targets": targets
-    })
+        plan_data["sleeves"].append({
+            "id": "us_momentum_top5",
+            "signal": {"top5": mom_data.get("top_5", []), "momentum_scores": mom_data.get("momenta", {})},
+            "targets": targets
+        })
 
     # 2. spy_sma200
     if "SPY" in data['Close'] and not data['Close']['SPY'].dropna().empty:
