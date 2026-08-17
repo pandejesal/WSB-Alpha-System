@@ -1,3 +1,6 @@
+import json
+import requests
+from src.ops.signals import _fetch_single_yahoo_v8
 import os
 import json
 import sys
@@ -133,9 +136,11 @@ def test_btc_floor_logic(tmp_path, monkeypatch):
 
 from yfinance.exceptions import YFRateLimitError
 
+@patch("src.ops.signals.fetch_daily_yahoo_v8")
 @patch("src.ops.signals.fetch_daily_stooq")
 @patch("src.ops.signals._orig_download")
-def test_yf_fetch_retry_success(mock_orig_download, mock_fetch_stooq, tmp_path, monkeypatch):
+def test_yf_fetch_retry_success(mock_orig_download, mock_fetch_stooq, mock_fetch_v8, tmp_path, monkeypatch):
+    mock_fetch_v8.return_value = {t: None for t in ["SPY", "QQQ", "AGG", "BTC-USD", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]}
     mock_fetch_stooq.return_value = {t: None for t in ["SPY", "QQQ", "AGG", "BTC-USD", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]}
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPS_FETCH_RETRIES", "2")
@@ -167,9 +172,11 @@ def test_yf_fetch_retry_success(mock_orig_download, mock_fetch_stooq, tmp_path, 
         plan = json.load(f)
     assert "STALE_DATA" not in plan.get("blocked", [])
 
+@patch("src.ops.signals.fetch_daily_yahoo_v8")
 @patch("src.ops.signals.fetch_daily_stooq")
 @patch("src.ops.signals._orig_download")
-def test_yf_fetch_retry_exhausted(mock_orig_download, mock_fetch_stooq, tmp_path, monkeypatch, capsys):
+def test_yf_fetch_retry_exhausted(mock_orig_download, mock_fetch_stooq, mock_fetch_v8, tmp_path, monkeypatch, capsys):
+    mock_fetch_v8.return_value = {t: None for t in ["SPY", "QQQ", "AGG", "BTC-USD", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]}
     mock_fetch_stooq.return_value = {t: None for t in ["SPY", "QQQ", "AGG", "BTC-USD", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]}
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPS_FETCH_RETRIES", "2")
@@ -206,9 +213,11 @@ def test_yf_fetch_retry_exhausted(mock_orig_download, mock_fetch_stooq, tmp_path
     assert any("WARN" in alert for alert in hb.get("alerts", []))
 
 
+@patch("src.ops.signals.fetch_daily_yahoo_v8")
 @patch("src.ops.signals._fetch_single_stooq")
 @patch("src.ops.signals._orig_download")
-def test_stooq_fetch_success(mock_orig_download, mock_fetch_single_stooq, tmp_path, monkeypatch):
+def test_stooq_fetch_success(mock_orig_download, mock_fetch_single_stooq, mock_fetch_v8, tmp_path, monkeypatch):
+    mock_fetch_v8.return_value = {t: None for t in ["SPY", "QQQ", "AGG", "BTC-USD", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]}
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPS_FETCH_RETRIES", "1")
 
@@ -238,9 +247,11 @@ def test_stooq_fetch_success(mock_orig_download, mock_fetch_single_stooq, tmp_pa
         plan = json.load(f)
     assert "STALE_DATA" not in plan.get("blocked", [])
 
+@patch("src.ops.signals.fetch_daily_yahoo_v8")
 @patch("src.ops.signals._fetch_single_stooq")
 @patch("src.ops.signals._orig_download")
-def test_partial_availability(mock_orig_download, mock_fetch_single_stooq, tmp_path, monkeypatch):
+def test_partial_availability(mock_orig_download, mock_fetch_single_stooq, mock_fetch_v8, tmp_path, monkeypatch):
+    mock_fetch_v8.return_value = {t: None for t in ["SPY", "QQQ", "AGG", "BTC-USD", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]}
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPS_FETCH_RETRIES", "1")
 
@@ -280,9 +291,11 @@ def test_partial_availability(mock_orig_download, mock_fetch_single_stooq, tmp_p
     assert "STALE_DATA" not in plan.get("blocked", [])
     assert "spy_sma200" not in plan.get("data_unavailable", [])
 
+@patch("src.ops.signals.fetch_daily_yahoo_v8")
 @patch("src.ops.signals._fetch_single_stooq")
 @patch("src.ops.signals._orig_download")
-def test_all_fail(mock_orig_download, mock_fetch_single_stooq, tmp_path, monkeypatch):
+def test_all_fail(mock_orig_download, mock_fetch_single_stooq, mock_fetch_v8, tmp_path, monkeypatch):
+    mock_fetch_v8.return_value = {t: None for t in ["SPY", "QQQ", "AGG", "BTC-USD", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]}
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPS_FETCH_RETRIES", "1")
 
@@ -307,9 +320,11 @@ def test_all_fail(mock_orig_download, mock_fetch_single_stooq, tmp_path, monkeyp
 
     assert "STALE_DATA" in plan.get("blocked", [])
 
+@patch("src.ops.signals.fetch_daily_yahoo_v8")
 @patch("src.ops.signals._fetch_single_stooq")
 @patch("src.ops.signals._orig_download")
-def test_mixed_stooq_and_yf_success(mock_orig_download, mock_fetch_single_stooq, tmp_path, monkeypatch):
+def test_mixed_stooq_and_yf_success(mock_orig_download, mock_fetch_single_stooq, mock_fetch_v8, tmp_path, monkeypatch):
+    mock_fetch_v8.return_value = {t: None for t in ["SPY", "QQQ", "AGG", "BTC-USD", "AAPL", "MSFT", "GOOGL", "AMZN", "META", "TSLA", "NVDA", "JPM", "V", "WMT"]}
     monkeypatch.chdir(tmp_path)
     monkeypatch.setenv("OPS_FETCH_RETRIES", "1")
 
@@ -357,3 +372,97 @@ def test_mixed_stooq_and_yf_success(mock_orig_download, mock_fetch_single_stooq,
         plan = json.load(f)
 
     assert "STALE_DATA" not in plan.get("blocked", [])
+
+
+@patch("src.ops.signals.fetch_daily_yahoo_v8")
+@patch("src.ops.signals.fetch_daily_stooq")
+@patch("src.ops.signals._orig_download")
+def test_v8_short_circuits(mock_orig_download, mock_fetch_stooq, mock_fetch_v8, tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setenv("OPS_FETCH_RETRIES", "1")
+
+    os.makedirs("strategies", exist_ok=True)
+    os.makedirs("docs/data/portfolio", exist_ok=True)
+    for name in ["flagship_portfolio_v1", "us_momentum_top5", "spy_sma200", "spy_rsi2", "btc_vol_target_sma100", "dual_momentum"]:
+        with open(f"strategies/{name}.yaml", "w") as f:
+             f.write("id: " + name)
+    with open("docs/data/portfolio/monthly_returns.csv", "w") as f:
+         f.write(",us_momentum_top5,spy_sma200,spy_rsi2,btc_vol_target_sma100,dual_momentum\n")
+
+    recent_date = pd.Timestamp.now().normalize()
+    fake_df = pd.DataFrame({'Close': [100.0]*200, 'Open': [100.0]*200, 'High': [100.0]*200, 'Low': [100.0]*200, 'Volume': [1000]*200}, index=pd.date_range(end=recent_date, periods=200))
+    fake_df.index.name = 'Date'
+
+    def mock_v8(ticker_list):
+        return {t: fake_df.copy() for t in ticker_list}
+
+    mock_fetch_v8.side_effect = mock_v8
+
+    run_check_mode()
+
+    # V8 succeeded, so stooq and yf should not be called
+    assert mock_orig_download.call_count == 0
+    assert mock_fetch_stooq.call_count == 0
+
+    with open("docs/data/ops/plan.json", "r") as f:
+        plan = json.load(f)
+    assert "STALE_DATA" not in plan.get("blocked", [])
+
+class MockResponse:
+    def __init__(self, json_data, status_code=200):
+        self._json_data = json_data
+        self.status_code = status_code
+
+    def json(self):
+        return self._json_data
+
+    def raise_for_status(self):
+        pass
+
+def mock_get(url, *args, **kwargs):
+    # A realistic, but short payload
+    payload = {
+      "chart": {
+        "result": [
+          {
+            "meta": {
+              "currency": "USD",
+              "symbol": "SPY",
+            },
+            "timestamp": [
+              1660743000,
+              1660829400,
+              1660915800
+            ],
+            "indicators": {
+              "quote": [
+                {
+                  "close": [426.65, None, 422.14],
+                  "volume": [50000000, 45000000, 60000000],
+                  "open": [425.0, 426.0, 424.0],
+                  "high": [428.0, 427.0, 425.0],
+                  "low": [424.0, 423.0, 421.0]
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+    return MockResponse(payload)
+
+def test_v8_json_parse(monkeypatch):
+    monkeypatch.setattr("requests.Session.get", mock_get)
+
+    df = _fetch_single_yahoo_v8("SPY")
+
+    # 3 items, but one close is None (NaN in pandas), so it should be dropped.
+    assert df is not None
+    assert len(df) == 2
+    assert "Date" == df.index.name
+    assert "Close" in df.columns
+
+    # First date should be 2022-08-17 13:30:00 UTC -> naive
+    assert df.index[0] == pd.to_datetime(1660743000, unit='s')
+    assert df.iloc[0]['Close'] == 426.65
+    assert df.iloc[1]['Close'] == 422.14

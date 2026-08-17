@@ -198,6 +198,75 @@ def _retry_wrapper(func, *args, **kwargs):
             time.sleep(max(0, delay))
             attempt += 1
 
+
+def _fetch_single_yahoo_v8(ticker: str):
+    session = _get_shared_session()
+    # Upper case ticker as-is
+    url = f"https://query1.finance.yahoo.com/v8/finance/chart/{ticker.upper()}?range=2y&interval=1d"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36",
+        "Accept": "application/json"
+    }
+    resp = session.get(url, headers=headers, timeout=10)
+
+    # Transient errors should raise so _retry_wrapper can catch them
+    if resp.status_code in [429, 500, 502, 503, 504]:
+        resp.raise_for_status()
+
+    if resp.status_code != 200:
+        return None
+
+    try:
+        data = resp.json()
+    except Exception:
+        return None
+
+    try:
+        result = data.get("chart", {}).get("result", [])
+        if not result:
+            return None
+
+        timestamps = result[0].get("timestamp", [])
+        if not timestamps:
+            return None
+
+        quote = result[0].get("indicators", {}).get("quote", [{}])[0]
+
+        df = pd.DataFrame({
+            "Date": pd.to_datetime(timestamps, unit="s", utc=True),
+            "Open": quote.get("open", []),
+            "High": quote.get("high", []),
+            "Low": quote.get("low", []),
+            "Close": quote.get("close", []),
+            "Volume": quote.get("volume", [])
+        })
+
+        # Drop rows where Close is NaN
+        df = df.dropna(subset=["Close"])
+        if df.empty:
+            return None
+
+        df.set_index("Date", inplace=True)
+        # Convert timezone to naive
+        df.index = df.index.tz_localize(None)
+        # Sort index
+        df = df.sort_index()
+
+        return df
+    except Exception:
+        return None
+
+def fetch_daily_yahoo_v8(tickers: list[str]) -> dict:
+    results = {}
+    for t in tickers:
+        try:
+            res = _retry_wrapper(_fetch_single_yahoo_v8, t)
+            results[t] = res
+        except Exception as e:
+            print(f"Yahoo v8 fetch failed for {t}: {e}")
+            results[t] = None
+    return results
+
 def _fetch_single_stooq(ticker: str):
     session = _get_shared_session()
     if ticker == 'BTC-USD':
@@ -236,16 +305,25 @@ def _hybrid_download(tickers, *args, **kwargs):
     if not tickers_list:
         return pd.DataFrame()
 
-    stooq_data = fetch_daily_stooq(tickers_list)
-    failed_tickers = [t for t, df in stooq_data.items() if df is None or df.empty]
+    # Priority 1: Yahoo v8 chart API
+    v8_data = fetch_daily_yahoo_v8(tickers_list)
+    failed_v8_tickers = [t for t, df in v8_data.items() if df is None or df.empty]
 
+    # Priority 2: Stooq fallback
+    stooq_data = {}
+    failed_stooq_tickers = failed_v8_tickers.copy()
+    if failed_v8_tickers:
+        stooq_data = fetch_daily_stooq(failed_v8_tickers)
+        failed_stooq_tickers = [t for t, df in stooq_data.items() if df is None or df.empty]
+
+    # Priority 3: YF fallback
     yf_data = {}
-    if failed_tickers:
+    if failed_stooq_tickers:
         kwargs["session"] = _get_shared_session()
         try:
-            yf_df = _retry_wrapper(_orig_download, failed_tickers, *args, **kwargs)
+            yf_df = _retry_wrapper(_orig_download, failed_stooq_tickers, *args, **kwargs)
             if yf_df is not None and not yf_df.empty:
-                for t in failed_tickers:
+                for t in failed_stooq_tickers:
                     if isinstance(yf_df.columns, pd.MultiIndex):
                         if ('Close', t) in yf_df.columns:
                             try:
@@ -254,14 +332,16 @@ def _hybrid_download(tickers, *args, **kwargs):
                             except KeyError:
                                 pass
                     else:
-                        if len(failed_tickers) == 1:
+                        if len(failed_stooq_tickers) == 1:
                             yf_data[t] = yf_df
         except Exception as e:
-            print(f"Fallback YF failed for {failed_tickers}: {e}")
+            print(f"Fallback YF failed for {failed_stooq_tickers}: {e}")
 
     frames = []
     for t in tickers_list:
-        df = stooq_data.get(t)
+        df = v8_data.get(t)
+        if df is None or df.empty:
+            df = stooq_data.get(t)
         if df is None or df.empty:
             df = yf_data.get(t)
 
