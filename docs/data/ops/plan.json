@@ -1,66 +1,19 @@
 {
-  "run_id": "2026-08-16T19:54:22Z-local",
-  "date": "2026-08-16",
+  "run_id": "2026-08-17T10:51:21Z-2fff84f",
+  "date": "2026-08-17",
   "mode": "check",
-  "sleeves": [
-    {
-      "id": "us_momentum_top5",
-      "signal": {
-        "top5": [],
-        "momentum_scores": {}
-      },
-      "targets": []
-    },
-    {
-      "id": "spy_sma200",
-      "signal": {
-        "state": "IN",
-        "close": 776.3400268554688,
-        "sma200": 702.7530755615235
-      },
-      "targets": []
-    },
-    {
-      "id": "spy_rsi2",
-      "signal": {
-        "rsi2": 77.7780713574832,
-        "sma5": 774.060009765625,
-        "action": "EXIT"
-      },
-      "targets": []
-    },
-    {
-      "id": "btc_vol_target_sma100",
-      "signal": {
-        "exposure": 0.0,
-        "realized_vol": 0.21790071178739168,
-        "regime": "OFF"
-      },
-      "targets": []
-    },
-    {
-      "id": "dual_momentum",
-      "signal": {
-        "leg": "AGG",
-        "mom_spy": 0.0,
-        "mom_qqq": 0.0
-      },
-      "targets": []
-    }
-  ],
+  "sleeves": [],
   "portfolio": {
-    "weights": {
-      "us_momentum_top5": 0.038841,
-      "spy_sma200": 0.179413,
-      "spy_rsi2": 0.475395,
-      "btc_vol_target_sma100": 0.130187,
-      "dual_momentum": 0.176164
-    },
+    "weights": {},
     "rebalance_due": false,
     "btc_floor_applied": false,
     "below_min_notional": []
   },
-  "blocked": [],
+  "blocked": [
+    "STALE_DATA"
+  ],
   "data_unavailable": [],
-  "warnings": []
+  "warnings": [
+    "Failed to fetch data for all assets."
+  ]
 }
