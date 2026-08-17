@@ -1,4 +1,6 @@
 import json
+import re
+
 import pandas as pd
 
 with open('docs/data/backtest_report.json') as f:
@@ -51,7 +53,8 @@ if not trades.empty:
 
 for year in range(2019, 2027):
     mask = hist.index.year == year
-    if not mask.any(): continue
+    if not mask.any():
+        continue
 
     year_data = hist.loc[mask].copy()
     start_eq = year_data['equity'].iloc[0]
@@ -121,7 +124,6 @@ section += f'''
 - Regulatory fees approximated
 '''
 
-import re
 new_readme = re.sub(
     r'## Historical Backtest Results \(2019-2026\).*?(?=## Setup Instructions)',
     section + '\n',
