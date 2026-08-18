@@ -24,6 +24,11 @@ jobs:
         run: |
           pip install -r requirements.txt
 
+      - name: Write Heartbeat
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python src/ops/heartbeat.py --job ops_watch
+
       - name: Run Ops Watch
         env:
           PYTHONPATH: ${{ github.workspace }}

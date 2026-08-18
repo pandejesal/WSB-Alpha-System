@@ -2,7 +2,7 @@ name: Paper Trade Execution
 
 on:
   schedule:
-    - cron: '30 14 * * 0' # 14:30 UTC every Sunday (7-day cron as requested, engine logic maintained)
+    - cron: '30 14 * * *' # 14:30 UTC daily (7-day cron as requested, engine logic maintained)
   workflow_dispatch:
 
 permissions:
@@ -23,6 +23,11 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
+
+      - name: Write Heartbeat
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python src/ops/heartbeat.py --job paper_trade
 
       - name: Run Paper Executor
         env:
