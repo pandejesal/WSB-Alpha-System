@@ -104,3 +104,45 @@ class TelegramBot:
             return strategy_id in approved
         except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             return False
+
+    def send_alert(self, severity: str, text: str) -> bool:
+        """
+        Sends an alert formatted with severity ladder (INFO, WARN, CRITICAL).
+        """
+        severity = severity.upper()
+        if severity not in ("INFO", "WARN", "CRITICAL"):
+            severity = "INFO"
+
+        icons = {
+            "INFO": "ℹ️",
+            "WARN": "⚠️",
+            "CRITICAL": "🚨"
+        }
+        icon = icons[severity]
+
+        msg = f"{icon} <b>{severity}</b> {icon}\n\n{text}"
+        return self.send_message(msg)
+
+    def poll_commands(self, offset: int | None = None, timeout: int = 30) -> list:
+        """
+        Polls the /getUpdates endpoint for commands (/halt, /kill, /flat).
+        Returns a list of update objects to process.
+        """
+        if not self.bot_token:
+            return []
+
+        url = f"{self.base_url}/getUpdates"
+        params = {"timeout": timeout}
+        if offset is not None:
+            params["offset"] = offset
+
+        try:
+            res = requests.get(url, params=params, timeout=timeout + 5)
+            res.raise_for_status()
+            data = res.json()
+            if data.get("ok"):
+                return data.get("result", [])
+        except Exception as e:  # noqa: BLE001 - Fail gracefully on network errors
+            logger.error(f"Failed to poll Telegram updates: {e}")
+
+        return []
