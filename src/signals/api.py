@@ -1,13 +1,14 @@
-import pandas as pd
 import json
 import os
 import tempfile
-from typing import Dict
+
+import pandas as pd
 
 from .engine import run_signals
 from .schemas import SignalsReport
 
-def generate_signals(run_id: str, date: str, mode: str, market_data: Dict[str, pd.DataFrame]) -> SignalsReport:
+
+def generate_signals(run_id: str, date: str, mode: str, market_data: dict[str, pd.DataFrame]) -> SignalsReport:
     """Public API for generating signals and writing atomic artifacts."""
     report = run_signals(run_id, date, mode, market_data)
 

@@ -1,35 +1,19 @@
-name: Daily Paper Trading
+name: Paper Trade Execution
 
 on:
   schedule:
-    - cron: '55 20 * * 1-5'
+    - cron: '30 14 * * 1-5' # 14:30 UTC Mon-Fri
   workflow_dispatch:
-    inputs:
-      enabled:
-        description: 'Enable or disable paper trading'
-        required: false
-        default: 'true'
-        type: choice
-        options:
-          - 'true'
-          - 'false'
 
 permissions:
   contents: write
 
-concurrency:
-  group: docs-data-writers
-  cancel-in-progress: false
-
 jobs:
-  trade:
+  execute_plan:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          ref: main
-          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -37,141 +21,22 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Check if trading is enabled
         run: |
-          if [ "${{ github.event.inputs.enabled }}" = "false" ]; then
-            echo "Paper trading is DISABLED. Skipping."
-            exit 0
-          fi
+          pip install -r requirements.txt
 
-      - name: Execute Paper Trading
-        if: ${{ github.event.inputs.enabled != 'false' }}
+      - name: Run Paper Executor
         env:
-          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
-          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           PYTHONPATH: ${{ github.workspace }}
-        run: python -m src.execution.live_alpaca_executor --mode technical
-
-      - name: Save portfolio data for dashboard
-        if: ${{ github.event.inputs.enabled != 'false' }}
-        env:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
+          PAPER_TRADING_ENABLED: 'True'
+          LIVE_TRADING_ENABLED: 'False'
+        run: python scripts/run_paper_execution.py
+
+      - name: Commit Ops Data
         run: |
-          python -c "
-          import requests, json, os
-
-          headers = {
-              'APCA-API-KEY-ID': os.environ['ALPACA_API_KEY'],
-              'APCA-API-SECRET-KEY': os.environ['ALPACA_SECRET_KEY']
-          }
-
-          acct = requests.get('https://paper-api.alpaca.markets/v2/account', headers=headers).json()
-          positions = requests.get('https://paper-api.alpaca.markets/v2/positions', headers=headers).json()
-
-          state_file = 'docs/data/portfolio_state.json'
-          baseline = float(acct['equity'])
-
-          if os.path.exists(state_file):
-              with open(state_file, 'r') as f:
-                  state = json.load(f)
-                  baseline = state.get('baseline_equity', baseline)
-          else:
-              os.makedirs('docs/data', exist_ok=True)
-              with open(state_file, 'w') as f:
-                  json.dump({'baseline_equity': baseline}, f)
-
-          portfolio = {
-              'last_updated': '$(date -u +%Y-%m-%dT%H:%M:%SZ)',
-              'equity': float(acct['equity']),
-              'initial_capital': baseline,
-              'total_pnl': float(acct['equity']) - baseline,
-              'total_pnl_pct': (float(acct['equity']) / baseline - 1) * 100 if baseline > 0 else 0,
-              'daily_pnl': float(acct['equity']) - float(acct['last_equity']),
-              'daily_pnl_pct': (float(acct['equity']) / float(acct['last_equity']) - 1) * 100 if float(acct['last_equity']) > 0 else 0,
-              'win_rate': float(acct.get('win_rate', 0)),
-              'total_trades': int(acct.get('total_trades', 0)),
-              'open_positions': [
-                  {
-                      'ticker': p['symbol'],
-                      'qty': float(p['qty']),
-                      'entry_price': float(p['avg_entry_price']),
-                      'current_price': float(p['current_price']),
-                      'unrealized_pl': float(p['unrealized_pl']),
-                      'side': 'buy' if float(p['qty']) > 0 else 'sell'
-                  } for p in positions
-              ],
-              'regime': 'normal',
-              'regime_gk_vol': 0.35
-          }
-
-          os.makedirs('docs/data', exist_ok=True)
-          with open('docs/data/portfolio.json', 'w') as f:
-              json.dump(portfolio, f, indent=2)
-          "
-
-      - name: Save trade data for dashboard
-        if: ${{ github.event.inputs.enabled != 'false' }}
-        env:
-          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
-          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
-        run: |
-          python -c "
-          import requests, json, os
-
-          headers = {
-              'APCA-API-KEY-ID': os.environ['ALPACA_API_KEY'],
-              'APCA-API-SECRET-KEY': os.environ['ALPACA_SECRET_KEY']
-          }
-
-          orders_resp = requests.get(
-              'https://paper-api.alpaca.markets/v2/orders?status=closed&limit=50',
-              headers=headers, timeout=10
-          )
-
-          trades = []
-          if orders_resp.status_code == 200:
-              for o in orders_resp.json():
-                  if o.get('filled_avg_price') and o.get('filled_at'):
-                      trades.append({
-                          'id': o['id'][:8],
-                          'date': o['filled_at'][:10],
-                          'ticker': o['symbol'],
-                          'side': o['side'],
-                          'entry_price': float(o.get('filled_avg_price', 0)),
-                          'exit_price': float(o.get('filled_avg_price', 0)),
-                          'qty': float(o.get('filled_qty', 0)),
-                          'pnl': 0,
-                          'pnl_pct': 0,
-                          'regime': 'normal',
-                          'strategy': 'ensemble_confluence',
-                          'holding_days': 0
-                      })
-
-          trades_data = {
-              'trades': trades,
-              'summary': {
-                  'total_trades': len(trades),
-                  'avg_pnl': sum(t['pnl'] for t in trades) / max(len(trades), 1)
-              },
-              'updated_at': '$(date -u +%Y-%m-%dT%H:%M:%SZ)'
-          }
-
-          os.makedirs('docs/data', exist_ok=True)
-          with open('docs/data/trades.json', 'w') as f:
-              json.dump(trades_data, f, indent=2)
-          "
-
-      - name: Commit dashboard data
-        run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add docs/data/
-          if ! git diff-index --quiet HEAD; then
-            git commit -am "chore: update dashboard data from paper trading"
-            git pull --rebase --autostash origin main || (git checkout --theirs -- docs/data/ && git add docs/data/ && git rebase --continue)
-            git push origin main
-          fi
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/data/ops/*.json docs/data/ops/*.jsonl || true
+          git add config/ops_state.yaml || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ops): Paper execution state update" && git push origin HEAD:${GITHUB_REF_NAME})
