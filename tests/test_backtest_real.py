@@ -1,6 +1,8 @@
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+
 
 class TestRealBacktest(unittest.TestCase):
     def test_run_backtest_returns_dataframe(self):
@@ -64,12 +66,10 @@ class TestRealBacktest(unittest.TestCase):
     def test_slippage_reduces_returns(self):
         # We can mock entry and actual_entry diff
         # Since it's a fixed formula, we know entry_price + slippage is used
-        from src.backtest.run_historic_backtest import run_backtest
         # Hard to fully isolate without injection, but we can verify the code path logically.
         pass
 
     def test_illiquid_stocks_filtered(self):
-        from src.backtest.engines.vectorbt_engine import VectorBTEngine
         # We added ADV > $1M filter in VectorBT engine.
         pass
 
