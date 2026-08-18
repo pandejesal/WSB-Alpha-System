@@ -1,13 +1,15 @@
+
 import pandas as pd
-from typing import Dict, Any, List
+
+from src.ops.signals import (
+    get_btc_vol_target_sma100_signal,
+    get_spy_rsi2_signal,
+    get_spy_sma200_signal,
+    get_us_momentum_top5_signal,
+)
 
 from .schemas import SignalsReport, SleeveSignal
-from src.ops.signals import (
-    get_us_momentum_top5_signal,
-    get_spy_sma200_signal,
-    get_spy_rsi2_signal,
-    get_btc_vol_target_sma100_signal,
-)
+
 
 class SignalEngine:
     def __init__(self):
@@ -21,7 +23,7 @@ class SignalEngine:
             "breakout_burst"
         ]
 
-    def _generate_momentum_top5(self, date: pd.Timestamp, data: Dict[str, pd.DataFrame]) -> SleeveSignal:
+    def _generate_momentum_top5(self, date: pd.Timestamp, data: dict[str, pd.DataFrame]) -> SleeveSignal:
         if not data:
             return SleeveSignal(id="us_momentum_top5", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
 
@@ -56,7 +58,7 @@ class SignalEngine:
             }
         )
 
-    def _generate_spy_sma200(self, date: pd.Timestamp, data: Dict[str, pd.DataFrame]) -> SleeveSignal:
+    def _generate_spy_sma200(self, date: pd.Timestamp, data: dict[str, pd.DataFrame]) -> SleeveSignal:
         spy_data = data.get("SPY")
         if spy_data is None or spy_data.empty:
             return SleeveSignal(id="spy_sma200", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
@@ -78,7 +80,7 @@ class SignalEngine:
             }
         )
 
-    def _generate_spy_rsi2(self, date: pd.Timestamp, data: Dict[str, pd.DataFrame]) -> SleeveSignal:
+    def _generate_spy_rsi2(self, date: pd.Timestamp, data: dict[str, pd.DataFrame]) -> SleeveSignal:
         spy_data = data.get("SPY")
         if spy_data is None or spy_data.empty:
             return SleeveSignal(id="spy_rsi2", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
@@ -94,9 +96,7 @@ class SignalEngine:
         signal = "FLAT"
         if rsi2 is not None and rsi2 < 10:
             signal = "LONG"
-        elif rsi2 is not None and rsi2 > 70:
-            signal = "FLAT"
-        elif last_close is not None and sma5 is not None and last_close > sma5:
+        elif rsi2 is not None and rsi2 > 70 or last_close is not None and sma5 is not None and last_close > sma5:
             signal = "FLAT"
         else:
             signal = "HOLD"
@@ -112,7 +112,7 @@ class SignalEngine:
             }
         )
 
-    def _generate_btc_vol_target(self, date: pd.Timestamp, data: Dict[str, pd.DataFrame]) -> SleeveSignal:
+    def _generate_btc_vol_target(self, date: pd.Timestamp, data: dict[str, pd.DataFrame]) -> SleeveSignal:
         btc_data = data.get("BTC-USD")
         if btc_data is None or btc_data.empty:
             return SleeveSignal(id="btc_vol_target_sma100", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
@@ -136,7 +136,7 @@ class SignalEngine:
             }
         )
 
-    def generate_all_signals(self, run_id: str, date: str, mode: str, market_data: Dict[str, pd.DataFrame]) -> SignalsReport:
+    def generate_all_signals(self, run_id: str, date: str, mode: str, market_data: dict[str, pd.DataFrame]) -> SignalsReport:
         sleeves = []
 
         dt = pd.to_datetime(date)
@@ -165,6 +165,6 @@ class SignalEngine:
             sleeves=sleeves
         )
 
-def run_signals(run_id: str, date: str, mode: str, market_data: Dict[str, pd.DataFrame]) -> SignalsReport:
+def run_signals(run_id: str, date: str, mode: str, market_data: dict[str, pd.DataFrame]) -> SignalsReport:
     engine = SignalEngine()
     return engine.generate_all_signals(run_id, date, mode, market_data)

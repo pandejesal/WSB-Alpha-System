@@ -1,6 +1,7 @@
-import yfinance as yf
-import pandas as pd
 import numpy as np
+import pandas as pd
+import yfinance as yf
+
 
 def get_us_momentum_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
     signal_data = {}
@@ -139,15 +140,15 @@ def get_dual_momentum_signal(data: pd.DataFrame, tickers: list[str] = None) -> d
     return signal_data
 
 
-import os
 import io
-import time
+import os
 import random
-import requests
+import time
+
 import pandas as pd
+import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from yfinance.exceptions import YFRateLimitError
 
 _orig_download = yf.download
 

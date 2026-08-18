@@ -1,18 +1,19 @@
-import os
-import sys
-import json
-import yaml
 import argparse
 import datetime
-import yfinance as yf
+import json
+import os
+import sys
+
 import pandas as pd
+import yaml
+import yfinance as yf
 
 from src.ops.signals import (
-    get_us_momentum_top5_signal,
-    get_spy_sma200_signal,
-    get_spy_rsi2_signal,
     get_btc_vol_target_sma100_signal,
-    get_dual_momentum_signal
+    get_dual_momentum_signal,
+    get_spy_rsi2_signal,
+    get_spy_sma200_signal,
+    get_us_momentum_top5_signal,
 )
 
 # Constants
@@ -98,7 +99,7 @@ def run_check_mode():
     tickers_to_fetch = ["SPY", "QQQ", "AGG", "BTC-USD"] + MOMENTUM_UNIVERSE
     try:
         data = yf.download(tickers_to_fetch, period="1y", interval="1d", auto_adjust=True, progress=False)
-    except Exception as e:
+    except Exception:
         data = None
 
     if data is None or data.empty:
@@ -124,7 +125,7 @@ def run_check_mode():
     else:
         # If SPY missing entirely
         plan_data["blocked"].append("STALE_DATA")
-        plan_data["warnings"].append(f"SPY data missing entirely.")
+        plan_data["warnings"].append("SPY data missing entirely.")
         heartbeat_data["alerts"].append("WARN: Market data missing (SPY).")
         write_outputs(plan_data, heartbeat_data)
         sys.exit(0)
@@ -256,7 +257,7 @@ def run_check_mode():
                 stds = recent_12.std()
 
                 inv_vol = {}
-                for col in weights.keys():
+                for col in weights:
                     if col in stds and stds[col] > 0 and col not in plan_data["data_unavailable"]:
                         inv_vol[col] = 1.0 / stds[col]
                     else:
@@ -264,7 +265,7 @@ def run_check_mode():
 
                 total_inv_vol = sum(inv_vol.values())
                 if total_inv_vol > 0:
-                    for k in weights.keys():
+                    for k in weights:
                         weights[k] = round(inv_vol[k] / total_inv_vol, 6)
         except Exception as e:
             plan_data["warnings"].append(f"Weight calculation failed: {e}")
@@ -280,7 +281,7 @@ def run_check_mode():
              other_sum = sum(v for k, v in weights.items() if k != "btc_vol_target_sma100")
              if other_sum > 0:
                  scale = (1.0 - 0.05) / other_sum
-                 for k in weights.keys():
+                 for k in weights:
                      if k != "btc_vol_target_sma100":
                          weights[k] = round(weights[k] * scale, 6)
          elif btc_w == 0.0 and sum(weights.values()) > 0:
@@ -291,7 +292,7 @@ def run_check_mode():
              other_sum = sum(v for k, v in weights.items() if k != "btc_vol_target_sma100")
              if other_sum > 0:
                  scale = (1.0 - 0.05) / other_sum
-                 for k in weights.keys():
+                 for k in weights:
                      if k != "btc_vol_target_sma100":
                          weights[k] = round(weights[k] * scale, 6)
 
