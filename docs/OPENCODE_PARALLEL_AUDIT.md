@@ -9,7 +9,7 @@
 
 | # | Action | Risk | Likelihood |
 |---|--------|------|-----------|
-| 1 | **Fix crypto executor position cap (logs-only, proceeds to open new orders)** `live_crypto_executor.py:292-293` | CRITICAL (real-money capacity overshoot; cap is decorative in the only crypto live path) | HIGH — every rebalance run at cap |
+| 1 | ~~**Fix crypto executor position cap (logs-only, proceeds to open new orders)** `live_crypto_executor.py:292-293`~~<br>RESOLVED 2026-08-18: max-positions guard returns since 8bab4faa; gate chain extracted to gates_allow_trading(); regression coverage in tests/test_crypto_executor_caps.py (PR #1xx) | CRITICAL (real-money capacity overshoot; cap is decorative in the only crypto live path) | HIGH — every rebalance run at cap |
 | 2 | **Degenerate metrics propagate to users** — Sharpe `-9.6e16` committed in `docs/data/backtest_report.json:75,676` and `docs/data/strategy_rankings.json:20-25` (division by near-zero std, 1-trade samples); `oos_sharpe` aliased to in-sample at `generate_strategy_data.py:357-358`/`run_full_backtest.py:73-74` so the Darwin promotion gate is constant ×0.1 | HIGH (metrics published as fact; README claims have no JSON provenance) | CERTAIN (present in committed data today) |
 | 3 | **`api_health_check.yml` burns ~26,000–52,000 min/mo** vs 2,000/mo free tier (`cron */5`, 8,755 runs/mo, full pip install per run) | HIGH (CI budget exhaustion kills all workflows) | CERTAIN |
 | 4 | **Enable a real pre-trade gatekeeper** — no `check_order_allowed()` exists; `position_sizer.py:26,55` defaults to 2% and never clamps, contradicting the declared 1% cap (`position_sizing.py:13`) | HIGH (up to 6% equity risk per trade on the bridge path) | MEDIUM (path requires a live signal) |
@@ -52,7 +52,7 @@
 | Entry point | gate | verdict |
 |---|---|---|
 | `live_alpaca_executor.py:167-191,198-200` | flag+CB+cap (cap BLOCKS via return) | GATED (except MAX_DRAWDOWN) |
-| `live_crypto_executor.py:281-293` | CB yes; **cap logs only** | PARTIALLY GATED — **cap bypass** |
+| `live_crypto_executor.py:281-293` | CB yes; **cap BLOCKS via return** | GATED (cap BLOCKS via return; regression-tested) |
 | `execution_adapter.py:79-97` | none | UNGATED |
 | `execution_bridge.py:16-40` | CB only | UNGATED for flag/cap |
 | `main_live.py:193-198` | none (`PAPERBROKER_URL` in env, default localhost) | UNGATED |
@@ -66,7 +66,7 @@ Key findings:
 | file:line | sev | finding |
 |---|---|---|
 | `src/risk/position_sizer.py:26,55` | CRITICAL | 2% default contradicts declared 1% cap; no `min()` clamp; worst case ≈6% risk/trade (`execution_bridge.py:35` live path) |
-| `src/execution/live_crypto_executor.py:292-293` | CRITICAL | prints then **proceeds**; `execute_bybit_order` (:159-227) can open NEW positions at cap |
+| `src/execution/live_crypto_executor.py:292-293` | RESOLVED | prints then **proceeds** (RESOLVED: cap BLOCKS via return; regression-tested) |
 | `config/risk_config.py:1-8` | HIGH | dead duplicate; orphan `MAX_POSITION_SIZE_PCT`; `RISK_PER_TRADE_PCT` mis-import (:139) breaks `agent_a` |
 | `alpaca_broker.py:82`, `ccxt_broker.py:88` | HIGH | real sinks with zero runtime gating |
 | `main_live.py:192-198` + `execution_adapter.py:97` | MED | ungated orchestrator path; no LIVE_TRADING_ENABLED check |
@@ -180,5 +180,5 @@ Session 1 PR (already tracked — **NOT re-reported as new**): risk-config conso
 - `.github/workflows/self_improvement.yml:49` → `git commit -am`
 - `scripts/generate_strategy_data.py:357-358` → `train_sharpe/oos_sharpe = float(sharpe)` ✓ alias
 - `README.md:34` → `Total Return 108.16%`, `:40` → `Total Trades 484`, `:113` → `+1,479.92%`
-- `src/execution/live_crypto_executor.py:292-293` → print-only guard at cap
+- `src/execution/live_crypto_executor.py:292-293` → print-only guard at cap (RESOLVED: returns since 8bab4faa, gate chain extracted to gates_allow_trading() and regression-tested)
 - `docs/data/backtest_report.json` → `report_date 2026-08-08`; is_sharpe/oos_sharpe 1e16 magnitudes
