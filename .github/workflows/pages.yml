@@ -7,7 +7,7 @@ on:
     paths:
       - 'docs/**'
   workflow_run:
-    workflows: ["Daily Research Pipeline", "Daily Paper Trading", "Sandbox Paper Trading", "Generate Strategy Data"]
+    workflows: ["Weekly Research Pipeline", "Daily Paper Trading", "Sandbox Paper Trading", "Generate Strategy Data"]
     types:
       - completed
   workflow_dispatch:
