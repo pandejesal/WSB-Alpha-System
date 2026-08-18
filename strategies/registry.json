@@ -52,8 +52,41 @@
       "spec_file": "strategies/dual_momentum.yaml",
       "gates_passed": "3/5",
       "rank": 5,
-      "status": "ported",
+      "status": "inactive",
       "ported_at": "2026-08-16"
+    },
+    {
+      "id": "us_lowvol_top30",
+      "name": "US Low-Volatility Top-30 (recent-calm)",
+      "family": "low_vol",
+      "venue": "alpaca",
+      "spec_file": "strategies/us_lowvol_top30.yaml",
+      "gates_passed": "5/5",
+      "rank": 6,
+      "status": "ported",
+      "ported_at": "2026-08-18"
+    },
+    {
+      "id": "us_pead_top5",
+      "name": "US PEAD Top-5",
+      "family": "event_driven",
+      "venue": "alpaca",
+      "spec_file": "strategies/us_pead_top5.yaml",
+      "gates_passed": "5/5",
+      "rank": 7,
+      "status": "ported",
+      "ported_at": "2026-08-18"
+    },
+    {
+      "id": "breakout_burst",
+      "name": "US Breakout Burst",
+      "family": "breakout_burst",
+      "venue": "alpaca",
+      "spec_file": "strategies/breakout_burst.yaml",
+      "gates_passed": "5/5",
+      "rank": 8,
+      "status": "ported",
+      "ported_at": "2026-08-18"
     }
   ],
   "portfolio": {

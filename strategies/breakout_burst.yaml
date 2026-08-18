@@ -1,0 +1,27 @@
+id: breakout_burst
+name: us_breakout_burst_h20_k10
+family: breakout_burst
+version: 1
+status: PASS_ALL_GATES
+universe: 100-stock liquid large-cap panel (SPY excluded; QQQ/AGG/BND/SHY/GLD/VTI/IWM excluded)
+signal:
+  entry: >
+    On any bar where close return vs prior close >= +4% AND close > prior
+    20-day high (shifted, no lookahead) AND volume >= 1.5x prior 20-day
+    average volume, enter equal weight (1/N_active) capped at 10 concurrent
+    positions, first-come-first-served by event date. Entry executes next
+    bar (exec_delay=1). Optional SMA50 filter (f1): close > SMA(50).
+  exit: after 20 trading days from entry
+  sizing: equal weight across active positions; 1/N per day
+  caps:
+    max_concurrent_positions: 10
+  rebalance: daily target rows; exits write explicit 0.0 on the exit bar
+params:
+  gain_threshold_pct: 4.0   # close-to-close return >= 4%
+  high_lookback_days: 20    # close > 20d-high (shifted)
+  vol_mult: 1.5             # volume >= 1.5x 20d avg volume (shifted)
+  hold_days: 20             # trading days
+  max_k: 10
+  sma50_filter: 0           # 0 | 1 (both pass at h20/k10)
+  drift_rebal: 0.0
+# NOTE: Re-validate on the repo panel with h20/k10 before going live; consider a paper-trade gate
