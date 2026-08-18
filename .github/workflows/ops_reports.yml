@@ -1,8 +1,6 @@
 name: Ops Reports
 
 on:
-  schedule:
-    - cron: '0 12 * * 6' # 12:00 UTC Saturday (weekly)
   workflow_dispatch:
 
 permissions:
@@ -19,6 +17,8 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
 
       - name: Install dependencies
         run: |
