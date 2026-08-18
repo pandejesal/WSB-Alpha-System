@@ -11,7 +11,7 @@ Pick the next single-name SHORT strategy for the small ($100) book. Constraints 
 
 ## 2. What was inspected (repo)
 
-- **Live/backtest strategies:** `src/alpha/fade_strategy.py` (live SHORT), `strategy_wsb_alpha.py` (live LONG), `wsb_alpha_legacy.py` (backtest + legacy sentiment pipeline → `wsb_factual_research_data.csv`, **not yet generated**), `man_ahl_legacy.py` (backtest).
+- **Live/backtest strategies:** `src/alpha/fade_strategy.py` (live SHORT), `strategy_wsb_alpha.py` (live LONG), `wsb_sentiment_alpha.py` (backtest + legacy sentiment pipeline → `wsb_factual_research_data.csv`, **not yet generated**), `strategy_man_ahl.py` (backtest).
 - **Indicators:** `src/alpha/indicators.py` (`compute_indicators()` — RSI_14, BB, EMA_20, ATR_14, GK_Vol, CVaR_95, MACD).
 - **Risk/sizing:** `position_sizing.py` (1% risk, 4-position cap, DD guardrails 5%/10%/15%), `macro_regime.py` (SPY-driven regime gate).
 - **Verification:** `src.backtest.engines.vectorbt_engine.py`, `main_live.py`, `permutation_tester.py`, data providers (yfinance/reddit/ccxt), plus `web-research/strategies.md`, `web-research/indicators.md`, `web-research/quant-validation-best-practices.md`, `web-research/small-account-risk.md`.

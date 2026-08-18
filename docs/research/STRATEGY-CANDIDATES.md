@@ -7,7 +7,7 @@ sources:
   - web-research/indicators.md (36-indicator catalog; warmup/lookahead tables)
   - web-research/quant-validation-best-practices.md (sample-size & inflation guards; MeanR §4)
   - web-research/small-account-risk.md ($100 sizing/ruin framework)
-  - repo: src/alpha/fade_strategy.py, wsb_alpha_legacy.py, indicators.py
+  - repo: src/alpha/fade_strategy.py, wsb_sentiment_alpha.py, indicators.py
   - repo: src/backtest/engines/*, src/execution/main_live.py, src/risk/position_sizing.py
 conventions:
   - OPINION: = my judgment, not a sourced claim.
@@ -22,7 +22,7 @@ of the $100 paper engine, grounded in the research corpus and the current codeba
 
 **Scope constraints honored**
 - $100 paper account, free tier: yfinance daily OHLCV (already exercised in
-  `main_live.py`, `wsb_alpha_legacy.py`, `macro_regime.py`), Reddit public RSS feed.
+  `main_live.py`, `wsb_sentiment_alpha.py`, `macro_regime.py`), Reddit public RSS feed.
 - Repo has a Binance/Bybit `ccxt` bailout path in `src/execution/` (perps, `fetch_historical_ohlcv`
   exists) but nothing currently polls funding-rate history; treated as NOT-yet-reusable.
 - No edits to `statistical.py`, `permutation_tester.py`, `fred_macro_provider.py`; no candidate
@@ -39,7 +39,7 @@ of the $100 paper engine, grounded in the research corpus and the current codeba
 | AlphaFusion (LONG) | `main_live.py:145` (inline) | ≥2 of 3 confluence: HA bullish, Close>EMA20, MACD>signal AND sentiment>0.5 AND 30<RSI<70; adj. by MacroRegimeFilter | MARKET order; qty by PositionSizer | Kelly frac 0.15, WR 0.55 / R 1.5, max 4 concurrent | Live paper (`main_live.py`) |
 | WSBAlphaStrategy | `src/alpha/strategy_wsb_alpha.py:9` | long: Close>EMA20 & RSI<70 & MACD>signal; short: mirror; optional sentiment veto | Exits on opposite signal (via vectorbt from_signals) | RSI_14 30/70 | Backtest only (called through `src.backtest.engines.vectorbt_engine.run_backtest`) — not in live path |
 | ManAHLStrategy | `src/alpha/strategy_man_ahl.py:9` | sign of vol-normalized momentum over 5/10/21/42d (63d vol window), EWM14 smoothed | reverse signal / signal=0 | windows [5,10,21,42], vol_window 63 | Backtest only (generic engine) — not in live path |
-| wsb_alpha_legacy pipeline | `src/alpha/wsb_alpha_legacy.py:196` | long/short by sentiment sign + 4-indicator vote (HA, EMA20+MACD, RSI zone, BB position) ≥3/4 + GK-vol shield (<1.20) + projected-return forecast + CVaR throttle | T+1 close entry; exits at horizons 1–300d; adaptive holding (10/60/252d | GK_vol scale 0.15–1.20; risk-parity weight 0.15/vol | Feeds `wsb_factual_research_data.csv` read by live loop; not itself an executor |
+| wsb_sentiment_alpha pipeline | `src/alpha/wsb_sentiment_alpha.py:196` | long/short by sentiment sign + 4-indicator vote (HA, EMA20+MACD, RSI zone, BB position) ≥3/4 + GK-vol shield (<1.20) + projected-return forecast + CVaR throttle | T+1 close entry; exits at horizons 1–300d; adaptive holding (10/60/252d | GK_vol scale 0.15–1.20; risk-parity weight 0.15/vol | Feeds `wsb_factual_research_data.csv` read by live loop; not itself an executor |
 | MacroRegimeFilter | `src/alpha/macro_regime.py:8` | SPY < SMA-200 → BEAR; rejects weak confluence, slashes 50% | — | SPY 200d | Wraps live signals (main_live) |
 | VectorBTEngine / NautilusEngine | `src.backtest.engines.vectorbt_engine.py`, `engines/*` | generic: MA crossover demo with T+1 shift + ADV filter | vectorbt from_signals, fees 0.1%, slippage 0.1% | init_cash 100 | Backtest harness used by tests; MA demo is not a real strategy |
 
@@ -114,7 +114,7 @@ only if sentiment_score > 0 (euphoria agrees with the winner state; direction ke
 **Entry:** T+1 open after Friday signal; **Exit:** next Friday open/close (1-hold), or crossover
 time-stop 10d; **No TP, fixed 1-week hold.** **Holding horizon:** 1 week (5 sessions).
 **Existing reuse:** yfinance closes (already downloaded in legacy pipeline), the sentiment
-database (`wsb_factual_research_data.csv` produced by `wsb_alpha_legacy` phase 1 — the columns
+database (`wsb_factual_research_data.csv` produced by `wsb_sentiment_alpha` phase 1 — the columns
 `sentiment_score` and `ticker` exist there), the live loop's weekly cadence.
 **Indicators used:** none new — prior-week return is computed from Close columns.
 **NEW indicator/data:** cross-sectional decile-rank helper (pure pandas rank on a weekly panel —
@@ -137,7 +137,7 @@ SPY's log-return (β, α). s-score = (residual − mean60) / std60 of the residu
 SPY-beta fair value); **Exit:** s ≤ +0.75 (paper short-exit cutoff) or 10-session time stop,
 or SL = 1.5× residual std. **Holding horizon:** up to 10 sessions; expected ~5 (A-L trade
 cadence is weekly).
-**Existing reuse:** SPY series (**already** downloaded in `wsb_alpha_legacy.py:401` and by
+**Existing reuse:** SPY series (**already** downloaded in `wsb_sentiment_alpha.py:401` and by
 `MacroRegimeFilter.fetch_regime`); yfinance daily for tickers (same as C1 path).
 **Indicators used:** the residual z of the SPY-adjusted 60d window — one rolling regression.
 **NEW indicator/data:** rolling OLS + residual z (numpy `polyfit`/vectorized within window —
