@@ -17,25 +17,25 @@ To run this in production, schedule this script to run daily at 00:01 UTC via cr
 $ python live_crypto_executor.py
 """
 
-import json
-import os
+import json  # noqa: E402
+import os  # noqa: E402
 
 try:
     import ccxt
 except ImportError:
     ccxt = None
-import pandas as pd
-from dotenv import (
+import pandas as pd  # noqa: E402
+from dotenv import (  # noqa: E402
     load_dotenv,
 )
 
-from src.alpha.strategy_man_ahl import (
+from src.alpha.strategy_man_ahl import (  # noqa: E402
     calculate_momentum_score,
     calculate_target_position_sizes,
     calculate_volatility_and_atr,
     check_rebalance_required,
 )
-from src.risk import (
+from src.risk import (  # noqa: E402
     position_sizing as risk_config,
 )
 
@@ -45,7 +45,7 @@ load_dotenv()
 # ============================================================================
 # BYBIT CONFIGURATION
 # ============================================================================
-from src.utils.config import (
+from src.utils.config import (  # noqa: E402
     config,
 )
 
@@ -248,6 +248,23 @@ def execute_bybit_order(exchange, symbol: str, target_size: float, current_pos: 
     except Exception as e:  # noqa: BLE001
         print(f"  [!] Uncaught broker exception placing order: {e}")
 
+
+def gates_allow_trading(equity: float, last_equity: float, high_water_mark: float, active_pos_count: int) -> tuple[bool, str]:
+    if last_equity > 0:
+        daily_loss_pct = (last_equity - equity) / last_equity
+        if daily_loss_pct > risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT:
+            return False, f"[!!!] DAILY CIRCUIT BREAKER TRIPPED. Loss ({daily_loss_pct*100:.2f}%) exceeds limit ({risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT*100:.2f}%). Trading halted."
+
+    if high_water_mark > 0:
+        weekly_drawdown = (high_water_mark - equity) / high_water_mark
+        if weekly_drawdown > risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT:
+            return False, f"[!!!] WEEKLY/MAX CIRCUIT BREAKER TRIPPED. Drawdown ({weekly_drawdown*100:.2f}%) exceeds limit ({risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT*100:.2f}%). Trading halted."
+
+    if active_pos_count >= risk_config.MAX_CONCURRENT_POSITIONS:
+        return False, f"[*] Max positions ({risk_config.MAX_CONCURRENT_POSITIONS}) reached or exceeded."
+
+    return True, ""
+
 def main():
     STATE_FILE = 'crypto_state.json'
     if USE_SANDBOX is False and risk_config.LIVE_TRADING_ENABLED is False:
@@ -297,22 +314,12 @@ def main():
     # Update high water mark
     high_water_mark = max(high_water_mark, equity)
 
-    # Check Circuit Breakers
-    if last_equity > 0:
-        daily_loss_pct = (last_equity - equity) / last_equity
-        if daily_loss_pct > risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT:
-            print(f"[!!!] DAILY CIRCUIT BREAKER TRIPPED. Loss ({daily_loss_pct*100:.2f}%) exceeds limit ({risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT*100:.2f}%). Trading halted.")
-            return
-
-    if high_water_mark > 0:
-        weekly_drawdown = (high_water_mark - equity) / high_water_mark
-        if weekly_drawdown > risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT:
-            print(f"[!!!] WEEKLY/MAX CIRCUIT BREAKER TRIPPED. Drawdown ({weekly_drawdown*100:.2f}%) exceeds limit ({risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT*100:.2f}%). Trading halted.")
-            return
-
     active_pos_count = sum(1 for p in current_positions.values() if abs(p) > 0)
-    if active_pos_count >= risk_config.MAX_CONCURRENT_POSITIONS:
-        print(f"[*] Max positions ({risk_config.MAX_CONCURRENT_POSITIONS}) reached or exceeded.")
+
+    # Check Circuit Breakers and Position Limits
+    allowed, reason = gates_allow_trading(equity, last_equity, high_water_mark, active_pos_count)
+    if not allowed:
+        print(reason)
         return
 
     print("\n[*] Current Live Positions (Dollar Values):")
