@@ -1,25 +1,25 @@
 {
-  "last_checked": "2026-08-18T15:38:12.253974Z",
+  "last_checked": "2026-08-18T16:39:01.717938Z",
   "apis": {
     "alpaca": {
       "status": "connected",
-      "message": "Paper equity: $100,076.49",
-      "last_check": "2026-08-18T15:38:12.343621Z"
+      "message": "Paper equity: $100,078.49",
+      "last_check": "2026-08-18T16:39:01.770468Z"
     },
     "telegram": {
       "status": "connected",
       "message": "Bot: @WSB_trade_bot",
-      "last_check": "2026-08-18T15:38:12.663081Z"
+      "last_check": "2026-08-18T16:39:02.035421Z"
     },
     "yfinance": {
       "status": "rate_limited",
       "message": "No data returned",
-      "last_check": "2026-08-18T15:38:13.944199Z"
+      "last_check": "2026-08-18T16:39:02.980999Z"
     },
     "reddit": {
       "status": "not_configured",
       "message": "Reddit API credentials not set",
-      "last_check": "2026-08-18T15:38:13.944235Z"
+      "last_check": "2026-08-18T16:39:02.981021Z"
     }
   }
 }
