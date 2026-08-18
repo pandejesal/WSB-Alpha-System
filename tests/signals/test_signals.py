@@ -91,11 +91,11 @@ def test_signal_engine_full_run(dummy_spy_data, dummy_btc_data, dummy_momentum_d
 
     sleeve_dict = {s.id: s for s in report.sleeves}
 
-    # Check pending sleeves
+    # Check fail-closed sleeves (P4-ported, dummy data -> FLAT with data_unavailable)
     for pending_id in ["us_lowvol_top30", "us_pead_top5", "breakout_burst"]:
         assert pending_id in sleeve_dict
         assert sleeve_dict[pending_id].signal == "FLAT"
-        assert sleeve_dict[pending_id].params.get("warning") == "pending P4 port"
+        assert sleeve_dict[pending_id].params.get("warning") == "data_unavailable"
 
     # Check real sleeves
     assert sleeve_dict["spy_sma200"].signal in ["LONG", "FLAT"]
