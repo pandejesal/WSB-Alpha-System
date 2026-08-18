@@ -6,6 +6,9 @@ from src.ops.signals import (
     get_spy_rsi2_signal,
     get_spy_sma200_signal,
     get_us_momentum_top5_signal,
+    get_us_lowvol_top30_signal,
+    get_us_pead_top5_signal,
+    get_breakout_burst_signal,
 )
 
 from .schemas import SignalsReport, SleeveSignal
@@ -136,6 +139,100 @@ class SignalEngine:
             }
         )
 
+
+    def _generate_lowvol_top30(self, date: pd.Timestamp, data: dict[str, pd.DataFrame]) -> SleeveSignal:
+        if not data:
+            return SleeveSignal(id="us_lowvol_top30", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
+
+        frames = []
+        tickers = []
+        for ticker, df in data.items():
+            if df is not None and not df.empty and 'Close' in df.columns:
+                df_close = df[['Close']].copy()
+                df_close.columns = pd.MultiIndex.from_product([['Close'], [ticker]])
+                frames.append(df_close)
+                tickers.append(ticker)
+
+        if not frames:
+            return SleeveSignal(id="us_lowvol_top30", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
+
+        combined_df = pd.concat(frames, axis=1)
+        sig_data = get_us_lowvol_top30_signal(combined_df, tickers)
+
+        return SleeveSignal(
+            id="us_lowvol_top30",
+            signal=sig_data.get("signal", "FLAT"),
+            confidence=1.0 if sig_data.get("signal") == "LONG" else 0.0,
+            params={
+                "targets": sig_data.get("targets", []),
+                "warning": sig_data.get("warning")
+            }
+        )
+
+    def _generate_pead_top5(self, date: pd.Timestamp, data: dict[str, pd.DataFrame]) -> SleeveSignal:
+        if not data:
+            return SleeveSignal(id="us_pead_top5", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
+
+        frames = []
+        tickers = []
+        for ticker, df in data.items():
+            if df is not None and not df.empty and 'Close' in df.columns:
+                df_close = df[['Close']].copy()
+                df_close.columns = pd.MultiIndex.from_product([['Close'], [ticker]])
+                frames.append(df_close)
+                tickers.append(ticker)
+
+        if not frames:
+            return SleeveSignal(id="us_pead_top5", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
+
+        combined_df = pd.concat(frames, axis=1)
+        sig_data = get_us_pead_top5_signal(combined_df, tickers)
+
+        return SleeveSignal(
+            id="us_pead_top5",
+            signal=sig_data.get("signal", "FLAT"),
+            confidence=1.0 if sig_data.get("signal") == "LONG" else 0.0,
+            params={
+                "targets": sig_data.get("targets", []),
+                "warning": sig_data.get("warning")
+            }
+        )
+
+    def _generate_breakout_burst(self, date: pd.Timestamp, data: dict[str, pd.DataFrame]) -> SleeveSignal:
+        if not data:
+            return SleeveSignal(id="breakout_burst", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
+
+        frames_close = []
+        frames_vol = []
+        tickers = []
+        for ticker, df in data.items():
+            if df is not None and not df.empty and 'Close' in df.columns and 'Volume' in df.columns:
+                df_c = df[['Close']].copy()
+                df_c.columns = pd.MultiIndex.from_product([['Close'], [ticker]])
+                frames_close.append(df_c)
+
+                df_v = df[['Volume']].copy()
+                df_v.columns = pd.MultiIndex.from_product([['Volume'], [ticker]])
+                frames_vol.append(df_v)
+                tickers.append(ticker)
+
+        if not frames_close:
+            return SleeveSignal(id="breakout_burst", signal="FLAT", confidence=0.0, params={"warning": "data_unavailable"})
+
+        combined_df = pd.concat(frames_close + frames_vol, axis=1)
+
+        sig_data = get_breakout_burst_signal(combined_df, tickers)
+
+        return SleeveSignal(
+            id="breakout_burst",
+            signal=sig_data.get("signal", "FLAT"),
+            confidence=1.0 if sig_data.get("signal") == "LONG" else 0.0,
+            params={
+                "targets": sig_data.get("targets", []),
+                "warning": sig_data.get("warning")
+            }
+        )
+
     def generate_all_signals(self, run_id: str, date: str, mode: str, market_data: dict[str, pd.DataFrame]) -> SignalsReport:
         sleeves = []
 
@@ -150,12 +247,18 @@ class SignalEngine:
                 sleeves.append(self._generate_spy_rsi2(dt, market_data))
             elif sleeve_id == "btc_vol_target_sma100":
                 sleeves.append(self._generate_btc_vol_target(dt, market_data))
+            elif sleeve_id == "us_lowvol_top30":
+                sleeves.append(self._generate_lowvol_top30(dt, market_data))
+            elif sleeve_id == "us_pead_top5":
+                sleeves.append(self._generate_pead_top5(dt, market_data))
+            elif sleeve_id == "breakout_burst":
+                sleeves.append(self._generate_breakout_burst(dt, market_data))
             else:
                 sleeves.append(SleeveSignal(
                     id=sleeve_id,
                     signal="FLAT",
                     confidence=0.0,
-                    params={"warning": "pending P4 port"}
+                    params={"warning": "unknown sleeve id"}
                 ))
 
         return SignalsReport(

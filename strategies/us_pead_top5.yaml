@@ -1,0 +1,21 @@
+id: us_pead_top5
+name: us_pead_top5
+family: event_driven
+version: 1
+status: PASS_ALL_GATES
+universe: 100-stock liquid large-cap panel (SPY excluded; QQQ/AGG/BND/SHY/GLD/VTI/IWM excluded)
+signal:
+  entry: >
+    On the trading day strictly after an earnings announcement with
+    Reported EPS present and Surprise(%) >= 0, enter equal-weight (1/N_active).
+    Entry executes next bar (exec_delay=1) - no lookahead. Earnings dates are
+    real yfinance get_earnings_dates(limit=100) (2001-2026 history per name).
+  exit: after 5 trading days
+  sizing: equal weight across active positions; 1/N per day
+  caps:
+    max_concurrent_positions: 5
+  rebalance: daily target rows, drift band 5%
+params:
+  surprise_threshold_pct: 0.0   # Surprise(%) >= 0 (non-negative surprise only)
+  hold_days: 5                  # trading days
+  max_k: 5

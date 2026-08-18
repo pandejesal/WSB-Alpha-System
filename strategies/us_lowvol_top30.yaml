@@ -1,0 +1,30 @@
+id: us_lowvol_top30
+name: US Low-Volatility Top-30 (recent-calm)
+family: low_vol
+venue: alpaca            # US equities, cash account, fractional shares, T+1
+universe:
+  - 100 liquid large-cap US stocks (equity panel minus SPY/QQQ/AGG/BND/SHY/GLD/VTI/IWM)
+  - same universe as us_momentum_top5 (micro-account library)
+indicators:
+  - rv20: 20-day realized vol (std of daily returns x sqrt(252)), trailing window
+parameters:
+  lookback: 20           # realized-vol window in trading days
+  top_n: 30
+  rebalance: monthly     # month-end (last trading bar)
+  exec_delay: 1          # signals from day-t close execute day t+1
+  drift_rebal: 0.05
+  liquidity_floor: null
+entry_rules:
+  - at each month-end, rank the 100-name universe by trailing 20-day realized vol
+  - hold the 30 lowest-vol names, equal weight 1/30
+  - full investment (no cash sleeve, no timing gate)
+exit_rules:
+  - drop names that fall out of the bottom-30 at the next month-end
+  - no intra-month exits except drift-band rebalance (>5% drift)
+position_sizing:
+  - $100 account: 30 positions x ~$3.33
+  - min order $1; no margin; no PDT
+fee_model:
+  - commission: $0 (Alpaca)
+  - slippage: 0.05% per side
+  - settlement: T+1 cash; min $1
