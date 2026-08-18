@@ -28,6 +28,9 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
           pip install yfinance pandas numpy pyyaml
 
+      - name: Write Heartbeat
+        run: python src/ops/heartbeat.py --job ops_daily
+
       - name: Run Daily Check Mode
         run: python -m src.ops.daily --mode check
 

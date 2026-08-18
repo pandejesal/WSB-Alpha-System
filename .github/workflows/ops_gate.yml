@@ -1,15 +1,15 @@
-name: Paper Trade Execution
+name: Ops Gate Evaluator
 
 on:
   schedule:
-    - cron: '30 14 * * *' # 14:30 UTC daily (7-day cron as requested, engine logic maintained)
+    - cron: '0 17 * * 5' # 17:00 UTC Friday (weekly)
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  execute_plan:
+  gate:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -27,21 +27,18 @@ jobs:
       - name: Write Heartbeat
         env:
           PYTHONPATH: ${{ github.workspace }}
-        run: python src/ops/heartbeat.py --job paper_trade
+        run: python src/ops/heartbeat.py --job ops_gate
 
-      - name: Run Paper Executor
+      - name: Run Gate Evaluator
         env:
           PYTHONPATH: ${{ github.workspace }}
-          ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
-          ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
-          PAPER_TRADING_ENABLED: 'True'
-          LIVE_TRADING_ENABLED: 'False'
-        run: python scripts/run_paper_execution.py
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python src/ops/gate_evaluator.py
 
-      - name: Commit Ops Data
+      - name: Commit State Changes
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add docs/data/ops/*.json docs/data/ops/*.jsonl || true
           git add config/ops_state.yaml || true
-          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ops): Paper execution state update" && git push origin HEAD:${GITHUB_REF_NAME})
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ops): Auto-halt from gate evaluator" && git push origin HEAD:${GITHUB_REF_NAME})
