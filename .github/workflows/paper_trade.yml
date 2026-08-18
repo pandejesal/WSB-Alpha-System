@@ -23,10 +23,10 @@ jobs:
       - name: Install dependencies
         run: |
           pip install -r requirements.txt
-          pip install -e .
 
       - name: Run Paper Executor
         env:
+          PYTHONPATH: ${{ github.workspace }}
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
           PAPER_TRADING_ENABLED: 'True'
