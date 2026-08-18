@@ -17,7 +17,7 @@ from src.alpha import (
 )
 
 # E-1 fix (audit): the tearsheet/reporting block previously rebound to the
-# legacy engine (src.backtest.legacy_backtest), so the weekly report mixed
+# legacy engine (deleted_legacy_backtest), so the weekly report mixed
 # engines — permutation p-values from the honest T+1 engine, tearsheet numbers
 # from the same-bar-close engine. The tearsheet must use the SAME engine as
 # the permutation tests. Loud-fail guard: if the binding is ever pointed back

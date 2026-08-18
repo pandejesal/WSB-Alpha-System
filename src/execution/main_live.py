@@ -13,7 +13,7 @@ from src.alpha.indicators import compute_indicators
 from src.alpha.macro_regime import MacroRegimeFilter
 
 # Import components
-from src.alpha.wsb_alpha_legacy import OUTPUT_CSV, run_sentiment_pipeline
+from src.alpha.wsb_sentiment_alpha import OUTPUT_CSV, run_sentiment_pipeline
 from src.execution.execution_adapter import ExecutionAdapter, PaperbrokerClient
 from src.risk.position_sizing import (
     ACCOUNT_BASE_CAPITAL,

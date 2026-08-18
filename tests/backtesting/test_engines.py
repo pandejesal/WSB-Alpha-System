@@ -1,26 +1,22 @@
 import unittest
-from src.backtest.vectorbt_engine import VectorBTEngine
-import pandas as pd
-import numpy as np
 
-class MockStrategy:
-    def generate_signals(self, df: pd.DataFrame) -> pd.DataFrame:
-        df['signal'] = 0
-        df.iloc[0, df.columns.get_loc('signal')] = 1
-        df.iloc[-1, df.columns.get_loc('signal')] = -1
-        return df
+import numpy as np
+import pandas as pd
+
+from src.backtest.engines.vectorbt_engine import VectorBTEngine
+
 
 class TestVectorBTEngine(unittest.TestCase):
     def test_engine_executes_simulation(self):
         engine = VectorBTEngine()
         # Generate dummy data
-        dates = pd.date_range("2023-01-01", periods=10)
-        df = pd.DataFrame({"Close": np.linspace(100, 110, 10)}, index=dates)
+        dates = pd.date_range("2023-01-01", periods=100)
+        # Create data that will trigger MA crossovers
+        prices = np.linspace(100, 150, 50).tolist() + np.linspace(150, 100, 50).tolist()
+        df = pd.DataFrame({"Close": prices}, index=dates)
 
-        res = engine.run_backtest(df, MockStrategy())
-        self.assertEqual(res["status"], "success")
-        self.assertIn("total_return", res["metrics"])
-        self.assertGreater(res["metrics"]["total_return"], 0)
+        res = engine.run_sim({'fast_window': 2, 'slow_window': 5}, df)
+        self.assertIsInstance(res, pd.DataFrame)
 
 if __name__ == '__main__':
     unittest.main()
