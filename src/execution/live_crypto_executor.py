@@ -29,7 +29,7 @@ from dotenv import (
     load_dotenv,
 )
 
-from src.alpha.man_ahl_legacy import (
+from src.alpha.strategy_man_ahl import (
     calculate_momentum_score,
     calculate_target_position_sizes,
     calculate_volatility_and_atr,

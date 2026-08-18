@@ -1,13 +1,15 @@
-import unittest
-import pandas as pd
-import numpy as np
-import sys
 import os
+import sys
+import unittest
+
+import numpy as np
+import pandas as pd
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.backtest.engines.vectorbt_engine import VectorBTEngine
 from src.backtest.validators.statistical import StatisticalValidator
 from src.risk.portfolio_optimization import PortfolioOptimizer
+
 
 class TestQuantPhase3(unittest.TestCase):
 
