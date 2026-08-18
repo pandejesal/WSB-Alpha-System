@@ -33,6 +33,13 @@ jobs:
           LIVE_TRADING_ENABLED: 'False'
         run: python scripts/run_paper_execution.py
 
+      - name: Write Heartbeat
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python src/ops/heartbeat.py --job paper_trade
+
       - name: Commit Ops Data
         run: |
           git config --global user.name 'github-actions[bot]'

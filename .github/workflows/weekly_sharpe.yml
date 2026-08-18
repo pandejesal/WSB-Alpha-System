@@ -1,0 +1,44 @@
+name: Weekly Sharpe Generation
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Every Sunday at midnight
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate_sharpe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Sharpe Generation
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: python scripts/generate_sharpe.py
+
+      - name: Write Heartbeat
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python src/ops/heartbeat.py --job weekly_sharpe
+
+      - name: Commit Artifact
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/data/paper/sharpe.json docs/data/ops/heartbeat.json || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ops): Update weekly Sharpe ratio" && git config --global push.default current)
+          git push origin HEAD:${GITHUB_REF_NAME}

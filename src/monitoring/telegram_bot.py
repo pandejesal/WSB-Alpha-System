@@ -57,6 +57,44 @@ class TelegramBot:
         )
         self.send_message(msg)
 
+
+    def send_alert(self, level: str, message: str) -> bool:
+        """
+        Severity ladder: INFO, WARN, CRITICAL
+        """
+        prefix = ""
+        if level == "INFO":
+            prefix = "ℹ️ [INFO]"
+        elif level == "WARN":
+            prefix = "⚠️ [WARN]"
+        elif level == "CRITICAL":
+            prefix = "🚨 [CRITICAL]"
+
+        return self.send_message(f"{prefix} {message}")
+
+    def poll_updates(self, offset: int = None) -> list:
+        """
+        Polls for updates (commands)
+        """
+        if not self.bot_token:
+            return []
+
+        url = f"{self.base_url}/getUpdates"
+        params = {"timeout": 10}
+        if offset:
+            params["offset"] = offset
+
+        try:
+            res = requests.get(url, params=params, timeout=15)
+            res.raise_for_status()
+            data = res.json()
+            if data.get("ok"):
+                return data.get("result", [])
+            return []
+        except Exception as e:
+            logger.error(f"Telegram poll failed: {e}")
+            return []
+
     def handle_command(self, text: str) -> str:
         """
         Basic implementation of command handling.

@@ -1,0 +1,46 @@
+name: Ops Gate Evaluator
+
+on:
+  schedule:
+    - cron: '30 22 * * *' # Run at end of day, after reconcile
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  gate_evaluator:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Gate Evaluator
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python src/ops/gate_evaluator.py
+
+      - name: Write Heartbeat
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python src/ops/heartbeat.py --job ops_gate
+
+      - name: Commit State Changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/data/ops/gate_evaluation.json docs/data/ops/heartbeat.json || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ops): Update gate evaluation" && git config --global push.default current)
+          git push origin HEAD:${GITHUB_REF_NAME}

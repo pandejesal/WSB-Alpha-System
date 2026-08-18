@@ -1,0 +1,46 @@
+name: Ops Reconcile
+
+on:
+  schedule:
+    - cron: '0 22 * * *' # Run at end of day
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Ops Reconcile
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python scripts/reconcile.py
+
+      - name: Write Heartbeat
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python src/ops/heartbeat.py --job ops_reconcile
+
+      - name: Commit State Changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add docs/data/ops/reconciliation.json docs/data/ops/heartbeat.json || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(ops): Update reconciliation state" && git config --global push.default current)
+          git push origin HEAD:${GITHUB_REF_NAME}
