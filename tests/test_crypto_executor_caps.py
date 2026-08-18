@@ -1,3 +1,4 @@
+import contextlib
 import os
 import sys
 from unittest.mock import patch, MagicMock
@@ -85,12 +86,30 @@ def test_gates_allow_trading_boundary_condition():
 
 @pytest.fixture(autouse=True)
 def mock_env_vars():
-    # Make sure we don't hit real APIs
+    # Make sure we don't hit real APIs. Note: the executor reads BYBIT_API_KEY /
+    # BYBIT_API_SECRET at import time (module-level constants), so patching
+    # os.environ here is not enough by itself — the e2e tests additionally patch
+    # the module-level constants so the gate chain is deterministically reached
+    # even in keyless environments (otherwise main() aborts at the key check and
+    # assert_not_called() would pass trivially without exercising the gate).
     with patch.dict(os.environ, {
         "BYBIT_API_KEY": "fake_key",
         "BYBIT_API_SECRET": "fake_secret"
     }):
         yield
+
+def _patch_module_keys():
+    return [
+        patch('src.execution.live_crypto_executor.BYBIT_API_KEY', 'fake_key'),
+        patch('src.execution.live_crypto_executor.BYBIT_API_SECRET', 'fake_secret'),
+    ]
+
+
+@contextlib.contextmanager
+def _module_keys_patched():
+    with _patch_module_keys()[0], _patch_module_keys()[1]:
+        yield
+
 
 @patch('src.execution.live_crypto_executor.execute_bybit_order')
 @patch('src.execution.live_crypto_executor.check_rebalance_required')
@@ -118,8 +137,10 @@ def test_main_max_positions_regression(
 
         mock_get_positions.return_value = (positions, scores, vols)
 
-        # Make sure USE_SANDBOX / LIVE_TRADING_ENABLED allow us to proceed to gating
-        with patch('src.execution.live_crypto_executor.USE_SANDBOX', True):
+        # Make sure USE_SANDBOX / LIVE_TRADING_ENABLED allow us to proceed to gating.
+        # Also patch module-level key constants so the gate is reached even in
+        # keyless environments (main() aborts at the key check otherwise).
+        with patch('src.execution.live_crypto_executor.USE_SANDBOX', True), _module_keys_patched():
             live_crypto_executor.main()
 
             # Assert execute_bybit_order is NEVER called
@@ -161,7 +182,7 @@ def test_main_daily_loss_regression(
 
         mock_get_positions.return_value = (positions, scores, vols)
 
-        with patch('src.execution.live_crypto_executor.USE_SANDBOX', True):
+        with patch('src.execution.live_crypto_executor.USE_SANDBOX', True), _module_keys_patched():
             live_crypto_executor.main()
 
             # Assert execute_bybit_order is NEVER called
