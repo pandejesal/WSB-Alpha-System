@@ -122,7 +122,9 @@ def test_generate_signals_unsupported_shape():
     with pytest.raises(UnsupportedRuleShape, match="family 'magic_ai' is not supported"):
         generate_signals_from_registry(mock_data, mock_entries)
 
-def test_generate_signals_non_default_parameters_or_unsupported():
+@mock.patch("src.ops.signals.get_us_momentum_top5_signal", autospec=True)
+def test_generate_signals_non_default_parameters(mock_momentum):
+    mock_momentum.return_value = {"signal": "LONG", "targets": ["AAPL"]}
     mock_entries = [
         {
             "id": "mock_strat",
@@ -136,5 +138,39 @@ def test_generate_signals_non_default_parameters_or_unsupported():
     ]
 
     mock_data = pd.DataFrame()
-    with pytest.raises(UnsupportedRuleShape, match="Unsupported parameters for family 'momentum'"):
-        generate_signals_from_registry(mock_data, mock_entries, tickers=["AAPL"])
+    results = generate_signals_from_registry(mock_data, mock_entries, tickers=["AAPL"])
+
+    assert "mock_strat" in results
+    # verify delegate was called successfully and parameters passed through (ignoring the invalid one)
+    mock_momentum.assert_called_once()
+    args, kwargs = mock_momentum.call_args
+    assert list(args[1]) == ["AAPL"]
+    assert kwargs.get("lookback_days") == 84
+    assert kwargs.get("top_n") == 8
+    assert "invalid_param" not in kwargs
+
+@mock.patch("src.ops.signals.get_spy_sma200_signal", autospec=True)
+def test_generate_signals_parameter_mapping_and_filtering(mock_sma200):
+    mock_sma200.return_value = {"signal": "BUY", "sma200": 100.0}
+    mock_entries = [
+        {
+            "id": "mock_trend_strat",
+            "status": "active",
+            "spec": {
+                "id": "mock_trend_strat",
+                "family": "trend",
+                "parameters": {"window": 200, "exec_delay": 1, "drift_rebal": 0.05}
+            }
+        }
+    ]
+
+    mock_data = pd.DataFrame()
+    results = generate_signals_from_registry(mock_data, mock_entries)
+
+    assert "mock_trend_strat" in results
+    # verify parameter mapping and filtering
+    mock_sma200.assert_called_once()
+    args, kwargs = mock_sma200.call_args
+    assert kwargs.get("sma_window") == 200
+    assert "exec_delay" not in kwargs
+    assert "drift_rebal" not in kwargs
