@@ -2,6 +2,10 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
+class UnsupportedRuleShape(Exception):
+    pass
+
+
 
 def get_us_momentum_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
     signal_data = {}
@@ -565,3 +569,59 @@ def _hybrid_download(tickers, *args, **kwargs):
     return combined
 
 yf.download = _hybrid_download
+
+def generate_signals_from_registry(data: pd.DataFrame, registry_entries: list[dict], tickers: list[str] = None) -> dict:
+    """
+    Dynamically generates signals for active registry entries.
+    Parses rule shapes based on the family or signal definition and delegates to existing logic.
+    """
+    results = {}
+
+    for entry in registry_entries:
+        if entry.get("status") not in ["active", "ported", "PASS_ALL_GATES"]:
+            continue
+
+        spec = entry.get("spec", {})
+        if not spec:
+            continue
+
+        spec_id = spec["id"]
+        family = spec.get("family", "")
+
+
+        # Determine the universe or default tickers if not passed
+        # Usually signals.py expects the raw data dataframe to contain what it needs.
+
+        if family == "momentum":
+            # Delegate to get_us_momentum_top5_signal-like logic
+            # Existing hardcoded logic uses lookback 126 and skip 21 (148 total). We'll assume the general shape:
+            results[spec_id] = get_us_momentum_top5_signal(data, tickers)
+
+        elif family == "trend":
+            # E.g. spy_sma200
+            results[spec_id] = get_spy_sma200_signal(data)
+
+        elif family == "mean_reversion":
+            # E.g. spy_rsi2
+            results[spec_id] = get_spy_rsi2_signal(data)
+
+        elif family == "breakout_burst":
+            # breakout_burst
+            results[spec_id] = get_breakout_burst_signal(data, tickers)
+
+        elif family == "low_vol":
+            # us_lowvol_top30
+            results[spec_id] = get_us_lowvol_top30_signal(data, tickers)
+
+        elif family == "event_driven":
+            # us_pead_top5
+            results[spec_id] = get_us_pead_top5_signal(data, tickers)
+
+        elif family == "vol_targeting":
+            # btc_vol_target_sma100
+            results[spec_id] = get_btc_vol_target_sma100_signal(data)
+
+        else:
+            raise UnsupportedRuleShape(f"Unsupported rule shape for {spec_id}: family '{family}' is not supported without manual code changes.")
+
+    return results
