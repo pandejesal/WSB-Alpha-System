@@ -7,7 +7,7 @@ class UnsupportedRuleShape(Exception):
 
 
 
-def get_us_momentum_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
+def get_us_momentum_top5_signal(data: pd.DataFrame, tickers: list[str], lookback_days: int = 126, skip_days: int = 21, top_n: int = 5) -> dict:
     signal_data = {}
 
     if data is None or data.empty:
@@ -20,9 +20,9 @@ def get_us_momentum_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
     for t in tickers:
         if t in closes:
             s = closes[t].dropna()
-            if len(s) > 148:
-                p_skip = s.iloc[-22]
-                p_lookback = s.iloc[-148]
+            if len(s) > (lookback_days + skip_days + 1):
+                p_skip = s.iloc[-(skip_days + 1)]
+                p_lookback = s.iloc[-(lookback_days + skip_days + 1)]
                 if p_lookback > 0:
                     momenta[t] = float((p_skip / p_lookback) - 1)
 
@@ -31,16 +31,16 @@ def get_us_momentum_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
         return signal_data
 
     sorted_mom = sorted(momenta.items(), key=lambda x: x[1], reverse=True)
-    signal_data["top_5"] = [t for t, _ in sorted_mom[:5]]
+    signal_data["top_5"] = [t for t, _ in sorted_mom[:top_n]]
     signal_data["momenta"] = {t: round(m, 4) for t, m in sorted_mom}
 
     return signal_data
 
 
-def get_spy_sma200_signal(data: pd.DataFrame) -> dict:
+def get_spy_sma200_signal(data: pd.DataFrame, sma_window: int = 200) -> dict:
     signal_data = {}
 
-    if data is None or data.empty or len(data) < 200:
+    if data is None or data.empty or len(data) < sma_window:
         signal_data["data_unavailable"] = True
         return signal_data
 
@@ -48,7 +48,7 @@ def get_spy_sma200_signal(data: pd.DataFrame) -> dict:
     if isinstance(close, pd.DataFrame):
         close = close.squeeze()
 
-    sma200 = close.rolling(window=200).mean().iloc[-1]
+    sma200 = close.rolling(window=sma_window).mean().iloc[-1]
     last_close = close.iloc[-1]
 
     signal_data["sma200"] = float(sma200)
@@ -58,10 +58,10 @@ def get_spy_sma200_signal(data: pd.DataFrame) -> dict:
     return signal_data
 
 
-def get_spy_rsi2_signal(data: pd.DataFrame) -> dict:
+def get_spy_rsi2_signal(data: pd.DataFrame, rsi_window: int = 2, sma_window: int = 5) -> dict:
     signal_data = {}
 
-    if data is None or data.empty or len(data) < 5:
+    if data is None or data.empty or len(data) < max(rsi_window + 1, sma_window):
         signal_data["data_unavailable"] = True
         return signal_data
 
@@ -70,13 +70,13 @@ def get_spy_rsi2_signal(data: pd.DataFrame) -> dict:
         close = close.squeeze()
 
     delta = close.diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=2).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=2).mean()
+    gain = (delta.where(delta > 0, 0)).rolling(window=rsi_window).mean()
+    loss = (-delta.where(delta < 0, 0)).rolling(window=rsi_window).mean()
     rs = gain / loss
     rsi = 100 - (100 / (1 + rs))
 
     last_rsi = rsi.iloc[-1]
-    sma5 = close.rolling(window=5).mean().iloc[-1]
+    sma5 = close.rolling(window=sma_window).mean().iloc[-1]
     last_close = close.iloc[-1]
 
     signal_data["rsi2"] = float(last_rsi) if pd.notna(last_rsi) else None
@@ -86,10 +86,10 @@ def get_spy_rsi2_signal(data: pd.DataFrame) -> dict:
     return signal_data
 
 
-def get_btc_vol_target_sma100_signal(data: pd.DataFrame) -> dict:
+def get_btc_vol_target_sma100_signal(data: pd.DataFrame, sma_window: int = 100, vol_window: int = 30) -> dict:
     signal_data = {}
 
-    if data is None or data.empty or len(data) < 100:
+    if data is None or data.empty or len(data) < max(sma_window, vol_window + 1):
         signal_data["data_unavailable"] = True
         return signal_data
 
@@ -98,9 +98,9 @@ def get_btc_vol_target_sma100_signal(data: pd.DataFrame) -> dict:
         close = close.squeeze()
 
     returns = close.pct_change()
-    realized_vol = returns.rolling(window=30).std() * np.sqrt(365)
+    realized_vol = returns.rolling(window=vol_window).std() * np.sqrt(365)
     last_vol = realized_vol.iloc[-1]
-    sma100 = close.rolling(window=100).mean().iloc[-1]
+    sma100 = close.rolling(window=sma_window).mean().iloc[-1]
     last_close = close.iloc[-1]
 
     signal_data["realized_vol"] = float(last_vol) if pd.notna(last_vol) else None
@@ -114,10 +114,10 @@ def get_btc_vol_target_sma100_signal(data: pd.DataFrame) -> dict:
 
 
 
-def get_us_lowvol_top30_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
+def get_us_lowvol_top30_signal(data: pd.DataFrame, tickers: list[str], lookback_days: int = 20, top_n: int = 30) -> dict:
     signal_data = {"targets": []}
 
-    if data is None or data.empty or len(data) < 21:
+    if data is None or data.empty or len(data) < lookback_days + 1:
         signal_data["signal"] = "FLAT"
         signal_data["warning"] = "data_unavailable"
         return signal_data
@@ -125,11 +125,11 @@ def get_us_lowvol_top30_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
     closes = data['Close'] if 'Close' in data else data
     if isinstance(closes, pd.DataFrame):
         returns = closes.pct_change()
-        realized_vol = returns.rolling(window=20).std() * np.sqrt(252)
+        realized_vol = returns.rolling(window=lookback_days).std() * np.sqrt(252)
         realized_vol = realized_vol.shift(1)
         last_vol = realized_vol.iloc[-1].dropna()
 
-        if len(last_vol) < 30:
+        if len(last_vol) < top_n:
             signal_data["signal"] = "FLAT"
             signal_data["warning"] = "data_unavailable"
             return signal_data
@@ -174,9 +174,9 @@ def get_us_lowvol_top30_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
             last_me_date = closes.index[0]
 
         vol_at_me = realized_vol.loc[last_me_date].dropna()
-        if len(vol_at_me) >= 30:
-            top30 = vol_at_me.nsmallest(30).index.tolist()
-            signal_data["targets"] = top30
+        if len(vol_at_me) >= top_n:
+            top_n_list = vol_at_me.nsmallest(top_n).index.tolist()
+            signal_data["targets"] = top_n_list
             signal_data["signal"] = "LONG"
         else:
             signal_data["signal"] = "FLAT"
@@ -187,7 +187,7 @@ def get_us_lowvol_top30_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
 
     return signal_data
 
-def get_us_pead_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
+def get_us_pead_top5_signal(data: pd.DataFrame, tickers: list[str], lookback_days: int = 10, hold_days: int = 5, top_n: int = 5) -> dict:
     signal_data = {"targets": []}
 
     if data is None or data.empty:
@@ -217,14 +217,14 @@ def get_us_pead_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
                 # In a real implementation, we'd need to track state (hold for 5 days).
                 # Since ops is stateless, we check if there was a positive surprise in the last 5 days
                 earnings = earnings.tz_localize(None)
-                recent_earnings = earnings[(earnings.index < last_date) & (earnings.index >= last_date - pd.Timedelta(days=10))]
+                recent_earnings = earnings[(earnings.index < last_date) & (earnings.index >= last_date - pd.Timedelta(days=lookback_days))]
 
                 for idx, row in recent_earnings.iterrows():
                     if pd.notna(row.get('Reported EPS')) and pd.notna(row.get('Surprise(%)')) and row['Surprise(%)'] >= 0.0:
                         # check if it's within the 5 trading day hold period
                         # simplistic: if last_date is within 5 trading days after the earnings date
                         trading_days_since = len(closes.loc[idx:last_date]) - 1
-                        if 1 <= trading_days_since <= 5:
+                        if 1 <= trading_days_since <= hold_days:
                             targets.append((idx, ticker))
                             break # only consider the most recent valid earnings per ticker
         except Exception as e:
@@ -232,7 +232,7 @@ def get_us_pead_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
 
     # sort by event date (first-come-first-served)
     targets.sort(key=lambda x: x[0])
-    top5_targets = [t[1] for t in targets[:5]]
+    top5_targets = [t[1] for t in targets[:top_n]]
 
     signal_data["targets"] = top5_targets
     signal_data["signal"] = "LONG" if top5_targets else "FLAT"
@@ -241,10 +241,10 @@ def get_us_pead_top5_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
 
     return signal_data
 
-def get_breakout_burst_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
+def get_breakout_burst_signal(data: pd.DataFrame, tickers: list[str], lookback_days: int = 20, top_n: int = 10) -> dict:
     signal_data = {"targets": []}
 
-    if data is None or data.empty or len(data) < 22:
+    if data is None or data.empty or len(data) < lookback_days + 2:
         signal_data["signal"] = "FLAT"
         signal_data["warning"] = "data_unavailable"
         return signal_data
@@ -262,10 +262,10 @@ def get_breakout_burst_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
     ret = closes.pct_change()
 
     # Prior 20-day high (shifted)
-    high_20d = closes.shift(1).rolling(window=20).max()
+    high_20d = closes.shift(1).rolling(window=lookback_days).max()
 
     # Volume mult (shifted avg volume)
-    avg_vol_20d = volumes.shift(1).rolling(window=20).mean()
+    avg_vol_20d = volumes.shift(1).rolling(window=lookback_days).mean()
 
     targets = []
 
@@ -276,9 +276,9 @@ def get_breakout_burst_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
     for ticker in tickers:
         if ticker in closes.columns:
             # check back 20 days for entry criteria
-            for i in range(1, 21):
+            for i in range(1, lookback_days + 1):
                 idx = -i
-                if len(closes) < abs(idx) + 21:
+                if len(closes) < abs(idx) + lookback_days + 1:
                     continue
 
                 c = closes[ticker].iloc[idx]
@@ -289,31 +289,31 @@ def get_breakout_burst_signal(data: pd.DataFrame, tickers: list[str]) -> dict:
 
                 if pd.notna(r) and pd.notna(c) and pd.notna(h20) and pd.notna(v) and pd.notna(v20):
                     if r >= 0.04 and c > h20 and v >= 1.5 * v20:
-                        if i == 20: # Exactly 20 trading days ago
+                        if i == lookback_days: # Exactly 20 trading days ago
                             # Exit bar: write explicit 0.0
                             pass # We don't include it in targets (implicit 0.0) or we explicitly add it with 0.0 weight?
                             # Usually targets missing implies 0, but the spec says "exits write explicit 0.0 on the exit bar"
                             # This depends on the portfolio engine. If it returns {"ticker": ticker, "weight": 0.0}
-                        elif i < 20:
+                        elif i < lookback_days:
                             targets.append((closes.index[idx], ticker))
                         break # Only need the most recent entry within 20 days
 
     # sort by event date FCFS
     targets.sort(key=lambda x: x[0])
-    top10_targets = [t[1] for t in targets[:10]]
+    top10_targets = [t[1] for t in targets[:top_n]]
 
     signal_data["targets"] = top10_targets
     signal_data["signal"] = "LONG" if top10_targets else "FLAT"
 
     return signal_data
 
-def get_dual_momentum_signal(data: pd.DataFrame, tickers: list[str] = None) -> dict:
+def get_dual_momentum_signal(data: pd.DataFrame, tickers: list[str] = None, lookback_days: int = 42, skip_days: int = 21) -> dict:
     signal_data = {}
 
     if tickers is None:
         tickers = ["SPY", "QQQ"]
 
-    if data is None or data.empty or len(data) < 42:
+    if data is None or data.empty or len(data) < lookback_days:
         signal_data["data_unavailable"] = True
         return signal_data
 
@@ -323,9 +323,9 @@ def get_dual_momentum_signal(data: pd.DataFrame, tickers: list[str] = None) -> d
     for t in tickers:
         if t in closes:
             s = closes[t].dropna()
-            if len(s) > 42:
-                p_skip = s.iloc[-22]
-                p_lookback = s.iloc[-43]
+            if len(s) > lookback_days:
+                p_skip = s.iloc[-(skip_days + 1)]
+                p_lookback = s.iloc[-(lookback_days + 1)]
                 if p_lookback > 0:
                     momenta[t] = float((p_skip / p_lookback) - 1)
 
@@ -587,41 +587,47 @@ def generate_signals_from_registry(data: pd.DataFrame, registry_entries: list[di
 
         spec_id = spec["id"]
         family = spec.get("family", "")
+        params = spec.get("parameters") or spec.get("params", {})
 
+        if tickers is None and family in ["momentum", "event_driven", "breakout_burst", "low_vol"]:
+            raise ValueError(f"tickers cannot be None for ticker-dependent family '{family}'")
 
         # Determine the universe or default tickers if not passed
         # Usually signals.py expects the raw data dataframe to contain what it needs.
 
-        if family == "momentum":
-            # Delegate to get_us_momentum_top5_signal-like logic
-            # Existing hardcoded logic uses lookback 126 and skip 21 (148 total). We'll assume the general shape:
-            results[spec_id] = get_us_momentum_top5_signal(data, tickers)
+        try:
+            if family == "momentum":
+                # Delegate to get_us_momentum_top5_signal-like logic
+                # Existing hardcoded logic uses lookback 126 and skip 21 (148 total). We'll assume the general shape:
+                results[spec_id] = get_us_momentum_top5_signal(data, tickers, **params)
 
-        elif family == "trend":
-            # E.g. spy_sma200
-            results[spec_id] = get_spy_sma200_signal(data)
+            elif family == "trend":
+                # E.g. spy_sma200
+                results[spec_id] = get_spy_sma200_signal(data, **params)
 
-        elif family == "mean_reversion":
-            # E.g. spy_rsi2
-            results[spec_id] = get_spy_rsi2_signal(data)
+            elif family == "mean_reversion":
+                # E.g. spy_rsi2
+                results[spec_id] = get_spy_rsi2_signal(data, **params)
 
-        elif family == "breakout_burst":
-            # breakout_burst
-            results[spec_id] = get_breakout_burst_signal(data, tickers)
+            elif family == "breakout_burst":
+                # breakout_burst
+                results[spec_id] = get_breakout_burst_signal(data, tickers, **params)
 
-        elif family == "low_vol":
-            # us_lowvol_top30
-            results[spec_id] = get_us_lowvol_top30_signal(data, tickers)
+            elif family == "low_vol":
+                # us_lowvol_top30
+                results[spec_id] = get_us_lowvol_top30_signal(data, tickers, **params)
 
-        elif family == "event_driven":
-            # us_pead_top5
-            results[spec_id] = get_us_pead_top5_signal(data, tickers)
+            elif family == "event_driven":
+                # us_pead_top5
+                results[spec_id] = get_us_pead_top5_signal(data, tickers, **params)
 
-        elif family == "vol_targeting":
-            # btc_vol_target_sma100
-            results[spec_id] = get_btc_vol_target_sma100_signal(data)
+            elif family == "vol_targeting":
+                # btc_vol_target_sma100
+                results[spec_id] = get_btc_vol_target_sma100_signal(data, **params)
 
-        else:
-            raise UnsupportedRuleShape(f"Unsupported rule shape for {spec_id}: family '{family}' is not supported without manual code changes.")
+            else:
+                raise UnsupportedRuleShape(f"Unsupported rule shape for {spec_id}: family '{family}' is not supported without manual code changes.")
+        except TypeError as e:
+            raise UnsupportedRuleShape(f"Unsupported parameters for family '{family}': {e}")
 
     return results

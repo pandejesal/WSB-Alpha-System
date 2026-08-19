@@ -40,7 +40,7 @@ exit_rules:
 # -----------------------------------------------------------------------------
 # PARAMETERS & INDICATORS
 # -----------------------------------------------------------------------------
-parameters:
+parameters: # "params" is also an accepted alias for "parameters"
   # Key-value pairs for parameters used by the strategy
   param1: value1
   param2: value2
