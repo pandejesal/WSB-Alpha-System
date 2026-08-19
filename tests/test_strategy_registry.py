@@ -121,3 +121,20 @@ def test_generate_signals_unsupported_shape():
     mock_data = pd.DataFrame()
     with pytest.raises(UnsupportedRuleShape, match="family 'magic_ai' is not supported"):
         generate_signals_from_registry(mock_data, mock_entries)
+
+def test_generate_signals_non_default_parameters_or_unsupported():
+    mock_entries = [
+        {
+            "id": "mock_strat",
+            "status": "active",
+            "spec": {
+                "id": "mock_strat",
+                "family": "momentum",
+                "parameters": {"lookback_days": 84, "top_n": 8, "invalid_param": 100}
+            }
+        }
+    ]
+
+    mock_data = pd.DataFrame()
+    with pytest.raises(UnsupportedRuleShape, match="Unsupported parameters for family 'momentum'"):
+        generate_signals_from_registry(mock_data, mock_entries, tickers=["AAPL"])
