@@ -43,7 +43,7 @@ Dashboard & monitoring ──► docs/ static GitHub Pages dashboard, Telegram a
 | `src/monitoring/` | `telegram_bot.py` (notifications; returns `False` + warning on missing credentials), `dashboard.py` (deprecated stub -- real dashboard lives in `docs/`) |
 | `src/utils/` | `config.py` (pydantic-settings, `.env` + `config/settings.yaml`), `gemini_provider.py` / `gemini_client.py` (Google `google-genai`, `gemini-2.5-flash`) |
 | `config/` | `universe.json` (ticker universe), `settings.yaml` (trading flags) |
-| `scripts/` | `run_full_backtest.py`, `generate_strategy_data.py`, `comprehensive_backtest_report.py`, `paper_trading_sandbox.py`, `run_research.py`, `check_market_data.py` |
+| `scripts/` | `run_full_backtest.py`, `generate_strategy_data.py`, `comprehensive_backtest_report.py`, `paper_trading_sandbox.py`, `run_research.py`, `check_market_data.py`, `hunt_runner.py`, `preregister.py` |
 | `tests/` | pytest suite covering indicators, data, providers, backtest, validation, execution, risk, evolution, sandbox |
 | `docs/` | Static dashboard (GitHub Pages) + `data/*.json` artifacts (backtest_report, strategies, equity_curve, trades, portfolio, apiHealth, ...) |
 | `.github/workflows/` | 8 scheduled / triggered pipelines (see below) |
