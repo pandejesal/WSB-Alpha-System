@@ -161,6 +161,8 @@ def do_collect(args):
         cand_path = os.path.join(candidates_dir, cand_file)
         try:
             spec = strategy_registry.load_yaml(cand_path)
+            if not isinstance(spec, dict):
+                raise strategy_registry.MalformedSpecError(f"Spec {cand_file} is not a YAML mapping")
             strategy_registry.validate_spec(spec, cand_path)
 
             # Spec is valid. Check missing requirements for registry entry.
