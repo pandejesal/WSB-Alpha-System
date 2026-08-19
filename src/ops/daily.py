@@ -265,7 +265,7 @@ def run_check_mode():
 
                 total_inv_vol = sum(inv_vol.values())
                 if total_inv_vol > 0:
-                    for k in weights:
+                    for k in weights.keys():
                         weights[k] = round(inv_vol[k] / total_inv_vol, 6)
         except Exception as e:
             plan_data["warnings"].append(f"Weight calculation failed: {e}")
@@ -281,9 +281,9 @@ def run_check_mode():
              other_sum = sum(v for k, v in weights.items() if k != "btc_vol_target_sma100")
              if other_sum > 0:
                  scale = (1.0 - 0.05) / other_sum
-                 for k in weights:
+                 for k, v in weights.items():
                      if k != "btc_vol_target_sma100":
-                         weights[k] = round(weights[k] * scale, 6)
+                         weights[k] = round(v * scale, 6)
          elif btc_w == 0.0 and sum(weights.values()) > 0:
              # Even if calculated 0 due to some issue (but not missing data)?
              # Let's enforce strictly if not missing data.
@@ -292,9 +292,9 @@ def run_check_mode():
              other_sum = sum(v for k, v in weights.items() if k != "btc_vol_target_sma100")
              if other_sum > 0:
                  scale = (1.0 - 0.05) / other_sum
-                 for k in weights:
+                 for k, v in weights.items():
                      if k != "btc_vol_target_sma100":
-                         weights[k] = round(weights[k] * scale, 6)
+                         weights[k] = round(v * scale, 6)
 
     # Min notional flags (assuming $100 total equity)
     equity = 100.0
