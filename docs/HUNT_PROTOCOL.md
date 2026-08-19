@@ -53,13 +53,13 @@ Every successfully completed hunt session MUST produce exactly the following art
 
 We enforce an absolute "honest-claims discipline." No post-hoc cherry-picking is allowed.
 
-1. **Pre-Registration:** Before running exhaustive historical backtests, the agent must write a frozen specification document (`docs/data/cycle*_prereg_<family>.md`) declaring the hypothesis and parameter search space.
+1. **Pre-Registration:** Before running exhaustive historical backtests, the agent must generate a frozen specification document using `python scripts/preregister.py freeze` (`docs/data/cycle*_prereg_<family>.md`) declaring the hypothesis and parameter search space. The automated tool will prevent overwriting and handle formatting.
 2. **Validation Pipeline:** The candidate must be evaluated using the canonical validation scripts:
    - `scripts/run_full_backtest.py`
    - `scripts/comprehensive_backtest_report.py`
    - `scripts/generate_strategy_data.py`
 3. **The Gate:** The strategy must survive in-sample testing, combinatorial cross-validation, walk-forward out-of-sample validation, and parameter permutation checks.
-4. **Ledger Entry:** The final result must be recorded as a Deflated Sharpe Ratio (DSR) entry in the evaluation JSON. No claim is recorded without prior pre-registration.
+4. **Ledger Entry:** The final result must be recorded as a Deflated Sharpe Ratio (DSR) entry in the evaluation JSON using `python scripts/preregister.py record`. No claim is recorded without prior pre-registration. The automated tooling strictly enforces this honest-claims gate.
 
 ## 5. CADENCE RULES
 

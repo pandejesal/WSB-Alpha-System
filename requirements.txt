@@ -166,3 +166,4 @@ yfinance==0.2.52
 zstandard==0.25.0
 defusedxml==0.7.1
 ccxt==4.5.74
+PyYAML==6.0.3
