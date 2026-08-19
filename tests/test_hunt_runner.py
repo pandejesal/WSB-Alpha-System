@@ -1,0 +1,131 @@
+import os
+from unittest import mock
+
+import pytest
+import yaml
+
+from scripts.hunt_runner import KNOWN_FAMILIES, do_collect, do_run, load_brief
+
+
+class DummyArgs:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+def test_load_brief_success(tmp_path):
+    brief_path = tmp_path / "valid_brief.yaml"
+    with open(brief_path, "w") as f:
+        yaml.safe_dump({
+            "family": KNOWN_FAMILIES[0],
+            "universe": "test_universe",
+            "hypothesis": "test_hypothesis",
+            "acceptance": "test_acceptance",
+            "lookback_constraints": "test_lookback",
+            "edge_gate_params": {}
+        }, f)
+
+    brief = load_brief(str(brief_path))
+    assert brief["family"] == KNOWN_FAMILIES[0]
+
+def test_load_brief_missing_fields(tmp_path):
+    brief_path = tmp_path / "missing_brief.yaml"
+    with open(brief_path, "w") as f:
+        yaml.safe_dump({
+            "family": KNOWN_FAMILIES[0],
+            "universe": "test_universe"
+            # Missing hypothesis, etc
+        }, f)
+
+    with pytest.raises(ValueError, match="missing required fields"):
+        load_brief(str(brief_path))
+
+def test_load_brief_unknown_family(tmp_path):
+    brief_path = tmp_path / "unknown_brief.yaml"
+    with open(brief_path, "w") as f:
+        yaml.safe_dump({
+            "family": "unknown_magic_family",
+            "universe": "test_universe",
+            "hypothesis": "test_hypothesis",
+            "acceptance": "test_acceptance",
+            "lookback_constraints": "test_lookback",
+            "edge_gate_params": {}
+        }, f)
+
+    with pytest.raises(ValueError, match="Unknown family"):
+        load_brief(str(brief_path))
+
+@mock.patch("scripts.hunt_runner.datetime")
+@mock.patch("scripts.hunt_runner.preregistration.freeze_preregistration")
+@mock.patch("scripts.hunt_runner.strategy_registry.load_registry")
+def test_do_run(mock_load_registry, mock_freeze, mock_datetime, tmp_path):
+    from datetime import datetime, timezone
+    mock_now = datetime(2025, 1, 1, 12, 0, tzinfo=timezone.utc)
+    mock_datetime.now.return_value = mock_now
+    mock_datetime.side_effect = lambda *args, **kw: datetime(*args, **kw)  # noqa: DTZ001
+
+    mock_load_registry.return_value = ([], {})
+    mock_freeze.return_value = "dummy_path"
+
+    brief_path = tmp_path / "brief.yaml"
+    with open(brief_path, "w") as f:
+        yaml.safe_dump({
+            "family": KNOWN_FAMILIES[0],
+            "universe": "test",
+            "hypothesis": "test",
+            "acceptance": "test",
+            "lookback_constraints": "test",
+            "edge_gate_params": {}
+        }, f)
+
+    out_dir = tmp_path / "out"
+    args = DummyArgs(brief=str(brief_path), out=str(out_dir), force_reuse=False)
+
+    do_run(args)
+
+    assert os.path.exists(out_dir)
+    assert os.path.exists(out_dir / "candidates")
+    assert os.path.exists(out_dir / "results")
+    assert os.path.exists(out_dir / "brief.yaml")
+    assert os.path.exists(out_dir / "session_log.yaml")
+    assert os.path.exists(out_dir / "registry_snapshot.json")
+
+    mock_freeze.assert_called_once()
+
+def test_do_collect(tmp_path, capsys):
+    target_dir = tmp_path / "run_dir"
+    candidates_dir = target_dir / "candidates"
+    rejected_dir = target_dir / "rejected"
+    os.makedirs(candidates_dir)
+
+    # Valid spec
+    valid_spec_path = candidates_dir / "valid.yaml"
+    with open(valid_spec_path, "w") as f:
+        yaml.safe_dump({
+            "id": "test_id",
+            "name": "test_name",
+            "family": "momentum",
+            "universe": "test_univ",
+            "parameters": {},
+            "signal": {"entry": "e", "exit": "x"}
+        }, f)
+
+    # Invalid spec
+    invalid_spec_path = candidates_dir / "invalid.yaml"
+    with open(invalid_spec_path, "w") as f:
+        yaml.safe_dump({
+            "id": "test_id"
+            # Missing name, family, etc
+        }, f)
+
+    args = DummyArgs(dir=str(target_dir), registry="dummy_registry.json")
+
+    do_collect(args)
+
+    captured = capsys.readouterr()
+
+    assert "✅ Valid Spec: valid.yaml" in captured.out
+    assert "❌ Rejected: invalid.yaml" in captured.out
+
+    # invalid.yaml should be moved
+    assert not os.path.exists(invalid_spec_path)
+    assert os.path.exists(rejected_dir / "invalid.yaml")
+    assert os.path.exists(rejected_dir / "invalid.yaml.reason")
