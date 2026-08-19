@@ -8,9 +8,9 @@ astropy-iers-data==0.2026.8.3.0.53.6
 asttokens==3.0.2
 bandit==1.9.4
 beautifulsoup4==4.15.0
-certifi
-cffi
-charset-normalizer
+certifi==2026.7.22
+cffi==2.1.1
+charset-normalizer==3.4.9
 clarabel==0.11.1
 click==8.4.2
 comm==0.2.3
@@ -147,7 +147,7 @@ traitlets==5.16.1
 typeguard==4.6.0
 typing-inspect==0.9.0
 typing-inspection==0.4.2
-typing_extensions
+typing_extensions==4.15.0
 tzdata==2026.3
 tzlocal==5.4.4
 update_checker==1.0.0
