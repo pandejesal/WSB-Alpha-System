@@ -1,0 +1,79 @@
+# Strategy Specification Template
+# This file defines the required and optional fields for any strategy managed by the alpha system.
+# New strategies introduced by Hunt Sessions must conform to this schema.
+
+# -----------------------------------------------------------------------------
+# IDENTIFICATION & CORE METADATA (Required)
+# -----------------------------------------------------------------------------
+id: strategy_id                  # Unique identifier (e.g., us_momentum_top5)
+name: Strategy Name              # Human-readable name
+family: strategy_family          # Broad classification (e.g., momentum, trend, mean_reversion, breakout_burst)
+venue: alpaca                    # Target execution venue (e.g., alpaca, binance)
+universe: "definition"           # Description of the tradable universe
+
+# -----------------------------------------------------------------------------
+# HUNT PROTOCOL METADATA (Required for newly hunted strategies)
+# -----------------------------------------------------------------------------
+pre_registration_ref: "docs/data/cycle1_prereg_myfam.md" # Reference to the pre-registration doc
+gates_passed: "5/5"             # e.g., "5/5" indicating survival through permutation/walk-forward tests
+verdict: "PASS_ALL_GATES"       # e.g., PASS_ALL_GATES or REJECTED
+eval_records: "docs/data/eval_myfam.json" # Path to the final evaluation JSON output
+
+# -----------------------------------------------------------------------------
+# RULES & LOGIC (Required: must provide either signal block OR entry/exit rules)
+# -----------------------------------------------------------------------------
+# Modern format (preferred for complex logic)
+signal:
+  entry: "Description of entry logic"
+  exit: "Description of exit logic"
+  sizing: "Description of position sizing"
+  caps:
+    max_concurrent_positions: 10
+  rebalance: "daily target rows"
+
+# Legacy format (used by older specs)
+entry_rules:
+  - "Rule 1"
+exit_rules:
+  - "Rule 1"
+
+# -----------------------------------------------------------------------------
+# PARAMETERS & INDICATORS
+# -----------------------------------------------------------------------------
+parameters:
+  # Key-value pairs for parameters used by the strategy
+  param1: value1
+  param2: value2
+
+indicators:
+  - "Indicator 1 description"
+
+# -----------------------------------------------------------------------------
+# EXECUTION & RISK (Optional but recommended)
+# -----------------------------------------------------------------------------
+position_sizing:
+  - "Sizing rule 1"
+fee_model:
+  commission: "$0 (Alpaca)" # Must be string if contains colons
+  slippage: "0.05%"
+  settlement: "T+1"
+
+# -----------------------------------------------------------------------------
+# PERFORMANCE & FEASIBILITY (Optional but recommended)
+# -----------------------------------------------------------------------------
+benchmark_result:
+  benchmark: "SPY"
+  full: "CAGR X%, Sharpe Y"
+  oos_2023plus: "CAGR Z%"
+robustness_notes:
+  - "Notes on parameter sweep stability"
+feasibility_at_100:
+  - "Notes on how it trades with a $100 account"
+risks:
+  - "Risk factor 1"
+
+# -----------------------------------------------------------------------------
+# VERSIONING (Optional)
+# -----------------------------------------------------------------------------
+version: 1
+status: "active" # e.g., ported, active, PASS_ALL_GATES
