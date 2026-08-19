@@ -17,8 +17,8 @@ class NautilusEngine(BaseBacktestEngine):
 
     def run_sim(self, strategy_spec: dict, historical_data: pd.DataFrame) -> pd.DataFrame:
         if not self.use_nautilus:
-            logger.warning("NautilusTrader is missing. Returning empty trades DataFrame instead of mocking.")
-            return pd.DataFrame()
+            logger.error("NautilusTrader is missing. Aborting run_sim instead of silently mocking data.")
+            raise ImportError("NautilusTrader is missing. Cannot run sim.")
 
         df = historical_data.copy()
 

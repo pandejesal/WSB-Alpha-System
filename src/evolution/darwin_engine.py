@@ -61,13 +61,11 @@ class DarwinEngine:
         for strategy in population:
             metrics = strategy.get('metrics', {})
 
-            # 6c: Add CPCV Integration (mocking call if data provided)
-            cpcv_conf = 0.0
+            # 6c: Add CPCV Integration
             if historical_data is not None:
                 try:
                     from src.backtest.validators.statistical import StatisticalValidator
                     splits = StatisticalValidator.combinatorial_purged_cv(len(historical_data))  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
-                    cpcv_conf = 0.95  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
                 except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
                     logger.debug(f"Failed to calculate CPCV split sizes gracefully: {e}")
 

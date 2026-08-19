@@ -36,7 +36,7 @@ class ResearchAgent:
         """
 
         # We assume the llm provider has a generate_json method that takes a prompt and a schema
-        # In this scaffolding phase, we'll mock the JSON schema output.
+
         try:
             hypothesis = self.llm.generate_json(
                 prompt=prompt,
