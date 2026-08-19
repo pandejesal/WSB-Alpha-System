@@ -186,8 +186,8 @@ def test_do_collect(tmp_path, capsys):
 
     captured = capsys.readouterr()
 
-    assert "✅ Valid Spec: valid.yaml" in captured.out
-    assert "❌ Rejected: invalid.yaml" in captured.out
+    assert "[VALID] Spec: valid.yaml" in captured.out
+    assert "[REJECTED] invalid.yaml" in captured.out
 
     # invalid.yaml should be moved
     assert not os.path.exists(invalid_spec_path)
@@ -211,7 +211,7 @@ def test_do_collect_yaml_error(tmp_path, capsys):
 
     captured = capsys.readouterr()
 
-    assert "❌ Rejected: invalid_yaml.yaml" in captured.out
+    assert "[REJECTED] invalid_yaml.yaml" in captured.out
 
     # file should be moved to rejected/
     assert not os.path.exists(invalid_yaml_path)
@@ -254,11 +254,11 @@ def test_do_collect_non_mapping(tmp_path, capsys):
     captured = capsys.readouterr()
 
     # The loop should process the valid file successfully
-    assert "✅ Valid Spec: valid.yaml" in captured.out
+    assert "[VALID] Spec: valid.yaml" in captured.out
 
     # Both invalid files should be rejected
-    assert "❌ Rejected: empty.yaml" in captured.out
-    assert "❌ Rejected: scalar.yaml" in captured.out
+    assert "[REJECTED] empty.yaml" in captured.out
+    assert "[REJECTED] scalar.yaml" in captured.out
 
     # Valid file remains
     assert os.path.exists(valid_path)
