@@ -181,7 +181,7 @@ def do_collect(args):
                 if not os.path.exists(eval_file) and not os.path.exists(os.path.join(results_dir, os.path.basename(eval_file))):
                      missing_items.append(f"Eval records not found at {eval_file} or in results/")
 
-            print(f"✅ Valid Spec: {cand_file}")
+            print(f"[VALID] Spec: {cand_file}")
             if missing_items:
                 print("   Missing items for registry entry:")
                 for item in missing_items:
@@ -190,7 +190,7 @@ def do_collect(args):
                 print("   Ready for registry merging (human-gated step).")
 
         except (strategy_registry.MalformedSpecError, yaml.YAMLError, OSError) as e:
-            print(f"❌ Rejected: {cand_file} - {e}")
+            print(f"[REJECTED] {cand_file} - {e}")
             shutil.move(cand_path, os.path.join(rejected_dir, cand_file))
             # Create a rejection reason file
             with open(os.path.join(rejected_dir, f"{cand_file}.reason"), 'w') as f:
