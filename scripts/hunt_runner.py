@@ -15,6 +15,9 @@ def load_brief(brief_path):
     with open(brief_path, 'r') as f:
         brief = yaml.safe_load(f)
 
+    if not isinstance(brief, dict):
+        raise ValueError(f"Brief at {brief_path} is not a valid YAML mapping")
+
     required_fields = ["family", "universe", "hypothesis", "acceptance", "lookback_constraints", "edge_gate_params"]
     missing = [f for f in required_fields if f not in brief]
     if missing:
@@ -184,7 +187,7 @@ def do_collect(args):
             else:
                 print("   Ready for registry merging (human-gated step).")
 
-        except strategy_registry.MalformedSpecError as e:
+        except (strategy_registry.MalformedSpecError, yaml.YAMLError, OSError) as e:
             print(f"❌ Rejected: {cand_file} - {e}")
             shutil.move(cand_path, os.path.join(rejected_dir, cand_file))
             # Create a rejection reason file
