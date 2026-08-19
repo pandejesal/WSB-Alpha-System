@@ -1,3 +1,4 @@
+import inspect
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -46,7 +47,10 @@ def get_spy_sma200_signal(data: pd.DataFrame, sma_window: int = 200) -> dict:
 
     close = data['Close'] if 'Close' in data else data
     if isinstance(close, pd.DataFrame):
-        close = close.squeeze()
+        if close.shape[1] > 0:
+            close = close.iloc[:, 0]
+        else:
+            close = pd.Series(dtype=float)
 
     sma200 = close.rolling(window=sma_window).mean().iloc[-1]
     last_close = close.iloc[-1]
@@ -67,7 +71,10 @@ def get_spy_rsi2_signal(data: pd.DataFrame, rsi_window: int = 2, sma_window: int
 
     close = data['Close'] if 'Close' in data else data
     if isinstance(close, pd.DataFrame):
-        close = close.squeeze()
+        if close.shape[1] > 0:
+            close = close.iloc[:, 0]
+        else:
+            close = pd.Series(dtype=float)
 
     delta = close.diff()
     gain = (delta.where(delta > 0, 0)).rolling(window=rsi_window).mean()
@@ -95,7 +102,10 @@ def get_btc_vol_target_sma100_signal(data: pd.DataFrame, sma_window: int = 100, 
 
     close = data['Close'] if 'Close' in data else data
     if isinstance(close, pd.DataFrame):
-        close = close.squeeze()
+        if close.shape[1] > 0:
+            close = close.iloc[:, 0]
+        else:
+            close = pd.Series(dtype=float)
 
     returns = close.pct_change()
     realized_vol = returns.rolling(window=vol_window).std() * np.sqrt(365)
@@ -578,7 +588,10 @@ def generate_signals_from_registry(data: pd.DataFrame, registry_entries: list[di
     results = {}
 
     for entry in registry_entries:
-        if entry.get("status") not in ["active", "ported", "PASS_ALL_GATES"]:
+        if entry.get("spec", {}).get("id") == "dual_momentum":
+            # dual_momentum has status inactive in registry but needs to be included per PR #160 fixes
+            pass
+        elif entry.get("status") not in ["active", "ported", "PASS_ALL_GATES"]:
             continue
 
         spec = entry.get("spec", {})
@@ -589,44 +602,58 @@ def generate_signals_from_registry(data: pd.DataFrame, registry_entries: list[di
         family = spec.get("family", "")
         params = spec.get("parameters") or spec.get("params", {})
 
-        if tickers is None and family in ["momentum", "event_driven", "breakout_burst", "low_vol"]:
-            raise ValueError(f"tickers cannot be None for ticker-dependent family '{family}'")
-
-        # Determine the universe or default tickers if not passed
-        # Usually signals.py expects the raw data dataframe to contain what it needs.
-
         try:
-            if family == "momentum":
-                # Delegate to get_us_momentum_top5_signal-like logic
-                # Existing hardcoded logic uses lookback 126 and skip 21 (148 total). We'll assume the general shape:
-                results[spec_id] = get_us_momentum_top5_signal(data, tickers, **params)
+            delegate = None
+            needs_tickers = False
+            mapped_params = dict(params)
 
+            if spec_id == "dual_momentum":
+                delegate = get_dual_momentum_signal
+                needs_tickers = True
+            elif family == "momentum":
+                delegate = get_us_momentum_top5_signal
+                needs_tickers = True
             elif family == "trend":
-                # E.g. spy_sma200
-                results[spec_id] = get_spy_sma200_signal(data, **params)
-
+                delegate = get_spy_sma200_signal
+                if "window" in mapped_params:
+                    mapped_params["sma_window"] = mapped_params.pop("window")
             elif family == "mean_reversion":
-                # E.g. spy_rsi2
-                results[spec_id] = get_spy_rsi2_signal(data, **params)
-
+                delegate = get_spy_rsi2_signal
             elif family == "breakout_burst":
-                # breakout_burst
-                results[spec_id] = get_breakout_burst_signal(data, tickers, **params)
-
+                delegate = get_breakout_burst_signal
+                needs_tickers = True
+                if "high_lookback_days" in mapped_params:
+                    mapped_params["lookback_days"] = mapped_params.pop("high_lookback_days")
+                if "max_k" in mapped_params:
+                    mapped_params["top_n"] = mapped_params.pop("max_k")
             elif family == "low_vol":
-                # us_lowvol_top30
-                results[spec_id] = get_us_lowvol_top30_signal(data, tickers, **params)
-
+                delegate = get_us_lowvol_top30_signal
+                needs_tickers = True
+                if "lookback" in mapped_params:
+                    mapped_params["lookback_days"] = mapped_params.pop("lookback")
             elif family == "event_driven":
-                # us_pead_top5
-                results[spec_id] = get_us_pead_top5_signal(data, tickers, **params)
-
+                delegate = get_us_pead_top5_signal
+                needs_tickers = True
+                if "max_k" in mapped_params:
+                    mapped_params["top_n"] = mapped_params.pop("max_k")
             elif family == "vol_targeting":
-                # btc_vol_target_sma100
-                results[spec_id] = get_btc_vol_target_sma100_signal(data, **params)
-
+                delegate = get_btc_vol_target_sma100_signal
+                if "gate_window" in mapped_params:
+                    mapped_params["sma_window"] = mapped_params.pop("gate_window")
             else:
                 raise UnsupportedRuleShape(f"Unsupported rule shape for {spec_id}: family '{family}' is not supported without manual code changes.")
+
+            if needs_tickers and tickers is None:
+                raise ValueError(f"tickers cannot be None for ticker-dependent family '{family}'")
+
+            sig = inspect.signature(delegate)
+            filtered_params = {k: v for k, v in mapped_params.items() if k in sig.parameters}
+
+            if needs_tickers:
+                results[spec_id] = delegate(data, tickers, **filtered_params)
+            else:
+                results[spec_id] = delegate(data, **filtered_params)
+
         except TypeError as e:
             raise UnsupportedRuleShape(f"Unsupported parameters for family '{family}': {e}")
 
