@@ -71,6 +71,14 @@ def test_load_brief_invalid_family_name(tmp_path):
     with pytest.raises(ValueError, match="Invalid family name"):
         load_brief(str(brief_path))
 
+def test_load_brief_empty_file(tmp_path):
+    brief_path = tmp_path / "empty_brief.yaml"
+    with open(brief_path, "w") as f:
+        f.write("")
+
+    with pytest.raises(ValueError, match="is not a valid YAML mapping"):
+        load_brief(str(brief_path))
+
 @mock.patch("scripts.hunt_runner.datetime")
 @mock.patch("scripts.hunt_runner.preregistration.freeze_preregistration")
 @mock.patch("scripts.hunt_runner.strategy_registry.load_registry")
@@ -185,3 +193,27 @@ def test_do_collect(tmp_path, capsys):
     assert not os.path.exists(invalid_spec_path)
     assert os.path.exists(rejected_dir / "invalid.yaml")
     assert os.path.exists(rejected_dir / "invalid.yaml.reason")
+
+def test_do_collect_yaml_error(tmp_path, capsys):
+    target_dir = tmp_path / "run_dir"
+    candidates_dir = target_dir / "candidates"
+    rejected_dir = target_dir / "rejected"
+    os.makedirs(candidates_dir)
+
+    # Invalid YAML syntax
+    invalid_yaml_path = candidates_dir / "invalid_yaml.yaml"
+    with open(invalid_yaml_path, "w") as f:
+        f.write("family: [unclosed")
+
+    args = DummyArgs(dir=str(target_dir), registry="dummy_registry.json")
+
+    do_collect(args)
+
+    captured = capsys.readouterr()
+
+    assert "❌ Rejected: invalid_yaml.yaml" in captured.out
+
+    # file should be moved to rejected/
+    assert not os.path.exists(invalid_yaml_path)
+    assert os.path.exists(rejected_dir / "invalid_yaml.yaml")
+    assert os.path.exists(rejected_dir / "invalid_yaml.yaml.reason")
