@@ -217,3 +217,62 @@ def test_do_collect_yaml_error(tmp_path, capsys):
     assert not os.path.exists(invalid_yaml_path)
     assert os.path.exists(rejected_dir / "invalid_yaml.yaml")
     assert os.path.exists(rejected_dir / "invalid_yaml.yaml.reason")
+
+
+def test_do_collect_non_mapping(tmp_path, capsys):
+    target_dir = tmp_path / "run_dir"
+    candidates_dir = target_dir / "candidates"
+    rejected_dir = target_dir / "rejected"
+    os.makedirs(candidates_dir)
+
+    # Empty file
+    empty_path = candidates_dir / "empty.yaml"
+    with open(empty_path, "w") as f:
+        f.write("")
+
+    # Scalar file
+    scalar_path = candidates_dir / "scalar.yaml"
+    with open(scalar_path, "w") as f:
+        f.write("just a string")
+
+    # Valid file to ensure loop continues
+    valid_path = candidates_dir / "valid.yaml"
+    with open(valid_path, "w") as f:
+        yaml.safe_dump({
+            "id": "test_id",
+            "name": "test_name",
+            "family": "momentum",
+            "universe": "test_univ",
+            "parameters": {},
+            "signal": {"entry": "e", "exit": "x"}
+        }, f)
+
+    args = DummyArgs(dir=str(target_dir), registry="dummy_registry.json")
+
+    do_collect(args)
+
+    captured = capsys.readouterr()
+
+    # The loop should process the valid file successfully
+    assert "✅ Valid Spec: valid.yaml" in captured.out
+
+    # Both invalid files should be rejected
+    assert "❌ Rejected: empty.yaml" in captured.out
+    assert "❌ Rejected: scalar.yaml" in captured.out
+
+    # Valid file remains
+    assert os.path.exists(valid_path)
+
+    # Invalid files are moved
+    assert not os.path.exists(empty_path)
+    assert not os.path.exists(scalar_path)
+
+    assert os.path.exists(rejected_dir / "empty.yaml")
+    assert os.path.exists(rejected_dir / "empty.yaml.reason")
+    with open(rejected_dir / "empty.yaml.reason") as f:
+        assert "is not a YAML mapping" in f.read()
+
+    assert os.path.exists(rejected_dir / "scalar.yaml")
+    assert os.path.exists(rejected_dir / "scalar.yaml.reason")
+    with open(rejected_dir / "scalar.yaml.reason") as f:
+        assert "is not a YAML mapping" in f.read()
