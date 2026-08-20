@@ -1,0 +1,41 @@
+id: ta_rules_rsi2_stop_v1
+name: RSI(2) with Protective Stop Loss
+family: ta_rules
+venue: alpaca
+universe: 100-stock liquid large-cap panel (excluding SPY/QQQ/AGG/BND)
+
+pre_registration_ref: "docs/data/cycle1_prereg_ta_rules.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "docs/data/eval_ta_rules_rsi2_stop.json"
+
+signal:
+  entry: "Buy when RSI(2) < 10 (short-term oversold)"
+  exit: "Sell if close > SMA(5) OR trailing stop of 2% hit OR 5 trading days elapsed"
+  sizing: "Equal weight per trade, fractional shares"
+  caps:
+    max_concurrent_positions: 10
+  rebalance: "daily target rows"
+
+parameters:
+  entry: 10
+  exit_rsi: 70
+  hold_days: 5
+  stop_loss_pct: 0.02
+  exec_delay: 1
+
+indicators:
+  - rsi2: "2-period RSI of close (Wilder)"
+  - sma5: "5-day simple moving average of close"
+
+position_sizing:
+  - "Equal weight up to max 10 concurrent positions"
+fee_model:
+  commission: "$0 (Alpaca)"
+  slippage: "0.05%"
+  settlement: "T+1"
+
+edge_gate_params:
+  min_oos_sharpe: 0.5
+  min_dsr: 0.0
+  permutation_pass_rate: 0.6
