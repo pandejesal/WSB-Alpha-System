@@ -5,7 +5,6 @@ import yfinance as yf
 
 from src.alpha.indicators import compute_indicators
 from src.research.debate_engine import DebateEngine
-from sklearn.ensemble import GradientBoostingClassifier
 import datetime
 
 class UnsupportedRuleShape(Exception):
