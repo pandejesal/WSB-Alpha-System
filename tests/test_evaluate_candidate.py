@@ -155,3 +155,77 @@ def test_evaluate_candidate_multi_factor(tmp_path):
     assert data["family"] == "multi_factor"
     assert data["verdict"] == "HONEST_ABANDON"
     assert data["status"] == "not_evaluable_missing_plumbing"
+
+# Test 4: build_signal_posts for ta_rules ema_cross
+def test_build_signal_posts_ta_rules_ema_cross():
+    from scripts.evaluate_candidate import build_signal_posts
+    combined, _, _, _ = create_synthetic_data(tickers=["T1"], rows=250)
+
+    # Manipulate data to force a specific crossover
+    # EMA10 and EMA50, SMA200. We will set close high enough to pass SMA200,
+    # and force a crossover at index 230.
+    combined['Close'] = 150.0 # High flat line
+    # Drop EMA 10 low before 230, spike after 230
+    combined.loc[:229, 'Close'] = 100.0
+    combined.loc[230:, 'Close'] = 120.0
+
+    # We won't simulate exact EMA math precisely to force it manually via price,
+    # but we can just use simple price steps. The compute_indicators will run and EMA will lag.
+    # A sharp jump in price will cause fast EMA to cross slow EMA.
+
+    spec = {
+        "family": "ta_rules",
+        "parameters": {"ema_fast": 2, "ema_slow": 5, "sma_window": 10},
+        "signal": {"entry": "ema_cross"}
+    }
+
+    posts_df = build_signal_posts(spec, combined, ["T1"])
+    assert not posts_df.empty
+    assert "ticker" in posts_df.columns
+    assert "post_date" in posts_df.columns
+    assert posts_df["sentiment_score"].iloc[0] == 1.0
+
+# Test 5: build_signal_posts for sentiment_overlay
+def test_build_signal_posts_sentiment_overlay():
+    from scripts.evaluate_candidate import build_signal_posts
+    combined, _, _, _ = create_synthetic_data(tickers=["T1"], rows=100)
+
+    # Force SMA condition. First 50 days Close = 100, SMA climbs to 100.
+    # Day 51 Close jumps to 110. Close > SMA for days 51+.
+    combined['Close'] = 100.0
+    combined.loc[50:, 'Close'] = 110.0
+
+    spec = {
+        "family": "sentiment_overlay",
+        "parameters": {"window": 20}
+    }
+
+    posts_df = build_signal_posts(spec, combined, ["T1"])
+    assert not posts_df.empty
+    assert posts_df["sentiment_score"].iloc[0] == 0.5
+
+    # Only days where close > SMA should have posts.
+    # We should have roughly 50 posts.
+    assert len(posts_df) > 0
+
+# Test 6: build_signal_posts for xgboost_exits
+def test_build_signal_posts_xgboost_exits():
+    from scripts.evaluate_candidate import build_signal_posts
+    combined, _, _, _ = create_synthetic_data(tickers=["T1", "T2"], rows=200)
+
+    # T1 has positive momentum, T2 negative
+    # Prices
+    combined.loc[combined['Ticker'] == 'T1', 'Close'] = np.linspace(100, 200, len(combined[combined['Ticker'] == 'T1']))
+    combined.loc[combined['Ticker'] == 'T2', 'Close'] = np.linspace(200, 100, len(combined[combined['Ticker'] == 'T2']))
+
+    spec = {
+        "family": "xgboost_exits",
+        "parameters": {"lookback_days": 20, "skip_days": 5, "top_n": 1}
+    }
+
+    posts_df = build_signal_posts(spec, combined, ["T1", "T2"])
+
+    # Should only select T1 since T1 has positive momentum
+    assert not posts_df.empty
+    assert (posts_df['ticker'] == 'T1').all()
+    assert (posts_df['sentiment_score'] == 1.0).all()
