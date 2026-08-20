@@ -1,7 +1,10 @@
 import logging
+import numpy as np
 from src.backtest.validation import (
     load_base_data,
-    run_permutation_tests,
+    run_in_sample_test,
+    run_walk_forward_test,
+    NUM_PERMUTATIONS,
     TEARSHEET_ENGINE,
 )
 from src.ops.audit import write_artifact
@@ -32,24 +35,34 @@ def run_study():
         })
         return
 
-    # For G4, we need 200 permutations.
-    # NUM_PERMUTATIONS in validation is likely 200, but we can override or pass if supported.
+    np.random.seed(42)
+
     try:
-        p_value = run_permutation_tests(posts_df, stock_dfs, spy_close, n_permutations=200)
+        real_ret, real_sharpe, permuted_rets, permuted_sharpes, in_sample_p_value, _, _ = run_in_sample_test(posts_df, stock_dfs, spy_close)
     except TypeError:
-        # If run_permutation_tests doesn't accept n_permutations override
-        logger.info("Falling back to default NUM_PERMUTATIONS.")
-        p_value = run_permutation_tests(posts_df, stock_dfs, spy_close)
+        # If run_in_sample_test fails
+        logger.error("run_in_sample_test failed.")
+        return
+
+    try:
+        real_pooled_ret, real_pooled_sharpe, pooled_permuted_rets, pooled_permuted_sharpes, walk_forward_p_value, walk_forward_win_rate, num_windows = run_walk_forward_test(posts_df, stock_dfs, spy_close)
+    except TypeError:
+        # If run_walk_forward_test fails
+        logger.error("run_walk_forward_test failed.")
+        return
 
     payload = {
-        "p_value": p_value,
-        "permutations": 200, # Note: if default was 40, this is hardcoded for the 200 requirement.
+        "in_sample_p_value": in_sample_p_value,
+        "walk_forward_p_value": walk_forward_p_value,
+        "walk_forward_win_rate": walk_forward_win_rate,
+        "num_windows": num_windows,
+        "permutations": NUM_PERMUTATIONS,
         "engine": "run_historic_backtest",
         "status": "success"
     }
 
     write_artifact("docs/data/permutation_study.json", payload)
-    logger.info(f"Permutation study complete. p_value={p_value}")
+    logger.info(f"Permutation study complete. in_sample_p_value={in_sample_p_value}, walk_forward_p_value={walk_forward_p_value}")
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
