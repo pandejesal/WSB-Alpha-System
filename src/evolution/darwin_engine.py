@@ -61,7 +61,7 @@ class DarwinEngine:
         for strategy in population:
             metrics = strategy.get('metrics', {})
 
-            # 6c: Add CPCV Integration (mocking call if data provided)
+            # 6c: Add CPCV Integration (computing real split if data provided)
             cpcv_conf = 0.0
             if historical_data is not None:
                 try:
