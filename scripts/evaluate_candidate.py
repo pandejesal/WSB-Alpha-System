@@ -155,11 +155,17 @@ def main():
             posts_data.append({"post_date": pd.to_datetime(d), "ticker": tickers[0], "sentiment_score": 0.5})
         posts_df = pd.DataFrame(posts_data)
 
-        stock_dfs = {t: df[df['Ticker'] == t].copy() for t in tickers}
-        spy_close = df[df['Ticker'] == tickers[0]]['Close'] # Fallback
-
-        if "SPY" in stock_dfs:
-            spy_close = stock_dfs["SPY"]['Close']
+        stock_dfs = {}
+        for t in tickers:
+            t_df = df[df['Ticker'] == t].copy()
+            if t_df.empty:
+                continue
+            t_df = t_df.set_index('Date').sort_index()
+            from src.alpha.indicators import compute_indicators
+            ind = compute_indicators(t_df)
+            if ind is not None and len(ind) >= 20:
+                stock_dfs[t] = ind
+        spy_close = stock_dfs[tickers[0]]['Close'] if stock_dfs else pd.Series(dtype=float)
 
         # Wrap in list so it meets what validation expects if needed
         real_ret, real_sharpe, permuted_rets, permuted_sharpes, in_sample_p_value, _, _ = run_in_sample_test(posts_df, stock_dfs, spy_close)
