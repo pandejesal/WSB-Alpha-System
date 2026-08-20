@@ -1,19 +1,21 @@
 import argparse
+import hashlib
 import json
 import logging
 import os
 import sys
-import hashlib
-import numpy as np
-import pandas as pd
 from datetime import datetime
 
-from src.ops.strategy_registry import validate_spec
-from src.ops.preregistration import freeze_preregistration
-from src.ops.signals import generate_signals_from_registry, UnsupportedRuleShape
+import numpy as np
+import pandas as pd
+
+from src.backtest.validation import (
+    run_in_sample_test,
+    run_walk_forward_test,
+)
 from src.data.providers.chain import get_provider
-from src.backtest.validation import run_in_sample_test, run_walk_forward_test, compute_metrics, NUM_PERMUTATIONS
-from src.backtest.run_historic_backtest import run_backtest
+from src.ops.signals import UnsupportedRuleShape, generate_signals_from_registry
+from src.ops.strategy_registry import validate_spec
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +27,7 @@ def compute_dsr(real_sharpe, permuted_sharpes):
     Alternatively, a simple empirical DSR can be computed using standard normal CDF over the z-score of the sharpe
     vs the permuted sharpe distribution.
     """
-    from scipy.stats import norm, skew, kurtosis
+    from scipy.stats import norm
 
     if len(permuted_sharpes) < 2:
         return 0.0
@@ -41,6 +43,145 @@ def compute_dsr(real_sharpe, permuted_sharpes):
     # We use a basic empirical z-score approach to DSR
     z = (SR - sr_mean) / sr_std
     return norm.cdf(z)
+
+
+def build_signal_posts(spec_dict, df, tickers):
+    import pandas as pd
+
+    from src.alpha.indicators import compute_indicators
+    from src.ops.signals import UnsupportedRuleShape
+
+    posts_data = []
+    family = spec_dict.get("family")
+    params = spec_dict.get("parameters") or spec_dict.get("params", {})
+
+    posts_df = pd.DataFrame()
+    exit_overlay_not_simulated = False
+    if family == "multi_factor":
+        raise UnsupportedRuleShape("NOT_EVALUABLE: missing factor modules")
+
+    # We will build posts per ticker
+    for ticker in tickers:
+        ticker_df = df[df['Ticker'] == ticker].copy() if 'Ticker' in df.columns else df.copy()
+        ticker_df = ticker_df.sort_values("Date")
+        if len(ticker_df) < 60:
+            continue
+
+        ind_df = compute_indicators(ticker_df)
+        if ind_df is None or len(ind_df) == 0:
+            continue
+
+        if family == "ta_rules":
+            entry_rule = spec_dict.get("signal", {}).get("entry", "")
+            if 'ema_cross' in entry_rule:
+                fast = params.get('ema_fast') or params.get('fast_ma', 10)
+                slow = params.get('ema_slow') or params.get('slow_ma', 50)
+                sma_window = params.get('sma_window', 200)
+
+                fast_col = f"EMA_{fast}"
+                slow_col = f"EMA_{slow}"
+                sma_col = f"SMA_{sma_window}"
+
+                if fast_col not in ind_df.columns:
+                    ind_df[fast_col] = ticker_df["Close"].ewm(span=fast, adjust=False).mean()
+                if slow_col not in ind_df.columns:
+                    ind_df[slow_col] = ticker_df["Close"].ewm(span=slow, adjust=False).mean()
+                if sma_col not in ind_df.columns:
+                    ind_df[sma_col] = ticker_df["Close"].rolling(window=sma_window).mean()
+
+                # Cross above condition
+                ind_df['prev_fast'] = ind_df[fast_col].shift(1)
+                ind_df['prev_slow'] = ind_df[slow_col].shift(1)
+
+                mask = (ind_df['prev_fast'] <= ind_df['prev_slow']) & \
+                       (ind_df[fast_col] > ind_df[slow_col]) & \
+                       (ticker_df["Close"] > ind_df[sma_col])
+
+                dates = ind_df.index[mask] if isinstance(ind_df.index, pd.DatetimeIndex) else ind_df[mask]['Date'] if 'Date' in ind_df.columns else ticker_df.loc[mask, 'Date']
+                for d in dates:
+                    posts_data.append({"post_date": pd.to_datetime(d), "ticker": ticker, "sentiment_score": 1.0})
+
+            elif 'macd_histogram' in entry_rule:
+                consecutive_days = params.get('consecutive_days', 2)
+                mask = ind_df['MACD_Hist'] > 0
+                for i in range(1, consecutive_days + 1):
+                    mask = mask & (ind_df['MACD_Hist'].shift(i - 1) > ind_df['MACD_Hist'].shift(i))
+
+                dates = ind_df.index[mask] if isinstance(ind_df.index, pd.DatetimeIndex) else ind_df[mask]['Date'] if 'Date' in ind_df.columns else ticker_df.loc[mask, 'Date']
+                for d in dates:
+                    posts_data.append({"post_date": pd.to_datetime(d), "ticker": ticker, "sentiment_score": 1.0})
+
+            elif 'rsi2' in entry_rule:
+                period = params.get('rsi_period', 2)
+                rsi_col = f"RSI_{period}" if period != 2 else "RSI_2"
+
+                if rsi_col not in ind_df.columns:
+                    delta = ticker_df["Close"].diff()
+                    gain = (delta.where(delta > 0, 0)).fillna(0)
+                    loss = (-delta.where(delta < 0, 0)).fillna(0)
+                    avg_gain = gain.ewm(alpha=1/period, adjust=False).mean()
+                    avg_loss = loss.ewm(alpha=1/period, adjust=False).mean()
+                    rs = avg_gain / (avg_loss + 1e-10)
+                    ind_df[rsi_col] = 100 - (100 / (1 + rs))
+
+                entry_threshold = spec_dict.get("signal", {}).get("entry_threshold", params.get("entry", 10))
+                mask = ind_df[rsi_col] < entry_threshold
+
+                dates = ind_df.index[mask] if isinstance(ind_df.index, pd.DatetimeIndex) else ind_df[mask]['Date'] if 'Date' in ind_df.columns else ticker_df.loc[mask, 'Date']
+                for d in dates:
+                    posts_data.append({"post_date": pd.to_datetime(d), "ticker": ticker, "sentiment_score": 1.0})
+
+        elif family == "sentiment_overlay":
+            window = params.get('window', 200)
+            sma_col = f"SMA_{window}"
+            if sma_col not in ind_df.columns:
+                ind_df[sma_col] = ticker_df["Close"].rolling(window=window).mean()
+
+            mask = ticker_df["Close"] > ind_df[sma_col]
+            dates = ind_df.index[mask] if isinstance(ind_df.index, pd.DatetimeIndex) else ind_df[mask]['Date'] if 'Date' in ind_df.columns else ticker_df.loc[mask, 'Date']
+            for d in dates:
+                posts_data.append({"post_date": pd.to_datetime(d), "ticker": ticker, "sentiment_score": 0.5})
+
+    if family == "xgboost_exits":
+        lookback_days = params.get('lookback_days', 126)
+        skip_days = params.get('skip_days', 21)
+        top_n = params.get('top_n', 5)
+
+        # Resample to month-end trading days
+        # We find the last trading day of each month in the dataset
+        if 'Date' in df.columns:
+            all_dates = pd.Series(pd.to_datetime(df['Date'].unique())).sort_values()
+        else:
+            all_dates = pd.Series(pd.to_datetime(df.index.unique())).sort_values()
+
+        all_dates_df = pd.DataFrame({'Date': all_dates})
+        all_dates_df['YearMonth'] = all_dates_df['Date'].dt.to_period('M')
+        month_ends = all_dates_df.groupby('YearMonth')['Date'].max()
+
+        for me_date in month_ends:
+            # Calculate momentum for all tickers at this date
+            momenta = {}
+            for ticker in tickers:
+                ticker_df = df[df['Ticker'] == ticker] if 'Ticker' in df.columns else df
+                if 'Date' in ticker_df.columns:
+                    ticker_df = ticker_df.set_index('Date')
+
+                # Get data up to me_date
+                t_hist = ticker_df.loc[:me_date]
+                if len(t_hist) > (lookback_days + skip_days):
+                    p_skip = t_hist['Close'].iloc[-(skip_days + 1)]
+                    p_lookback = t_hist['Close'].iloc[-(lookback_days + skip_days + 1)]
+                    if p_lookback > 0:
+                        momenta[ticker] = float((p_skip / p_lookback) - 1)
+
+            if momenta:
+                sorted_mom = sorted(momenta.items(), key=lambda x: x[1], reverse=True)
+                top_tickers = [t for t, _ in sorted_mom[:top_n]]
+                for t in top_tickers:
+                    posts_data.append({"post_date": pd.to_datetime(me_date), "ticker": t, "sentiment_score": 1.0})
+
+    return pd.DataFrame(posts_data)
+
 
 def _get_universe(tickers_arg):
     if tickers_arg:
@@ -77,6 +218,7 @@ def main():
     parser.add_argument("--tickers", help="Comma separated tickers (e.g. T1,T2)")
     parser.add_argument("--days", type=int, default=60, help="Days of data to fetch")
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
+    parser.add_argument("--permutations", type=int, default=200, help="Number of permutations for tests")
 
     args = parser.parse_args()
 
@@ -114,7 +256,22 @@ def main():
             os.makedirs(os.path.dirname(prereg_ref), exist_ok=True)
             with open(args.spec_yaml, 'r') as f:
                 spec_content = f.read()
-            claim = spec_dict.get("edge_hypothesis", "Default claim")
+            claim = spec_dict.get("edge_hypothesis")
+            if not claim:
+                family_slug = family.replace("_", "-") if family else ""
+                brief_path = f"hunts/{family_slug}/brief.yaml"
+                try:
+                    if os.path.exists(brief_path):
+                        with open(brief_path, 'r') as bf:
+                            import yaml
+                            brief_dict = yaml.safe_load(bf)
+                            if isinstance(brief_dict, dict) and "hypothesis" in brief_dict:
+                                claim = brief_dict["hypothesis"].strip()
+                except Exception as e:
+                    logger.warning(f"Failed to load brief from {brief_path}: {e}")
+            if not claim:
+                claim = "Default claim"
+
             doc_content = f"## Claim\n{claim}\n\n## Strategy Spec\n```yaml\n{spec_content}\n```\n"
             with open(prereg_ref, 'w') as f:
                 f.write(doc_content)
@@ -128,6 +285,8 @@ def main():
     # 4 & 5. Evaluation and Signal Generation
     try:
         # Check for multi_factor early to abandon honest
+        posts_df = pd.DataFrame()
+        exit_overlay_not_simulated = False
         if family == "multi_factor":
             raise UnsupportedRuleShape("NOT_EVALUABLE: missing factor modules")
 
@@ -150,10 +309,11 @@ def main():
              # We continue to backtest, it will just result in 0 returns.
 
         # Create mock custom posts for validation engine (it expects some posts for events)
-        posts_data = []
-        for d in df['Date'].unique():
-            posts_data.append({"post_date": pd.to_datetime(d), "ticker": tickers[0], "sentiment_score": 0.5})
-        posts_df = pd.DataFrame(posts_data)
+        posts_df = build_signal_posts(spec_dict, df, tickers)
+
+        # Determine exit overlay handling
+        exit_overlay_not_simulated = True if family == "xgboost_exits" else False
+
 
         stock_dfs = {}
         for t in tickers:
@@ -168,9 +328,14 @@ def main():
         spy_close = stock_dfs[tickers[0]]['Close'] if stock_dfs else pd.Series(dtype=float)
 
         # Wrap in list so it meets what validation expects if needed
-        real_ret, real_sharpe, permuted_rets, permuted_sharpes, in_sample_p_value, _, _ = run_in_sample_test(posts_df, stock_dfs, spy_close)
-
-        real_pooled_ret, real_pooled_sharpe, pooled_permuted_rets, pooled_permuted_sharpes, walk_forward_p_value, walk_forward_win_rate, num_windows = run_walk_forward_test(posts_df, stock_dfs, spy_close)
+        from src.backtest import validation
+        orig_permutations = validation.NUM_PERMUTATIONS
+        validation.NUM_PERMUTATIONS = args.permutations
+        try:
+            real_ret, real_sharpe, permuted_rets, permuted_sharpes, in_sample_p_value, _, _ = run_in_sample_test(posts_df, stock_dfs, spy_close)
+            real_pooled_ret, real_pooled_sharpe, pooled_permuted_rets, pooled_permuted_sharpes, walk_forward_p_value, walk_forward_win_rate, num_windows = run_walk_forward_test(posts_df, stock_dfs, spy_close)
+        finally:
+            validation.NUM_PERMUTATIONS = orig_permutations
 
         dsr = compute_dsr(real_sharpe, permuted_sharpes)
 
@@ -189,7 +354,10 @@ def main():
             "dsr": dsr,
             "edge_gate_params": spec_dict.get("edge_gate_params", {}),
             "spec_fingerprint": spec_fingerprint,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
+            "signal_post_count": len(posts_df),
+            "exit_overlay_not_simulated": exit_overlay_not_simulated,
+            "permutations_used": args.permutations
         }
 
     except UnsupportedRuleShape as e:
@@ -201,8 +369,11 @@ def main():
                  "verdict": "HONEST_ABANDON",
                  "status": "not_evaluable_missing_plumbing",
                  "spec_fingerprint": spec_fingerprint,
-                 "timestamp": datetime.utcnow().isoformat()
-             }
+                 "timestamp": datetime.utcnow().isoformat(),
+            "signal_post_count": len(posts_df),
+            "exit_overlay_not_simulated": exit_overlay_not_simulated,
+            "permutations_used": args.permutations
+        }
         else:
              raise
 
@@ -212,9 +383,12 @@ def main():
             "candidate_id": spec_id,
             "family": family,
             "verdict": "FAIL",
-            "status": f"error: {str(e)}",
+            "status": f"error: {e!s}",
             "spec_fingerprint": spec_fingerprint,
-            "timestamp": datetime.utcnow().isoformat()
+            "timestamp": datetime.utcnow().isoformat(),
+            "signal_post_count": len(posts_df),
+            "exit_overlay_not_simulated": exit_overlay_not_simulated,
+            "permutations_used": args.permutations
         }
 
     # 6. Write Eval JSON and print summary
