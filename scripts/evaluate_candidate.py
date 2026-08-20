@@ -179,7 +179,7 @@ def build_signal_posts(spec_dict, df, tickers):
 
     A post is emitted ONLY on the day the candidate's entry rule fires,
     mirroring the per-family entry logic in src/ops/signals.py. Posts carry
-    sentiment_score=0.5 (mock, consistent with the signals layer) so the
+    sentiment_score=0.5 (neutral baseline, consistent with the signals layer) so the
     engine fills LONG at Open[t+1] with its standard hold. multi_factor is
     not evaluable here and raises UnsupportedRuleShape.
     """
