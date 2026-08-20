@@ -1,0 +1,39 @@
+id: multi_factor_earnings_mom_v1
+name: Earnings Momentum + Regime Filter
+family: multi_factor
+venue: alpaca
+universe: "100-stock liquid large-cap panel (excluding SPY/QQQ/AGG/BND)"
+
+pre_registration_ref: "docs/data/cycle1_prereg_multifactor.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "docs/data/eval_multifactor_earnings_mom.json"
+
+signal:
+  entry: "Buy when stock shows positive earnings surprise AND positive price momentum, provided macro regime is favorable."
+  exit: "Sell on earnings miss or macro regime shift to RISK_OFF."
+  sizing: "Equal-weight among signals."
+  caps:
+    max_concurrent_positions: 10
+  rebalance: "daily target rows"
+
+parameters:
+  lookback_days: 20
+  factors:
+    - name: "Earnings Surprise"
+      source: "src.alpha.fundamentals.earnings_surprise"
+      weight: 1.0
+      threshold: "surprise_pct > 0.05"
+    - name: "Price Momentum"
+      source: "src.alpha.indicators.momentum"
+      weight: 1.0
+      threshold: "return_3m > 0.10"
+    - name: "FRED Macro Regime"
+      source: "src.risk.fred_macro_provider.FredMacroProvider"
+      weight: 1.0
+      threshold: "regime IN ('RISK_ON', 'NEUTRAL')"
+
+edge_gate_params:
+  min_sharpe: 0.55
+  min_dsr: 1.0
+  min_win_rate: 0.55
