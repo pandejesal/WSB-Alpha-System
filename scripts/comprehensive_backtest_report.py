@@ -10,7 +10,7 @@ import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Set True when market data download fails and synthetic mock data is used.
+# Set True when market data download fails and fallback to local real CSV data is used.
 # While True, results must NOT be published to docs/data (daily CI pushes them to Pages).
 DATA_IS_MOCK = False
 
@@ -732,7 +732,7 @@ def main():
     for ticker in tickers:
         try:
             if isinstance(raw_data.columns, pd.MultiIndex):
-                # The mock data might not have 'Ticker' as a name but just be a multiindex
+                # The fallback local data might not have 'Ticker' as a name but just be a multiindex
                 if 'Ticker' in raw_data.columns.names:
                     df = raw_data.xs(ticker, level='Ticker', axis=1)
                 elif len(raw_data.columns.levels) > 1:
@@ -947,7 +947,7 @@ def main():
 
     # Publish guard: never write/publish reports computed on mock data
     if DATA_IS_MOCK:
-        logger.error("DATA_IS_MOCK=True: results are based on synthetic mock data, refusing to publish to docs/data/.")
+        logger.error("DATA_IS_MOCK=True: results are based on fallback local unadjusted CSVs, refusing to publish to docs/data/.")
         return
 
     with open("docs/data/backtest_report.json", "w") as f:
