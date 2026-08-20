@@ -1,0 +1,40 @@
+id: multi_factor_vcp_breadth_v1
+name: VCP-style with breadth gate
+family: multi_factor
+venue: alpaca
+universe: "100-stock liquid large-cap panel (excluding SPY/QQQ/AGG/BND)"
+
+pre_registration_ref: "docs/data/cycle1_prereg_multifactor.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "docs/data/eval_multifactor_vcp.json"
+
+signal:
+  entry: "Buy on breakout from Volatility Contraction Pattern (VCP) when market breadth >= 60%."
+  exit: "Sell on close below 50-day SMA or ATR-based stop loss."
+  sizing: "Risk-parity based on ATR."
+  caps:
+    max_concurrent_positions: 10
+  rebalance: "daily target rows"
+
+parameters:
+  sma_window: 50
+  lookback_days: 90
+  factors:
+    - name: "Volatility Contraction (VCP)"
+      source: "src.alpha.indicators.vcp_pattern"
+      weight: 1.0
+      threshold: "contraction_count >= 2 AND max_drawdown < 0.25"
+    - name: "Market Breadth Gate"
+      source: "src.alpha.indicators.market_breadth"
+      weight: 1.0
+      threshold: "percent_above_50d_sma >= 0.60"
+    - name: "Volume Dry-up"
+      source: "src.alpha.indicators.volume_dryup"
+      weight: 1.0
+      threshold: "recent_volume < 0.5 * average_volume_50d"
+
+edge_gate_params:
+  min_sharpe: 0.6
+  min_dsr: 1.0
+  min_win_rate: 0.50
