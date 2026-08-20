@@ -1,0 +1,38 @@
+id: xgboost_exits_momentum_v2
+name: XGBoost Exit on Momentum (Alternative Features)
+family: xgboost_exits
+venue: alpaca
+universe: broad US large-cap liquid equities (~100 names from yfinance, price > $1)
+
+pre_registration_ref: "docs/data/cycle1_prereg_xgboost_exits.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "docs/data/eval_xgboost_exits.json"
+
+signal:
+  entry: "on each month-end: pick the top 5 universe members by 6m momentum (skip 1m); equal weight 1/5 each"
+  exit: "a name is dropped when it falls out of the top-5 at the next month-end OR if the XGBoost classifier predicts a forward 5-day drawdown risk > threshold"
+  sizing: "$100 account: 5 x ~$20 equal-weight positions; fractional shares on Alpaca"
+  caps:
+    max_concurrent_positions: 5
+  rebalance: "monthly (last trading day of month) + daily XGBoost exit checks"
+
+parameters:
+  # Base signal params (mapped so delegate resolves)
+  top_n: 5
+  lookback_days: 126
+  skip_days: 21
+  warmup_days: 340
+  rebalance: "monthly"
+  drift_rebal: 0.05
+  exec_delay: 1
+  # XGBoost specific params - alternative feature set
+  xgboost_features: ["sector_relative_strength", "volume_trend_5d", "beta_60d"]
+  xgboost_target: "fwd_5d_ret_binary"
+  xgboost_exit_threshold: 0.60
+  xgboost_train_window_days: 1000
+
+edge_gate_params:
+  min_dsr: 1.5
+  walk_forward_oos_sharpe_min: 1.0
+  max_p_value: 0.05
