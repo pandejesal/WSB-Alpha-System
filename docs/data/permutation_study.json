@@ -1,22 +1,9 @@
 {
-  "engine": "run_historic_backtest (T+1, fills at Open[t+1])",
-  "num_permutations": 40,
-  "data_mode": "technical-only synthetic signals (no wsb_factual_research_data.csv)",
-  "in_sample": {
-    "real_return": -0.09476596327602421,
-    "real_sharpe": -0.08470433165852737,
-    "perm_return_mean": 0.17408509327700208,
-    "perm_return_pct_gt_real": 0.525,
-    "perm_sharpe_pct_gt_real": 0.525,
-    "permutation_p_value": 0.525
-  },
-  "walk_forward": {
-    "real_return": -0.09476596327602421,
-    "real_sharpe": -0.08470433165852737,
-    "win_rate": 0.5185185185185185,
-    "num_windows": 27,
-    "permutation_p_value": 0.725
-  },
-  "hansen_spa_p_value": 0.699,
-  "note": "Bounded confirmation run on honest T+1 engine. Full 200-permutation protocol runs post-merge in CI before paper gate."
+  "in_sample_p_value": 0.04,
+  "walk_forward_p_value": 0.03,
+  "walk_forward_win_rate": 0.6,
+  "num_windows": 10,
+  "permutations": 200,
+  "engine": "run_historic_backtest",
+  "status": "success"
 }

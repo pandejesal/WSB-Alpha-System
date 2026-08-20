@@ -44,9 +44,8 @@ def download_data(tickers, start_date, end_date):
 
         return data, spy_data
     except Exception as e:
-        global DATA_IS_MOCK
-        DATA_IS_MOCK = True
-        logger.warning(f"Download failed ({e}), falling back to local unadjusted CSVs — results will NOT be published")
+        logger.error(f"Download failed ({e}), cannot use mock data in production pipeline.")
+        raise ValueError("Strict fail-fast: Real data download failed. Not falling back to mock data.")
 
         # Fallback for SPY
         spy_csv_path = "market_data_2019_2026/ohlcv/SPY.csv"
