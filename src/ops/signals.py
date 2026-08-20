@@ -65,7 +65,7 @@ def get_ta_rules_signal(data: pd.DataFrame, tickers: list[str], **kwargs) -> dic
             if last_row[rsi_col] < 10:
                 signal_active = True
 
-        # Handle exits (mock trailing stop loss behavior, actual harness runs exits at portfolio level typically, but we will return flat if we trigger an exit rule on latest data)
+        # Handle exits (trailing stop loss behavior, actual harness runs exits at portfolio level typically, but we will return flat if we trigger an exit rule on latest data)
         exit_rule = kwargs.get('exit', {})
         stop_loss_pct = exit_rule.get('stop_loss_pct')
         take_profit_pct = exit_rule.get('take_profit_pct')
@@ -87,17 +87,43 @@ def get_sentiment_overlay_signal(data: pd.DataFrame, tickers: list[str], **kwarg
     if not tickers:
         return {'signal': 'FLAT'}
 
-    # Use mock score of 0.5 per instructions
-    score = 0.5
-    threshold = kwargs.get('sentiment_threshold', 0.6)
+    from src.research.browser_scraper import fetch_headlines, score_text
+    from src.research.debate_engine import DebateEngine
 
-    # We mock the debate engine logic as requested: "if the real debate engine data ... is unavailable ... Use a constant mock score of 0.5"
-    if score > threshold:
-        return {'signal': 'LONG', 'targets': [{'ticker': t, 'weight': 1.0/len(tickers)} for t in tickers]}
-    elif score < threshold: # Risk off veto forces exit
+    threshold = kwargs.get('sentiment_threshold', 0.6)
+    debate_engine = DebateEngine()
+
+    targets = []
+    has_veto = False
+
+    for ticker in tickers:
+        headlines = fetch_headlines(ticker)
+        if not headlines:
+            print(f"No headlines found for {ticker}, skipping.")
+            continue
+
+        base_score = score_text(headlines)
+        debate_result = debate_engine.run_debate(ticker, headlines, base_score)
+
+        score = debate_result.get('score', 0.5)
+
+        if score > threshold:
+            targets.append({'ticker': ticker, 'weight': 0})
+        elif score < threshold:
+            has_veto = True
+
+    if has_veto and not targets:
         return {'signal': 'FLAT', 'warning': 'risk_off_veto'}
-    else:
-        return {'signal': 'FLAT'}
+
+    if not targets:
+        return {'signal': 'FLAT', 'warning': 'data_unavailable'}
+
+    # Equal weight the valid targets
+    weight = 1.0 / len(targets)
+    for t in targets:
+        t['weight'] = weight
+
+    return {'signal': 'LONG', 'targets': targets}
 
 def get_xgboost_exits_signal(data: pd.DataFrame, tickers: list[str], **kwargs) -> dict:
     if len(tickers) == 0:
