@@ -9,7 +9,7 @@ class DebateEngine:
 
     def run_debate(self, ticker: str, headlines: list[str], base_score: dict[str, Any]) -> dict[str, Any]:
         """
-        Orchestrates a mock debate between 3 persona agents (Bull, Bear, Neutral).
+        Orchestrates a debate between 3 persona agents (Bull, Bear, Neutral).
         Falls back seamlessly if data is missing.
         Returns:
             {"ticker": str, "score": float, "stance": str, "agents": list, "reasoning": list}

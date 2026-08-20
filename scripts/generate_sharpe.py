@@ -17,24 +17,26 @@ def generate_sharpe():
     # For this script, we'll dummy read or try to read from a returns series.
     returns = []
 
-    # Check if we have paper_pnl.json (mocking the real source for now or using a fallback)
-    pnl_path = os.path.join(paper_dir, "pnl_series.json")
+    # Read real returns from equity_curve.json which should represent true performance
+    pnl_path = os.path.join("docs/data", "equity_curve.json")
     if os.path.exists(pnl_path):
         try:
             with open(pnl_path, "r") as f:
                 data = json.load(f)
-                returns = data.get("returns", [])
+                # Compute returns from equity curve
+                import pandas as pd
+                df = pd.DataFrame(data)
+                if not df.empty and 'equity' in df.columns:
+                    returns = df['equity'].pct_change().dropna().tolist()
         except Exception as e:  # noqa: BLE001 - Catching Exception to log error
             logger.error(f"Failed to read {pnl_path}: {e}")
 
     # Compute metrics
     import pandas as pd
     if not returns:
-        # Fallback if no real paper trading has happened yet
-        logger.info("No paper returns found. Generating default 0 Sharpe.")
-        sharpe = 0.0
-        ci_lower = 0.0
-        ci_upper = 0.0
+        # We must not fallback to mock values in production
+        logger.error("No real paper returns found. Failing fast.")
+        raise FileNotFoundError(f"Real equity curve missing at {pnl_path}. Cannot generate Sharpe.")
     else:
         # Sharpe with CI
         # Using a simple block bootstrap or normal approx for CI

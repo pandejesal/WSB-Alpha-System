@@ -65,15 +65,9 @@ def get_ta_rules_signal(data: pd.DataFrame, tickers: list[str], **kwargs) -> dic
             if last_row[rsi_col] < 10:
                 signal_active = True
 
-        # Handle exits (mock trailing stop loss behavior, actual harness runs exits at portfolio level typically, but we will return flat if we trigger an exit rule on latest data)
-        exit_rule = kwargs.get('exit', {})
-        stop_loss_pct = exit_rule.get('stop_loss_pct')
-        take_profit_pct = exit_rule.get('take_profit_pct')
-
-        # If exit rules hit on recent bars, we don't enter/stay
-        if stop_loss_pct or take_profit_pct:
-            # We don't have true position tracking in this generation layer, so we assume an exit signal overrides entry
-            pass
+        # Exits are typically handled at the portfolio level in the actual harness,
+        # but if we wanted to evaluate recent price action for trailing stops, it would happen here.
+        # For now, we only generate entry signals based on the active signal conditions.
 
         if signal_active:
             targets.append({'ticker': ticker, 'weight': 1.0 / len(tickers)})
@@ -87,11 +81,28 @@ def get_sentiment_overlay_signal(data: pd.DataFrame, tickers: list[str], **kwarg
     if not tickers:
         return {'signal': 'FLAT'}
 
-    # Use mock score of 0.5 per instructions
-    score = 0.5
+    from src.data.providers.reddit_provider import RedditProvider
+    try:
+        reddit = RedditProvider()
+        posts = reddit.fetch_sentiment_feed(limit=50)
+    except Exception as e:
+        return {'signal': 'FLAT', 'warning': 'sentiment_unavailable'}
+
+    if posts is None or posts.empty:
+        return {'signal': 'FLAT', 'warning': 'sentiment_unavailable'}
+
+    engine = DebateEngine()
+    headlines = posts['title'].tolist() if 'title' in posts.columns else []
+
+    # We will compute a consensus score for the first ticker (assuming macro sentiment for the group)
+    try:
+        debate_result = engine.run_debate(tickers[0], headlines, base_score={"positive_ratio": 0.6, "negative_ratio": 0.4, "classification": "positive"})
+        score = debate_result.get("score", 0.0)
+    except Exception as e:
+        return {'signal': 'FLAT', 'warning': 'sentiment_unavailable'}
+
     threshold = kwargs.get('sentiment_threshold', 0.6)
 
-    # We mock the debate engine logic as requested: "if the real debate engine data ... is unavailable ... Use a constant mock score of 0.5"
     if score > threshold:
         return {'signal': 'LONG', 'targets': [{'ticker': t, 'weight': 1.0/len(tickers)} for t in tickers]}
     elif score < threshold: # Risk off veto forces exit

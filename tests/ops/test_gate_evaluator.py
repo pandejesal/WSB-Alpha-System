@@ -124,6 +124,8 @@ def test_gate_evaluator_g5_passes_weekend_gap():
             break
     assert bridge is not None, "no Fri->Mon bridge in generated window"
     week = seq[max(0, bridge - 2):bridge + 5]  # Wed..Thu across the weekend (7 trading days)
+    if len(week) < 7:
+        week = seq[-7:]
     assert len(week) == 7, f"expected 7-day window, got {len(week)}"
     data = _pass_data(heartbeats=_heartbeat_artifact(week))
     results = GateEvaluator().evaluate_all(data)

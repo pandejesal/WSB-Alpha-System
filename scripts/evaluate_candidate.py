@@ -149,11 +149,27 @@ def main():
              logger.warning("Strategy generated no signals or FLAT.")
              # We continue to backtest, it will just result in 0 returns.
 
-        # Create mock custom posts for validation engine (it expects some posts for events)
+        # Use real sentiment feed or empty dataframe instead of injecting 0.5 scores
         posts_data = []
-        for d in df['Date'].unique():
-            posts_data.append({"post_date": pd.to_datetime(d), "ticker": tickers[0], "sentiment_score": 0.5})
+        try:
+            from src.data.providers.reddit_provider import RedditProvider
+            from src.research.debate_engine import DebateEngine
+            reddit = RedditProvider()
+            posts = reddit.fetch_sentiment_feed(limit=50)
+            if not posts.empty:
+                engine = DebateEngine()
+                headlines = posts['title'].tolist() if 'title' in posts.columns else []
+                debate_result = engine.run_debate(tickers[0], headlines, base_score={"positive_ratio": 0.6, "negative_ratio": 0.4, "classification": "positive"})
+                score = debate_result.get("score", 0.0)
+                # Assign this real score to the latest dates if posts are available
+                for d in df['Date'].unique():
+                    posts_data.append({"post_date": pd.to_datetime(d), "ticker": tickers[0], "sentiment_score": score})
+        except Exception as e:
+            logger.warning(f"Failed to fetch real sentiment: {e}. Validation will proceed with empty posts.")
+
         posts_df = pd.DataFrame(posts_data)
+        if posts_df.empty:
+            posts_df = pd.DataFrame(columns=["post_date", "ticker", "sentiment_score"])
 
         stock_dfs = {}
         for t in tickers:

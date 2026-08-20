@@ -135,45 +135,4 @@ class PermutationValidator:
             "mean_permuted_pf": np.mean(permuted_profit_factors)
         }
 
-if __name__ == "__main__":
-    # --- MOCK EXECUTION BLOCK ---
-    np.random.seed(42)
-    dates = pd.date_range("2023-01-01", periods=1000, freq="h")
 
-    # Generate mock base dataframe
-    base_closes = np.cumsum(np.random.randn(1000) * 0.001) + 1.0
-    df = pd.DataFrame({
-        "Open": base_closes + np.random.randn(1000) * 0.0005,
-        "Close": base_closes
-    }, index=dates)
-    df['High'] = df[['Open', 'Close']].max(axis=1) + np.abs(np.random.randn(1000) * 0.001)
-    df['Low'] = df[['Open', 'Close']].min(axis=1) - np.abs(np.random.randn(1000) * 0.001)
-
-    # Make sure we don't have negative prices (we started at 1.0)
-    df = df.clip(lower=0.1)
-
-    # Mock strategy function
-    def dummy_strategy(data: pd.DataFrame) -> float:
-        # Simple mean reversion: buy when close is lower than open, sell when higher
-        # This is purely synthetic; let's just make it return a pseudo profit factor
-        returns = (data['Close'] - data['Open']) / data['Open']
-
-        # Pretend we capture 10% of negative intra-bar returns (mean reversion)
-        captured_returns = -0.1 * returns[returns < 0]
-
-        # Pretend some losses on positive intra-bar
-        losses = 0.05 * returns[returns > 0]
-
-        gross_profit = captured_returns.sum() if len(captured_returns) > 0 else 0
-        gross_loss = losses.sum() if len(losses) > 0 else 1e-9 # avoid div by zero
-
-        # Give it a slight boost to ensure it passes the first check
-        pf = (gross_profit / gross_loss) * 1.5
-        return float(pf)
-
-    validator = PermutationValidator(num_permutations=100, p_value_threshold=0.01) # 100 for fast test
-    result = validator.validate(dummy_strategy, df)
-
-    print("\nPermutation Validation Results:")
-    for k, v in result.items():
-        print(f"{k}: {v}")
