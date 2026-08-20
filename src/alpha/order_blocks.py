@@ -220,29 +220,3 @@ class OrderBlockDetector:
 
         return pd.DataFrame(entries)
 
-if __name__ == "__main__":
-    # --- MOCK EXECUTION BLOCK ---
-    np.random.seed(42)
-    dates = pd.date_range("2023-01-01", periods=2000, freq="h")
-    # Generate somewhat realistic trending walk
-    closes = np.cumsum(np.random.randn(2000)) + 5000
-
-    # Introduce random volatility for OHLC
-    df = pd.DataFrame({
-        "Open": closes + np.random.randn(2000) * 2,
-        "High": closes + np.abs(np.random.randn(2000) * 5),
-        "Low": closes - np.abs(np.random.randn(2000) * 5),
-        "Close": closes
-    }, index=dates)
-
-    # Force High/Low to encompass Open/Close correctly
-    df['High'] = df[['Open', 'High', 'Close']].max(axis=1)
-    df['Low'] = df[['Open', 'Low', 'Close']].min(axis=1)
-
-    detector = OrderBlockDetector()
-    signals = detector.detect(df)
-
-    print(f"Total Detected Entries: {len(signals)}")
-    if not signals.empty:
-        print("Recent Detected Order Block Entries:")
-        print(signals.tail())

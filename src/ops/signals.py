@@ -4,8 +4,6 @@ import pandas as pd
 import yfinance as yf
 
 from src.alpha.indicators import compute_indicators
-from src.research.debate_engine import DebateEngine
-import datetime
 
 class UnsupportedRuleShape(Exception):
     pass
@@ -87,17 +85,49 @@ def get_sentiment_overlay_signal(data: pd.DataFrame, tickers: list[str], **kwarg
     if not tickers:
         return {'signal': 'FLAT'}
 
-    # Use mock score of 0.5 per instructions
-    score = 0.5
     threshold = kwargs.get('sentiment_threshold', 0.6)
 
-    # We mock the debate engine logic as requested: "if the real debate engine data ... is unavailable ... Use a constant mock score of 0.5"
-    if score > threshold:
-        return {'signal': 'LONG', 'targets': [{'ticker': t, 'weight': 1.0/len(tickers)} for t in tickers]}
-    elif score < threshold: # Risk off veto forces exit
-        return {'signal': 'FLAT', 'warning': 'risk_off_veto'}
-    else:
-        return {'signal': 'FLAT'}
+    try:
+        from src.research.reddit_scraper import fetch_reddit_data_sync
+        from src.research.debate_engine import DebateEngine
+
+        # Fetch posts
+        posts = fetch_reddit_data_sync(max_items=50)
+        if not posts:
+            return {'signal': 'FLAT', 'warning': 'sentiment_unavailable'}
+
+        headlines = [p.get("title", "") for p in posts if p.get("title")]
+        if not headlines:
+            return {'signal': 'FLAT', 'warning': 'sentiment_unavailable'}
+
+        # Debate
+        engine = DebateEngine()
+        # Create a simple mock base_score since we don't have FinBERT immediately here
+        # but we do have Reddit data.
+        base_score = {"net_score": 0.0, "classification": "neutral", "positive_ratio": 0.5, "negative_ratio": 0.5}
+
+        # We really just need the score, we'll evaluate it per ticker, but here we can just use the first ticker or average
+        scores = []
+        for ticker in tickers:
+            res = engine.run_debate(ticker, headlines, base_score)
+            scores.append(res.get("score", 0.0))
+
+        if not scores:
+            return {'signal': 'FLAT', 'warning': 'sentiment_unavailable'}
+
+        avg_score = sum(scores) / len(scores)
+
+        if avg_score > threshold:
+            return {'signal': 'LONG', 'targets': [{'ticker': t, 'weight': 1.0/len(tickers)} for t in tickers]}
+        elif avg_score < threshold: # Risk off veto forces exit
+            return {'signal': 'FLAT', 'warning': 'risk_off_veto'}
+        else:
+            return {'signal': 'FLAT'}
+
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).warning(f"Failed to compute sentiment signal: {e}")
+        return {'signal': 'FLAT', 'warning': 'sentiment_unavailable'}
 
 def get_xgboost_exits_signal(data: pd.DataFrame, tickers: list[str], **kwargs) -> dict:
     if len(tickers) == 0:

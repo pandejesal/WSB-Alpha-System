@@ -13,28 +13,40 @@ def generate_sharpe():
     Computes Sharpe ratio with CI of paper P&L and writes to docs/data/paper/sharpe.json
     """
     paper_dir = "docs/data/paper"
-    # Ideally, we read from paper trade logs to get P&L series.
-    # For this script, we'll dummy read or try to read from a returns series.
-    returns = []
 
-    # Check if we have paper_pnl.json (mocking the real source for now or using a fallback)
-    pnl_path = os.path.join(paper_dir, "pnl_series.json")
-    if os.path.exists(pnl_path):
-        try:
-            with open(pnl_path, "r") as f:
-                data = json.load(f)
-                returns = data.get("returns", [])
-        except Exception as e:  # noqa: BLE001 - Catching Exception to log error
-            logger.error(f"Failed to read {pnl_path}: {e}")
+    # Read from real source docs/data/equity_curve.json
+    equity_path = "docs/data/equity_curve.json"
+    if not os.path.exists(equity_path):
+        raise FileNotFoundError(f"Real equity curve not found at {equity_path}")
+
+    try:
+        with open(equity_path, "r") as f:
+            data = json.load(f)
+    except Exception as e:
+        logger.error(f"Failed to read {equity_path}: {e}")
+        raise e
+
+    if not data or len(data) < 2:
+        raise ValueError("Insufficient data in equity curve to calculate returns")
+
+    # Calculate daily returns
+    returns = []
+    prev_equity = data[0].get("equity", 100)
+    for row in data[1:]:
+        eq = row.get("equity", 100)
+        dep = row.get("deposits", 0)
+        base = prev_equity + dep
+        if base > 0:
+            ret = (eq - base) / base
+        else:
+            ret = 0.0
+        returns.append(ret)
+        prev_equity = eq
 
     # Compute metrics
     import pandas as pd
     if not returns:
-        # Fallback if no real paper trading has happened yet
-        logger.info("No paper returns found. Generating default 0 Sharpe.")
-        sharpe = 0.0
-        ci_lower = 0.0
-        ci_upper = 0.0
+        raise ValueError("No returns generated from equity curve")
     else:
         # Sharpe with CI
         # Using a simple block bootstrap or normal approx for CI

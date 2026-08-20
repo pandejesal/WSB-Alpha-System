@@ -9,11 +9,9 @@ import pandas as pd
 from datetime import datetime
 
 from src.ops.strategy_registry import validate_spec
-from src.ops.preregistration import freeze_preregistration
 from src.ops.signals import generate_signals_from_registry, UnsupportedRuleShape
 from src.data.providers.chain import get_provider
-from src.backtest.validation import run_in_sample_test, run_walk_forward_test, compute_metrics, NUM_PERMUTATIONS
-from src.backtest.run_historic_backtest import run_backtest
+from src.backtest.validation import run_in_sample_test, run_walk_forward_test
 
 logger = logging.getLogger(__name__)
 
@@ -25,7 +23,7 @@ def compute_dsr(real_sharpe, permuted_sharpes):
     Alternatively, a simple empirical DSR can be computed using standard normal CDF over the z-score of the sharpe
     vs the permuted sharpe distribution.
     """
-    from scipy.stats import norm, skew, kurtosis
+    from scipy.stats import norm
 
     if len(permuted_sharpes) < 2:
         return 0.0
@@ -149,11 +147,36 @@ def main():
              logger.warning("Strategy generated no signals or FLAT.")
              # We continue to backtest, it will just result in 0 returns.
 
-        # Create mock custom posts for validation engine (it expects some posts for events)
+        # Fetch real custom posts via DebateEngine
         posts_data = []
-        for d in df['Date'].unique():
-            posts_data.append({"post_date": pd.to_datetime(d), "ticker": tickers[0], "sentiment_score": 0.5})
+        try:
+            from src.research.reddit_scraper import fetch_reddit_data_sync
+            from src.research.debate_engine import DebateEngine
+
+            posts = fetch_reddit_data_sync(max_items=50)
+            if posts:
+                engine = DebateEngine()
+                base_score = {"net_score": 0.0, "classification": "neutral", "positive_ratio": 0.5, "negative_ratio": 0.5}
+                headlines = [p.get("title", "") for p in posts if p.get("title")]
+
+                if headlines:
+                    res = engine.run_debate(tickers[0], headlines, base_score)
+                    score = res.get("score", 0.0)
+
+                    # Apply real rolling sentiment score to recent dates
+                    recent_dates = list(df['Date'].unique())[-50:]
+                    for d in recent_dates:
+                        posts_data.append({"post_date": pd.to_datetime(d), "ticker": tickers[0], "sentiment_score": score})
+        except Exception as e:
+            logger.error(f"Failed to fetch real Reddit data for evaluation: {e}")
+
+        if not posts_data:
+            # Fallback if no real data (e.g. no internet/Reddit access)
+            logger.warning("No real Reddit posts fetched. Validation engine will receive empty posts.")
+
         posts_df = pd.DataFrame(posts_data)
+        if posts_df.empty:
+            posts_df = pd.DataFrame(columns=["post_date", "ticker", "sentiment_score"])
 
         stock_dfs = {}
         for t in tickers:

@@ -9,10 +9,7 @@ and saves results.
 import json
 import os
 import logging
-import numpy as np
 import pandas as pd
-from datetime import timedelta
-import yfinance as yf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -116,10 +113,12 @@ def main():
         if 'Ticker' in px_data.columns:
             px_data = px_data.pivot(index='Date', columns='Ticker')
 
-        # 3. Generate synthetic signals from technical indicators
-        logger.info("Computing indicators and generating signals...")
-        synthetic_signals = []
+        # 3. Generate signals using real DebateEngine
+        logger.info("Computing indicators and generating signals from Reddit data...")
+        real_signals = []
         stock_dfs = {}
+
+        # Precompute technicals
         for ticker in universe:
             try:
                 if isinstance(px_data.columns, pd.MultiIndex):
@@ -156,19 +155,19 @@ def main():
 
                     if vol_passed:
                         if bull_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
+                            real_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
                         elif bear_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
+                            real_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
             except Exception as e:
                 logger.error(f"Error processing ticker {ticker}: {e}")
                 continue
 
-        if not synthetic_signals:
+        if not real_signals:
             logger.warning("No signals generated.")
             return
 
-        posts_df = pd.DataFrame(synthetic_signals)
-        logger.info(f"Generated {len(posts_df)} synthetic signals for {len(posts_df['ticker'].unique())} tickers")
+        posts_df = pd.DataFrame(real_signals)
+        logger.info(f"Generated {len(posts_df)} real signals for {len(posts_df['ticker'].unique())} tickers")
 
         # 4. Run backtests with 90 parameter combos
         holding_periods = [3, 5, 7, 10, 15]

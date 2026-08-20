@@ -8,7 +8,6 @@ import shutil
 
 from src.signals.engine import SignalEngine
 from src.signals.api import generate_signals
-from src.signals.schemas import SignalsReport
 
 @pytest.fixture
 def dummy_spy_data():
@@ -136,7 +135,7 @@ def test_api_writes_artifacts(dummy_spy_data, dummy_btc_data, dummy_momentum_dat
     run_date = "2023-12-15T00:00:00Z"
     run_id = "test-atomic-write-999"
 
-    report = generate_signals(run_id=run_id, date=run_date, mode="PAPER", market_data=market_data)
+    report = generate_signals(run_id=run_id, date=run_date, mode="PAPER", market_data=market_data, output_dir=mock_ops_dir)
 
     signals_file = os.path.join(mock_ops_dir, "signals.json")
     assert os.path.exists(signals_file)

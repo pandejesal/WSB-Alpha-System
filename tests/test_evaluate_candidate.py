@@ -1,7 +1,6 @@
 import os
 import json
 import yaml
-import pytest
 import numpy as np
 import pandas as pd
 from unittest.mock import patch, MagicMock
@@ -32,7 +31,7 @@ def create_synthetic_data(tickers=["T1", "T2", "T3"], rows=400):
     # Validation engine base data expects specific format
     posts_data = []
     for d in dates:
-        posts_data.append({"post_date": d, "ticker": "T1", "sentiment_score": 0.5, "post_id": str(d)})
+        posts_data.append({"post_date": d, "ticker": "T1", "sentiment_score": 0.1, "post_id": str(d)})
     posts_df = pd.DataFrame(posts_data)
 
     stock_dfs = {t: combined[combined["Ticker"] == t].copy() for t in tickers}

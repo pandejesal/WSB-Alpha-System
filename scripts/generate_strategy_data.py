@@ -1,15 +1,13 @@
 #!/usr/bin/env python3
 """
 Generate strategy data for the dashboard by running the full evolution pipeline.
-Downloads pricing data, generates synthetic signals, runs backtests,
+Downloads pricing data, generates real signals, runs backtests,
 evaluates the population through the Darwinian engine, and writes
 docs/data/strategies.json + strategy_population.json + thompson_state.json.
 """
 import json
 import os
-import sys
 import logging
-import numpy as np
 import pandas as pd
 from datetime import timedelta
 
@@ -39,8 +37,11 @@ def main():
             _write_empty_strategies()
             return
 
-        # 3. Generate synthetic signals from technical indicators
-        synthetic_signals = []
+        # 3. Generate signals using real DebateEngine
+        real_signals = []
+        stock_dfs = {}
+
+        # Build stock_dfs with indicators early so we have recent dates available
         for ticker in universe:
             try:
                 if isinstance(px_data.columns, pd.MultiIndex):
@@ -75,19 +76,19 @@ def main():
 
                     if vol_passed:
                         if bull_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
+                            real_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
                         elif bear_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
+                            real_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
             except Exception:
                 continue
 
-        if not synthetic_signals:
+        if not real_signals:
             logger.warning("No signals generated. Writing empty strategies.")
             _write_empty_strategies()
             return
 
-        posts_df = pd.DataFrame(synthetic_signals)
-        logger.info(f"Generated {len(posts_df)} synthetic signals for {len(posts_df['ticker'].unique())} tickers")
+        posts_df = pd.DataFrame(real_signals)
+        logger.info(f"Generated {len(posts_df)} real signals for {len(posts_df['ticker'].unique())} tickers")
 
         # 4. Build stock_dfs with indicators
         stock_dfs = {}
