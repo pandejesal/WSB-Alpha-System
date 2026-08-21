@@ -5,6 +5,9 @@ from src.utils.config import config
 
 logger = logging.getLogger(__name__)
 
+class ConfigurationError(Exception):
+    pass
+
 class CCXTBroker(BaseBroker):
     """
     Concrete implementation of BaseBroker using CCXT for Crypto execution.
@@ -22,7 +25,7 @@ class CCXTBroker(BaseBroker):
             self.secret_key = config.api_keys.binance_secret_key
 
         if not self.api_key or not self.secret_key:
-            raise ValueError("CCXTBroker requires valid exchange API credentials (e.g., BINANCE_API_KEY).")
+            raise ConfigurationError("CCXTBroker requires valid exchange API credentials (e.g., BINANCE_API_KEY).")
 
         self.exchange = None
         self._initialize_client()

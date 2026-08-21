@@ -18,6 +18,7 @@ from google.genai.types import (
 from src.research.google_search_provider import (
     DDGSearchProvider,
 )
+from src.utils.config import config
 
 
 def search_strategy_concepts_online(query: str) -> str:
@@ -83,9 +84,13 @@ save_strategy_decl = FunctionDeclaration(
 class StrategyResearchAgent:
     def __init__(self):
         # The memory explicitly mentions avoiding google-generativeai in favor of google-genai
-        self.api_key = os.getenv("GEMINI_API_KEY")
+        try:
+            self.api_key = config.api_keys.gemini_api_key.get_secret_value()
+        except AttributeError:
+            self.api_key = config.api_keys.gemini_api_key
+
         if not self.api_key:
-            logger.warning("GEMINI_API_KEY not found. Agent will fail if called.")
+            raise ValueError("GEMINI_API_KEY not found. Agent will fail if called.")
 
         self.client = genai.Client(api_key=self.api_key) if self.api_key else None
 
