@@ -116,9 +116,9 @@ def main():
         if 'Ticker' in px_data.columns:
             px_data = px_data.pivot(index='Date', columns='Ticker')
 
-        # 3. Generate synthetic signals from technical indicators
+        # 3. Generate TA signals from technical indicators
         logger.info("Computing indicators and generating signals...")
-        synthetic_signals = []
+        ta_signals = []
         stock_dfs = {}
         for ticker in universe:
             try:
@@ -156,19 +156,19 @@ def main():
 
                     if vol_passed:
                         if bull_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
+                            ta_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
                         elif bear_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
+                            ta_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
             except Exception as e:
                 logger.error(f"Error processing ticker {ticker}: {e}")
                 continue
 
-        if not synthetic_signals:
+        if not ta_signals:
             logger.warning("No signals generated.")
             return
 
-        posts_df = pd.DataFrame(synthetic_signals)
-        logger.info(f"Generated {len(posts_df)} synthetic signals for {len(posts_df['ticker'].unique())} tickers")
+        posts_df = pd.DataFrame(ta_signals)
+        logger.info(f"Generated {len(posts_df)} TA signals for {len(posts_df['ticker'].unique())} tickers")
 
         # 4. Run backtests with 90 parameter combos
         holding_periods = [3, 5, 7, 10, 15]
