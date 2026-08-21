@@ -70,15 +70,11 @@ from src.utils.config import (
     config,
 )
 
+ALPACA_API_KEY_ID = config.api_keys.alpaca_api_key
 try:
-    ALPACA_API_KEY_ID = config.api_keys.alpaca_api_key
-    try:
-        ALPACA_SECRET_KEY = config.api_keys.alpaca_secret_key.get_secret_value()
-    except AttributeError:
-        ALPACA_SECRET_KEY = config.api_keys.alpaca_secret_key
+    ALPACA_SECRET_KEY = config.api_keys.alpaca_secret_key.get_secret_value()
 except AttributeError:
-    ALPACA_API_KEY_ID = os.getenv("ALPACA_API_KEY")
-    ALPACA_SECRET_KEY = os.getenv("ALPACA_SECRET_KEY")
+    ALPACA_SECRET_KEY = config.api_keys.alpaca_secret_key
 
 if not ALPACA_API_KEY_ID or not ALPACA_SECRET_KEY:
     raise ValueError("Valid Alpaca API credentials required. Please set them in configuration.")
@@ -235,8 +231,11 @@ def main():
                 logger.warning(f"Error computing indicators for {ticker}: {e}")
                 continue
         today_signals = generate_technical_signals(stock_dfs)
+        if px_data.empty:
+            print("[!] No market data. Aborting.")
+            return
         # Use real latest date from downloaded market data
-        latest_date = px_data.index[-1].to_pydatetime() if not px_data.empty else datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
+        latest_date = px_data.index[-1].to_pydatetime()
     else:
         csv_path = "wsb_factual_research_data.csv"
         if not os.path.exists(csv_path):
@@ -353,7 +352,7 @@ def main():
             place_fractional_market_order(symbol, dollar_allocation, "sell")
 
     # Dump log for paper trading loop to commit
-    log_content = f"Date: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"  # noqa: DTZ005 - Timezone not critical for this usage
+    log_content = f"Date: {pd.Timestamp.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
     log_content += f"Equity: ${equity:.2f}\n"
     log_content += f"Trades Executed: {len(active_signals)}\n"
 
