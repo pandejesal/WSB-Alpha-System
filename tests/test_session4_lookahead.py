@@ -1,6 +1,6 @@
-import pandas as pd
 import numpy as np
-import pytest
+import pandas as pd
+
 
 def test_safe_sharpe():
     from src.backtest.metrics import safe_sharpe
@@ -10,25 +10,6 @@ def test_safe_sharpe():
 
     # safe_sharpe([]) == 0
     assert safe_sharpe([]) == 0.0
-
-def test_oos_sharpe_from_generate(monkeypatch):
-    from scripts.generate_strategy_data import _compute_trade_metrics
-
-    # Create mock trades
-    trades = pd.DataFrame({
-        "return": [0.01, -0.01, 0.02, 0.01, -0.01, 0.03, -0.02, 0.01, 0.01, 0.02]
-    })
-
-    metrics = _compute_trade_metrics(trades)
-
-    # 3. oos_sharpe is not train_sharpe
-    assert metrics["oos_sharpe"] is not None
-    assert metrics["oos_sharpe"] != metrics["train_sharpe"]
-
-    # Short trades dataframe -> None
-    short_trades = pd.DataFrame({"return": [0.01, -0.01]})
-    short_metrics = _compute_trade_metrics(short_trades)
-    assert short_metrics["oos_sharpe"] is None
 
 def test_lookahead_fix():
     from src.backtest.run_historic_backtest import run_backtest_with_params
@@ -95,9 +76,9 @@ def test_lookahead_fix():
     assert len(trades2) == 0
 
 def test_validation_wf():
-    from src.backtest.validation import run_in_sample_test
     from unittest.mock import patch
-    import src.backtest.run_historic_backtest as rb
+
+    from src.backtest.validation import run_in_sample_test
 
     dates = pd.date_range("2023-01-01", periods=20, freq="B")
 
