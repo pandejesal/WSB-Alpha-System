@@ -129,11 +129,10 @@ class PaperExecutor:
                     continue
 
                 qty = target.get("qty")
-                # Defect 3: No Placeholder Qty
                 if qty is None:
-                    print(f"Skipping {client_order_id}: missing qty.")
-                    self.audit.log_event(self.run_id, "ORDER_SKIPPED", "order", client_order_id, {"reason": "missing_qty"})
-                    continue
+                    print(f"Failing fast on {client_order_id}: missing qty.")
+                    self.audit.log_event(self.run_id, "ORDER_FAILED", "order", client_order_id, {"reason": "missing_qty"})
+                    raise ValueError(f"Missing quantity for order {client_order_id}")
 
                 side = target.get("side", "buy")
 

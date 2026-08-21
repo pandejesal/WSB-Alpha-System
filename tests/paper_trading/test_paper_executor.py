@@ -1,9 +1,9 @@
-import os
 import json
-import tempfile
+
 import pytest
-import shutil
+
 from src.execution.paper_executor import PaperExecutor
+
 
 class FakeBroker:
     def __init__(self):
@@ -28,6 +28,7 @@ class FakeBroker:
         }
 
 from unittest.mock import patch
+
 
 @pytest.fixture
 def setup_ops_dirs(tmp_path):
@@ -131,6 +132,7 @@ def test_paper_executor_per_sleeve_breaker(setup_ops_dirs):
     assert len(broker.orders) == 1
     assert broker.orders[0]["symbol"] == "MSFT"
 
+
 def test_paper_executor_missing_qty(setup_ops_dirs):
     plan = {
         "run_id": "test_run_qty",
@@ -147,7 +149,8 @@ def test_paper_executor_missing_qty(setup_ops_dirs):
     executor = PaperExecutor(broker=broker)
     with patch.object(executor, '_load_json', side_effect=mock_load_json), \
          patch.object(executor, '_save_json'):
-        executor.execute_plan()
+        with pytest.raises(ValueError, match="Missing quantity for order"):
+            executor.execute_plan()
         assert len(broker.orders) == 0
 
 def test_paper_executor_real_fills(setup_ops_dirs):
