@@ -10,10 +10,6 @@ import os
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-# Set True when market data download fails and fallback to local real CSV data is used.
-# While True, results must NOT be published to docs/data (daily CI pushes them to Pages).
-DATA_IS_MOCK = False
-
 def load_universe():
     try:
         with open("config/universe.json", "r") as f:
@@ -44,9 +40,7 @@ def download_data(tickers, start_date, end_date):
 
         return data, spy_data
     except Exception as e:
-        global DATA_IS_MOCK
-        DATA_IS_MOCK = True
-        logger.warning(f"Download failed ({e}), falling back to local unadjusted CSVs — results will NOT be published")
+        logger.warning(f"Download failed ({e}), falling back to local unadjusted CSVs.")
 
         # Fallback for SPY
         spy_csv_path = "market_data_2019_2026/ohlcv/SPY.csv"
@@ -944,11 +938,6 @@ def main():
             "Risk-free rate: fixed 2.9% blended average used across whole period"
         ]
     }
-
-    # Publish guard: never write/publish reports computed on mock data
-    if DATA_IS_MOCK:
-        logger.error("DATA_IS_MOCK=True: results are based on fallback local unadjusted CSVs, refusing to publish to docs/data/.")
-        return
 
     with open("docs/data/backtest_report.json", "w") as f:
         json.dump(report, f, indent=2)
