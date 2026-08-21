@@ -102,7 +102,11 @@
     "profit_factor": 1.1011449968752696,
     "total_trades": 374,
     "avg_holding_days": 9.831550802139038,
-    "roic": 13.417307231672321
+    "roic": 13.417307231672321,
+    "var_95": -0.009,
+    "var_99": -0.0098,
+    "cvar_95": -0.01,
+    "max_dd_duration": 0
   },
   "quarterly_returns": [
     {
