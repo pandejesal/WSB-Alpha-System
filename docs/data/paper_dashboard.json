@@ -1,0 +1,56 @@
+{
+  "generated_at": "2026-08-22T21:08:34.189252Z",
+  "verdict": "NEED_MORE_PAPER_TIME",
+  "criteria": {
+    "months_tracked": 0,
+    "min_months_required": 2,
+    "all_months_green": false,
+    "max_drawdown": null,
+    "max_dd_limit": 0.15,
+    "dd_within_limit": false,
+    "broken_executions": [],
+    "no_broken_executions": true
+  },
+  "sleeves": {
+    "crypto_sleeve:BTC/USD": {
+      "sleeve": "crypto_sleeve",
+      "ticker": "BTC/USD",
+      "net_qty": 0.002,
+      "buy_cost": 100.0,
+      "sell_value": 0.0,
+      "fills": 1,
+      "realized_pnl": null,
+      "open_exposure_qty": 0.002
+    },
+    "crypto_sleeve:ETH/USD": {
+      "sleeve": "crypto_sleeve",
+      "ticker": "ETH/USD",
+      "net_qty": 0.05,
+      "buy_cost": 2500.0,
+      "sell_value": 0.0,
+      "fills": 1,
+      "realized_pnl": null,
+      "open_exposure_qty": 0.05
+    },
+    "equity_sleeve:AAPL": {
+      "sleeve": "equity_sleeve",
+      "ticker": "AAPL",
+      "net_qty": 1.0,
+      "buy_cost": 50000.0,
+      "sell_value": 0.0,
+      "fills": 1,
+      "realized_pnl": null,
+      "open_exposure_qty": 1.0
+    }
+  },
+  "monthly_realized_pnl": {},
+  "baseline_equity": 100000.0,
+  "backtest_baseline": {
+    "quarters_available": 31,
+    "source": "docs/data/quarterly_performance.json"
+  },
+  "tracking_error": {
+    "status": "NOT_EVALUABLE_INSUFFICIENT_PAPER_HISTORY",
+    "note": "Requires >= min_months of daily paper marks vs backtest curve."
+  }
+}
