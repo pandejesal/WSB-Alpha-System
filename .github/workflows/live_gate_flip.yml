@@ -1,0 +1,76 @@
+name: Live Gate Flip
+
+# Task 5.1: manual, human-gated flip of LIVE_TRADING_ENABLED.
+# Fail-closed by design: the flag itself defaults to paper; this workflow
+# only flips the repository variable that CI/executors read, and only when
+# (a) latest CI run on main is green and (b) the operator typed the
+# confirmation string. Dry-run mode reports what WOULD happen.
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type exactly: I-UNDERSTAND-LIVE-RISK'
+        required: true
+        default: ''
+      dry_run:
+        description: 'Report-only, do not flip'
+        required: false
+        default: true
+        type: boolean
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    outputs:
+      ci_green: ${{ steps.ci.outputs.conclusion == 'success' }}
+      confirmed: ${{ steps.confirm.outputs.ok }}
+    steps:
+      - name: Check latest CI run on main is green
+        id: ci
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          conclusion=$(gh api \
+            "repos/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/runs?branch=main&status=completed&per_page=1" \
+            --jq '.workflow_runs[0].conclusion // "none"')
+          echo "Latest ci.yml on main: ${conclusion}"
+          echo "conclusion=${conclusion}" >> "$GITHUB_OUTPUT"
+          if [ "${conclusion}" != "success" ]; then
+            echo "::error::CI on main is not green (${conclusion}) — refusing to flip live gate."
+            exit 1
+          fi
+
+      - name: Verify human confirmation
+        id: confirm
+        env:
+          CONFIRM: ${{ github.event.inputs.confirm }}
+        run: |
+          if [ "${CONFIRM}" = "I-UNDERSTAND-LIVE-RISK" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::Confirmation string mismatch — aborting."
+            exit 1
+          fi
+
+  flip:
+    needs: gate
+    if: needs.gate.outputs.ci_green == 'true' && needs.gate.outputs.confirmed == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Flip LIVE_TRADING_ENABLED repository variable
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          if [ "${DRY_RUN}" = "true" ]; then
+            echo "[DRY RUN] Would set repo variable LIVE_TRADING_ENABLED=true"
+            gh variable list | grep -i LIVE_TRADING_ENABLED || echo "(variable not set yet)"
+            exit 0
+          fi
+          gh variable set LIVE_TRADING_ENABLED --body "true"
+          echo "LIVE_TRADING_ENABLED flipped to true at $(date -u +%FT%TZ). 12-month/$1000 clock starts."

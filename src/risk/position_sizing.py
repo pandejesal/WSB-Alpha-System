@@ -1,10 +1,19 @@
 import math
+import os
+
+# GLOBAL DISABLE — 2026-08-21 per user: remove PRM HARD STOP / circuit breaker for all sessions
+# Env override: PRM_HARD_STOP_ENABLED=1 or CIRCUIT_BREAKER_ENABLED=1 to re-enable
+PRM_HARD_STOP_ENABLED = os.getenv("PRM_HARD_STOP_ENABLED", "0").lower() not in ("0", "false", "off", "")
+CIRCUIT_BREAKER_ENABLED = os.getenv("CIRCUIT_BREAKER_ENABLED", "0").lower() not in ("0", "false", "off", "")
 
 # ============================================================================
 # PHASE 4: LIVE CAPITAL GATE & SAFETY RAILS (REFACTORED FOR QUANT OVERHAUL)
 # ============================================================================
 
-LIVE_TRADING_ENABLED = False
+# Live trading gate — FAIL-CLOSED: absent/blank/garbage env => False (paper).
+# Strict token match (no stripping/casing tricks): only 1/true/yes enables.
+# Flipped to true ONLY via the live_gate_flip.yml manual dispatch after CI passes.
+LIVE_TRADING_ENABLED = os.getenv("LIVE_TRADING_ENABLED", "0") in ("1", "true", "yes", "True", "Yes", "TRUE", "YES")
 
 # Hard-coded safety rails for the $100 micro-account constraint
 ACCOUNT_BASE_CAPITAL = 100.0
@@ -17,10 +26,11 @@ MAX_POSITION_SIZE_PCT = 0.25
 # Absolute maximum concurrent positions
 MAX_CONCURRENT_POSITIONS = 4
 
-# Circuit breakers (Halt trading if drawdown exceeds these thresholds)
-DAILY_LOSS_CIRCUIT_BREAKER_PCT = 0.05
-WEEKLY_LOSS_CIRCUIT_BREAKER_PCT = 0.10
-MAX_DRAWDOWN_CIRCUIT_BREAKER_PCT = 0.15
+# Circuit breakers (Halt trading if drawdown exceeds these thresholds) — DISABLED per user 2026-08-21
+# Was 0.05/0.10/0.15 — now 1.0 (100% loss allowed) when CIRCUIT_BREAKER_ENABLED=False
+DAILY_LOSS_CIRCUIT_BREAKER_PCT = 0.05 if CIRCUIT_BREAKER_ENABLED else 1.0
+WEEKLY_LOSS_CIRCUIT_BREAKER_PCT = 0.10 if CIRCUIT_BREAKER_ENABLED else 1.0
+MAX_DRAWDOWN_CIRCUIT_BREAKER_PCT = 0.15 if CIRCUIT_BREAKER_ENABLED else 1.0
 
 class PositionSizer:
     """
@@ -71,8 +81,11 @@ class PositionSizer:
         # Adjust risk based on regime volatility (e.g., lower risk in high vol)
         target_risk_pct *= regime_volatility_multiplier
 
-        # Apply HARD constraints
-        actual_risk_pct = min(target_risk_pct, MAX_RISK_PER_TRADE_PCT)
+        # Apply HARD constraints — bypassed when PRM_HARD_STOP_ENABLED=False
+        if PRM_HARD_STOP_ENABLED:
+            actual_risk_pct = min(target_risk_pct, MAX_RISK_PER_TRADE_PCT)
+        else:
+            actual_risk_pct = target_risk_pct if target_risk_pct > 0 else MAX_RISK_PER_TRADE_PCT
 
         # Calculate absolute US$ risk amount
         risk_amount_usd = account_equity * actual_risk_pct
