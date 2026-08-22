@@ -51,6 +51,11 @@
   },
   "tracking_error": {
     "status": "NOT_EVALUABLE_INSUFFICIENT_PAPER_HISTORY",
-    "note": "Requires >= min_months of daily paper marks vs backtest curve."
+    "note": "STUB (honest): paper-vs-backtest tracking error requires >=2 months of daily paper marks. Implemented only after the 6.1 window accrues; verdict ladder remains fail-closed meanwhile. Live trading is DISABLED by operator decision - paper only.",
+    "implemented": false
+  },
+  "operator_constraints": {
+    "live_trading": "DISABLED",
+    "mode": "paper_only"
   }
 }

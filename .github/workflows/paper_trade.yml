@@ -37,7 +37,11 @@ jobs:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
           PAPER_TRADING_ENABLED: 'True'
-          LIVE_TRADING_ENABLED: 'False'
+          # Fail-closed propagation of the live-gate flip (Task 5.1):
+          # defaults to 'False' when the repo variable is unset, so the
+          # executor stays paper-only until live_gate_flip.yml explicitly
+          # sets the LIVE_TRADING_ENABLED repository variable.
+          LIVE_TRADING_ENABLED: ${{ vars.LIVE_TRADING_ENABLED || 'False' }}
         run: python scripts/run_paper_execution.py
 
       - name: Commit Ops Data
