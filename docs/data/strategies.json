@@ -1,5 +1,24 @@
 {
-  "strategies": [],
-  "generated_at": "2026-08-18T08:29:01.965111",
-  "error": "No data available or generation failed"
+  "strategies": [
+    {"id": "us_momentum_top5", "name": "US Momentum Top 5", "status": "active", "ported_at": "2026-08-16"},
+    {"id": "spy_sma200", "name": "SPY SMA200", "status": "active", "ported_at": "2026-08-16"},
+    {"id": "spy_rsi2", "name": "SPY RSI2", "status": "active", "ported_at": "2026-08-16"},
+    {"id": "btc_vol_target_sma100", "name": "BTC Vol Target SMA100", "status": "active", "ported_at": "2026-08-16"},
+    {"id": "dual_momentum", "name": "Dual Momentum", "status": "active", "ported_at": "2026-08-18"},
+    {"id": "us_lowvol_top30", "name": "US Low Vol Top 30", "status": "active", "ported_at": "2026-08-18"},
+    {"id": "us_pead_top5", "name": "US PEAD Top 5", "status": "active", "ported_at": "2026-08-18"},
+    {"id": "breakout_burst", "name": "Breakout Burst", "status": "active", "ported_at": "2026-08-18"}
+  ],
+  "round1": {
+    "date": "2026-08-21",
+    "head": "fb3b07f",
+    "candidates": 11,
+    "shortlist": [],
+    "shortlist_count": 0,
+    "verdict": "HONEST_NO_OP",
+    "note": "0 winners — 5 FAIL + 6 HONEST_ABANDON — no new strategies seeded"
+  },
+  "generated_at": "2026-08-21T06:10:00Z",
+  "total_strategies": 8,
+  "active_strategies": 8
 }
