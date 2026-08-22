@@ -1,0 +1,8 @@
+{
+  "timestamp": "2026-08-22T20:11:59.175108Z",
+  "dry_run": false,
+  "original_state": "halt_new_orders",
+  "tier2_tested": true,
+  "tier3_tested": true,
+  "restored": true
+}
