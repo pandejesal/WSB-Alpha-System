@@ -1,0 +1,30 @@
+# Hunt Session Brief Template
+# This file is used by the hunt runner to start a new OpenCode hunt session.
+# DO NOT MODIFY THIS TEMPLATE DIRECTLY. Copy it to create a new brief.
+
+# Required: The target strategy family. Must correspond to a conceptual edge.
+# Example: "breakout_burst"
+family: ""
+
+# Required: The target universe & timeframe constraint.
+# Example: "100-stock liquid large-cap panel (excluding SPY/QQQ/AGG/BND), 2019-2026 Daily OHLCV"
+universe: ""
+
+# Required: The core market inefficiency or edge being targeted. Must be testable.
+# Example: "Assets exhibiting a daily close > 20-day high with 1.5x average volume will outperform the baseline over a 20-day holding period."
+hypothesis: ""
+
+# Required: Acceptance criteria checklist.
+# Example:
+# - Edge claim is pre-registered in docs/data/.
+# - YAML spec is fully complete and parses without errors.
+# - registry.json is updated and wired correctly.
+# - Strategy passes Walk-Forward validation, Permutation tests, and achieves a positive Deflated Sharpe Ratio (DSR) ledger entry.
+acceptance: ""
+
+# Required: Lookback/data constraints.
+# Example: "Daily OHLCV, no intraday data, no lookahead bias."
+lookback_constraints: ""
+
+# Required: Edge-gate parameters (dictionary of specific parameter constraints or flags for the test scripts).
+edge_gate_params: {}
