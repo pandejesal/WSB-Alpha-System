@@ -1,0 +1,31 @@
+{
+  "round": 1,
+  "date": "2026-08-21",
+  "head": "fb3b07f",
+  "summary": "Round-1 Strategy Hunts (4 families): 0 winners — 5 FAIL + 6 HONEST_ABANDON (0 PASS) — conditional no-op, no registry seeding",
+  "families": ["ta-rules", "sentiment-overlay", "xgboost-exits", "multi-factor"],
+  "candidates": [
+    {"id": "ta_rules_rsi2_stop_v1", "family": "ta-rules", "verdict": "FAIL", "reason": "edge gate fail"},
+    {"id": "ta_rules_ema_cross_regime_v1", "family": "ta-rules", "verdict": "FAIL", "reason": "edge gate fail"},
+    {"id": "ta_rules_macd_mom_v1", "family": "ta-rules", "verdict": "FAIL", "reason": "edge gate fail"},
+    {"id": "sentiment_overlay_sma_entry_v1", "family": "sentiment-overlay", "verdict": "HONEST_ABANDON", "reason": "not_evaluable_missing_plumbing"},
+    {"id": "sentiment_overlay_momentum_veto_v1", "family": "sentiment-overlay", "verdict": "HONEST_ABANDON", "reason": "not_evaluable_missing_plumbing"},
+    {"id": "xgboost_exits_momentum_v1", "family": "xgboost-exits", "verdict": "FAIL", "reason": "edge gate fail"},
+    {"id": "xgboost_exits_momentum_v2", "family": "xgboost-exits", "verdict": "FAIL", "reason": "edge gate fail"},
+    {"id": "xgboost_exits_rsi2_v1", "family": "xgboost-exits", "verdict": "HONEST_ABANDON", "reason": "not_evaluable_missing_plumbing"},
+    {"id": "multifactor_canslim", "family": "multi-factor", "verdict": "HONEST_ABANDON", "reason": "not_evaluable_missing_plumbing"},
+    {"id": "multifactor_earnings_mom", "family": "multi-factor", "verdict": "HONEST_ABANDON", "reason": "not_evaluable_missing_plumbing"},
+    {"id": "multifactor_vcp", "family": "multi-factor", "verdict": "HONEST_ABANDON", "reason": "not_evaluable_missing_plumbing"}
+  ],
+  "shortlist": [],
+  "shortlist_count": 0,
+  "registry_seeding": "none — no passing strategies to seed; registry remains at 8 ported strategies (pre-Phase-3)",
+  "dashboard_refresh": "done — docs/data/strategies.json refreshed 2026-08-21T06:10:00Z with round1 0-winners block",
+  "risk_config": "unchanged — Top-N selection remains at defaults (no new strategies to select)",
+  "verdict": "HONEST_NO_OP",
+  "evidence": {
+    "harness_fix": "fb3b07f on origin/main (build_signal_posts, _entry_rule, _clamp_to_cache, --permutations)",
+    "eval_files": "docs/data/eval_*.json (16 files, 11 unique candidates)",
+    "prereg_docs": "docs/data/cycle1_prereg_*.md (4 families)"
+  }
+}

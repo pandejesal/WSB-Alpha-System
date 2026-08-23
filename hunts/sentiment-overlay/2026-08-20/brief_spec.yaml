@@ -1,0 +1,14 @@
+acceptance: "Strategy passes Walk-Forward validation, Permutation tests, and achieves\
+  \ a positive Deflated Sharpe Ratio (DSR) ledger entry per HUNT_PROTOCOL \xC2\xA7\
+  4-5. The evaluation JSON is written to docs/data/."
+edge_gate_params:
+  min_trade_count: 10
+  sharpe_lift: 0.1
+family: sentiment_overlay
+hypothesis: buying the base signal (e.g., spy_sma200) ONLY when 5-day debate score
+  > 0.0 raises net Sharpe vs the unfiltered signal without cutting trade count below
+  10
+lookback_constraints: 2019-2026 daily. Where Reddit/News sentiment data is unavailable,
+  the strategy gracefully falls back to the baseline signal (no overlay).
+universe: SPY (single liquid index ETF) and broad US large-cap liquid equities (~100
+  names)

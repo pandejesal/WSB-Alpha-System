@@ -1,0 +1,23 @@
+{
+  "candidate_id": "ta_rules_ema_cross_regime_v1",
+  "family": "ta_rules",
+  "verdict": "FAIL",
+  "status": "evaluated",
+  "in_sample_p_value": 0.925,
+  "walk_forward_p_value": 0.775,
+  "walk_forward_win_rate": 0.14285714285714285,
+  "num_windows": 7,
+  "real_sharpe": -2.571658225865511,
+  "real_return": -0.5966672862264062,
+  "oos_sharpe": -2.571658225865511,
+  "dsr": 0.062172443828876524,
+  "permutations_used": 40,
+  "signal_post_count": 83,
+  "edge_gate_params": {
+    "min_oos_sharpe": 0.5,
+    "min_dsr": 0.0,
+    "permutation_pass_rate": 0.6
+  },
+  "spec_fingerprint": "4e07a70634121841da54b1aa51a873e36d53d7b7c4cb98dbc36fe69a755497bc",
+  "timestamp": "2026-08-20T08:54:04.615592"
+}

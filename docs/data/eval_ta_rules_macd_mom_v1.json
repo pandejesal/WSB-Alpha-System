@@ -1,0 +1,23 @@
+{
+  "candidate_id": "ta_rules_macd_mom_v1",
+  "family": "ta_rules",
+  "verdict": "FAIL",
+  "status": "evaluated",
+  "in_sample_p_value": 0.975,
+  "walk_forward_p_value": 1.0,
+  "walk_forward_win_rate": 0.4444444444444444,
+  "num_windows": 9,
+  "real_sharpe": -0.1950572628480945,
+  "real_return": -0.8000884542298863,
+  "oos_sharpe": -0.1950572628480945,
+  "dsr": 0.031929455353416854,
+  "permutations_used": 40,
+  "signal_post_count": 2572,
+  "edge_gate_params": {
+    "min_oos_sharpe": 0.5,
+    "min_dsr": 0.0,
+    "permutation_pass_rate": 0.6
+  },
+  "spec_fingerprint": "8b7531281ff456f8426b7c7b2436f9ddb3424569cc4a96eff4ed5f29f650102d",
+  "timestamp": "2026-08-20T09:04:37.443098"
+}

@@ -1,0 +1,8 @@
+﻿status: completed
+outcome: "5/5 evaluated candidates FAILED the edge gate; 3/3 xgboost_exits HONEST_ABANDON (missing exit-model plumbing)"
+verdicts:
+  ta_rules_ema_cross_regime_v1: "FAIL IS=0.925 WF=0.775 DSR=0.06"
+  ta_rules_macd_mom_v1: "FAIL IS=0.975 WF=1.0 DSR=0.03"
+  ta_rules_rsi2_stop_v1: "FAIL IS=0.05 WF=0.0 DSR=0.94 (borderline)"
+  sentiment_overlay_sma_entry_v1: "FAIL IS=0.7 WF=0.65 DSR=0.30"
+  sentiment_overlay_momentum_veto_v1: "FAIL IS=0.95 WF=0.975 DSR=0.01"

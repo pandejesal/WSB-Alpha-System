@@ -1,0 +1,35 @@
+id: xgboost_exits_rsi2_v1
+name: XGBoost Exit on RSI2
+family: xgboost_exits
+venue: alpaca
+universe: "SPY (single liquid index ETF)"
+
+pre_registration_ref: "docs/data/cycle1_prereg_xgboost_exits.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "docs/data/eval_xgboost_exits.json"
+
+signal:
+  entry: "buy SPY when RSI(2) < 10"
+  exit: "sell if XGBoost classifier predicts probability of 2-day forward return > 0 is less than threshold"
+  sizing: "$100 account: full notional per trade; fractional shares"
+  caps:
+    max_concurrent_positions: 1
+  rebalance: "daily check"
+
+parameters:
+  # Base signal params
+  entry: 10
+  exit_rsi: 70
+  hold_days: 5
+  exec_delay: 1
+  # XGBoost specific params
+  xgboost_features: ["vix_level", "spy_rsi_2", "intraday_momentum"]
+  xgboost_target: "fwd_2d_ret_binary"
+  xgboost_exit_threshold: 0.45
+  xgboost_train_window_days: 1000
+
+edge_gate_params:
+  min_dsr: 1.5
+  walk_forward_oos_sharpe_min: 1.0
+  max_p_value: 0.05

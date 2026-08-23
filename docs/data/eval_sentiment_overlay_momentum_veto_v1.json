@@ -1,0 +1,22 @@
+{
+  "candidate_id": "sentiment_overlay_momentum_veto_v1",
+  "family": "sentiment_overlay",
+  "verdict": "FAIL",
+  "status": "evaluated",
+  "in_sample_p_value": 0.95,
+  "walk_forward_p_value": 0.975,
+  "walk_forward_win_rate": 0.375,
+  "num_windows": 8,
+  "real_sharpe": -3.6196318336428903,
+  "real_return": -0.593933498399029,
+  "oos_sharpe": -3.6196318336428903,
+  "dsr": 0.010811161375464411,
+  "permutations_used": 40,
+  "signal_post_count": 115,
+  "edge_gate_params": {
+    "min_trade_count": 10,
+    "sharpe_lift": 0.1
+  },
+  "spec_fingerprint": "2ebbd0817c6b6e2e464fc66918290ef10648601ed00f2c1d55ab896ad54dbc35",
+  "timestamp": "2026-08-20T09:22:10.000802"
+}

@@ -1,0 +1,6 @@
+﻿status: completed
+outcome: "3/3 candidates HONEST_ABANDON (missing exit-model plumbing: target column)"
+verdicts:
+  xgboost_exits_momentum_v1: "HONEST_ABANDON not_evaluable_missing_plumbing"
+  xgboost_exits_momentum_v2: "HONEST_ABANDON not_evaluable_missing_plumbing"
+  xgboost_exits_rsi2_v1: "HONEST_ABANDON not_evaluable_missing_plumbing"

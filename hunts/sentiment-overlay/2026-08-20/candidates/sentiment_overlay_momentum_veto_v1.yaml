@@ -1,0 +1,31 @@
+id: sentiment_overlay_momentum_veto_v1
+name: US Cross-Sectional Momentum Top-5 with Sentiment Veto
+family: sentiment_overlay
+venue: alpaca
+universe: broad US large-cap liquid equities (~100 names from yfinance, price > $1)
+pre_registration_ref: "docs/data/cycle1_prereg_sentiment_overlay.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "docs/data/eval_sentiment_overlay.json"
+signal:
+  entry: "on each month-end: pick the top 5 universe members by 6m momentum (skip 1m), DO NOT ENTER if debate score < -0.2"
+  exit: "a name is dropped when it falls out of the top-5 at the next month-end"
+  sizing: "equal weight 1/5 each; buy only with settled cash"
+  caps:
+    max_concurrent_positions: 5
+  rebalance: "monthly target rows"
+parameters:
+  top_n: 5
+  lookback_days: 126
+  skip_days: 21
+  warmup_days: 340
+  rebalance: monthly
+  drift_rebal: 0.05
+  exec_delay: 1
+  sentiment_module: src.research.debate_engine
+  sentiment_field: score
+  sentiment_threshold: -0.2
+  sentiment_mode: risk_off_veto
+edge_gate_params:
+  min_trade_count: 10
+  sharpe_lift: 0.1

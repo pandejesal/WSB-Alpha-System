@@ -1,0 +1,15 @@
+acceptance: Pass walk-forward validation (OOS positive absolute return), pass permutation
+  robustness (at least 60% of perturbed parameter configurations yield positive Sharpe),
+  and record a positive Deflated Sharpe Ratio (DSR) ledger entry.
+edge_gate_params:
+  min_dsr: 0.0
+  min_oos_sharpe: 0.5
+  permutation_pass_rate: 0.6
+family: ta_rules
+hypothesis: Technical analysis heuristics derived from momentum oscillators (RSI,
+  MACD) and trend-following crossover systems (EMA) capture repeatable short-term
+  price inefficiencies in liquid large-cap equities. Specifically, assets showing
+  oversold momentum or regime-filtered moving average crossovers will outperform a
+  buy-and-hold baseline over a 1 to 20-day holding period.
+lookback_constraints: 2019-2026 daily data window
+universe: 100-stock liquid large-cap panel (excluding SPY/QQQ/AGG/BND)

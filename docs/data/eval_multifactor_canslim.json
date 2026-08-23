@@ -1,0 +1,8 @@
+{
+  "candidate_id": "multi_factor_canslim_lite_v1",
+  "family": "multi_factor",
+  "verdict": "HONEST_ABANDON",
+  "status": "not_evaluable_missing_plumbing",
+  "spec_fingerprint": "f499692c506ac40543a6266ca221ffed9c20310350b33fbddbf79b09a3af8a87",
+  "timestamp": "2026-08-20T02:54:16.807163"
+}

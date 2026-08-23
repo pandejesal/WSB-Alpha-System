@@ -1,0 +1,41 @@
+id: ta_rules_ema_cross_regime_v1
+name: EMA(10/50) Cross with Regime Filter
+family: ta_rules
+venue: alpaca
+universe: 100-stock liquid large-cap panel (excluding SPY/QQQ/AGG/BND)
+
+pre_registration_ref: "docs/data/cycle1_prereg_ta_rules.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "docs/data/eval_ta_rules_ema_cross_regime.json"
+
+signal:
+  entry: "Buy when EMA(10) crosses above EMA(50) AND Close > SMA(200) (Regime Filter)"
+  exit: "Sell when EMA(10) crosses below EMA(50)"
+  sizing: "Equal weight per trade, fractional shares"
+  caps:
+    max_concurrent_positions: 10
+  rebalance: "daily target rows"
+
+parameters:
+  ema_fast: 10
+  ema_slow: 50
+  sma_window: 200
+  exec_delay: 1
+
+indicators:
+  - ema10: "10-day Exponential Moving Average"
+  - ema50: "50-day Exponential Moving Average"
+  - sma200: "200-day Simple Moving Average for regime filter"
+
+position_sizing:
+  - "Equal weight up to max 10 concurrent positions"
+fee_model:
+  commission: "$0 (Alpaca)"
+  slippage: "0.05%"
+  settlement: "T+1"
+
+edge_gate_params:
+  min_oos_sharpe: 0.5
+  min_dsr: 0.0
+  permutation_pass_rate: 0.6

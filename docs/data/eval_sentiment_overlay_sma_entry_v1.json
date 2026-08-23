@@ -1,0 +1,22 @@
+{
+  "candidate_id": "sentiment_overlay_sma_entry_v1",
+  "family": "sentiment_overlay",
+  "verdict": "FAIL",
+  "status": "evaluated",
+  "in_sample_p_value": 0.7,
+  "walk_forward_p_value": 0.65,
+  "walk_forward_win_rate": 0.16666666666666666,
+  "num_windows": 6,
+  "real_sharpe": 0.69815070114153,
+  "real_return": 0.12535841903395567,
+  "oos_sharpe": 0.69815070114153,
+  "dsr": 0.301655194110623,
+  "permutations_used": 40,
+  "signal_post_count": 308,
+  "edge_gate_params": {
+    "min_trade_count": 10,
+    "sharpe_lift": 0.1
+  },
+  "spec_fingerprint": "d1f5973ea1d3e5accd86dd18ec8f5497d0a2c7a4540c696116fa54b7b39b693e",
+  "timestamp": "2026-08-20T09:17:21.007470"
+}

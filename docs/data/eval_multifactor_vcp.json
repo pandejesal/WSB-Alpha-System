@@ -1,0 +1,8 @@
+{
+  "candidate_id": "multi_factor_vcp_breadth_v1",
+  "family": "multi_factor",
+  "verdict": "HONEST_ABANDON",
+  "status": "not_evaluable_missing_plumbing",
+  "spec_fingerprint": "424f447cc3dd2fbc4685fc30a50de60f9618914358ccee5c6e92c008b4cb684c",
+  "timestamp": "2026-08-20T02:54:25.647857"
+}

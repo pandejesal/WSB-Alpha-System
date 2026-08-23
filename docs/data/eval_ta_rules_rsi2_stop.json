@@ -1,0 +1,23 @@
+{
+  "candidate_id": "ta_rules_rsi2_stop_v1",
+  "family": "ta_rules",
+  "verdict": "FAIL",
+  "status": "evaluated",
+  "in_sample_p_value": 0.05,
+  "walk_forward_p_value": 0.0,
+  "walk_forward_win_rate": 0.6666666666666666,
+  "num_windows": 9,
+  "real_sharpe": 1.445813837294932,
+  "real_return": 0.2408424590147247,
+  "oos_sharpe": 1.445813837294932,
+  "dsr": 0.9410180377374128,
+  "permutations_used": 40,
+  "signal_post_count": 1350,
+  "edge_gate_params": {
+    "min_oos_sharpe": 0.5,
+    "min_dsr": 0.0,
+    "permutation_pass_rate": 0.6
+  },
+  "spec_fingerprint": "964587bb62bb62cf8092c40de9611d3f09a0ffc341901be48810e5a63316ce01",
+  "timestamp": "2026-08-20T09:12:26.787108"
+}

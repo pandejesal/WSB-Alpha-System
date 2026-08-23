@@ -1,0 +1,52 @@
+id: multi_factor_canslim_lite_v1
+name: CANSLIM-lite 6-factor
+family: multi_factor
+venue: alpaca
+universe: "100-stock liquid large-cap panel (excluding SPY/QQQ/AGG/BND)"
+
+pre_registration_ref: "docs/data/cycle1_prereg_multifactor.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "docs/data/eval_multifactor_canslim.json"
+
+signal:
+  entry: "Buy when >=4 out of 6 CANSLIM-style factors are met, market breadth >= 60, and FRED macro regime is RISK_ON or NEUTRAL."
+  exit: "Sell if price drops below 20-day SMA or macro regime becomes RISK_OFF."
+  sizing: "Equal-weight among signals."
+  caps:
+    max_concurrent_positions: 10
+  rebalance: "daily target rows"
+
+parameters:
+  sma_window: 20
+  lookback_days: 60
+  factors:
+    - name: "Current Earnings (C)"
+      source: "src.alpha.fundamentals.earnings_growth"
+      weight: 1.0
+      threshold: "eps_growth_qoq > 0.20"
+    - name: "Annual Earnings (A)"
+      source: "src.alpha.fundamentals.earnings_growth"
+      weight: 1.0
+      threshold: "eps_growth_yoy > 0.20"
+    - name: "New High (N)"
+      source: "src.alpha.indicators.new_high"
+      weight: 1.0
+      threshold: "price_is_52w_high"
+    - name: "Strong Sector (S)"
+      source: "src.alpha.fundamentals.sector_strength"
+      weight: 1.0
+      threshold: "sector_rs_rank > 80"
+    - name: "Institutional Support (I)"
+      source: "src.alpha.fundamentals.institutional_ownership"
+      weight: 1.0
+      threshold: "inst_ownership_trend > 0"
+    - name: "Market Direction (M)"
+      source: "src.alpha.macro_regime.MacroRegimeFilter"
+      weight: 1.0
+      threshold: "regime != BEAR"
+
+edge_gate_params:
+  min_sharpe: 0.5
+  min_dsr: 1.0
+  min_win_rate: 0.55

@@ -1,0 +1,5 @@
+﻿status: completed
+outcome: "2/2 evaluated candidates FAILED the edge gate"
+verdicts:
+  sentiment_overlay_sma_entry_v1: "FAIL IS=0.7 WF=0.65 DSR=0.30"
+  sentiment_overlay_momentum_veto_v1: "FAIL IS=0.95 WF=0.975 DSR=0.01"

@@ -1,0 +1,6 @@
+﻿status: completed
+outcome: "3/3 candidates HONEST_ABANDON (missing factor modules)"
+verdicts:
+  multifactor_vcp: "HONEST_ABANDON not_evaluable_missing_plumbing"
+  multifactor_canslim: "HONEST_ABANDON not_evaluable_missing_plumbing"
+  multifactor_earnings_mom: "HONEST_ABANDON not_evaluable_missing_plumbing"
