@@ -1,0 +1,43 @@
+{
+  "claim": "13F accumulation factor beats median hedge fund OOS",
+  "gates": {
+    "sign_gate_train": {
+      "pass": true,
+      "value": 0.008666273156236862
+    },
+    "oos_median_3of4_years": {
+      "pass": false,
+      "value": {
+        "2024": 0.0,
+        "2025": 1.0,
+        "2026": 0.0,
+        "2027": 0.0
+      },
+      "note": "2026-2027 not yet computable; earliest possible pass end-2027 (pre-registered)"
+    },
+    "oos_sharpe_ge_1": {
+      "pass": false,
+      "value": 0.24160477185525658
+    },
+    "oos_maxdd_le_25": {
+      "pass": true,
+      "value": -0.06953792132555325
+    },
+    "oos_cagr_ge_15_net": {
+      "pass": false,
+      "value": 0.021072206923904213
+    },
+    "null_p95": {
+      "pass": false,
+      "value": 0.0609432606044026
+    }
+  },
+  "bar_pass": false,
+  "pending": {
+    "quarters": [
+      "2026Q1",
+      "2026Q2"
+    ],
+    "note": "exit dates beyond last price date 2026-08-07; verdict 2026-09-17 may refresh prices"
+  }
+}

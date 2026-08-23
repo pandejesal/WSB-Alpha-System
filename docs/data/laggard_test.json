@@ -1,0 +1,34 @@
+{
+  "config": {
+    "rsi_mode": "neutral",
+    "min_conf": 5,
+    "holding": 20,
+    "stop": 0.0,
+    "direction": "long_only",
+    "spy_gate": false
+  },
+  "universe": [
+    "INTC",
+    "PFE",
+    "KO",
+    "BA",
+    "T",
+    "CSCO",
+    "VZ",
+    "MRK",
+    "GE",
+    "IBM"
+  ],
+  "n_trades": 322,
+  "n_oos": 126,
+  "median_excess_full": -0.0068323567721946706,
+  "median_excess_oos": -0.0014535271939403608,
+  "mean_excess_oos": 0.005142784711743166,
+  "oos_win_rate": 0.49206349206349204,
+  "per_year_median": {
+    "2024": -0.0179617047507709,
+    "2025": 0.0028428243550725043,
+    "2026": 0.017555629482872658
+  },
+  "verdict": "FAIL"
+}

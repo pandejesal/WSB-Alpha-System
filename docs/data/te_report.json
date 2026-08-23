@@ -1,0 +1,7 @@
+{
+  "te_limit": 0.02,
+  "months": [],
+  "breaches": [],
+  "status": "OK",
+  "note": "TE = |paper monthly return - A-config backtest monthly return| (equal-weight benchmark); report updates monthly"
+}

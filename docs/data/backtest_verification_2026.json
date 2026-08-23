@@ -1,0 +1,458 @@
+[
+  {
+    "id": "strat_0016",
+    "strategy_name": "HA_MACD_RSI_BB_hp15_rsi3070_gk1.0_min3",
+    "metrics": {
+      "sharpe": 0.011859461540849194,
+      "sortino": 0.01683122568442053,
+      "calmar": 0.06173718693618643,
+      "win_rate": 0.5052256532066508,
+      "profit_factor": 1.002104323744414,
+      "max_drawdown": 8.67259605826857,
+      "total_trades": 8420,
+      "total_return": 0.5354216840775341,
+      "annualized_return": 0.058149353398231574,
+      "avg_excess_return": -0.002165408245834121,
+      "spy_total_return": 18.768159114000834,
+      "avg_holding_period": 15.0,
+      "oos_sharpe": -0.5068434779358449
+    }
+  },
+  {
+    "id": "strat_0018",
+    "strategy_name": "HA_MACD_RSI_BB_hp15_rsi3070_gk1.2_min3",
+    "metrics": {
+      "sharpe": 0.005125591484389611,
+      "sortino": 0.007259215220462924,
+      "calmar": 0.026925759168866432,
+      "win_rate": 0.5052219321148825,
+      "profit_factor": 1.000912776690982,
+      "max_drawdown": 8.67259605826857,
+      "total_trades": 8426,
+      "total_return": 0.23351623283649242,
+      "annualized_return": 0.02804932645516911,
+      "avg_excess_return": -0.0021870608074145035,
+      "spy_total_return": 18.6616905961111,
+      "avg_holding_period": 15.0,
+      "oos_sharpe": -0.5021173034790996
+    }
+  },
+  {
+    "id": "strat_0022",
+    "strategy_name": "HA_MACD_RSI_BB_hp15_rsi4060_gk1.2_min3",
+    "metrics": {
+      "sharpe": -0.0014143346599088404,
+      "sortino": -0.0019866371824079996,
+      "calmar": -0.006435024822005594,
+      "win_rate": 0.5073938928365661,
+      "profit_factor": 0.9997502106101587,
+      "max_drawdown": 6.206429690329383,
+      "total_trades": 5207,
+      "total_return": -0.039938529113945576,
+      "annualized_return": -0.005357967940510799,
+      "avg_excess_return": -0.0020175750568418964,
+      "spy_total_return": 10.465574791861812,
+      "avg_holding_period": 15.0,
+      "oos_sharpe": -0.4965265783210589
+    }
+  },
+  {
+    "id": "strat_0020",
+    "strategy_name": "HA_MACD_RSI_BB_hp15_rsi4060_gk1.0_min3",
+    "metrics": {
+      "sharpe": -0.008755942674002473,
+      "sortino": -0.012296126869834337,
+      "calmar": -0.03813846172048491,
+      "win_rate": 0.5073048827374087,
+      "profit_factor": 0.9984622630340143,
+      "max_drawdown": 6.4109967139857496,
+      "total_trades": 5202,
+      "total_return": -0.24450555277031394,
+      "annualized_return": -0.03628311705165177,
+      "avg_excess_return": -0.0020399348215943344,
+      "spy_total_return": 10.367235389163417,
+      "avg_holding_period": 15.0,
+      "oos_sharpe": -0.5339320161502721
+    }
+  },
+  {
+    "id": "strat_0015",
+    "strategy_name": "HA_MACD_RSI_BB_hp7_rsi4060_gk1.2_min4",
+    "metrics": {
+      "sharpe": -0.25554409293432867,
+      "sortino": -0.36021463913343044,
+      "calmar": -0.6461471715251291,
+      "win_rate": 0.4873262469337694,
+      "profit_factor": 0.9559178419664912,
+      "max_drawdown": 3.677085127838435,
+      "total_trades": 2446,
+      "total_return": -2.3759381548745373,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0012153536661471348,
+      "spy_total_return": 0.5968169125213556,
+      "avg_holding_period": 7.0,
+      "oos_sharpe": -0.09212216934877596
+    }
+  },
+  {
+    "id": "strat_0013",
+    "strategy_name": "HA_MACD_RSI_BB_hp7_rsi4060_gk1.0_min4",
+    "metrics": {
+      "sharpe": -0.28144079959837204,
+      "sortino": -0.3955044932566121,
+      "calmar": -0.6671679548899256,
+      "win_rate": 0.48711656441717793,
+      "profit_factor": 0.9516090536096182,
+      "max_drawdown": 3.909320007333724,
+      "total_trades": 2445,
+      "total_return": -2.6081730343698264,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0013057303620299635,
+      "spy_total_return": 0.584337700793435,
+      "avg_holding_period": 7.0,
+      "oos_sharpe": -0.09496050330030105
+    }
+  },
+  {
+    "id": "strat_0023",
+    "strategy_name": "HA_MACD_RSI_BB_hp15_rsi4060_gk1.2_min4",
+    "metrics": {
+      "sharpe": -0.28837370512166394,
+      "sortino": -0.40714478165880813,
+      "calmar": -0.5026988088379845,
+      "win_rate": 0.49059689288634506,
+      "profit_factor": 0.9494369165285315,
+      "max_drawdown": 7.775144509443641,
+      "total_trades": 2446,
+      "total_return": -3.9085558834907834,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0014282315711170496,
+      "spy_total_return": -0.4151014605384781,
+      "avg_holding_period": 15.0,
+      "oos_sharpe": 0.11547859013439513
+    }
+  },
+  {
+    "id": "strat_0012",
+    "strategy_name": "HA_MACD_RSI_BB_hp7_rsi4060_gk1.0_min3",
+    "metrics": {
+      "sharpe": -0.2956090222125812,
+      "sortino": -0.40653642738285495,
+      "calmar": -0.8591813185008599,
+      "win_rate": 0.49653979238754326,
+      "profit_factor": 0.9496136218376108,
+      "max_drawdown": 6.542662836627921,
+      "total_trades": 5202,
+      "total_return": -5.621333682566471,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0019726394375488175,
+      "spy_total_return": 4.640336671562481,
+      "avg_holding_period": 7.0,
+      "oos_sharpe": -0.599550434536483
+    }
+  },
+  {
+    "id": "strat_0014",
+    "strategy_name": "HA_MACD_RSI_BB_hp7_rsi4060_gk1.2_min3",
+    "metrics": {
+      "sharpe": -0.29732265159391197,
+      "sortino": -0.4083677688458067,
+      "calmar": -0.861488719661115,
+      "win_rate": 0.4964470904551565,
+      "profit_factor": 0.9489628683895299,
+      "max_drawdown": 6.651654304930675,
+      "total_trades": 5207,
+      "total_return": -5.73032515086922,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0019772841079840685,
+      "spy_total_return": 4.565393199403828,
+      "avg_holding_period": 7.0,
+      "oos_sharpe": -0.5566075507659569
+    }
+  },
+  {
+    "id": "strat_0021",
+    "strategy_name": "HA_MACD_RSI_BB_hp15_rsi4060_gk1.0_min4",
+    "metrics": {
+      "sharpe": -0.30984971067640105,
+      "sortino": -0.43653919615638587,
+      "calmar": -0.5200642696675338,
+      "win_rate": 0.49038854805725973,
+      "profit_factor": 0.9457975237959028,
+      "max_drawdown": 8.056471693254355,
+      "total_trades": 2445,
+      "total_return": -4.189883067301492,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.001532141952937455,
+      "spy_total_return": -0.4437959923694149,
+      "avg_holding_period": 15.0,
+      "oos_sharpe": 0.07644926081363258
+    }
+  },
+  {
+    "id": "strat_0008",
+    "strategy_name": "HA_MACD_RSI_BB_hp7_rsi3070_gk1.0_min3",
+    "metrics": {
+      "sharpe": -0.3216873653787249,
+      "sortino": -0.44806014918412246,
+      "calmar": -0.933381947612807,
+      "win_rate": 0.49287410926365793,
+      "profit_factor": 0.9447067006700396,
+      "max_drawdown": 10.587390058020038,
+      "total_trades": 8420,
+      "total_return": -9.882078752584551,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.002300210772874953,
+      "spy_total_return": 9.485695955022557,
+      "avg_holding_period": 7.0,
+      "oos_sharpe": -0.7293914984205577
+    }
+  },
+  {
+    "id": "strat_0010",
+    "strategy_name": "HA_MACD_RSI_BB_hp7_rsi3070_gk1.2_min3",
+    "metrics": {
+      "sharpe": -0.32916544514214124,
+      "sortino": -0.45765652448446076,
+      "calmar": -0.9353560142083932,
+      "win_rate": 0.49276050320436743,
+      "profit_factor": 0.9431924271227222,
+      "max_drawdown": 10.910702625960266,
+      "total_trades": 8426,
+      "total_return": -10.205391320524779,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0023130327829746916,
+      "spy_total_return": 9.284222908819977,
+      "avg_holding_period": 7.0,
+      "oos_sharpe": -0.716819045091156
+    }
+  },
+  {
+    "id": "strat_0017",
+    "strategy_name": "HA_MACD_RSI_BB_hp15_rsi3070_gk1.0_min4",
+    "metrics": {
+      "sharpe": -0.4180320988438015,
+      "sortino": -0.5888102983266131,
+      "calmar": -0.7713343417162816,
+      "win_rate": 0.4844559585492228,
+      "profit_factor": 0.92774141339426,
+      "max_drawdown": 13.603292862345018,
+      "total_trades": 4632,
+      "total_return": -10.49268694522782,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0027897552207169505,
+      "spy_total_return": 2.429459237133093,
+      "avg_holding_period": 15.0,
+      "oos_sharpe": -0.6827767954663273
+    }
+  },
+  {
+    "id": "strat_0019",
+    "strategy_name": "HA_MACD_RSI_BB_hp15_rsi3070_gk1.2_min4",
+    "metrics": {
+      "sharpe": -0.4248405240411484,
+      "sortino": -0.5968998594621383,
+      "calmar": -0.7750573215368676,
+      "win_rate": 0.48446266724212345,
+      "profit_factor": 0.9264474760115426,
+      "max_drawdown": 13.82843815343172,
+      "total_trades": 4634,
+      "total_return": -10.717832236314521,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0027991320856043207,
+      "spy_total_return": 2.2533458483758992,
+      "avg_holding_period": 15.0,
+      "oos_sharpe": -0.6827767954663273
+    }
+  },
+  {
+    "id": "strat_0011",
+    "strategy_name": "HA_MACD_RSI_BB_hp7_rsi3070_gk1.2_min4",
+    "metrics": {
+      "sharpe": -0.6309939081226128,
+      "sortino": -0.8779189183760548,
+      "calmar": -0.8902208456762192,
+      "win_rate": 0.4788519637462236,
+      "profit_factor": 0.8933202881019419,
+      "max_drawdown": 12.24640187453827,
+      "total_trades": 4634,
+      "total_return": -10.902002233331316,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0029145936892831514,
+      "spy_total_return": 2.6042249228068095,
+      "avg_holding_period": 7.0,
+      "oos_sharpe": -0.990677755633301
+    }
+  },
+  {
+    "id": "strat_0009",
+    "strategy_name": "HA_MACD_RSI_BB_hp7_rsi3070_gk1.0_min4",
+    "metrics": {
+      "sharpe": -0.6341229909704574,
+      "sortino": -0.8819701159507743,
+      "calmar": -0.8903811937672935,
+      "win_rate": 0.4788428324697755,
+      "profit_factor": 0.8929204282050133,
+      "max_drawdown": 12.26431565439608,
+      "total_trades": 4632,
+      "total_return": -10.919916013189125,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.002944341817424857,
+      "spy_total_return": 2.7182752851228114,
+      "avg_holding_period": 7.0,
+      "oos_sharpe": -0.990677755633301
+    }
+  },
+  {
+    "id": "strat_0007",
+    "strategy_name": "HA_MACD_RSI_BB_hp3_rsi4060_gk1.2_min4",
+    "metrics": {
+      "sharpe": -0.8081063009544448,
+      "sortino": -1.1045623992335356,
+      "calmar": -0.9094559163109011,
+      "win_rate": 0.47383483237939494,
+      "profit_factor": 0.8659129745988281,
+      "max_drawdown": 5.753042827115286,
+      "total_trades": 2446,
+      "total_return": -5.232138836000935,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.002535554622838301,
+      "spy_total_return": 0.9698277714615502,
+      "avg_holding_period": 3.0,
+      "oos_sharpe": 0.030539315457156074
+    }
+  },
+  {
+    "id": "strat_0005",
+    "strategy_name": "HA_MACD_RSI_BB_hp3_rsi4060_gk1.0_min4",
+    "metrics": {
+      "sharpe": -0.8540993692752128,
+      "sortino": -1.158495353479871,
+      "calmar": -0.9132895085423646,
+      "win_rate": 0.4736196319018405,
+      "profit_factor": 0.85939459913612,
+      "max_drawdown": 6.0073929053923125,
+      "total_trades": 2445,
+      "total_return": -5.486488914277961,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0026355163492889945,
+      "spy_total_return": 0.9573485597336293,
+      "avg_holding_period": 3.0,
+      "oos_sharpe": 0.04309111386547043
+    }
+  },
+  {
+    "id": "strat_0006",
+    "strategy_name": "HA_MACD_RSI_BB_hp3_rsi4060_gk1.2_min3",
+    "metrics": {
+      "sharpe": -0.9782389547217352,
+      "sortino": -1.3017635322708843,
+      "calmar": -0.9759887432777512,
+      "win_rate": 0.48261955060495487,
+      "profit_factor": 0.8415528963277998,
+      "max_drawdown": 13.328345478625227,
+      "total_trades": 5207,
+      "total_return": -13.008315153752731,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.002612657055086017,
+      "spy_total_return": 0.5957901320801597,
+      "avg_holding_period": 3.0,
+      "oos_sharpe": -0.7735720190223538
+    }
+  },
+  {
+    "id": "strat_0002",
+    "strategy_name": "HA_MACD_RSI_BB_hp3_rsi3070_gk1.2_min3",
+    "metrics": {
+      "sharpe": -0.9849565377118624,
+      "sortino": -1.3161417527337518,
+      "calmar": -0.9835709227834867,
+      "win_rate": 0.47934963209114645,
+      "profit_factor": 0.837674941830285,
+      "max_drawdown": 21.624560962137057,
+      "total_trades": 8426,
+      "total_return": -21.269289380415263,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0026867211271047633,
+      "spy_total_return": 1.3690228365694739,
+      "avg_holding_period": 3.0,
+      "oos_sharpe": -0.6604633939645226
+    }
+  },
+  {
+    "id": "strat_0000",
+    "strategy_name": "HA_MACD_RSI_BB_hp3_rsi3070_gk1.0_min3",
+    "metrics": {
+      "sharpe": -0.9946305964398882,
+      "sortino": -1.3273535716184106,
+      "calmar": -0.9836060297268139,
+      "win_rate": 0.47933491686460805,
+      "profit_factor": 0.8367125955904128,
+      "max_drawdown": 21.670868978043057,
+      "total_trades": 8420,
+      "total_return": -21.315597396321266,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.00269193836089084,
+      "spy_total_return": 1.3505236023796023,
+      "avg_holding_period": 3.0,
+      "oos_sharpe": -0.6981131429214559
+    }
+  },
+  {
+    "id": "strat_0004",
+    "strategy_name": "HA_MACD_RSI_BB_hp3_rsi4060_gk1.0_min3",
+    "metrics": {
+      "sharpe": -1.0092244139992983,
+      "sortino": -1.336179761337079,
+      "calmar": -0.9765099316857291,
+      "win_rate": 0.48250672818146867,
+      "profit_factor": 0.837477295255542,
+      "max_drawdown": 13.624069572233672,
+      "total_trades": 5202,
+      "total_return": -13.304039247361175,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0026533453375071512,
+      "spy_total_return": 0.49866319835102924,
+      "avg_holding_period": 3.0,
+      "oos_sharpe": -0.8152591142109046
+    }
+  },
+  {
+    "id": "strat_0003",
+    "strategy_name": "HA_MACD_RSI_BB_hp3_rsi3070_gk1.2_min4",
+    "metrics": {
+      "sharpe": -1.147073746965536,
+      "sortino": -1.534377450268412,
+      "calmar": -0.9680924169511611,
+      "win_rate": 0.46741476046611996,
+      "profit_factor": 0.8115833287649202,
+      "max_drawdown": 14.36468887060278,
+      "total_trades": 4634,
+      "total_return": -13.9063463675901,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0031653539998690882,
+      "spy_total_return": 0.7619040678032547,
+      "avg_holding_period": 3.0,
+      "oos_sharpe": -0.8837796202978769
+    }
+  },
+  {
+    "id": "strat_0001",
+    "strategy_name": "HA_MACD_RSI_BB_hp3_rsi3070_gk1.0_min4",
+    "metrics": {
+      "sharpe": -1.1569553766928196,
+      "sortino": -1.5460565295137059,
+      "calmar": -0.9681033728429409,
+      "win_rate": 0.4674006908462867,
+      "profit_factor": 0.8108773701764509,
+      "max_drawdown": 14.369622871177373,
+      "total_trades": 4632,
+      "total_return": -13.91128036816469,
+      "annualized_return": NaN,
+      "avg_excess_return": -0.0031820666933893094,
+      "spy_total_return": 0.8280525556145926,
+      "avg_holding_period": 3.0,
+      "oos_sharpe": -0.8837796202978769
+    }
+  }
+]

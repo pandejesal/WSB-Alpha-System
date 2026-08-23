@@ -1,0 +1,39 @@
+{
+  "config": {
+    "rsi_mode": "neutral",
+    "min_conf": 5,
+    "holding_days": 20,
+    "stop": 0.0,
+    "direction": "long_only",
+    "spy_gate": false,
+    "sizing": "equal_weight_1of4",
+    "universe": [
+      "AAPL",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "NVDA",
+      "META",
+      "TSLA",
+      "JPM",
+      "V",
+      "JNJ",
+      "WMT",
+      "MA",
+      "UNH",
+      "XOM",
+      "DIS"
+    ]
+  },
+  "start_date": "2026-08-14",
+  "portfolio_value": 100.0,
+  "cash": 100.0,
+  "realized_pnl": 0.0,
+  "trades": [],
+  "trade_log": [],
+  "monthly_value": {
+    "2026-08": 100.0
+  },
+  "processed": {},
+  "last_run": "2026-08-14"
+}

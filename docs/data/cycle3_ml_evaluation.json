@@ -1,0 +1,51 @@
+{
+  "claim": "ML hybrid (price-only, strict protocol) decile long-short",
+  "gates": {
+    "train_consistency": {
+      "pass": false,
+      "value": -0.0014044876016793323
+    },
+    "oos_median_3of4_years": {
+      "pass": true,
+      "value": {
+        "2024": true,
+        "2025": true,
+        "2026": true,
+        "2027": false
+      },
+      "note": "2026 partial, 2027 not computable; earliest possible pass end-2027 (pre-registered)"
+    },
+    "oos_sharpe_ge_1": {
+      "pass": false,
+      "value": 0.9381778226912734
+    },
+    "oos_maxdd_le_25": {
+      "pass": true,
+      "value": -0.12355344660289569
+    },
+    "oos_cagr_ge_15_net": {
+      "pass": false,
+      "value": 0.1297655844000829
+    },
+    "null_p95": {
+      "pass": false,
+      "value": 0.0026525997860597133
+    }
+  },
+  "bar_pass": false,
+  "pending": {
+    "note": "2026 weeks after 2026-08-07 and 2027 not yet computable"
+  },
+  "data_handling_log": [
+    "Installed-version delta (Appendix B.1): sklearn 1.6.1 / numpy 2.4.6 / pandas 3.0.5 used (frozen Appendix A versions 1.9.0/2.2.0/2.2.3 not installed); declared BEFORE any run.",
+    "Features: 12 fixed price-only features from adjusted close (Appendix B.2): return lags 1/2/4/12/26/52 weeks (Friday-to-Friday on weekly bars), realized vol 20d/60d (daily returns, x sqrt252), RSI(14) Wilder on weekly Friday closes, close/SMA20/50/200 - 1 (daily SMAs evaluated at Friday close).",
+    "Target: forward 1-week Friday-to-Friday return, rank-normalized within each rebalance date (rank -> uniform -> inverse normal CDF).",
+    "Model: GradientBoostingRegressor(n_estimators=200, learning_rate=0.05, max_depth=3, min_samples_leaf=20, subsample=0.8, random_state=7, loss='squared_error'); refit annually (every 52 rebalance dates) on the EXPANDING train window; last anchor <= 2023-12-31; OOS predicted with the final train-fitted model only.",
+    "Feature warm-up: 52w lag + 200-day SMA require ~1 year of history; first complete-feature row ~2020-01 (declared data availability fact, Appendix B.2).",
+    "Training rows whose forward-return window crosses past 2023-12-31 are dropped (fail-closed: no OOS-period label used in training).",
+    "Portfolio: rank by prediction; long top decile, short bottom decile, equal weight; costs 10 bps/side on traded notional (turnover-based, both legs) \u2014 same convention as Claims 2 and 3.",
+    "Rebalance: last trading bar of each ISO week (Friday close).",
+    "OOS window 2024-01-01..2026-08-07: 2024, 2025 complete; 2026 partial; 2027 empty -> 3-of-4-complete-year rule cannot pass before end-2027 (pre-registered structural constraint).",
+    "Null: 1000x permutation of the weekly factor return series (block-shuffle on weekly rebalance dates), OOS-mean statistic, RNG seed 7 (Appendix A TBD resolved)."
+  ]
+}

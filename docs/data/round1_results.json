@@ -1,0 +1,127 @@
+{
+  "A_megacap_base": {
+    "signals": 12897,
+    "trades": 331,
+    "oos_trades": 126,
+    "median_excess_all": 0.004864872523319309,
+    "median_excess_oos": 0.0006778062597861513,
+    "mean_excess_oos": 0.0008692798028674563,
+    "oos_win_rate": 0.5079365079365079,
+    "per_year": {
+      "2024": 0.009401956687899962,
+      "2025": -0.00016605285607167522,
+      "2026": -0.017383914118967878
+    }
+  },
+  "A_megacap_rsi_slope": {
+    "signals": 9071,
+    "trades": 328,
+    "oos_trades": 125,
+    "median_excess_all": -0.003600095014114113,
+    "median_excess_oos": -0.009033226427959382,
+    "mean_excess_oos": -0.0019185238305155727,
+    "oos_win_rate": 0.432,
+    "per_year": {
+      "2024": -0.0033808639779602696,
+      "2025": -0.00692808751312439,
+      "2026": -0.029697737718679826
+    }
+  },
+  "A_megacap_volume_surge": {
+    "signals": 905,
+    "trades": 248,
+    "oos_trades": 97,
+    "median_excess_all": -0.007792973287970281,
+    "median_excess_oos": 0.00755263739437324,
+    "mean_excess_oos": -0.0045631122322160175,
+    "oos_win_rate": 0.5154639175257731,
+    "per_year": {
+      "2024": -0.001119062394916757,
+      "2025": 0.009000174982738595,
+      "2026": 0.03552861744763265
+    }
+  },
+  "A_megacap_both": {
+    "signals": 724,
+    "trades": 237,
+    "oos_trades": 92,
+    "median_excess_all": -0.0008077117007337271,
+    "median_excess_oos": -9.111706774871109e-05,
+    "mean_excess_oos": -0.0046599861139102515,
+    "oos_win_rate": 0.5,
+    "per_year": {
+      "2024": -9.111706774871109e-05,
+      "2025": -0.016797431486504297,
+      "2026": 0.04498583159050047
+    }
+  },
+  "B_laggard_base": {
+    "signals": 7551,
+    "trades": 322,
+    "oos_trades": 126,
+    "median_excess_all": -0.0068323567721946706,
+    "median_excess_oos": -0.0014535271939403608,
+    "mean_excess_oos": 0.005142784711743166,
+    "oos_win_rate": 0.49206349206349204,
+    "per_year": {
+      "2024": -0.0179617047507709,
+      "2025": 0.0028428243550725043,
+      "2026": 0.017555629482872658
+    }
+  },
+  "B_laggard_rsi_slope": {
+    "signals": 5538,
+    "trades": 317,
+    "oos_trades": 126,
+    "median_excess_all": -0.006711626613292766,
+    "median_excess_oos": -0.006756443925901511,
+    "mean_excess_oos": 0.0007578963224065396,
+    "oos_win_rate": 0.4523809523809524,
+    "per_year": {
+      "2024": -0.016572252804717236,
+      "2025": 0.0010084176673046527,
+      "2026": -0.006465463861505635
+    }
+  },
+  "B_laggard_volume_surge": {
+    "signals": 617,
+    "trades": 218,
+    "oos_trades": 92,
+    "median_excess_all": -0.014188809377200004,
+    "median_excess_oos": -0.001636146910997548,
+    "mean_excess_oos": 0.013960895540245767,
+    "oos_win_rate": 0.4673913043478261,
+    "per_year": {
+      "2024": -0.01747141505049092,
+      "2025": 0.010036432459144831,
+      "2026": -0.00631613074661884
+    }
+  },
+  "B_laggard_both": {
+    "signals": 510,
+    "trades": 209,
+    "oos_trades": 88,
+    "median_excess_all": -0.01003283031591078,
+    "median_excess_oos": -0.00793754677527285,
+    "mean_excess_oos": 0.009878293599092095,
+    "oos_win_rate": 0.4431818181818182,
+    "per_year": {
+      "2024": -0.02134554837654905,
+      "2025": 0.003262019720083565,
+      "2026": -0.0006629472735722314
+    }
+  },
+  "verdicts": {
+    "rsi_slope": "FAIL",
+    "volume_surge": "FAIL",
+    "both": "FAIL"
+  },
+  "base_cfg": {
+    "rsi_mode": "neutral",
+    "min_conf": 5,
+    "holding": 20,
+    "stop": 0.0,
+    "direction": "long_only",
+    "spy_gate": false
+  }
+}

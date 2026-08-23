@@ -1,0 +1,58 @@
+{
+  "verdict": "CLAIM_FALSIFIED",
+  "date": "2026-08-14",
+  "claim": "MOM12-1+REV1 composite long-short, S&P 500 snapshot (481 names)",
+  "unmet_criteria": [
+    "sign_gate",
+    "oos_median_gt_0",
+    "oos_sharpe_ge_1",
+    "oos_pf_ge_1_5",
+    "need_3_of_4_complete_oos_years",
+    "beat_95pct_permutation_null"
+  ],
+  "sign_gate_train": {
+    "mom_ls_mean": -0.001336,
+    "rev_ls_mean": -0.000568,
+    "pass": false
+  },
+  "oos": {
+    "n": 135,
+    "mean": 0.002052,
+    "median": -0.001311,
+    "sharpe_ann": 0.536028,
+    "pf": 1.224915,
+    "maxdd": -0.123226
+  },
+  "oos_years_positive": {
+    "2024": true,
+    "2025": false
+  },
+  "nulls": {
+    "permutation_1000": {
+      "p95_median": 0.001347,
+      "p95_sharpe": 1.021969,
+      "p50_median": -2.3e-05
+    },
+    "timeshuffle_1000": {
+      "p95_median": -0.001311,
+      "p95_sharpe": 0.538025,
+      "p50_median": -0.001311,
+      "note": "median invariant under time permutation; statistic order-dependent only"
+    }
+  },
+  "bar_checks": {
+    "sign_gate": false,
+    "oos_median_gt_0": false,
+    "oos_sharpe_ge_1": false,
+    "oos_pf_ge_1_5": false,
+    "oos_maxdd_le_35pct": true,
+    "years_positive": {
+      "2024": true,
+      "2025": false
+    },
+    "n_complete_years_positive": 1,
+    "need_3_of_4_complete_oos_years": false,
+    "beat_95pct_permutation_null": false,
+    "beat_95pct_timeshuffle_null": false
+  }
+}

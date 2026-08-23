@@ -1,0 +1,246 @@
+{
+  "round": "2b",
+  "pre_registration": "docs/data/round2_preregistration.md",
+  "base_cfg": {
+    "rsi_mode": "neutral",
+    "min_conf": 5,
+    "holding": 20,
+    "stop": 0.0,
+    "direction": "long_only",
+    "spy_gate": false
+  },
+  "surge_mult": 1.5,
+  "floor_dollar_vol": 20000000.0,
+  "floor_price": 5.0,
+  "A_megacap_base": {
+    "signals": 12897,
+    "trades": 331,
+    "oos_trades": 126,
+    "median_excess_all": 0.004864872523319309,
+    "median_excess_oos": 0.0006778062597861513,
+    "mean_excess_oos": 0.0008692798028674563,
+    "oos_win_rate": 0.5079365079365079,
+    "tickers_used": [
+      "AAPL",
+      "AMZN",
+      "GOOGL",
+      "JNJ",
+      "JPM",
+      "MA",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA",
+      "UNH",
+      "V",
+      "WMT",
+      "XOM"
+    ],
+    "per_year": {
+      "2024": 0.009401956687899962,
+      "2025": -0.00016605285607167522,
+      "2026": -0.017383914118967878
+    }
+  },
+  "A_megacap_r23_surge_boost": {
+    "signals": 5170,
+    "trades": 300,
+    "oos_trades": 122,
+    "median_excess_all": 0.002733813163466948,
+    "median_excess_oos": -0.007394310654807045,
+    "mean_excess_oos": -0.005160075166366623,
+    "oos_win_rate": 0.48360655737704916,
+    "tickers_used": [
+      "AAPL",
+      "AMZN",
+      "DIS",
+      "GOOGL",
+      "JNJ",
+      "JPM",
+      "MA",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA",
+      "UNH",
+      "V",
+      "WMT",
+      "XOM"
+    ],
+    "per_year": {
+      "2024": -0.01452957181136376,
+      "2025": -0.004073931901367443,
+      "2026": 0.02660028065222826
+    }
+  },
+  "A_megacap_r24_liquidity": {
+    "signals": 12682,
+    "trades": 328,
+    "oos_trades": 126,
+    "median_excess_all": 0.005415112586770811,
+    "median_excess_oos": 0.0006778062597861513,
+    "mean_excess_oos": 0.0008692798028674563,
+    "oos_win_rate": 0.5079365079365079,
+    "tickers_used": [
+      "AAPL",
+      "AMZN",
+      "GOOGL",
+      "JNJ",
+      "JPM",
+      "MA",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA",
+      "UNH",
+      "V",
+      "WMT",
+      "XOM"
+    ],
+    "per_year": {
+      "2024": 0.009401956687899962,
+      "2025": -0.00016605285607167522,
+      "2026": -0.017383914118967878
+    }
+  },
+  "A_megacap_r23_r24": {
+    "signals": 5080,
+    "trades": 296,
+    "oos_trades": 122,
+    "median_excess_all": 0.002733813163466948,
+    "median_excess_oos": -0.007394310654807045,
+    "mean_excess_oos": -0.005160075166366623,
+    "oos_win_rate": 0.48360655737704916,
+    "tickers_used": [
+      "AAPL",
+      "AMZN",
+      "DIS",
+      "GOOGL",
+      "JNJ",
+      "JPM",
+      "MA",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA",
+      "UNH",
+      "V",
+      "WMT",
+      "XOM"
+    ],
+    "per_year": {
+      "2024": -0.01452957181136376,
+      "2025": -0.004073931901367443,
+      "2026": 0.02660028065222826
+    }
+  },
+  "B_laggard_base": {
+    "signals": 7551,
+    "trades": 322,
+    "oos_trades": 126,
+    "median_excess_all": -0.0068323567721946706,
+    "median_excess_oos": -0.0014535271939403608,
+    "mean_excess_oos": 0.005142784711743166,
+    "oos_win_rate": 0.49206349206349204,
+    "tickers_used": [
+      "BA",
+      "CSCO",
+      "GE",
+      "IBM",
+      "INTC",
+      "KO",
+      "MRK",
+      "PFE",
+      "T",
+      "VZ"
+    ],
+    "per_year": {
+      "2024": -0.0179617047507709,
+      "2025": 0.0028428243550725043,
+      "2026": 0.017555629482872658
+    }
+  },
+  "B_laggard_r23_surge_boost": {
+    "signals": 2821,
+    "trades": 281,
+    "oos_trades": 118,
+    "median_excess_all": -0.00986928422560256,
+    "median_excess_oos": 0.002763477529097959,
+    "mean_excess_oos": 0.007671865182839637,
+    "oos_win_rate": 0.5084745762711864,
+    "tickers_used": [
+      "BA",
+      "CSCO",
+      "GE",
+      "IBM",
+      "INTC",
+      "KO",
+      "MRK",
+      "PFE",
+      "T",
+      "VZ"
+    ],
+    "per_year": {
+      "2024": -0.016468552763085162,
+      "2025": 0.02284945709173332,
+      "2026": 0.005665976557895869
+    }
+  },
+  "B_laggard_r24_liquidity": {
+    "signals": 7446,
+    "trades": 318,
+    "oos_trades": 126,
+    "median_excess_all": -0.009770238741347458,
+    "median_excess_oos": -0.0014535271939403608,
+    "mean_excess_oos": 0.005142784711743166,
+    "oos_win_rate": 0.49206349206349204,
+    "tickers_used": [
+      "BA",
+      "CSCO",
+      "GE",
+      "IBM",
+      "INTC",
+      "KO",
+      "MRK",
+      "PFE",
+      "T",
+      "VZ"
+    ],
+    "per_year": {
+      "2024": -0.0179617047507709,
+      "2025": 0.0028428243550725043,
+      "2026": 0.017555629482872658
+    }
+  },
+  "B_laggard_r23_r24": {
+    "signals": 2785,
+    "trades": 277,
+    "oos_trades": 118,
+    "median_excess_all": -0.00986928422560256,
+    "median_excess_oos": 0.002763477529097959,
+    "mean_excess_oos": 0.007671865182839637,
+    "oos_win_rate": 0.5084745762711864,
+    "tickers_used": [
+      "BA",
+      "CSCO",
+      "GE",
+      "IBM",
+      "INTC",
+      "KO",
+      "MRK",
+      "PFE",
+      "T",
+      "VZ"
+    ],
+    "per_year": {
+      "2024": -0.016468552763085162,
+      "2025": 0.02284945709173332,
+      "2026": 0.005665976557895869
+    }
+  },
+  "verdicts": {
+    "r23_surge_boost": "FAIL",
+    "r24_liquidity": "FAIL",
+    "r23_r24": "FAIL"
+  }
+}

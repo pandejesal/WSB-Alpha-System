@@ -1,0 +1,71 @@
+{
+  "verdict": "CLAIM_FALSIFIED",
+  "unmet_criteria": [
+    "sign_gate",
+    "oos_median_gt_0",
+    "oos_sharpe_ge_1",
+    "oos_pf_ge_1_5",
+    "need_3_of_4_complete_oos_years",
+    "beat_95pct_permutation_null"
+  ],
+  "windows": {
+    "train": [
+      "2020-01-06",
+      "2023-12-31",
+      208
+    ],
+    "oos": [
+      "2024-01-01",
+      "2026-08-03",
+      136
+    ]
+  },
+  "train_stats": {
+    "mom_ls_mean": -0.001336,
+    "rev_ls_mean": -0.000568,
+    "composite": {
+      "n": 208,
+      "mean": -1.8e-05,
+      "median": 0.003104,
+      "sharpe_ann": -0.004194,
+      "pf": 0.998253,
+      "maxdd": -0.391767
+    }
+  },
+  "oos_stats": {
+    "n": 135,
+    "mean": 0.002052,
+    "median": -0.001311,
+    "sharpe_ann": 0.536028,
+    "pf": 1.224915,
+    "maxdd": -0.123226
+  },
+  "bar_checks": {
+    "sign_gate": false,
+    "oos_median_gt_0": false,
+    "oos_sharpe_ge_1": false,
+    "oos_pf_ge_1_5": false,
+    "oos_maxdd_le_35pct": true,
+    "years_positive": {
+      "2024": true,
+      "2025": false
+    },
+    "n_complete_years_positive": 1,
+    "need_3_of_4_complete_oos_years": false,
+    "beat_95pct_permutation_null": false,
+    "beat_95pct_timeshuffle_null": false
+  },
+  "nulls": {
+    "permutation_1000": {
+      "p95_median": 0.001347,
+      "p95_sharpe": 1.021969,
+      "p50_median": -2.3e-05
+    },
+    "timeshuffle_1000": {
+      "p95_median": -0.001311,
+      "p95_sharpe": 0.538025,
+      "p50_median": -0.001311,
+      "note": "median invariant under time permutation; statistic order-dependent only"
+    }
+  }
+}

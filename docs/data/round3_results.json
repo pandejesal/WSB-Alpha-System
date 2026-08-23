@@ -1,0 +1,188 @@
+{
+  "round": "3",
+  "pre_registration": "docs/data/round3_preregistration.md",
+  "base_cfg": {
+    "rsi_mode": "neutral",
+    "min_conf": 5,
+    "holding": 20,
+    "stop": 0.0,
+    "direction": "long_only",
+    "spy_gate": false
+  },
+  "p_route": 0.8,
+  "p_floor": 0.6,
+  "surge_mult": 1.5,
+  "persistence_undefined": "fail-closed no signal",
+  "A_megacap_base": {
+    "signals": 12897,
+    "trades": 331,
+    "oos_trades": 126,
+    "median_excess_all": 0.004864872523319309,
+    "median_excess_oos": 0.0006778062597861513,
+    "mean_excess_oos": 0.0008692798028674563,
+    "oos_win_rate": 0.5079365079365079,
+    "tickers_used": [
+      "AAPL",
+      "AMZN",
+      "GOOGL",
+      "JNJ",
+      "JPM",
+      "MA",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA",
+      "UNH",
+      "V",
+      "WMT",
+      "XOM"
+    ],
+    "per_year": {
+      "2024": 0.009401956687899962,
+      "2025": -0.00016605285607167522,
+      "2026": -0.017383914118967878
+    }
+  },
+  "A_megacap_r31_router": {
+    "signals": 10115,
+    "trades": 312,
+    "oos_trades": 125,
+    "median_excess_all": -0.001039415358679895,
+    "median_excess_oos": -0.009047544503122885,
+    "mean_excess_oos": -0.0037503566628428356,
+    "oos_win_rate": 0.424,
+    "tickers_used": [
+      "AAPL",
+      "AMZN",
+      "GOOGL",
+      "JNJ",
+      "JPM",
+      "MA",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA",
+      "UNH",
+      "V",
+      "WMT",
+      "XOM"
+    ],
+    "per_year": {
+      "2024": -0.002713588270666631,
+      "2025": -0.022968750065311117,
+      "2026": -0.019995790037830405
+    }
+  },
+  "A_megacap_r32_floor": {
+    "signals": 9950,
+    "trades": 305,
+    "oos_trades": 124,
+    "median_excess_all": -0.002713588270666631,
+    "median_excess_oos": -0.008668298995538047,
+    "mean_excess_oos": -0.004135413966101151,
+    "oos_win_rate": 0.43548387096774194,
+    "tickers_used": [
+      "AAPL",
+      "AMZN",
+      "GOOGL",
+      "JNJ",
+      "JPM",
+      "MA",
+      "META",
+      "MSFT",
+      "NVDA",
+      "TSLA",
+      "UNH",
+      "V",
+      "WMT",
+      "XOM"
+    ],
+    "per_year": {
+      "2024": -0.0027744953011287644,
+      "2025": -0.02363899923884931,
+      "2026": -0.0065206183438757835
+    }
+  },
+  "B_laggard_base": {
+    "signals": 7551,
+    "trades": 322,
+    "oos_trades": 126,
+    "median_excess_all": -0.0068323567721946706,
+    "median_excess_oos": -0.0014535271939403608,
+    "mean_excess_oos": 0.005142784711743166,
+    "oos_win_rate": 0.49206349206349204,
+    "tickers_used": [
+      "BA",
+      "CSCO",
+      "GE",
+      "IBM",
+      "INTC",
+      "KO",
+      "MRK",
+      "PFE",
+      "T",
+      "VZ"
+    ],
+    "per_year": {
+      "2024": -0.0179617047507709,
+      "2025": 0.0028428243550725043,
+      "2026": 0.017555629482872658
+    }
+  },
+  "B_laggard_r31_router": {
+    "signals": 5212,
+    "trades": 296,
+    "oos_trades": 127,
+    "median_excess_all": -0.006858611147387103,
+    "median_excess_oos": -0.0068391843682654024,
+    "mean_excess_oos": 0.006230703242261079,
+    "oos_win_rate": 0.4645669291338583,
+    "tickers_used": [
+      "BA",
+      "CSCO",
+      "GE",
+      "IBM",
+      "INTC",
+      "KO",
+      "MRK",
+      "PFE",
+      "T",
+      "VZ"
+    ],
+    "per_year": {
+      "2024": -0.0068391843682654024,
+      "2025": -0.0019027680699567496,
+      "2026": -0.00919612423134096
+    }
+  },
+  "B_laggard_r32_floor": {
+    "signals": 5045,
+    "trades": 283,
+    "oos_trades": 126,
+    "median_excess_all": -0.00852904597327546,
+    "median_excess_oos": -0.006330880520669258,
+    "mean_excess_oos": 0.011876756051815379,
+    "oos_win_rate": 0.4603174603174603,
+    "tickers_used": [
+      "BA",
+      "CSCO",
+      "GE",
+      "IBM",
+      "INTC",
+      "KO",
+      "MRK",
+      "PFE",
+      "T",
+      "VZ"
+    ],
+    "per_year": {
+      "2024": 0.0015788597526096978,
+      "2025": -0.0041723927455752825,
+      "2026": -0.009844087356194731
+    }
+  },
+  "verdicts": {
+    "r31_router": "FAIL",
+    "r32_floor": "FAIL"
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "claim": "price-only low-volatility factor (low-vol long / high-vol short)",
+  "gates": {
+    "sign_gate_train": {
+      "pass": false,
+      "value": -0.0035767328902306284
+    },
+    "oos_median_3of4_years": {
+      "pass": false,
+      "value": {
+        "2024": false,
+        "2025": false,
+        "2026": false,
+        "2027": false
+      },
+      "note": "2026 partial, 2027 not computable; earliest possible pass end-2027 (pre-registered)"
+    },
+    "oos_sharpe_ge_1": {
+      "pass": false,
+      "value": -1.1843302970869076
+    },
+    "oos_maxdd_le_25": {
+      "pass": false,
+      "value": -0.6762359466585093
+    },
+    "oos_cagr_ge_15_net": {
+      "pass": false,
+      "value": -0.296917112815024
+    },
+    "null_p95": {
+      "pass": false,
+      "value": -2.293361374837221e-05
+    }
+  },
+  "bar_pass": false,
+  "pending": {
+    "note": "2026 weeks after 2026-08-07 and 2027 not yet computable"
+  },
+  "data_handling_log": [
+    "Rebalance: last trading bar of each ISO week (union of snapshot trading calendars; Friday close).",
+    "Signal: 60-day realized vol (annualized std of daily returns, adjusted closes), min_periods=60; weeks before the 60th trading day have NaN vol -> tickers excluded that week; weeks with <20 rankable tickers produce no factor (same MIN_N floor as Claim 1).",
+    "Ranking: cross-sectional on the 481-name frozen snapshot; long = bottom decile (lowest vol), short = top decile (highest vol), equal weight within each decile; rank method average.",
+    "Costs: 10 bps per side on traded notional (turnover-based, both legs, weight change vs prior rebalance; first week charges full entry notional) \u2014 same convention as the Claim 2 multi-asset engine.",
+    "Final rebalance date excluded from returns (no exit bar): 2026-08-07.",
+    "Weeks skipped (<20 rankable tickers): 12.",
+    "OOS window 2024-01-01..2026-08-07: 2024, 2025 complete; 2026 partial; 2027 empty -> 3-of-4-complete-year rule cannot pass before end-2027 (pre-registered structural constraint).",
+    "Null: 1000x permutation of the weekly factor return series (block-shuffle on weekly rebalance dates), OOS-mean statistic, RNG seed 7.",
+    "Mean weekly turnover (sum |w_t - w_{t-1}|): 0.0052"
+  ]
+}
