@@ -1,0 +1,27 @@
+# H-SLX-1 hypothesis brief (stage-01 output, pre-registration)
+family: "ml_exit_overlay"
+
+universe: "Frozen 481-name S&P 500 snapshot (cache/cycle3_13f_ticker_map.json) intersected with local daily OHLCV panel market_data_2019_2026/ohlcv/ (2019-01-02..2026-08-07); monthly top-5 selection by 126d-return-skip-21d; SPY excluded from selection"
+
+hypothesis: "A gradient-boosting exit model trained on SL-adjusted labels (label=1 iff the position rises over the next 10 bars AND its Low never dips >=20% below current close within that window), applied as a per-bar early-exit rule to us_momentum_top5 holdings, beats the static rank-drop exit on OOS Sharpe by at least +0.10 without worsening maxDD — i.e. exit timing carries exploitable information that entry-signal ML could not capture."
+
+acceptance: "- Pre-registration committed to docs/data/ml_sl_exit_prereg.md BEFORE any in-sample model run\n- Gate 1: OOS Sharpe(ML arm) - Sharpe(static arm) >= +0.10 on the WORSE of the two pre-declared thresholds\n- Gate 2: |maxDD(ML arm)| <= |maxDD(static arm)| + 0.5pp on the same worse-threshold arm\n- Gate 3: train-consistency sign — mean IS annual excess return (ML - static) > 0\n- Gate 4: observed OOS Sharpe delta > permutation null p95 (1000 circular block shuffles, block=10 bars, seed=7)\n- DSR ledger entry written to docs/data/eval_ml_sl_exit.json regardless of verdict\n- If total OOS ML-exit count < 20 across both thresholds: auto-FAIL 'insufficient intervention' (honest no-op)"
+
+lookback_constraints: "Daily OHLCV only, no intraday, no lookahead: all features computed from data up to decision bar t inclusive; execution at close of bar t+1; train rows strictly dated <= 2023-12-31; OOS predictions produced ONLY by the single final train-fitted model (no rolling refit leakage); label horizon requires K=10 future bars so training labels end >=10 bars before split boundary usage"
+
+edge_gate_params:
+  preregistration_file: docs/data/ml_sl_exit_prereg.md
+  theta_grid: [0.30, 0.40]
+  theta_selection: "ALL gates evaluated on worse-performing threshold (anti-cherry-pick)"
+  label_horizon_bars: 10
+  stop_delta: 0.20
+  features: ["r1", "r2", "r5", "r21", "r63", "r252", "vol20", "vol60", "rsi14", "d_sma20", "d_sma50", "d_sma200", "pos_ret"]
+  monotone_constraints: "pos_ret = +1 (increasing), all others unconstrained"
+  model: "HistGradientBoostingClassifier(max_iter=200, learning_rate=0.05, max_depth=3, min_samples_leaf=20, l2_regularization=0.0, random_state=7); sklearn 1.6.1 substitution for xgboost declared (monotonic_cst native)"
+  costs_bps_per_side: 5
+  exec_delay_bars: 1
+  null_test: "circular block shuffle of p_good per ticker, block=10 bars, 1000 draws, seed=7, statistic = OOS Sharpe delta"
+  kill_criteria: "Any gate fail => keep static exits, record honest FAIL like topic07; no post-hoc parameter changes permitted"
+
+# Paper-only note (operator mandate)
+paper_only: true
