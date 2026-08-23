@@ -5,7 +5,7 @@
 > The active session maintains this file (bump version, update ledger/slate) and tells
 > you to re-paste it whenever context runs low or a wave completes.
 
-version: 1 · generated: 2026-08-24 · superseded-by: —
+version: 2 · generated: 2026-08-24 · change: §11 model-routing addendum appended · superseded-by: —
 
 ## 0. First actions (before ANY research)
 
@@ -148,3 +148,89 @@ At every wave boundary OR as context nears exhaustion:
 - Memory layers: Mnemosyne CLI (`mnemosyne`) + plugin tools; Obsidian vault at
   `C:\Users\DELL\Documents\Obsidian Vault`; mirror script
   `06-Mnemosyne/tools/build_mirror.py`.
+
+## 11. Model routing addendum — which model does what, at what effort
+
+> Slugs match `~/.config/opencode/opencode.jsonc` exactly — do not rename.
+> Precedence: §§1–10 win on WHAT must be done; §11 wins on WHICH model and EFFORT
+> does it. Per §8, this section is STABLE: wave regenerations bump `version` and
+> leave §11 byte-identical unless the operator orders a change.
+
+### 11.1 Roster (as configured — respect these caps)
+
+| Role name | Slug | Ctx in/out | Notes |
+|---|---|---|---|
+| MAIN | opencode-go/ox-alpha-free | 128K/128K | session default; strongest coder per operator's independent tests |
+| AUDITOR | opencode/nemotron-3-ultra-free | 128K/16K-out | different vendor than MAIN by design; audits stay terse |
+| BUILDER | opencode/muse-spark-1.2-contributor-free | 128K/128K | only model exposing effort variants (minimal..xhigh) |
+| SCRAPER-BUILDER + CLERK | opencode/mimo-v2.5-free | 128K/128K | tool-use specialist; token-efficient → cheapest chore lane |
+| RESEARCHER | opencode/hy3-free | 64K-in/262K-out | best search agent; scoped excerpts ONLY |
+
+### 11.2 Session roles
+
+- **MAIN = opencode-go/ox-alpha-free.** Owns §0 law chain, wave slate drafting,
+  prereg authorship, ALL test execution (serial single-file), ledgers, §8 regeneration.
+- If MAIN is ever swapped, only AUDITOR may inherit the seat without rewriting §11.
+
+### 11.3 Subagent routing
+
+| Job class | Model | Effort | Notes |
+|---|---|---|---|
+| Adversarial gate audit (prereg pre-commit review; cold eval_<id>.json read) | AUDITOR | max | MUST remain non-OX lineage |
+| Web research: STOCK Act PTRs, Cramer records, prior art | RESEARCHER | high | returns URLs+quotes, never conclusions-as-facts |
+| Engine/script implementation | BUILDER | high (xhigh for stats code) | writes code, never runs tests |
+| Scraper engineering against live filing endpoints | SCRAPER-BUILDER | high | writes code, never runs tests |
+| Ledger templating, vault log lines, memory_store facts, commit msgs, reports | CLERK (= MiMo-V2.5) | low | DEFERS to MAIN-inline whenever a scraper build is actively running in the same wave |
+| Gate-verdict tie-break (MAIN vs AUDITOR disagree) | RESEARCHER | max | if disputed item came FROM hy3, tiebreak via SCRAPER-BUILDER |
+
+### 11.4 Reasoning-effort law
+
+MAX=xhigh where model variants exist (BUILDER); otherwise state intended level
+explicitly in every Task prompt (adaptive-thinking plugin handles the rest).
+
+- **MAX**: prereg authorship, purged-CV/permutation/DSR design, gate verdicts,
+  wave-slate drafting, §8 regeneration edits, adversarial audits, tie-breaks.
+- **HIGH**: engine/script/scraper implementation, data validation, research synthesis.
+- **LOW**: templating, vault logs, memory facts, commits, 35-min status reports (CLERK).
+- MAIN idles at HIGH between waves, drops to LOW for chores only when CLERK is
+  unavailable, and is ALWAYS at MAX whenever anything touches §3's six gates.
+
+### 11.5 Verification law (non-negotiable)
+
+1. Every subagent response is UNTRUSTED INPUT until MAIN verifies it.
+2. Only MAIN executes tests. Builders write; MAIN runs serial single-file checks
+   and reads raw output itself. CLERK never computes or alters any number — it
+   only reformats values MAIN hands it verbatim.
+3. No number enters docs/data/ unless MAIN executed the run producing it.
+4. Each gate verdict requires two lineages: producer (OX Alpha) + cold auditor
+   (Nemotron Ultra). Disagreement ⇒ verdict = FAIL, recorded honestly (fail-closed).
+5. Escalation: SCRAPER-BUILDER/BUILDER fail twice on one task ⇒ MAIN absorbs it
+   inline (CLERK duties revert to MAIN for that span). MAIN rate-limited/stalled
+   >10 min ⇒ checkpoint (vault log + memory_store + git commit), then BUILDER
+   assumes the main seat under identical rules; recover OX Alpha next wave.
+
+### 11.6 Inheritance block — prepend to EVERY subagent prompt
+
+"You operate under WSB Alpha Hunt law: LIVE TRADING DISABLED, paper-only,
+fail-closed. Preregistration exists before any in-sample test you touch. Serial
+single-file verification only — never full/batch suites. Benchmark everywhere =
+SPY buy-and-hold, same engine/window/fees, net. Cite the closed-directions
+ledger before proposing anything overlapping a listed family, naming changed
+conditions. Never store secrets. Your context cap is [insert slug's cap]; expect
+scoped excerpts, not full documents. Return a STRUCTURED verdict: {status,
+files_touched[], commands_run[], key_numbers[] (each with the command that
+produced it), uncertainties[], next_step_suggestion}. You have NO authority to
+mark anything PASS."
+
+### 11.7 Context hygiene + fallback chain
+
+- All lanes fit ≤128K; RESEARCHER sees ≤50K excerpts (64K input cap).
+- AUDITOR's 16K output cap: verdicts + top findings only, never dumps.
+- MAIN keeps the full law chain resident; compact aggressively between waves and
+  trigger §8 regeneration BEFORE ~90K tokens, not after.
+- Stall/fallback ladder: SCRAPER-BUILDER fail×2 → MAIN inline (CLERK reverts to
+  MAIN); BUILDER fail×2 → MAIN inline; MAIN down → BUILDER seat-swap;
+  RESEARCHER down → MAIN absorbs research at HIGH.
+- All endpoints are free/community channels: assume prompts and outputs may be
+  retained or trained on. Strategy hypotheses pass through them knowingly —
+  accepted by operator.
