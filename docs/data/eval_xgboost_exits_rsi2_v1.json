@@ -1,0 +1,8 @@
+﻿{
+  "candidate_id": "xgboost_exits_rsi2_v1",
+  "family": "xgboost_exits",
+  "verdict": "HONEST_ABANDON",
+  "status": "not_evaluable_missing_plumbing",
+  "spec_fingerprint": "bf6540cdcedd5f4d4cb79fd08302c6b8a4e3ea82bbc4089c114570eb762288fa",
+  "timestamp": "2026-08-20T09:41:29.623060"
+}

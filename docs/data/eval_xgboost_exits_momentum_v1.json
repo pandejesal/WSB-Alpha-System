@@ -1,0 +1,8 @@
+﻿{
+  "candidate_id": "xgboost_exits_momentum_v1",
+  "family": "xgboost_exits",
+  "verdict": "HONEST_ABANDON",
+  "status": "not_evaluable_missing_plumbing",
+  "spec_fingerprint": "e0c8ed62de2c8a500f35642ce0f6daaef30aa9170f26e763814abdc705c2ebcc",
+  "timestamp": "2026-08-20T09:41:17.625506"
+}
