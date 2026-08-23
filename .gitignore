@@ -37,3 +37,5 @@ market_data_2019_2026/cache/
 test_gdelt.py
 run_worker_a.py
 cache/
+docs/data/ops/
+docs/reports/
