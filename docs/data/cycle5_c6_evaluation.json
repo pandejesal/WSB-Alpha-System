@@ -1,0 +1,55 @@
+{
+  "claim": "c6-regime-gated-multiasset",
+  "bar_pass": false,
+  "gates": {
+    "sign_gate_train": true,
+    "train_mean_weekly": 0.001658273532176359,
+    "oos_median_3of4_years": {
+      "2024": 0.0,
+      "2025": 0.003939930705188946,
+      "2026": 0.005479254834590092,
+      "2027": null
+    },
+    "oos_years_positive_count": 1,
+    "oos_complete_years_available": [
+      2024,
+      2025
+    ],
+    "oos_sharpe_annualized": 1.226876255991545,
+    "oos_maxdd": -0.11769821989865614,
+    "oos_cagr_net": 0.1502515093489376,
+    "oos_mean_weekly": 0.0028334204797654766,
+    "null_p95": 0.004803933897307076,
+    "null_pass": false
+  },
+  "gate_stats": {
+    "weeks_gated_on": 256,
+    "weeks_gated_off": 140,
+    "all_cash_weeks": 171,
+    "label_counts_usable_weeks": {
+      "RISK_ON": 256,
+      "RISK_OFF": 106,
+      "NEUTRAL": 27,
+      "STAGFLATION": 7
+    }
+  },
+  "pending": [
+    "2026 weeks after 2026-08-07",
+    "2027"
+  ],
+  "note": "earliest possible pass end-2027 (pre-registered)",
+  "data_handling_log": [
+    "Rebalance: last trading bar of each ISO week (SPY calendar), signal and entry at that close; crypto instruments reindexed to the same Friday dates (crypto trades daily; all Fridays present).",
+    "SMA200 uses each instrument's own daily calendar with min_periods=200; weeks before the 200th bar have no SMA -> treated as CASH (price>NaN is False), no fabricated signal. Earliest computable signal dates: {'SPY': '2019-10-16', 'QQQ': '2019-10-16', 'IWM': '2019-10-16', 'EFA': '2019-10-16', 'EEM': '2019-10-16', 'TLT': '2019-10-16', 'GLD': '2019-10-16', 'SLV': '2019-10-16', 'HYG': '2019-10-16', 'UUP': '2019-10-16', 'BTC-USD': '2019-07-19', 'ETH-USD': '2019-07-19'}.",
+    "Costs charged at each rebalance on weight change vs prior rebalance (start from cash): 5 bps/side equity/index, 10 bps/side crypto; no final liquidation cost (no return week after last date).",
+    "RETURN-TIMING FIX (2026-08-16, inherited from cycle3_multiasset_engine.py): weekly returns are Friday-to-Friday close(t')/close(t)-1 between consecutive rebalance dates. Original code used daily pct_change() reindexed to Fridays plus shift(-1), producing a one-day return misaligned one week forward. Strategy, costs, and all gates UNCHANGED.",
+    "Final rebalance date excluded from returns (no exit bar): 2026-08-07.",
+    "Weeks with all instruments CASH (k=0) contribute 0.0 return: 31 of 396 usable weeks (incl. gate-off weeks).",
+    "OOS window 2024-01-01..2026-08-07: 2024, 2025 complete; 2026 partial (entry weeks through 2026-08-07); 2027 empty -> 3-of-4-complete-year rule cannot pass before end-2027 (pre-registered structural constraint).",
+    "Null: 1000x permutation of the weekly net return series (block-shuffle on weekly rebalance dates), OOS-mean statistic, RNG seed 7.",
+    "Regime gate: FRED daily labels from data/cache/fred_historical_regimes.json (T10Y2Y + T10YIE per src/risk/fred_macro_provider.py classification); as-of lookup (last label <= rebalance date); regime == RISK_ON -> C2 weights, else all cash; missing label -> all cash (fail-closed). Cache checked 2026-08-16: 5909 labels 2003-01-02..2026-08-14, full window covered.",
+    "Gate usage: 256 of 396 usable weeks gated ON (RISK_ON); 171 weeks all-cash (gate off or zero longs).",
+    "Label distribution over usable weeks: {'RISK_ON': 256, 'RISK_OFF': 106, 'NEUTRAL': 27, 'STAGFLATION': 7}",
+    "CLARIFICATION (pre-run, 2026-08-16): earlier wording 'dual momentum (SMA200 + 12-1)' was descriptive error; C2 exact mechanism is SMA200 long/cash only (engine = spec). No MOM12-1 component. This engine implements the exact C2 mechanism plus the regime gate."
+  ]
+}
