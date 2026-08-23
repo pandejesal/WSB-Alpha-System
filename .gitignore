@@ -39,3 +39,5 @@ run_worker_a.py
 cache/
 docs/data/ops/
 docs/reports/
+market_data_2019_2026/ohlcv/
+market_data_2019_2026/fundamentals/
