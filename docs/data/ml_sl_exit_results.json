@@ -1,0 +1,110 @@
+{
+  "claim": "H-SLX-1: SL-adjusted-label GBDT exit overlay beats static rank-drop exit (OOS Sharpe +0.10, maxDD not worse, train-consistency sign, null survival)",
+  "prereg": "docs/data/ml_sl_exit_prereg.md",
+  "prereg_commit": "5e25748",
+  "date": "2026-08-24",
+  "universe": {
+    "snapshot_local_intersection": 481
+  },
+  "train": {
+    "rows": 4925,
+    "base_rate_label1": 0.5587817258883249
+  },
+  "static_arm": {
+    "sharpe": 1.764886111495908,
+    "cagr": 1.1289108327289128,
+    "maxdd": -0.37327469088134946,
+    "trades": 329,
+    "yearly": {
+      "2024": 0.9213788767363376,
+      "2025": 0.9061960340554442,
+      "2026": 0.9406464273202129
+    }
+  },
+  "ml_arms": {
+    "theta_0.3": {
+      "sharpe": 1.7460446712278836,
+      "cagr": 0.9250951609077829,
+      "maxdd": -0.37191747904019135,
+      "trades": 165,
+      "ml_exits": 25,
+      "yearly": {
+        "2024": 0.8002590076731395,
+        "2025": 0.8019707572787422,
+        "2026": 0.6873609527869788
+      }
+    },
+    "theta_0.4": {
+      "sharpe": 1.7530264844443897,
+      "cagr": 0.8227619049430936,
+      "maxdd": -0.38209496597917814,
+      "trades": 195,
+      "ml_exits": 45,
+      "yearly": {
+        "2024": 0.7552205475047327,
+        "2025": 0.6053162713153135,
+        "2026": 0.6858841024962155
+      }
+    }
+  },
+  "worse_theta_selected": 0.3,
+  "sharpe_deltas_by_theta": {
+    "0.3": -0.018841440268024368,
+    "0.4": -0.011859627051518329
+  },
+  "is_walk_forward": {
+    "years": [],
+    "excesses": {},
+    "mean_is_excess": 0.0
+  },
+  "null_test": {
+    "n": 1000,
+    "block": 10,
+    "seed": 7,
+    "observed_D": -0.018841440268024368,
+    "p95": -0.004307181266384186,
+    "null_mean": -0.0584630201849065
+  },
+  "gates": {
+    "auto_fail_insufficient_intervention": {
+      "value": 70,
+      "bar": 20,
+      "pass": true
+    },
+    "gate1_oos_sharpe_delta_ge_p10": {
+      "value": -0.018841440268024368,
+      "bar": 0.1,
+      "theta": 0.3,
+      "pass": false
+    },
+    "gate2_maxdd_not_worse": {
+      "value": -0.37191747904019135,
+      "baseline": -0.37327469088134946,
+      "tolerance": 0.005,
+      "theta": 0.3,
+      "pass": true
+    },
+    "gate3_train_consistency_sign": {
+      "value": 0.0,
+      "fold_years": [],
+      "fold_excesses": {},
+      "pass": false
+    },
+    "gate4_null_survival": {
+      "value": -0.018841440268024368,
+      "null_p95": -0.004307181266384186,
+      "n_null": 1000,
+      "block": 10,
+      "seed": 7,
+      "skipped_auto_fail": false,
+      "pass": false
+    }
+  },
+  "verdict": "FAIL",
+  "notes": [
+    "Survivorship bias inherited from frozen today-membership snapshot; identical across arms.",
+    "No interim drift rebalancing; same-day settlement; halted-name valuation at last known close (both arms).",
+    "sklearn HGB substitutes unavailable xgboost; monotonic_cst native.",
+    "Null shuffles the observed-run p_good series (timing info beyond frequency)."
+  ]
+}

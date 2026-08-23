@@ -1,0 +1,53 @@
+{
+  "claim": "H-SLX-1: SL-adjusted-label GBDT exit overlay beats static rank-drop exit (OOS Sharpe +0.10, maxDD not worse, train-consistency sign, null survival)",
+  "family": "ml_exit_overlay",
+  "candidate_id": "ml_sl_exit_v1",
+  "date": "2026-08-24",
+  "preregistration": "docs/data/ml_sl_exit_prereg.md",
+  "bar_pass": false,
+  "checks": {
+    "auto_fail_insufficient_intervention": {
+      "value": 70,
+      "bar": 20,
+      "pass": true
+    },
+    "gate1_oos_sharpe_delta_ge_p10": {
+      "value": -0.018841440268024368,
+      "bar": 0.1,
+      "theta": 0.3,
+      "pass": false
+    },
+    "gate2_maxdd_not_worse": {
+      "value": -0.37191747904019135,
+      "baseline": -0.37327469088134946,
+      "tolerance": 0.005,
+      "theta": 0.3,
+      "pass": true
+    },
+    "gate3_train_consistency_sign": {
+      "value": 0.0,
+      "fold_years": [],
+      "fold_excesses": {},
+      "pass": false
+    },
+    "gate4_null_survival": {
+      "value": -0.018841440268024368,
+      "null_p95": -0.004307181266384186,
+      "n_null": 1000,
+      "block": 10,
+      "seed": 7,
+      "skipped_auto_fail": false,
+      "pass": false
+    }
+  },
+  "headline": {
+    "static_oos_sharpe": 1.764886111495908,
+    "static_oos_maxdd": -0.37327469088134946,
+    "worse_theta": 0.3,
+    "worse_theta_oos_sharpe": 1.7460446712278836,
+    "worse_theta_oos_maxdd": -0.37191747904019135,
+    "total_oos_ml_exits": 70,
+    "train_base_rate": 0.5587817258883249
+  },
+  "verdict": "FAIL"
+}
