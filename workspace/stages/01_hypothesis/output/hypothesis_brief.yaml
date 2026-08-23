@@ -1,27 +1,64 @@
-# H-SLX-1 hypothesis brief (stage-01 output, pre-registration)
-family: "ml_exit_overlay"
+# Wave-1 hypothesis brief (stage-01 output, pre-registration batch H1-H4)
+# Supersedes H-SLX-1 brief (verdict recorded in docs/data/eval_ml_sl_exit.json).
+family: "wave1_scoping_regime_sizing_newdata"
 
-universe: "Frozen 481-name S&P 500 snapshot (cache/cycle3_13f_ticker_map.json) intersected with local daily OHLCV panel market_data_2019_2026/ohlcv/ (2019-01-02..2026-08-07); monthly top-5 selection by 126d-return-skip-21d; SPY excluded from selection"
+universe: >
+  Primary: frozen 481-name S&P 500 snapshot (cache/cycle3_13f_ticker_map.json)
+  intersected with local daily OHLCV panel market_data_2019_2026/ohlcv/
+  (2019-01-02..2026-08-07). H1 restricts selection to frozen Universe A
+  (AAPL MSFT GOOGL AMZN NVDA META TSLA JPM V JNJ WMT MA UNH XOM DIS).
+  SPY excluded from selection everywhere.
 
-hypothesis: "A gradient-boosting exit model trained on SL-adjusted labels (label=1 iff the position rises over the next 10 bars AND its Low never dips >=20% below current close within that window), applied as a per-bar early-exit rule to us_momentum_top5 holdings, beats the static rank-drop exit on OOS Sharpe by at least +0.10 without worsening maxDD — i.e. exit timing carries exploitable information that entry-signal ML could not capture."
+hypotheses:
+  h1_megacap_momentum: >
+    us_momentum_top5 restricted to Universe A beats SPY on OOS net CAGR AND
+    Sharpe; generalizes the 3x A_megacap_base B-gate conditioning passes to
+    the momentum core (claim-scoping lane).
+  h2_fred_regime_momentum: >
+    us_momentum_top5 invested only when FRED regime == RISK_ON (else cash)
+    beats SPY on OOS net CAGR AND Sharpe; exogenous macro filter, untested on
+    this core (SMA sweep tested only price-derived states).
+  h3_voltarget_overlay: >
+    Inverse-vol sizing m_t = clamp(0.15/sigma21d, 0.25, 1.00) at month-ends on
+    the incumbent improves OOS net Sharpe by >= +0.10 while keeping net CAGR
+    above SPY (sizing lane; no-margin cap 1.00).
+  h4_poltrade_cramer_pair: >
+    Arm P congressional PTR follow (+45d filing lag, 90d hold) and Arm C
+    Cramer follow/fade pair each face the full six-gate chain; power gate
+    <40 events => INSUFFICIENT_POWER honest no-op per arm.
 
-acceptance: "- Pre-registration committed to docs/data/ml_sl_exit_prereg.md BEFORE any in-sample model run\n- Gate 1: OOS Sharpe(ML arm) - Sharpe(static arm) >= +0.10 on the WORSE of the two pre-declared thresholds\n- Gate 2: |maxDD(ML arm)| <= |maxDD(static arm)| + 0.5pp on the same worse-threshold arm\n- Gate 3: train-consistency sign — mean IS annual excess return (ML - static) > 0\n- Gate 4: observed OOS Sharpe delta > permutation null p95 (1000 circular block shuffles, block=10 bars, seed=7)\n- DSR ledger entry written to docs/data/eval_ml_sl_exit.json regardless of verdict\n- If total OOS ML-exit count < 20 across both thresholds: auto-FAIL 'insufficient intervention' (honest no-op)"
+acceptance: >
+  Per candidate, verbatim from its frozen prereg (docs/data/wave1_h{1,2,3,4}_*.md):
+  six gates = prereg-before-test; IS block-bootstrap p<=0.05 on net excess vs
+  SPY-engine; combinatorially purged CV K=6 embargo 10d all-positive; WF 5
+  expanding folds all-positive with <=60% single-fold share; circular-block
+  permutation p95 survival (block=10, 1000 draws, seed 7); positive DSR ledger
+  entry via scripts/preregister.py record. Charter bar conjunctive: OOS net
+  CAGR > SPY AND OOS net Sharpe > SPY, same engine/window/fees.
 
-lookback_constraints: "Daily OHLCV only, no intraday, no lookahead: all features computed from data up to decision bar t inclusive; execution at close of bar t+1; train rows strictly dated <= 2023-12-31; OOS predictions produced ONLY by the single final train-fitted model (no rolling refit leakage); label horizon requires K=10 future bars so training labels end >=10 bars before split boundary usage"
+lookback_constraints: >
+  Daily OHLCV + pre-authorized free sources only. No lookahead: all features
+  from bars <= decision bar t; execution t+1; regime labels applied with
+  verified point-in-time lag (H2 branch A/B declared in prereg); H4 entries use
+  disclosure/publication availability timestamps only. IS <= 2023-12-31;
+  OOS 2024-01-01..2026-08-07. Serial single-file verification only; no batch
+  suites.
 
 edge_gate_params:
-  preregistration_file: docs/data/ml_sl_exit_prereg.md
-  theta_grid: [0.30, 0.40]
-  theta_selection: "ALL gates evaluated on worse-performing threshold (anti-cherry-pick)"
-  label_horizon_bars: 10
-  stop_delta: 0.20
-  features: ["r1", "r2", "r5", "r21", "r63", "r252", "vol20", "vol60", "rsi14", "d_sma20", "d_sma50", "d_sma200", "pos_ret"]
-  monotone_constraints: "pos_ret = +1 (increasing), all others unconstrained"
-  model: "HistGradientBoostingClassifier(max_iter=200, learning_rate=0.05, max_depth=3, min_samples_leaf=20, l2_regularization=0.0, random_state=7); sklearn 1.6.1 substitution for xgboost declared (monotonic_cst native)"
+  preregistration_files:
+    - docs/data/wave1_h1_megacap_momentum_prereg.md
+    - docs/data/wave1_h2_fred_regime_momentum_prereg.md
+    - docs/data/wave1_h3_voltarget_overlay_prereg.md
+    - docs/data/wave1_h4_poltrade_cramer_prereg.md
   costs_bps_per_side: 5
   exec_delay_bars: 1
-  null_test: "circular block shuffle of p_good per ticker, block=10 bars, 1000 draws, seed=7, statistic = OOS Sharpe delta"
-  kill_criteria: "Any gate fail => keep static exits, record honest FAIL like topic07; no post-hoc parameter changes permitted"
+  null_test: "circular block shuffle block=10 days, 1000 draws, seed=7, statistic=OOS annualized net excess Sharpe"
+  is_test: "stationary block bootstrap mean-block=21d, 1000 draws, seed=7, two-sided p on IS net excess"
+  dsr_trials_charged: {h1: 1, h2: 1, h3: 1, h4: 3}
+  kill_criteria: >
+    Any gate FAIL => honest FAIL ledger entry like topic07/H-SLX-1. Borderline
+    p~0.05 = FAIL. Over-parameterization or post-hoc universe/window/metric
+    changes = kill. Static canonical configs stay canonical until beaten under
+    these rules.
 
-# Paper-only note (operator mandate)
 paper_only: true
