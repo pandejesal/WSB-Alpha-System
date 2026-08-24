@@ -5,7 +5,7 @@
 > The active session maintains this file (bump version, update ledger/slate) and tells
 > you to re-paste it whenever context runs low or a wave completes.
 
-version: 2 · generated: 2026-08-24 · change: §11 model-routing addendum appended · superseded-by: —
+version: 3 · generated: 2026-08-24 · change: wave-1 preregs frozen @ 6d0b3f5; §6 slate statused; §7 FRED path corrected · superseded-by: —
 
 ## 0. First actions (before ANY research)
 
@@ -79,29 +79,39 @@ independently while full-universe variants failed; A+B never co-passed.
 - Failures feed the next wave's slate. Never tune post hoc — a new idea is a new
   preregistration with declared changed conditions.
 
-## 6. Approved Wave-1 slate
+## 6. Approved Wave-1 slate (status @ v3)
 
-1. **Mega-cap-only momentum top5** — universe scoping; direct descendant of the 3×
-   B-gate passes.
-2. **Regime-conditioned momentum** — `data/fred_historical_regimes.json` as exposure
-   filter on the momentum core (declare difference vs failed RSI2-era regime variants:
-   different core, different regime source).
-3. **Vol-targeted sizing overlay** on the best validated core — sizing lane, zero new
-   data needed.
-4. **Politician-trade replication** — Congressional follow-strategy from STOCK Act
-   periodic transaction reports (Senate eFile disclosures / House Clerk PTRs; free
-   sources), backtested filing-lag-aware (~30–45 days). Academic prior exists
-   (Ziobrowski et al. 2012). Include the **Jim Cramer follow-vs-fade pair as a second
-   arm under one preregistration** — both directions tested, gates decide.
+All four hypotheses are PREREGISTERED — frozen specs committed 2026-08-24 at
+repo commit `6d0b3f5` (gate-1 provenance; DSR trials charged {h1:1, h2:1, h3:1, h4:3}).
+NO in-sample runs exist yet. Next session's job: SERIAL single-file testing in
+order H1 → H2 → H3 (local-data-ready), then H4 once its dataset is acquired and
+hash-locked.
 
-Items 1–3 are testable immediately on local data; item 4's scraping engineering may run
-in parallel and test in-wave once data lands.
+1. **H1 Mega-cap-only momentum top5** — PREREGISTERED
+   `docs/data/wave1_h1_megacap_momentum_prereg.md`. Universe A verbatim
+   (AAPL MSFT GOOGL AMZN NVDA META TSLA JPM V JNJ WMT MA UNH XOM DIS); rule/
+   costs byte-identical to us_momentum_top5.yaml; descriptive passive control.
+2. **H2 Regime-conditioned momentum** — PREREGISTERED
+   `docs/data/wave1_h2_fred_regime_momentum_prereg.md`. RISK_ON ⇒ invested else
+   cash; point-in-time branch A/B pre-declared (verify generator before run;
+   unverifiable ⇒ mandatory 5-day lag primary).
+3. **H3 Vol-targeted sizing overlay** — PREREGISTERED
+   `docs/data/wave1_h3_voltarget_overlay_prereg.md`. "Best validated core"
+   resolved to the incumbent us_momentum_top5 AT FREEZE TIME (anti-cherry-pick);
+   m = clamp(0.15/σ̂21d, 0.25, 1.00), no-margin cap.
+4. **H4 Politician-trade replication + Cramer follow-vs-fade pair** —
+   PREREGISTERED `docs/data/wave1_h4_poltrade_cramer_prereg.md` under ONE prereg,
+   both directions tested, gates decide. Scraper engineering vs STOCK Act PTRs /
+   public Cramer records may run in parallel; testing deferred until dataset is
+   hash-locked; power gate <40 events/arm ⇒ INSUFFICIENT_POWER no-op.
 
 ## 7. Data policy — FREE TIER ONLY
 
 Pre-authorized: local OHLCV panel (`market_data_2019_2026/ohlcv/`, gitignored,
 ~1900 tickers 2019–2026 full OHLCV), `market_data.duckdb`,
-`data/fred_historical_regimes.json`, FRED macro series, yfinance fundamentals,
+`data/cache/fred_historical_regimes.json` (path corrected v3; labels
+RISK_ON/NEUTRAL/RISK_OFF/STAGFLATION, daily 2003-01-02..2026-08-14), FRED macro
+series, yfinance fundamentals,
 the existing sentiment/research pipeline (`src/research/`), crypto OHLCV,
 STOCK Act PTR filings, publicly accessible Cramer pick records.
 
