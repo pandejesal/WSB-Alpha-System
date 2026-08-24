@@ -1,0 +1,100 @@
+{
+  "claim": "Wave-2/W2-H1: Scaling the incumbent us_momentum_top5 portfolio by m_t = clamp(0.15/sigma_hat_21d_ann, 0.25, 1.00) at month-ends produces a POSITIVE mean daily net-return DELTA versus the unscaled incumbent that survives all five statistical gates COMPUTED ON THE PAIRED DELTA SERIES, while the overlay still beats SPY buy-and-hold on BOTH OOS net CAGR and Sharpe and retains primary acceptance Sharpe margin >= +0.10 vs the incumbent",
+  "family": "wave2_h1_voltarget_delta",
+  "candidate_id": "wave2_h1",
+  "date": "2026-08-25",
+  "preregistration": "docs/data/wave2_h1_voltarget_delta_prereg.md",
+  "bar_pass": false,
+  "executed_branch": "single frozen branch (m_t byte-identical to wave-1 H3; only gate TARGET changed to the paired delta series)",
+  "dsr_ledger": {
+    "trials_charged_this_eval": 1,
+    "wave2_trial_budget_at_freeze": { "w2h1": 1, "w2h2": 1, "w2h3": 1 },
+    "h4_carried_budget": { "h4": 3 },
+    "note": "Single executed point-in-time configuration per prereg; zero parameter changes permitted versus wave-1 H3 (anti-p-hacking)."
+  },
+  "checks": {
+    "gate1_prereg_committed_before_testing": {
+      "value": "frozen @ repo commit ddc1fe4 on 2026-08-25; zero in-sample runs before this eval",
+      "pass": true
+    },
+    "gate2_is_stationary_bootstrap_p_le_0_05_on_delta": {
+      "value": 0.102,
+      "bar": "<= 0.05 (borderline = FAILURE)",
+      "method": "two-sided stationary block bootstrap (Hall-Wilson), mean block 21d, 1000 draws, seed 7, IS paired daily delta d_t = r_overlay - r_baseline",
+      "is_delta_mean_daily": -0.00041022888220701507,
+      "is_delta_annualized_sharpe": -0.7504432118492838,
+      "pass": false
+    },
+    "gate3_cpcv_all_combinations_mean_gt_0_on_delta": {
+      "worst_combination_mean_delta": -0.0021735146743229127,
+      "combinations_failing": 60,
+      "combination_count": 62,
+      "K": 6,
+      "embargo_days": 10,
+      "worst_combination": [6],
+      "note": "60/62 combinations have non-positive mean delta; only combinations holding out multiple late folds stay marginally positive. The paired increment is broadly negative across history, not concentrated.",
+      "pass": false
+    },
+    "gate4_walk_forward_expanding_5_folds_on_delta": {
+      "min_cumulative_delta_sharpe": -2.6650329838311686,
+      "max_incremental_fold_share_of_cumulative_oos_delta_sum": 0.5277913650372988,
+      "share_cap": 0.6,
+      "total_oos_delta_sum": -0.7488952013800343,
+      "note": "Cumulative delta Sharpe negative through every expanding fold (min -2.665); cumulative OOS delta SUM is itself negative (-0.749). Share cap moot.",
+      "pass": false
+    },
+    "gate5_permutation_null_survival_on_delta": {
+      "observed_oos_annualized_delta_sharpe": -1.4641423987587392,
+      "null_p95": -1.3341512158830857,
+      "null_mean": -1.43778536393895,
+      "n_null": 1000,
+      "block_days": 10,
+      "seed": 7,
+      "note": "Observed annualized delta-Sharpe (-1.464) below null p95 (-1.334); the null is itself centered near the observed value because circular block shuffle preserves the negative mean drift of the delta series. No survival.",
+      "pass": false
+    },
+    "charter_bar_cagr_and_sharpe_gt_spy": {
+      "oos_net_cagr_overlay": 0.5934163875678553,
+      "oos_net_cagr_spy": 0.22276084562662835,
+      "oos_net_sharpe_overlay": 1.8919589423446357,
+      "oos_net_sharpe_spy": 1.3393529422411306,
+      "pass": true
+    },
+    "primary_acceptance_sharpe_margin_ge_plus_0_10_vs_baseline": {
+      "oos_net_sharpe_overlay": 1.8919589423446357,
+      "oos_net_sharpe_baseline_incumbent": 1.7727050422558512,
+      "sharpe_margin": 0.11925390008878445,
+      "bar": ">= +0.10",
+      "maxdd_delta_overlay_minus_baseline": 0.15004853199955892,
+      "turnover_delta_trades": -862,
+      "pass": true
+    }
+  },
+  "headline": {
+    "overlay_oos": { "cagr": 0.5934163875678553, "sharpe": 1.8919589423446357, "maxdd": -0.232884779053118 },
+    "baseline_incumbent_oos": { "cagr": 1.0030653574006916, "sharpe": 1.7727050422558512, "maxdd": -0.3829333110526769 },
+    "spy_engine_oos": { "cagr": 0.22276084562662835, "sharpe": 1.3393529422411306 },
+    "delta_series": {
+      "definition": "paired overlay-minus-incumbent daily NET returns, identical calendar/costs/fills",
+      "is_mean_daily": -0.00041022888220701507,
+      "is_annualized_sharpe": -0.7504432118492838,
+      "oos_mean_daily": -0.0011486122720552672,
+      "oos_annualized_sharpe": -1.4641423987587392,
+      "oos_sum": -0.7488952013800343
+    },
+    "effective_evaluated_start": "2020-05-08",
+    "universe_size": 481,
+    "trades_baseline": 1264,
+    "trades_overlay": 402,
+    "m_stats": { "n_months": 75, "mean": 0.6905950174626553, "min": 0.3454522826820932, "max": 1.0, "frac_at_cap": 0.16, "frac_at_floor": 0.0 },
+    "results_artifact": "docs/data/wave2_h1_results.json"
+  },
+  "diagnosis": "The paired-delta reframe worked exactly as designed: it removed the beta-drift confound that killed wave-1 H3 and exposed the raw economics of vol-target sizing. The m_t=clamp(0.15/sigma21d,.25,1) overlay does NOT produce a positive mean daily increment over the incumbent - the paired delta averages -4.1bp/day in-sample and -11.5bp/day out-of-sample (ann delta-Sharpe -0.75 / -1.46). Every statistical delta gate fails: G2 p=0.102, G3 60/62 combos non-positive, G4 cumulative delta sum -0.749 with all expanding-fold delta Sharpes negative (min -2.665), G5 observed -1.464 under its own null p95 -1.334. The overlay's total-path advantages (OOS Sharpe 1.892 vs incumbent 1.773; maxDD -23.3% vs -38.3%; turnover -862 trades; charter bar TRUE; primary margin +0.119 >= +0.10 TRUE) are purchased ENTIRELY with variance reduction while sacrificing expected return day-by-day. Under the frozen conjunctive claim ('POSITIVE mean daily net-return DELTA surviving all five statistical gates'), this is an unambiguous FAIL - and it falsifies the MECHANISM, not just the statistics: de-risking when realized vol is high systematically gives up positive-expectation days in this universe/window. Verdict FAIL per kill criteria; no threshold nudging, no sigma-window retuning permitted. Lane status: per W2-H1 prereg section 5 read together with same-batch W2-H2 section 5, the deterministic-sizing lane closes if BOTH delta tests fail; W2-H2 (drawdown-ratchet state variable) proceeds as preregistered @ ddc1fe4.",
+  "audit_lineage": {
+    "producer": "MAIN seat (ox-alpha) authored scripts/wave2_h1_test.py inline (engine + all gate machinery IMPORTED VERBATIM from scripts/wave1_h3_test.py for byte-identity) and executed it deterministically (seeded, offline)",
+    "builder_seat": "UNAVAILABLE - coder dispatch blocked twice by swarm workflow gates (ACCEPTANCE/TASK plan-id binding foreign to hunt session); MAIN absorbed builder duty per HUNT_MEGA_PROMPT v4 section 11.5 escalation ladder",
+    "cold_auditor": "UNAVAILABLE - arise/task subagent infrastructure returned empty outputs during prior session; operator may commission a cold nemotron-3-ultra-free audit of docs/data/wave2_h1_results.json before wave closure",
+    "disagreement": null
+  },
+  "verdict": "FAIL"
+}
