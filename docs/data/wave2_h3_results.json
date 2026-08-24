@@ -1,0 +1,826 @@
+{
+  "claim": "Running the EXACT incumbent us_momentum_top5 rule on the frozen mega-cap Universe A, invested ONLY when the equal-weight Universe-A index's own 12-1 absolute return (r = P_t-63/P_t-315 - 1 on the last bar of each month) is > 0 and holding cash otherwise, produces OOS net-of-cost performance beating SPY buy-and-hold on BOTH CAGR and Sharpe (identical engine/window/fees) while passing all six edge gates",
+  "prereg": "docs\\data\\wave2_h3_absmom_gate_prereg.md",
+  "prereg_status": "FROZEN 2026-08-25 - LOCKED before any in-sample run",
+  "paper_only": true,
+  "verdict_authority": "RESERVED FOR AUDITOR SEAT - this output reports mechanical gate booleans only; no PASS claim is made by the runner",
+  "config_echo": {
+    "universe": {
+      "definition": "UNIVERSE_A verbatim fixed-order 15 mega caps (imported from scripts/wave1_h1_test.py)",
+      "tickers": [
+        "AAPL",
+        "MSFT",
+        "GOOGL",
+        "AMZN",
+        "NVDA",
+        "META",
+        "TSLA",
+        "JPM",
+        "V",
+        "JNJ",
+        "WMT",
+        "MA",
+        "UNH",
+        "XOM",
+        "DIS"
+      ]
+    },
+    "benchmark": "SPY",
+    "params_byte_identical_to": "strategies/us_momentum_top5.yaml via wave1_h1_megacap_momentum_prereg.md section 3",
+    "engine_lineage": {
+      "derived_from": "imported_verbatim:scripts/wave1_h1_test.py",
+      "month_end_source": "imported:scripts/ml_sl_exit_test.py",
+      "byte_identity_note": "simulate_absmom_gate clones wave1_h1_test.simulate() line-for-line; ONLY insertion is the gate evaluation at each month-end before selection",
+      "gate_rule": "r_gate = EW_UniverseA_idx[t-63]/idx[t-315] - 1 at monthly last bar; ON iff > 0; OFF => force-flat queued (fills next bar, exec_delay 1 incl. gate flips); no SMA fallback",
+      "core_rule": "exact incumbent monthly top-5 cross-sectional momentum, drift band 0.05, 5 bps/side"
+    },
+    "windows": {
+      "is_nominal": [
+        "2019-01-02",
+        "2023-12-31"
+      ],
+      "oos_nominal": [
+        "2024-01-01",
+        "2026-08-07"
+      ],
+      "sim_start_rule": "bar index WARMUP=340 of union calendar (declared interpretation)",
+      "effective_evaluated_start": "2020-05-08"
+    },
+    "stochastic_echo_from_engine_module": {
+      "g2": {
+        "mean_block": 21,
+        "draws": 1000,
+        "seed": 7
+      },
+      "g3": {
+        "K": 6,
+        "embargo_days": 10
+      },
+      "g4": {
+        "fold_ends": [
+          "2024-06-30",
+          "2024-12-31",
+          "2025-06-30",
+          "2025-12-31",
+          "2026-08-07"
+        ],
+        "endpoint_snap": "last_trading_bar_on_or_before",
+        "max_fold_share": 0.6
+      },
+      "g5": {
+        "block": 10,
+        "draws": 1000,
+        "seed": 7
+      }
+    },
+    "data_integrity": {
+      "AAPL": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "MSFT": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "GOOGL": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "AMZN": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "NVDA": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "META": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "TSLA": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "JPM": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "V": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "JNJ": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "WMT": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "MA": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "UNH": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "XOM": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "DIS": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "SPY": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      }
+    }
+  },
+  "arms": {
+    "spy": {
+      "is": {
+        "cagr": 0.16073885127938614,
+        "sharpe": 0.9258894700064266,
+        "maxdd": -0.24496383608407224,
+        "n_days": 917,
+        "yearly": {
+          "2020": 0.29474656433900726,
+          "2021": 0.2872876948734542,
+          "2022": -0.18175374952608603,
+          "2023": 0.26175807237040094
+        }
+      },
+      "oos": {
+        "cagr": 0.22276084562662835,
+        "sharpe": 1.3393529422411306,
+        "maxdd": -0.18755229425221798,
+        "n_days": 652,
+        "yearly": {
+          "2024": 0.2558930565326738,
+          "2025": 0.17719055511914727,
+          "2026": 0.13997144198366906
+        }
+      }
+    },
+    "passive_ew_universe_a": {
+      "is": {
+        "cagr": 0.24638224712183554,
+        "sharpe": 1.031812122051752,
+        "maxdd": -0.34203699030649415,
+        "n_days": 917,
+        "yearly": {
+          "2020": 0.519386815868963,
+          "2021": 0.35281698044857235,
+          "2022": -0.2974986907053656,
+          "2023": 0.5443450824395617
+        }
+      },
+      "oos": {
+        "cagr": 0.3525519989098269,
+        "sharpe": 1.3575567480221438,
+        "maxdd": -0.2605130888057564,
+        "n_days": 652,
+        "yearly": {
+          "2024": 0.6137111223460794,
+          "2025": 0.24148194237806453,
+          "2026": 0.09305406096944258
+        }
+      }
+    },
+    "gated_core": {
+      "is": {
+        "cagr": 0.21850674418327998,
+        "sharpe": 1.0094486377314047,
+        "maxdd": -0.2459600299175989,
+        "n_days": 917,
+        "yearly": {
+          "2020": 0.6454405983993756,
+          "2021": 0.3251372183522825,
+          "2022": -0.15793603263772904,
+          "2023": 0.11851210715655314
+        }
+      },
+      "oos": {
+        "cagr": 0.23711068368464905,
+        "sharpe": 1.0903277189249136,
+        "maxdd": -0.22837137632499904,
+        "n_days": 652,
+        "yearly": {
+          "2024": 0.6056564809179312,
+          "2025": 0.03297509092015005,
+          "2026": 0.04737526274212511
+        }
+      }
+    }
+  },
+  "excess_series_summary": {
+    "definition": "gated-core NET daily returns minus SPY-engine NET daily returns (identical fee accounting), date-aligned",
+    "is": {
+      "n_days": 917,
+      "mean_daily": 0.00022603113783607878,
+      "std_daily": 0.010905562841798732,
+      "annualized_sharpe": 0.3290186052456458,
+      "sum": 0.20727055339568423,
+      "min": -0.054953972350244795,
+      "max": 0.04355968539366628,
+      "start": "2020-05-11",
+      "end": "2023-12-29"
+    },
+    "oos": {
+      "n_days": 652,
+      "mean_daily": 7.182541864217287e-05,
+      "std_daily": 0.00813515627761006,
+      "annualized_sharpe": 0.14015627166005926,
+      "sum": 0.046830172954696714,
+      "min": -0.02746692671789297,
+      "max": 0.05796957624181864,
+      "start": "2024-01-02",
+      "end": "2026-08-07"
+    },
+    "full_evaluated": {
+      "n_days": 1569,
+      "mean_daily": 0.00016195074974530334,
+      "std_daily": 0.009846844152882762,
+      "annualized_sharpe": 0.26108755362463265,
+      "sum": 0.25410072635038095,
+      "min": -0.054953972350244795,
+      "max": 0.05796957624181864,
+      "start": "2020-05-11",
+      "end": "2026-08-07"
+    }
+  },
+  "gate_stats": {
+    "n_month_ends": 75,
+    "on_fraction": 0.84,
+    "log": {
+      "2020-05-29": {
+        "r_gate": 0.1889907119613441,
+        "gate_on": true
+      },
+      "2020-06-30": {
+        "r_gate": 0.025613509372360177,
+        "gate_on": true
+      },
+      "2020-07-31": {
+        "r_gate": 0.1128499626336874,
+        "gate_on": true
+      },
+      "2020-08-31": {
+        "r_gate": 0.2977081153872565,
+        "gate_on": true
+      },
+      "2020-09-30": {
+        "r_gate": 0.19933641119576095,
+        "gate_on": true
+      },
+      "2020-10-30": {
+        "r_gate": 0.2756935538465273,
+        "gate_on": true
+      },
+      "2020-11-30": {
+        "r_gate": 0.44933729202915385,
+        "gate_on": true
+      },
+      "2020-12-31": {
+        "r_gate": 0.4210344754900943,
+        "gate_on": true
+      },
+      "2021-01-29": {
+        "r_gate": 0.26058171243278117,
+        "gate_on": true
+      },
+      "2021-02-26": {
+        "r_gate": 0.3340710235747546,
+        "gate_on": true
+      },
+      "2021-03-31": {
+        "r_gate": 0.35831634430105574,
+        "gate_on": true
+      },
+      "2021-04-30": {
+        "r_gate": 0.28713429907573396,
+        "gate_on": true
+      },
+      "2021-05-28": {
+        "r_gate": 0.4915784150933369,
+        "gate_on": true
+      },
+      "2021-06-30": {
+        "r_gate": 0.6761844826450627,
+        "gate_on": true
+      },
+      "2021-07-30": {
+        "r_gate": 0.5407968609027454,
+        "gate_on": true
+      },
+      "2021-08-31": {
+        "r_gate": 0.41207762948931714,
+        "gate_on": true
+      },
+      "2021-09-30": {
+        "r_gate": 0.4385057960613423,
+        "gate_on": true
+      },
+      "2021-10-29": {
+        "r_gate": 0.3981542911702707,
+        "gate_on": true
+      },
+      "2021-11-30": {
+        "r_gate": 0.25262103203717645,
+        "gate_on": true
+      },
+      "2021-12-31": {
+        "r_gate": 0.29017874365337404,
+        "gate_on": true
+      },
+      "2022-01-31": {
+        "r_gate": 0.43540726635274085,
+        "gate_on": true
+      },
+      "2022-02-28": {
+        "r_gate": 0.26430231138772076,
+        "gate_on": true
+      },
+      "2022-03-31": {
+        "r_gate": 0.25890694069050757,
+        "gate_on": true
+      },
+      "2022-04-29": {
+        "r_gate": 0.19210287257673042,
+        "gate_on": true
+      },
+      "2022-05-31": {
+        "r_gate": 0.09202212119111963,
+        "gate_on": true
+      },
+      "2022-06-30": {
+        "r_gate": 0.17000032934147957,
+        "gate_on": true
+      },
+      "2022-07-29": {
+        "r_gate": 0.015846933629473314,
+        "gate_on": true
+      },
+      "2022-08-31": {
+        "r_gate": -0.028831859289106254,
+        "gate_on": false
+      },
+      "2022-09-30": {
+        "r_gate": -0.11887992540096337,
+        "gate_on": false
+      },
+      "2022-10-31": {
+        "r_gate": -0.06104527144749017,
+        "gate_on": false
+      },
+      "2022-11-30": {
+        "r_gate": -0.1135786035412294,
+        "gate_on": false
+      },
+      "2022-12-30": {
+        "r_gate": -0.15247924040075767,
+        "gate_on": false
+      },
+      "2023-01-31": {
+        "r_gate": -0.16828508865666458,
+        "gate_on": false
+      },
+      "2023-02-28": {
+        "r_gate": -0.18451075503526193,
+        "gate_on": false
+      },
+      "2023-03-31": {
+        "r_gate": -0.2507347972507876,
+        "gate_on": false
+      },
+      "2023-04-28": {
+        "r_gate": -0.10439094018310502,
+        "gate_on": false
+      },
+      "2023-05-31": {
+        "r_gate": -0.11184215582369494,
+        "gate_on": false
+      },
+      "2023-06-30": {
+        "r_gate": -0.14258937508504022,
+        "gate_on": false
+      },
+      "2023-07-31": {
+        "r_gate": -0.0006234938931349854,
+        "gate_on": false
+      },
+      "2023-08-31": {
+        "r_gate": 0.06827925328307893,
+        "gate_on": true
+      },
+      "2023-09-29": {
+        "r_gate": 0.19502753246632798,
+        "gate_on": true
+      },
+      "2023-10-31": {
+        "r_gate": 0.11780659808638005,
+        "gate_on": true
+      },
+      "2023-11-30": {
+        "r_gate": 0.1596708883122957,
+        "gate_on": true
+      },
+      "2023-12-29": {
+        "r_gate": 0.20274070212368533,
+        "gate_on": true
+      },
+      "2024-01-31": {
+        "r_gate": 0.18825809528315252,
+        "gate_on": true
+      },
+      "2024-02-29": {
+        "r_gate": 0.28042597128855173,
+        "gate_on": true
+      },
+      "2024-03-28": {
+        "r_gate": 0.38127658497705896,
+        "gate_on": true
+      },
+      "2024-04-30": {
+        "r_gate": 0.3093133992608339,
+        "gate_on": true
+      },
+      "2024-05-31": {
+        "r_gate": 0.40906453287807976,
+        "gate_on": true
+      },
+      "2024-06-28": {
+        "r_gate": 0.38459404064868363,
+        "gate_on": true
+      },
+      "2024-07-31": {
+        "r_gate": 0.23953560561911602,
+        "gate_on": true
+      },
+      "2024-08-30": {
+        "r_gate": 0.2601709916812165,
+        "gate_on": true
+      },
+      "2024-09-30": {
+        "r_gate": 0.2523401769275093,
+        "gate_on": true
+      },
+      "2024-10-31": {
+        "r_gate": 0.2166541729047493,
+        "gate_on": true
+      },
+      "2024-11-29": {
+        "r_gate": 0.26027559112534315,
+        "gate_on": true
+      },
+      "2024-12-31": {
+        "r_gate": 0.32949374645528784,
+        "gate_on": true
+      },
+      "2025-01-31": {
+        "r_gate": 0.398174147106763,
+        "gate_on": true
+      },
+      "2025-02-28": {
+        "r_gate": 0.3197096360702647,
+        "gate_on": true
+      },
+      "2025-03-31": {
+        "r_gate": 0.34659351759213375,
+        "gate_on": true
+      },
+      "2025-04-30": {
+        "r_gate": 0.3515079587683334,
+        "gate_on": true
+      },
+      "2025-05-30": {
+        "r_gate": 0.2144799151927972,
+        "gate_on": true
+      },
+      "2025-06-30": {
+        "r_gate": 0.1279960814973824,
+        "gate_on": true
+      },
+      "2025-07-31": {
+        "r_gate": 0.1272666989835014,
+        "gate_on": true
+      },
+      "2025-08-29": {
+        "r_gate": 0.1684360570219734,
+        "gate_on": true
+      },
+      "2025-09-30": {
+        "r_gate": 0.1674160449418971,
+        "gate_on": true
+      },
+      "2025-10-31": {
+        "r_gate": 0.16622384469363483,
+        "gate_on": true
+      },
+      "2025-11-28": {
+        "r_gate": 0.18466498005456677,
+        "gate_on": true
+      },
+      "2025-12-31": {
+        "r_gate": 0.19632200542350442,
+        "gate_on": true
+      },
+      "2026-01-30": {
+        "r_gate": 0.20624085547050441,
+        "gate_on": true
+      },
+      "2026-02-27": {
+        "r_gate": 0.10197886517678834,
+        "gate_on": true
+      },
+      "2026-03-31": {
+        "r_gate": 0.09153138552793916,
+        "gate_on": true
+      },
+      "2026-04-30": {
+        "r_gate": 0.05729091283658594,
+        "gate_on": true
+      },
+      "2026-05-29": {
+        "r_gate": 0.06566542763478767,
+        "gate_on": true
+      },
+      "2026-06-30": {
+        "r_gate": 0.011376614115678585,
+        "gate_on": true
+      },
+      "2026-07-31": {
+        "r_gate": 0.20779838925314564,
+        "gate_on": true
+      }
+    }
+  },
+  "descriptive_controls_not_gated": {
+    "overlap_vs_fred_risk_on": {
+      "available": true,
+      "n_month_ends": 75,
+      "table": {
+        "gate_on_and_risk_on": 43,
+        "gate_on_not_risk_on": 20,
+        "risk_on_not_gate_on": 0,
+        "neither": 12
+      },
+      "agreement_rate": 0.7333333333333333
+    },
+    "passive_ew_universe_a_oos": {
+      "cagr": 0.3525519989098269,
+      "sharpe": 1.3575567480221438,
+      "maxdd": -0.2605130888057564,
+      "n_days": 652,
+      "yearly": {
+        "2024": 0.6137111223460794,
+        "2025": 0.24148194237806453,
+        "2026": 0.09305406096944258
+      }
+    }
+  },
+  "gates": {
+    "g1_prereg_committed": {
+      "pass": true,
+      "statistic": "artifact_check",
+      "details": {
+        "path": "docs\\data\\wave2_h3_absmom_gate_prereg.md",
+        "present": true,
+        "frozen_marker_found": true
+      }
+    },
+    "g2_is_stationary_bootstrap": {
+      "pass": false,
+      "statistic": 0.00022603113783607878,
+      "p_value": 0.426,
+      "threshold": 0.05,
+      "borderline_flag": false,
+      "details": {
+        "method": "two-sided stationary block bootstrap p-value (Hall-Wilson): p = 2*min(P(T*-Tbar >= Tbar), P(T*-Tbar <= Tbar)), T* = bootstrap means",
+        "mean_block_days": 21,
+        "draws": 1000,
+        "seed": 7,
+        "series_len": 917,
+        "boot_mean_dist": {
+          "mean": 0.00022794091414108479,
+          "std": 0.00028073548588716406
+        }
+      }
+    },
+    "g3_cpcv": {
+      "pass": false,
+      "statistic": -0.0005751950812257033,
+      "threshold": 0.0,
+      "details": {
+        "K": 6,
+        "embargo_days": 10,
+        "combination_semantics": "all non-empty proper subsets of K folds = test sets; embargo purged at train/test edges inside each test fold",
+        "combination_count": 62,
+        "combinations_failing": 17,
+        "worst_combinations": [
+          {
+            "combo": [
+              3
+            ],
+            "mean_net_excess": -0.0005751950812257033
+          },
+          {
+            "combo": [
+              3,
+              6
+            ],
+            "mean_net_excess": -0.0004307815910064366
+          },
+          {
+            "combo": [
+              6
+            ],
+            "mean_net_excess": -0.00029154627374323923
+          },
+          {
+            "combo": [
+              3,
+              5,
+              6
+            ],
+            "mean_net_excess": -0.0002660895400023354
+          },
+          {
+            "combo": [
+              3,
+              5
+            ],
+            "mean_net_excess": -0.00024743056228723997
+          }
+        ],
+        "best_combination": {
+          "combo": [
+            1
+          ],
+          "mean_net_excess": 0.0010057625071697009
+        },
+        "evaluated_history": {
+          "n_days": 1569,
+          "start": "2020-05-11",
+          "end": "2026-08-07"
+        }
+      }
+    },
+    "g4_walk_forward": {
+      "pass": false,
+      "statistic": 0.1401562716600592,
+      "threshold": 0.0,
+      "details": {
+        "rule": "expanding-span net-excess Sharpe > 0 in EVERY fold AND max incremental fold share <= 0.60 of cumulative OOS net excess",
+        "min_cum_sharpe": 0.1401562716600592,
+        "max_fold_share": 2.9418893166323516,
+        "max_share_threshold": 0.6,
+        "total_oos_sum_net_excess": 0.046830172954696714,
+        "per_fold_table": [
+          {
+            "fold": 1,
+            "expanding_span": [
+              "2024-01-02",
+              "2024-06-28"
+            ],
+            "cum_n_days": 124,
+            "cum_net_excess_sharpe": 1.5309493856768437,
+            "incremental_segment": [
+              "2024-01-02",
+              "2024-06-28"
+            ],
+            "incremental_n_days": 124,
+            "incremental_sum_net_excess": 0.11411131598276392,
+            "incremental_sharpe_descriptive": 1.5309493856768437,
+            "share_of_cumulative_oos_net_excess": 2.4367049870423214
+          },
+          {
+            "fold": 2,
+            "expanding_span": [
+              "2024-01-02",
+              "2024-12-31"
+            ],
+            "cum_n_days": 252,
+            "cum_net_excess_sharpe": 1.9137934922405904,
+            "incremental_segment": [
+              "2024-07-01",
+              "2024-12-31"
+            ],
+            "incremental_n_days": 128,
+            "incremental_sum_net_excess": 0.13776918551146755,
+            "incremental_sharpe_descriptive": 2.475054501591668,
+            "share_of_cumulative_oos_net_excess": 2.9418893166323516
+          },
+          {
+            "fold": 3,
+            "expanding_span": [
+              "2024-01-02",
+              "2025-06-30"
+            ],
+            "cum_n_days": 374,
+            "cum_net_excess_sharpe": 0.7783225160471975,
+            "incremental_segment": [
+              "2025-01-02",
+              "2025-06-30"
+            ],
+            "incremental_n_days": 122,
+            "incremental_sum_net_excess": -0.10306056362277272,
+            "incremental_sharpe_descriptive": -1.7586994225019348,
+            "share_of_cumulative_oos_net_excess": -2.200729937992606
+          },
+          {
+            "fold": 4,
+            "expanding_span": [
+              "2024-01-02",
+              "2025-12-31"
+            ],
+            "cum_n_days": 502,
+            "cum_net_excess_sharpe": 0.5225117091620558,
+            "incremental_segment": [
+              "2025-07-01",
+              "2025-12-31"
+            ],
+            "incremental_n_days": 128,
+            "incremental_sum_net_excess": -0.017944456055022706,
+            "incremental_sharpe_descriptive": -0.30335165210551324,
+            "share_of_cumulative_oos_net_excess": -0.3831815029250925
+          },
+          {
+            "fold": 5,
+            "expanding_span": [
+              "2024-01-02",
+              "2026-08-07"
+            ],
+            "cum_n_days": 652,
+            "cum_net_excess_sharpe": 0.1401562716600592,
+            "incremental_segment": [
+              "2026-01-02",
+              "2026-08-07"
+            ],
+            "incremental_n_days": 150,
+            "incremental_sum_net_excess": -0.08404530886173933,
+            "incremental_sharpe_descriptive": -1.0091469745969401,
+            "share_of_cumulative_oos_net_excess": -1.7946828627569742
+          }
+        ]
+      }
+    },
+    "g6_dsr_ledger": {
+      "pass": null,
+      "status": "MANUAL_STEP_REQUIRED",
+      "details": {
+        "note": "Per prereg section 4 gate 6: positive Deflated-Sharpe ledger entry via scripts/preregister.py record into docs/data/eval_wave2_h3.json, trials charged = 1 (wave-2 budget w2h3:1). Recorded by operator AFTER auditor verdict.",
+        "command_shape": "python scripts/preregister.py record <spec_path> --verdict <PASS|FAIL|HONEST_ABANDON> [--eval-path docs/data/wave2_h3_results.json]"
+      }
+    },
+    "g5_permutation_null": {
+      "pass": false,
+      "statistic": 0.14015627166005926,
+      "threshold": 0.3099325034252257,
+      "details": {
+        "method": "circular block shuffle (multiset-preserving permutation), observed annualized net-excess Sharpe vs null p95",
+        "block_days": 10,
+        "draws": 1000,
+        "seed": 7,
+        "series_len": 652,
+        "null_mean": 0.19148369431822568,
+        "null_std": 0.06301051493679168
+      }
+    }
+  },
+  "charter_bar": {
+    "oos_net_cagr_gated_core": 0.23711068368464905,
+    "oos_net_cagr_spy": 0.22276084562662835,
+    "oos_net_sharpe_gated_core": 1.0903277189249136,
+    "oos_net_sharpe_spy": 1.3393529422411306,
+    "pass": false
+  },
+  "trades_gated_core": 801,
+  "all_computed_gates_pass": false,
+  "notes": [
+    "PRIOR ART: wave-1 H1 bare mega-cap scoping FAILED all gates (docs/data/eval_wave1_h1.json); wave-1 H2 FRED-label gating FAILED all statistical gates despite charter pass (docs/data/eval_wave2_h2.json sibling eval_wave1_h2.json); regime stack closure 2026-08-14 left universe scoping outside its mandate.",
+    "CHANGED CONDITIONS: universe-scoped core tested with a PRICE-DERIVED gate from the SAME traded universe (zero external label dependency, zero publication lag); distinct from closed SMA family (gate variable = trailing 12-1 return of the EW basket itself, skip-aligned, not an SMA of the benchmark).",
+    "LANE STAKE: any gate FAIL closes the mega-cap-scoped-core lane ENTIRELY (bare scoping, macro-gated, price-gated all exhausted) per prereg section 5; no gate-variable substitution or per-month rescues permitted.",
+    "Descriptive controls (NOT gated, 0 trials charged): gate ON-fraction; overlap matrix vs FRED RISK_ON labels; passive-EW-Universe-A echo."
+  ]
+}

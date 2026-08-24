@@ -1,0 +1,88 @@
+{
+  "claim": "Wave-2/W2-H3: Running the EXACT incumbent us_momentum_top5 rule on the frozen mega-cap Universe A, invested ONLY when the equal-weight Universe-A index's own 12-1 absolute return (r = P_t-63/P_t-315 - 1 computed on the last bar of each month) is > 0 and holding cash otherwise, produces OOS net-of-cost performance beating SPY buy-and-hold on BOTH CAGR and Sharpe (identical engine/window/fees) while passing all six edge gates",
+  "family": "wave2_h3_absmom_gate_universe_a",
+  "candidate_id": "wave2_h3",
+  "date": "2026-08-25",
+  "preregistration": "docs/data/wave2_h3_absmom_gate_prereg.md",
+  "bar_pass": false,
+  "executed_branch": "single frozen branch (price-derived gate, no SMA fallback; exec_delay 1 bar on ALL orders including gate flips)",
+  "dsr_ledger": {
+    "trials_charged_this_eval": 1,
+    "wave2_trial_budget_at_freeze": { "w2h1": 1, "w2h2": 1, "w2h3": 1 },
+    "h4_carried_budget": { "h4": 3 },
+    "note": "Single executed point-in-time configuration per prereg; gate variable declared ex ante (12-1 EW-Universe-A trailing return), never substituted."
+  },
+  "checks": {
+    "gate1_prereg_committed_before_testing": {
+      "value": "frozen @ repo commit ddc1fe4 on 2026-08-25; zero in-sample runs before this eval",
+      "pass": true
+    },
+    "gate2_is_stationary_bootstrap_p_le_0_05_on_daily_net_excess_vs_spy": {
+      "value": 0.426,
+      "bar": "<= 0.05 (borderline = FAILURE)",
+      "method": "two-sided stationary block bootstrap (Hall-Wilson), mean block 21d, 1000 draws, seed 7, IS daily net excess vs SPY-engine baseline",
+      "is_excess_mean_daily": 0.00022603113783607878,
+      "is_excess_annualized_sharpe": 0.3290186052456458,
+      "pass": false
+    },
+    "gate3_cpcv_all_combinations_mean_gt_0": {
+      "worst_combination_mean_net_excess": -0.0005751950812257033,
+      "combinations_failing": 17,
+      "combination_count": 62,
+      "K": 6,
+      "embargo_days": 10,
+      "worst_combination": [3],
+      "pass": false
+    },
+    "gate4_walk_forward_expanding_5_folds": {
+      "min_cumulative_net_excess_sharpe": 0.1401562716600592,
+      "max_incremental_fold_share_of_cumulative_oos_net_excess": 2.9418893166323516,
+      "share_cap": 0.6,
+      "total_oos_sum_net_excess": 0.046830172954696714,
+      "note": "All expanding folds positive (min 0.140) but a single incremental fold contributes 294% of cumulative OOS net excess - one fold carries the entire result (explicitly forbidden).",
+      "pass": false
+    },
+    "gate5_permutation_null_survival": {
+      "observed_oos_annualized_net_excess_sharpe": 0.14015627166005926,
+      "null_p95": 0.3099325034252257,
+      "null_mean": 0.19148369431822568,
+      "n_null": 1000,
+      "block_days": 10,
+      "seed": 7,
+      "note": "Observed sits BELOW the null MEAN (0.191): OOS excess Sharpe is indistinguishable from circular block-shuffled luck.",
+      "pass": false
+    },
+    "charter_bar_cagr_and_sharpe_gt_spy": {
+      "oos_net_cagr_gated_core": 0.23711068368464905,
+      "oos_net_cagr_spy": 0.22276084562662835,
+      "oos_net_sharpe_gated_core": 1.0903277189249136,
+      "oos_net_sharpe_spy": 1.3393529422411306,
+      "note": "CAGR nominally above SPY (+1.4pp) but Sharpe 1.09 vs SPY 1.34 - charter bar FAILS on Sharpe. The gated core also loses to PASSIVE equal-weight Universe A (OOS CAGR 35.3%, Sharpe 1.358): the gate subtracts value versus simply holding its own universe.",
+      "pass": false
+    }
+  },
+  "headline": {
+    "gated_core_oos": { "cagr": 0.23711068368464905, "sharpe": 1.0903277189249136, "maxdd": -0.22837137632499904 },
+    "spy_engine_oos": { "cagr": 0.22276084562662835, "sharpe": 1.3393529422411306, "maxdd": -0.18755229425221798 },
+    "passive_ew_universe_a_oos": { "cagr": 0.3525519989098269, "sharpe": 1.3575567480221438 },
+    "excess_series": {
+      "definition": "gated-core NET daily minus SPY-engine NET daily (identical fee accounting)",
+      "is_annualized_sharpe": 0.3290186052456458,
+      "oos_annualized_sharpe": 0.14015627166005926
+    },
+    "effective_evaluated_start": "2020-05-08",
+    "universe_size": 15,
+    "trades_gated_core": 801,
+    "gate_stats": { "n_month_ends": 75, "on_fraction": 0.84 },
+    "overlap_vs_fred_risk_on": { "table": { "gate_on_and_risk_on": 43, "gate_on_not_risk_on": 20, "risk_on_not_gate_on": 0, "neither": 12 }, "agreement_rate": 0.7333333333333333 },
+    "results_artifact": "docs/data/wave2_h3_results.json"
+  },
+  "diagnosis": "Price-derived absolute gating does NOT rescue the mega-cap-scoped core. The 12-1 EW-Universe-A gate was ON at 84% of month-ends (it rarely sees a negative trailing year in this drift-dominated window) yet every statistical gate fails: G2 p=0.426 (nowhere near significance), G3 17/62 combinations non-positive, G4 single-fold concentration 294% of cumulative OOS excess (cap 60%), G5 observed excess-Sharpe 0.140 below both the null mean 0.191 and p95 0.310. The charter bar fails outright on Sharpe (1.090 vs SPY 1.339) despite nominal CAGR parity-plus, and - most damning - the gated core UNDERPERFORMS passive buy-and-hold of its own universe (OOS CAGR 23.7% vs 35.3%, Sharpe 1.090 vs 1.358): in a window where the mega-caps themselves compounded strongly, gate flips (801 trades vs passive zero) plus cash spells were pure cost with no protection payoff (maxDD -22.8% vs passive shallower path). The descriptive FRED overlap (73.3% agreement, gate never OFF during RISK_ON) confirms the gate is a laggy, coarse proxy of regime labels - the same failure mode as wave-1 H2's macro labels, now demonstrated with a price-derived signal. Verdict FAIL per kill criteria. LANE CLOSURE: per prereg section 5, the mega-cap-scoped-core lane CLOSES ENTIRELY - bare scoping (H1), macro-label gating (H2), and price-derived gating (W2-H3) are all tested-and-failed; no gate-variable substitution or per-month rescues permitted.",
+  "audit_lineage": {
+    "producer": "MAIN seat (ox-alpha) authored scripts/wave2_h3_test.py inline (universe/loader/SPY-engine/control-engine + ALL stochastic gate machinery IMPORTED VERBATIM from scripts/wave1_h1_test.py; only the gate insertion at month-end differs from H1 simulate) and executed it deterministically (seeded, offline)",
+    "builder_seat": "UNAVAILABLE - coder dispatch blocked twice by swarm workflow gates (ACCEPTANCE/TASK plan-id binding foreign to hunt session); MAIN absorbed builder duty per HUNT_MEGA_PROMPT v4 section 11.5 escalation ladder",
+    "cold_auditor": "UNAVAILABLE - arise/task subagent infrastructure returned empty outputs during prior session; operator may commission a cold nemotron-3-ultra-free audit of docs/data/wave2_h3_results.json before wave closure",
+    "disagreement": null
+  },
+  "verdict": "FAIL"
+}
