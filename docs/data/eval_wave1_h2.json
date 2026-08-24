@@ -1,0 +1,74 @@
+{
+  "claim": "Wave-1/H2: Gating the EXACT incumbent us_momentum_top5 rule (full snapshot universe) to be invested ONLY when the FRED macro regime label is RISK_ON improves OOS net-of-cost performance so it beats SPY buy-and-hold on BOTH CAGR and Sharpe while passing all six edge gates",
+  "family": "wave1_h2_fred_regime_momentum",
+  "candidate_id": "wave1_h2",
+  "date": "2026-08-24",
+  "preregistration": "docs/data/wave1_h2_fred_regime_momentum_prereg.md",
+  "bar_pass": false,
+  "executed_branch": "B_lag5_trading_days",
+  "dsr_ledger": {
+    "trials_charged_this_eval": 1,
+    "wave1_trial_budget_at_freeze": { "h1": 1, "h2": 1, "h3": 1, "h4": 3 },
+    "note": "Single executed point-in-time branch per prereg section 3/4; branch A never run; no other variant permitted."
+  },
+  "checks": {
+    "gate1_prereg_committed_before_testing": {
+      "value": "frozen @ repo commit 6d0b3f5 on 2026-08-24; zero in-sample runs before this eval",
+      "pass": true
+    },
+    "gate2_is_stationary_bootstrap_p_le_0_05": {
+      "value": 0.586,
+      "bar": "<= 0.05 (borderline = FAILURE)",
+      "method": "two-sided stationary block bootstrap (Hall-Wilson), mean block 21d, 1000 draws, seed 7, IS daily net-excess vs SPY-engine baseline",
+      "pass": false
+    },
+    "gate3_cpcv_all_combinations_mean_gt_0": {
+      "worst_combination_mean_net_excess": -0.0009571397042632306,
+      "combinations_failing": 14,
+      "combination_count": 62,
+      "K": 6,
+      "embargo_days": 10,
+      "worst_fold": 4,
+      "pass": false
+    },
+    "gate4_walk_forward_expanding_5_folds": {
+      "min_cumulative_net_excess_sharpe": -2.7464805557638314,
+      "max_incremental_fold_share_of_cumulative_oos_net_excess": 0.5947200666416985,
+      "share_cap": 0.6,
+      "note": "Fold ending 2025-06-30 has cumulative excess Sharpe -2.75 (gated portfolio far behind SPY through mid-2025) before a late-OOS recovery concentrated in the final folds.",
+      "pass": false
+    },
+    "gate5_permutation_null_survival": {
+      "observed_oos_annualized_net_excess_sharpe": 1.2612291697170137,
+      "null_p95": 1.3255237761845693,
+      "n_null": 1000,
+      "block_days": 10,
+      "seed": 7,
+      "pass": false
+    },
+    "charter_bar_cagr_and_sharpe_gt_spy": {
+      "oos_net_cagr_strategy": 0.7448495780205056,
+      "oos_net_cagr_spy": 0.22276084562662835,
+      "oos_net_sharpe_strategy": 1.594458259434501,
+      "oos_net_sharpe_spy": 1.3393529422411306,
+      "pass": true
+    }
+  },
+  "headline": {
+    "strategy_oos": { "cagr": 0.7448495780205056, "sharpe": 1.594458259434501, "maxdd": -0.3836 },
+    "spy_engine_oos": { "cagr": 0.22276084562662835, "sharpe": 1.3393529422411306, "maxdd": -0.18755229425221775 },
+    "strategy_is": { "cagr": 0.2358, "sharpe": 0.9903, "maxdd": -0.2713 },
+    "effective_evaluated_start": "2020-05-08",
+    "universe_size": 481,
+    "trades_total": 1016,
+    "gate_state": { "bars_on_fraction": 0.5624203821656051, "transitions_total": 34, "missing_label_bars_fail_closed_off": 11 },
+    "results_artifact": "docs/data/wave1_h2_results.json"
+  },
+  "diagnosis": "The FRED RISK_ON gate genuinely improved OOS risk-adjusted performance on the full-universe momentum core (charter bar PASS: 74.5% CAGR / 1.59 Sharpe vs SPY 22.3% / 1.34) but the claim is conjunctive and EVERY statistical gate failed: IS significance p=0.586 (no in-sample edge), 14/62 CPCV combinations negative with fold-4 worst, cumulative excess Sharpe of -2.75 through the fold ending 2025-06-30 (the OOS win arrived late and concentrated, max incremental fold share 0.595 just under cap), and permutation-null survival missed (observed 1.261 vs null p95 1.326). Pattern matches cycle5_c6 prior FAIL: same regime source, gate timing luck rather than a stable edge. Verdict FAIL per kill criteria; no re-tuning of thresholds, no per-label rescues, no post-hoc lag changes permitted.",
+  "audit_lineage": {
+    "producer": "MAIN seat (ox-alpha) executed scripts/wave1_h2_test.py; engine authored by BUILDER seat (muse-spark xhigh); branch decision recorded pre-run in results JSON branch_decision",
+    "cold_auditor": "nemotron-3-ultra-free seat returned AGREE_FAIL (session ses_fcd95d5adffe22L24tWWtrDBpy)",
+    "disagreement": false
+  },
+  "verdict": "FAIL"
+}
