@@ -28,6 +28,8 @@
     the machine; live-probed), Arm C window truncated to 2024-12-31 and universe
     limited to long-side directional calls (free-source constraint, Kull CC-BY-4.0
     archive @ 03e33c61). Full text: prereg §6. No run had occurred at declaration.
+    A5 adds the per-arm evaluation-span rule (incomplete holds excluded
+    symmetrically; Arm C span ends when its last hold expires ~2025-04).
 
 ## Standing-rule compliance
 

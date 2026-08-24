@@ -106,3 +106,17 @@ the House extraction run stats (filings fetched, parse failures, events extracte
 are recorded in `docs/data/eval_wave1_h4.json` at dataset freeze, BEFORE testing.
 The InsiderWatch live CSV (CC-BY-4.0) was evaluated and NOT used (coverage starts
 ~2025-12 only); recorded here for honesty.
+
+A5. **Evaluation-span rule (per arm), declared before any run.** An event's 90-bar
+hold must COMPLETE inside the local panel: entries whose exit would fall past the
+last available bar are excluded from the signal set (identical rule for both arms
+and for the SPY twin legs — symmetric, no strategic bias), with exclusion counts
+reported. Consequences, fixed now: (i) Arm P evaluated span ends at the last bar
+of the frozen window (2026-08-07); (ii) Arm C (window truncated per A2) stops
+admitting entries after 2024-12-31, so its portfolio naturally flattens once all
+holds expire (~April 2025) and its evaluated span ENDS THERE — zero-return dead
+days are not padded onto the gate series. Gate machinery stays verbatim-imported;
+the frozen G4 half-year fold-end list intersects each arm's span, with the
+inherited H1 snap rule (final endpoint = last evaluated bar of the span).
+Independent-event counting for the power gate = post-dedup events admitted to the
+signal set.
