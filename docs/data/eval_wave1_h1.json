@@ -1,0 +1,75 @@
+{
+  "claim": "Wave-1/H1: Restricting the EXACT incumbent us_momentum_top5 rule (monthly top-5 by 126d-return-skip-21d, drift_rebal 0.05, exec_delay 1, 5bps/side) to frozen mega-cap Universe A beats SPY buy-and-hold on BOTH OOS net CAGR and Sharpe while passing all six edge gates",
+  "family": "wave1_h1_megacap_momentum",
+  "candidate_id": "wave1_h1",
+  "date": "2026-08-24",
+  "preregistration": "docs/data/wave1_h1_megacap_momentum_prereg.md",
+  "bar_pass": false,
+  "dsr_ledger": {
+    "trials_charged_this_eval": 1,
+    "wave1_trial_budget_at_freeze": { "h1": 1, "h2": 1, "h3": 1, "h4": 3 },
+    "control_arm_trials_charged": 0,
+    "note": "Descriptive control arm is NOT gated and charged zero trials per prereg section 3."
+  },
+  "checks": {
+    "gate1_prereg_committed_before_testing": {
+      "value": "frozen @ repo commit 6d0b3f5 on 2026-08-24; zero in-sample runs before this eval",
+      "pass": true
+    },
+    "gate2_is_stationary_bootstrap_p_le_0_05": {
+      "value": 0.056,
+      "bar": "<= 0.05 (borderline = FAILURE)",
+      "method": "two-sided stationary block bootstrap (Hall-Wilson), mean block 21d, 1000 draws, seed 7, IS daily net-excess vs SPY-engine baseline",
+      "pass": false
+    },
+    "gate3_cpcv_all_combinations_mean_gt_0": {
+      "worst_combination_mean_net_excess": -0.00029154629961044887,
+      "combinations_failing": 3,
+      "combination_count": 62,
+      "K": 6,
+      "embargo_days": 10,
+      "pass": false
+    },
+    "gate4_walk_forward_expanding_5_folds": {
+      "min_cumulative_net_excess_sharpe": 0.13897901741869106,
+      "max_incremental_fold_share_of_cumulative_oos_net_excess": 2.9670512554192356,
+      "share_cap": 0.6,
+      "fold_ends_snapped": ["2024-06-28", "2024-12-31", "2025-06-30", "2025-12-31", "2026-08-07"],
+      "note": "All cumulative fold Sharpes > 0 but concentration rule violated ~5x cap; excess concentrated in H1-2024 then incremental segments negative.",
+      "pass": false
+    },
+    "gate5_permutation_null_survival": {
+      "observed_oos_annualized_net_excess_sharpe": 0.13897901741869106,
+      "null_p95": 0.3077671564274589,
+      "n_null": 1000,
+      "block_days": 10,
+      "seed": 7,
+      "pass": false
+    },
+    "charter_bar_cagr_and_sharpe_gt_spy": {
+      "oos_net_cagr_strategy": 0.23688438776357557,
+      "oos_net_cagr_spy": 0.22276084562662812,
+      "oos_net_sharpe_strategy": 1.0896540156685965,
+      "oos_net_sharpe_spy": 1.3393529422411365,
+      "pass": false
+    }
+  },
+  "headline": {
+    "strategy_oos": { "cagr": 0.23688438776357557, "sharpe": 1.0896540156685965, "maxdd": -0.22837137305787358 },
+    "spy_engine_oos": { "cagr": 0.22276084562662812, "sharpe": 1.3393529422411365, "maxdd": -0.18755229425221775 },
+    "control_ew_universeA_bh_oos": { "cagr": 0.35252902493369587, "sharpe": 1.3533290535055416, "maxdd": -0.261662179470023 },
+    "strategy_vs_spy_oos_sharpe_delta": -0.24969892657254,
+    "control_vs_strategy_oos_cagr_delta": 0.1156446371701203,
+    "control_vs_strategy_oos_sharpe_delta": 0.263675037836945,
+    "effective_evaluated_start_post_warmup": "2020-05-07",
+    "trades_total": 931,
+    "results_artifact": "docs/data/wave1_h1_results.json"
+  },
+  "diagnosis": "Mega-cap-only scoping does NOT transfer the confluence-stack conditioning advantage to the momentum core. Inside Universe A the monthly top-5 momentum rotation UNDERPERFORMED passive equal-weight holding of the same 15 names by +11.6pp OOS CAGR and +0.264 OOS Sharpe (churning out of melt-up winners), and beat SPY on CAGR only marginally while losing on Sharpe. Classic melt-up-regime failure of cross-sectional momentum within a already-winning cohort.",
+  "audit_lineage": {
+    "producer": "MAIN seat (ox-alpha) executed scripts/wave1_h1_test.py; engine authored by BUILDER seat (muse-spark xhigh) with declared interpretations in config_echo.engine_lineage",
+    "cold_auditor": "nemotron-3-ultra-free seat returned AGREE_FAIL (session ses_fcebc7bbbffeecA2rdrSrURdrd)",
+    "disagreement": false
+  },
+  "verdict": "FAIL"
+}

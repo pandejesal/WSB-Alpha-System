@@ -1,0 +1,524 @@
+{
+  "claim": "Restricting the EXACT incumbent us_momentum_top5 rule to frozen mega-cap Universe A produces OOS net performance beating SPY on BOTH CAGR and Sharpe while passing gates G2-G5",
+  "prereg": "docs\\data\\wave1_h1_megacap_momentum_prereg.md",
+  "prereg_status": "FROZEN 2026-08-24 - LOCKED before any in-sample run",
+  "paper_only": true,
+  "verdict_authority": "RESERVED FOR AUDITOR SEAT - this output reports mechanical gate booleans only; no PASS claim is made by the builder",
+  "config_echo": {
+    "universe_a_fixed_order": [
+      "AAPL",
+      "MSFT",
+      "GOOGL",
+      "AMZN",
+      "NVDA",
+      "META",
+      "TSLA",
+      "JPM",
+      "V",
+      "JNJ",
+      "WMT",
+      "MA",
+      "UNH",
+      "XOM",
+      "DIS"
+    ],
+    "benchmark": "SPY",
+    "params_byte_identical_to": "strategies/us_momentum_top5.yaml",
+    "params": {
+      "top_n": 5,
+      "lookback_days": 126,
+      "skip_days": 21,
+      "warmup_days": 340,
+      "rebalance": "monthly (last trading bar)",
+      "drift_rebal": 0.05,
+      "exec_delay_bars": 1,
+      "slippage_per_side": 0.0005,
+      "commission": 0.0,
+      "settlement": "T+1 declared; engine credits cash same-bar (identical to reference engine; uniform across all arms)"
+    },
+    "windows": {
+      "is_nominal": [
+        "2019-01-02",
+        "2023-12-31"
+      ],
+      "oos_nominal": [
+        "2024-01-01",
+        "2026-08-07"
+      ],
+      "effective_evaluated_start_after_warmup": "2020-05-07",
+      "warmup_consumes_leading_IS": true
+    },
+    "stochastic": {
+      "g2": {
+        "mean_block": 21,
+        "draws": 1000,
+        "seed": 7,
+        "alpha": 0.05
+      },
+      "g3": {
+        "K": 6,
+        "embargo_days": 10
+      },
+      "g4": {
+        "fold_ends": [
+          "2024-06-30",
+          "2024-12-31",
+          "2025-06-30",
+          "2025-12-31",
+          "2026-08-07"
+        ],
+        "endpoint_snap": "last_trading_bar_on_or_before",
+        "max_fold_share": 0.6
+      },
+      "g5": {
+        "block": 10,
+        "draws": 1000,
+        "seed": 7
+      }
+    },
+    "engine_lineage": {
+      "derived_from": "scripts/ml_sl_exit_test.py (H-SLX-1 static arm)",
+      "metric_source": "imported:scripts/ml_sl_exit_test.py",
+      "extensions_vs_reference": [
+        "daily drift-band rebalance 0.05 (required by byte-identical YAML; omitted by H-SLX-1 engine)",
+        "dict pending orders enabling partial drift sells / explicit buy notionals (rank-drop exits unchanged: full sells)",
+        "G5 shuffle is CIRCULAR (prereg wording); reference block_shuffle truncated non-circularly"
+      ],
+      "spying_fee_convention": "defined here (no precedent in reference engine): SPY and control pay entry slippage 5bps via reduced shares at the first evaluated close; held open; no terminal exit cost; $0 commission"
+    },
+    "data_integrity": {
+      "AAPL": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "MSFT": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "GOOGL": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "AMZN": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "NVDA": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "META": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "TSLA": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "JPM": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "V": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "JNJ": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "WMT": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "MA": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "UNH": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "XOM": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "DIS": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      },
+      "SPY": {
+        "rows": 1910,
+        "first": "2019-01-02",
+        "last": "2026-08-07"
+      }
+    }
+  },
+  "arms": {
+    "strategy": {
+      "is": {
+        "cagr": 0.3375506220368323,
+        "sharpe": 1.3271604891407836,
+        "maxdd": -0.22740596151643266,
+        "n_days": 918,
+        "yearly": {
+          "2020": 0.6454405983993756,
+          "2021": 0.3251372183522825,
+          "2022": -0.0892139272433411,
+          "2023": 0.453198888028737
+        }
+      },
+      "oos": {
+        "cagr": 0.23688438776357557,
+        "sharpe": 1.0896540156685965,
+        "maxdd": -0.22837137305787358,
+        "n_days": 652,
+        "yearly": {
+          "2024": 0.6048942785627107,
+          "2025": 0.03297508501113655,
+          "2026": 0.04737526271509651
+        }
+      }
+    },
+    "spy": {
+      "is": {
+        "cagr": 0.1658472786920273,
+        "sharpe": 0.9498323006885161,
+        "maxdd": -0.24496383608407224,
+        "n_days": 918,
+        "yearly": {
+          "2020": 0.31616936703371845,
+          "2021": 0.28728769487345307,
+          "2022": -0.18175374952608525,
+          "2023": 0.2617580723704014
+        }
+      },
+      "oos": {
+        "cagr": 0.22276084562662812,
+        "sharpe": 1.3393529422411365,
+        "maxdd": -0.18755229425221775,
+        "n_days": 652,
+        "yearly": {
+          "2024": 0.25589305653267513,
+          "2025": 0.17719055511914705,
+          "2026": 0.13997144198366795
+        }
+      }
+    },
+    "control": {
+      "is": {
+        "cagr": 0.25378571012869044,
+        "sharpe": 1.051400217192688,
+        "maxdd": -0.34395091039105297,
+        "n_days": 918,
+        "yearly": {
+          "2020": 0.5537962291037593,
+          "2021": 0.35430324436143157,
+          "2022": -0.2988798330955139,
+          "2023": 0.5453651706106599
+        }
+      },
+      "oos": {
+        "cagr": 0.35252902493369587,
+        "sharpe": 1.3533290535055416,
+        "maxdd": -0.261662179470023,
+        "n_days": 652,
+        "yearly": {
+          "2024": 0.6151910228949593,
+          "2025": 0.24126639289054408,
+          "2026": 0.09219404870174253
+        }
+      }
+    }
+  },
+  "excess_series_summary": {
+    "definition": "strategy NET daily returns minus SPY-engine NET daily returns (identical fee accounting), date-aligned",
+    "is": {
+      "n_days": 918,
+      "mean_daily": 0.0005982756870894172,
+      "std_daily": 0.01017462577442644,
+      "annualized_sharpe": 0.9334330629476882,
+      "sum": 0.549217080748085,
+      "min": -0.050521692538777585,
+      "max": 0.04355968539366628,
+      "start": "2020-05-08",
+      "end": "2023-12-29"
+    },
+    "oos": {
+      "n_days": 652,
+      "mean_daily": 7.121634667865635e-05,
+      "std_daily": 0.008134497397976784,
+      "annualized_sharpe": 0.13897901741869106,
+      "sum": 0.04643305803448394,
+      "min": -0.027466926717834794,
+      "max": 0.057982952622242845,
+      "start": "2024-01-02",
+      "end": "2026-08-07"
+    },
+    "full_evaluated": {
+      "n_days": 1570,
+      "mean_daily": 0.00037939499285513943,
+      "std_daily": 0.009382231160894235,
+      "annualized_sharpe": 0.6419271381470549,
+      "sum": 0.5956501387825689,
+      "min": -0.050521692538777585,
+      "max": 0.057982952622242845,
+      "start": "2020-05-08",
+      "end": "2026-08-07"
+    }
+  },
+  "gates": {
+    "g1_prereg_committed": {
+      "pass": true,
+      "statistic": "artifact_check",
+      "details": {
+        "path": "docs\\data\\wave1_h1_megacap_momentum_prereg.md",
+        "present": true,
+        "frozen_marker_found": true
+      }
+    },
+    "g2_is_stationary_bootstrap": {
+      "pass": false,
+      "statistic": 0.0005982756870894172,
+      "p_value": 0.056,
+      "threshold": 0.05,
+      "borderline_flag": false,
+      "details": {
+        "method": "two-sided stationary block bootstrap p-value (Hall-Wilson): p = 2*min(P(T*-Tbar >= Tbar), P(T*-Tbar <= Tbar)), T* = bootstrap means",
+        "mean_block_days": 21,
+        "draws": 1000,
+        "seed": 7,
+        "series_len": 918,
+        "boot_mean_dist": {
+          "mean": 0.0006039336124177326,
+          "std": 0.0002884525434361874
+        }
+      }
+    },
+    "g3_cpcv": {
+      "pass": false,
+      "statistic": -0.00029154629961044887,
+      "threshold": 0.0,
+      "details": {
+        "K": 6,
+        "embargo_days": 10,
+        "combination_semantics": "all non-empty proper subsets of K folds = test sets; embargo purged at train/test edges inside each test fold",
+        "combination_count": 62,
+        "combinations_failing": 3,
+        "worst_combinations": [
+          {
+            "combo": [
+              6
+            ],
+            "mean_net_excess": -0.00029154629961044887
+          },
+          {
+            "combo": [
+              5,
+              6
+            ],
+            "mean_net_excess": -0.00011998867266856529
+          },
+          {
+            "combo": [
+              2,
+              6
+            ],
+            "mean_net_excess": -1.9963271040985586e-05
+          },
+          {
+            "combo": [
+              2,
+              5,
+              6
+            ],
+            "mean_net_excess": 2.5225837834367975e-06
+          },
+          {
+            "combo": [
+              3,
+              5,
+              6
+            ],
+            "mean_net_excess": 4.886640247587908e-05
+          }
+        ],
+        "best_combination": {
+          "combo": [
+            1
+          ],
+          "mean_net_excess": 0.0009572546274431459
+        },
+        "evaluated_history": {
+          "n_days": 1570,
+          "start": "2020-05-08",
+          "end": "2026-08-07"
+        }
+      }
+    },
+    "g4_walk_forward": {
+      "pass": false,
+      "statistic": 0.13897901741869106,
+      "threshold": 0.0,
+      "details": {
+        "rule": "expanding-span net-excess Sharpe > 0 in EVERY fold AND max incremental fold share <= 0.60 of cumulative OOS net excess",
+        "min_cum_sharpe": 0.13897901741869106,
+        "max_fold_share": 2.9670512554192356,
+        "max_share_threshold": 0.6,
+        "total_oos_sum_net_excess": 0.04643305803448394,
+        "per_fold_table": [
+          {
+            "fold": 1,
+            "expanding_span": [
+              "2024-01-02",
+              "2024-06-28"
+            ],
+            "cum_n_days": 124,
+            "cum_net_excess_sharpe": 1.5260508743404126,
+            "incremental_segment": [
+              "2024-01-02",
+              "2024-06-28"
+            ],
+            "incremental_n_days": 124,
+            "incremental_sum_net_excess": 0.11371412965569427,
+            "incremental_sharpe_descriptive": 1.5260508743404126,
+            "share_of_cumulative_oos_net_excess": 2.4489907507544175
+          },
+          {
+            "fold": 2,
+            "expanding_span": [
+              "2024-01-02",
+              "2024-12-31"
+            ],
+            "cum_n_days": 252,
+            "cum_net_excess_sharpe": 1.911121987701277,
+            "incremental_segment": [
+              "2024-07-01",
+              "2024-12-31"
+            ],
+            "incremental_n_days": 128,
+            "incremental_sum_net_excess": 0.13776926313416982,
+            "incremental_sharpe_descriptive": 2.4750541238163524,
+            "share_of_cumulative_oos_net_excess": 2.9670512554192356
+          },
+          {
+            "fold": 3,
+            "expanding_span": [
+              "2024-01-02",
+              "2025-06-30"
+            ],
+            "cum_n_days": 374,
+            "cum_net_excess_sharpe": 0.7763518341946071,
+            "incremental_segment": [
+              "2025-01-02",
+              "2025-06-30"
+            ],
+            "incremental_n_days": 122,
+            "incremental_sum_net_excess": -0.10306056334592528,
+            "incremental_sharpe_descriptive": -1.758699444106993,
+            "share_of_cumulative_oos_net_excess": -2.219551494312229
+          },
+          {
+            "fold": 4,
+            "expanding_span": [
+              "2024-01-02",
+              "2025-12-31"
+            ],
+            "cum_n_days": 502,
+            "cum_net_excess_sharpe": 0.5209828512663728,
+            "incremental_segment": [
+              "2025-07-01",
+              "2025-12-31"
+            ],
+            "incremental_n_days": 128,
+            "incremental_sum_net_excess": -0.017944462522304527,
+            "incremental_sharpe_descriptive": -0.30335176147245574,
+            "share_of_cumulative_oos_net_excess": -0.38645877058060457
+          },
+          {
+            "fold": 5,
+            "expanding_span": [
+              "2024-01-02",
+              "2026-08-07"
+            ],
+            "cum_n_days": 652,
+            "cum_net_excess_sharpe": 0.13897901741869106,
+            "incremental_segment": [
+              "2026-01-02",
+              "2026-08-07"
+            ],
+            "incremental_n_days": 150,
+            "incremental_sum_net_excess": -0.08404530888715034,
+            "incremental_sharpe_descriptive": -1.0091469748766861,
+            "share_of_cumulative_oos_net_excess": -1.81003174128082
+          }
+        ]
+      }
+    },
+    "g6_dsr_ledger": {
+      "pass": null,
+      "status": "MANUAL_STEP_REQUIRED",
+      "details": {
+        "note": "Per prereg section 4 gate 6: positive Deflated-Sharpe ledger entry via scripts/preregister.py record into docs/data/eval_wave1_h1.json, trials charged = 1 (control arm excluded, descriptive only). Recorded by the operator AFTER auditor verdict; this builder-run never self-certifies.",
+        "command_shape": "python scripts/preregister.py record <spec_path> --verdict <PASS|FAIL|HONEST_ABANDON> [--eval-path docs/data/wave1_h1_results.json]"
+      }
+    },
+    "g5_permutation_null": {
+      "pass": false,
+      "statistic": 0.13897901741869106,
+      "threshold": 0.3077671564274589,
+      "details": {
+        "method": "circular block shuffle (multiset-preserving permutation), observed annualized net-excess Sharpe vs null p95",
+        "block_days": 10,
+        "draws": 1000,
+        "seed": 7,
+        "series_len": 652,
+        "null_mean": 0.18937349072602233,
+        "null_std": 0.06296802275151092
+      }
+    }
+  },
+  "charter_bar": {
+    "oos_net_cagr_strategy": 0.23688438776357557,
+    "oos_net_cagr_spy": 0.22276084562662812,
+    "oos_net_sharpe_strategy": 1.0896540156685965,
+    "oos_net_sharpe_spy": 1.3393529422411365,
+    "pass": false
+  },
+  "control_arm": {
+    "role": "DESCRIPTIVE CONTROL ONLY - NOT GATED, ZERO TRIALS CHARGED",
+    "purpose": "separate 'momentum adds edge inside mega-caps' from 'mega-caps beat SPY'",
+    "vs_spy_oos": {
+      "cagr_delta": 0.12976817930706774,
+      "sharpe_delta": 0.013976111264405011
+    },
+    "vs_strategy_oos": {
+      "cagr_delta": 0.1156446371701203,
+      "sharpe_delta": 0.263675037836945
+    }
+  },
+  "trades_total": 931,
+  "all_computed_gates_pass": false,
+  "notes": [
+    "Survivorship/universe lookahead inherited from the frozen 2026-era Universe A definition; accepted by the prereg as claim-scoping.",
+    "Warmup 340 trading days consumes the leading portion of nominal IS; evaluation begins at the first fully warmed bar.",
+    "Unfilled pending orders are dropped after one next-bar attempt (reference-engine behavior); Universe A panel is complete so this is expected to be a no-op.",
+    "G3 combination semantics declared in gates.g3_cpcv.details; G4 per-fold Sharpe is EXPANDING-SPAN by reading of 'expanding OOS folds'; incremental-segment Sharpes reported descriptively.",
+    "G4 frozen calendar endpoints snap to the last trading bar on or before each date (pre-run delta, recorded before any in-sample run; e.g. Sun 2024-06-30 -> Fri 2024-06-28)."
+  ]
+}
