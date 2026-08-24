@@ -68,3 +68,41 @@ Any gate FAIL ⇒ honest FAIL entry for that arm. Filing-lag lookahead, survivor
 (dropping delisted pre-window names from the SIGNAL set), or post-hoc horizon
 changes are kills, not fixes. Dataset changes after first run ⇒ whole-prereg
 disqualification unless declared as a delta BEFORE the affected run.
+
+## 6. AMENDMENT A — declared 2026-08-25, BEFORE any in-sample run of any arm
+
+Status at declaration: zero runs executed; no dataset frozen yet. These deltas are
+declared under §5's before-the-affected-run clause, driven by objective free-tier
+data availability verified by live probes on 2026-08-25 (research lane + direct
+probes). No result has been observed for either arm.
+
+A1. **Arm P scoped HOUSE-ONLY.** Senate eFD (`efdsearch.senate.gov`) returns HTTP 403
+to every probe from the acquisition machine (curl with browser UA + Python urllib,
+2026-08-25); no compliant free path to Senate PTR history exists from this vantage.
+Adding Senate after a first run would be a §5 disqualification, so it is excluded
+now. Arm P source: official House Clerk index
+`disclosures-clerk.house.gov/public_disc/financial-pdfs/<YEAR>FD.xml` (FilingType=P
+rows carry DocID + FilingDate) → per-filing PDFs `public_disc/ptr-pdfs/<year>/<DocID>.pdf`
+→ local text extraction (pypdf). Verified live 2018–2026; ~90% of sampled PTRs carry
+text layers (17/18 across 2019/2023 spot samples). Image-only/unparseable PTRs are
+counted and reported in the eval JSON; their transactions are absent from the signal
+set as an honestly-disclosed coverage gap (not a name-based survivorship drop).
+
+A2. **Arm C window truncated** to signals 2019-01-02..2024-12-31. Reason: the only
+compliant free archive (andreskull/cramer-mad-money-research @ public-main
+03e33c61, CC-BY-4.0, 16,701 recommendations with air-date fidelity) ends Dec 2024;
+no free-tier source covers 2025-01..2026-08 picks (CNBC recaps rejected: publish-time
+fidelity inferior and ToS-unverified). All other Arm C spec items (T+1 bar entry,
+90-day hold, 5bps/side, SPY-aligned legs) unchanged.
+
+A3. **Arm C universe = long-side directional calls only.** The upstream dataset
+publishes BUY/POSITIVE calls and excludes shorts. C2-fade is unaffected: it remains
+the synthetic inverse-excess series −(r_stock − r_SPY) on the same long-side pick
+set, exactly as declared in §3.
+
+A4. **Provenance/hash-lock:** raw acquired files land gitignored under
+`data/h4_raw/`; their SHA-256 hashes, upstream repo HEAD SHAs, retrieval dates, and
+the House extraction run stats (filings fetched, parse failures, events extracted)
+are recorded in `docs/data/eval_wave1_h4.json` at dataset freeze, BEFORE testing.
+The InsiderWatch live CSV (CC-BY-4.0) was evaluated and NOT used (coverage starts
+~2025-12 only); recorded here for honesty.

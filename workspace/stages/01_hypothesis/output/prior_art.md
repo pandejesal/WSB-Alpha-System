@@ -24,6 +24,10 @@
   target, not a learned overlay (topic07 tested learned models only).
 - **H4**: genuinely new data class (legislator PTRs + media picks); 13F work was
   institutional quarterly holdings, not disclosure-event trading.
+  - AMENDMENT A (2026-08-25, pre-run): Arm P = House-only (Senate eFD 403-blocks
+    the machine; live-probed), Arm C window truncated to 2024-12-31 and universe
+    limited to long-side directional calls (free-source constraint, Kull CC-BY-4.0
+    archive @ 03e33c61). Full text: prereg §6. No run had occurred at declaration.
 
 ## Standing-rule compliance
 
