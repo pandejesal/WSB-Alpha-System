@@ -1,0 +1,88 @@
+{
+  "claim": "Wave-1/H3: Scaling the incumbent us_momentum_top5 portfolio by m_t=clamp(0.15/sigma_hat_21d_ann,0.25,1.00) recomputed at month-ends improves OOS net Sharpe vs the untargeted incumbent by >=+0.10 while keeping OOS net CAGR above SPY buy-and-hold and passing statistical gates G2-G5",
+  "family": "wave1_h3_voltarget_overlay",
+  "candidate_id": "wave1_h3",
+  "date": "2026-08-25",
+  "preregistration": "docs/data/wave1_h3_voltarget_overlay_prereg.md",
+  "bar_pass": false,
+  "executed_branch": "single frozen branch (deterministic closed-form sizing; no variants permitted)",
+  "dsr_ledger": {
+    "trials_charged_this_eval": 1,
+    "wave1_trial_budget_at_freeze": { "h1": 1, "h2": 1, "h3": 1, "h4": 3 },
+    "note": "Single executed point-in-time configuration per prereg; target core bound to us_momentum_top5 AT FREEZE TIME regardless of other wave-1 outcomes."
+  },
+  "checks": {
+    "gate1_prereg_committed_before_testing": {
+      "value": "frozen @ repo commit 6d0b3f5 on 2026-08-24; zero in-sample runs before this eval",
+      "pass": true
+    },
+    "gate2_is_stationary_bootstrap_p_le_0_05": {
+      "value": 0.082,
+      "bar": "<= 0.05 (borderline = FAILURE)",
+      "method": "two-sided stationary block bootstrap (Hall-Wilson), mean block 21d, 1000 draws, seed 7, IS daily net-excess vs SPY-engine baseline",
+      "pass": false
+    },
+    "gate3_cpcv_all_combinations_mean_gt_0": {
+      "worst_combination_mean_net_excess": -0.00016060315035071603,
+      "combinations_failing": 1,
+      "combination_count": 62,
+      "K": 6,
+      "embargo_days": 10,
+      "worst_combination": [5],
+      "note": "Only failing combination is fold 5 held out alone, i.e. the final OOS segment; every multi-fold combination positive.",
+      "pass": false
+    },
+    "gate4_walk_forward_expanding_5_folds": {
+      "min_cumulative_net_excess_sharpe": 0.38277298284190875,
+      "max_incremental_fold_share_of_cumulative_oos_net_excess": 0.5459483964564832,
+      "share_cap": 0.6,
+      "note": "Every expanding-span fold Sharpe positive (min 0.383); no incremental fold exceeds the 60% share cap.",
+      "pass": true
+    },
+    "gate5_permutation_null_survival": {
+      "observed_oos_annualized_net_excess_sharpe": 1.3739155762277366,
+      "null_p95": 1.477520152421003,
+      "null_mean": 1.3836723580489065,
+      "n_null": 1000,
+      "block_days": 10,
+      "seed": 7,
+      "note": "Observed sits BELOW the null mean (1.384): OOS net-excess Sharpe is indistinguishable from circular block-shuffled luck in this window.",
+      "pass": false
+    },
+    "charter_bar_cagr_and_sharpe_gt_spy": {
+      "oos_net_cagr_strategy": 0.5934163875678553,
+      "oos_net_cagr_spy": 0.22276084562662835,
+      "oos_net_sharpe_strategy": 1.8919589423446357,
+      "oos_net_sharpe_spy": 1.3393529422411306,
+      "pass": true
+    },
+    "primary_acceptance_sharpe_margin_ge_plus_0_10_vs_baseline": {
+      "oos_net_sharpe_overlay": 1.8919589423446357,
+      "oos_net_sharpe_baseline_incumbent": 1.7727050422558512,
+      "sharpe_margin": 0.11925390008878445,
+      "bar": ">= +0.10",
+      "maxdd_delta_overlay_minus_baseline": 0.15004853199955892,
+      "turnover_delta_trades": -862,
+      "pass": true
+    }
+  },
+  "headline": {
+    "overlay_oos": { "cagr": 0.5934163875678553, "sharpe": 1.8919589423446357, "maxdd": -0.232884779053118 },
+    "baseline_incumbent_oos": { "cagr": 1.0030653574006916, "sharpe": 1.7727050422558512, "maxdd": -0.3829333110526769 },
+    "spy_engine_oos": { "cagr": 0.22276084562662835, "sharpe": 1.3393529422411306, "maxdd": -0.18755229425221798 },
+    "overlay_is": { "cagr": 0.3965098265025593, "sharpe": 1.474381880522516, "maxdd": -0.20006397924698538 },
+    "effective_evaluated_start": "2020-05-08",
+    "universe_size": 481,
+    "trades_baseline": 1264,
+    "trades_overlay": 402,
+    "m_series": { "n_months": 75, "mean": 0.6905950174626553, "min": 0.3454522826820932, "max": 1.0, "frac_at_cap": 0.16, "frac_at_floor": 0.0 },
+    "results_artifact": "docs/data/wave1_h3_results.json"
+  },
+  "diagnosis": "The deterministic vol-target overlay delivered exactly what sizing overlays promise - higher risk-adjusted return (OOS Sharpe 1.892 vs 1.773 incumbent), shallower drawdowns (-23.3% vs -38.3%), 68% less turnover - and cleared BOTH the charter bar and the pre-declared primary acceptance (+0.119 >= +0.10 Sharpe margin). But the conjunctive claim required gates G2-G5 and three failed: IS significance p=0.082 (in-sample edge not established at the 5% bar; borderline-flag false yet still > 0.05 = failure per prereg), CPCV fold-5-alone negative (-0.000161, 1/62 combinations), and permutation-null survival missed with observed 1.374 sitting below the null MEAN 1.384 (p95 1.478) - the OOS excess-Sharpe level is statistically indistinguishable from block-shuffled luck given the dominant momentum drift of this window. Pattern echoes H2: real economic improvement in the realized path, no demonstrable statistical edge over its own randomization null. Verdict FAIL per kill criteria; no threshold nudging, no sigma-window retuning, no post-hoc clamp changes permitted. SIZING lane remains OPEN only via a NEW prereg with changed conditions (e.g. different target-vol parameterization declared ex ante plus evidence addressing the permutation-null failure mode).",
+  "audit_lineage": {
+    "producer": "MAIN seat (ox-alpha) executed scripts/wave1_h3_test.py deterministically (seeded, offline); engine authored by BUILDER seat (muse-spark xhigh lineage per OPTIMIZATION_PLAYBOOK routing)",
+    "cold_auditor": "UNAVAILABLE - arise/task subagent infrastructure returned empty outputs for all models during 2026-08-25 session; operator may commission a cold nemotron-3-ultra-free audit of docs/data/wave1_h3_results.json before wave closure",
+    "disagreement": null
+  },
+  "verdict": "FAIL"
+}
