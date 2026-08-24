@@ -1,0 +1,106 @@
+{
+  "claim": "Wave-2/W2-H2: Scaling the incumbent us_momentum_top5 portfolio by m_t = clamp(1 - DD_t/0.20, 0.25, 1.00) at month-ends - where DD_t is the overlay arm's own current drawdown from its trailing equity peak - produces a POSITIVE mean daily net-return DELTA versus the unscaled incumbent that survives all five statistical gates COMPUTED ON THE PAIRED DELTA SERIES, while the overlay still beats SPY buy-and-hold on BOTH OOS net CAGR and Sharpe and achieves OOS maxDD shallower than -30%",
+  "family": "wave2_h2_drawdown_ratchet_delta",
+  "candidate_id": "wave2_h2",
+  "date": "2026-08-25",
+  "preregistration": "docs/data/wave2_h2_drawdown_ratchet_delta_prereg.md",
+  "bar_pass": false,
+  "executed_branch": "single frozen branch (state variable = own-equity drawdown depth; thresholds fixed ex ante at H3-comparable floor/cap 0.25/1.00; DD normalization 0.20 declared once)",
+  "dsr_ledger": {
+    "trials_charged_this_eval": 1,
+    "wave2_trial_budget_at_freeze": { "w2h1": 1, "w2h2": 1, "w2h3": 1 },
+    "h4_carried_budget": { "h4": 3 },
+    "note": "Single executed point-in-time configuration per prereg; no hybridizing with W2-H1 post hoc."
+  },
+  "checks": {
+    "gate1_prereg_committed_before_testing": {
+      "value": "frozen @ repo commit ddc1fe4 on 2026-08-25; zero in-sample runs before this eval",
+      "pass": true
+    },
+    "gate2_is_stationary_bootstrap_p_le_0_05_on_delta": {
+      "value": 0.04,
+      "bar": "<= 0.05 (borderline = FAILURE)",
+      "method": "two-sided stationary block bootstrap (Hall-Wilson), mean block 21d, 1000 draws, seed 7, IS paired daily delta d_t = r_overlay - r_baseline",
+      "is_delta_mean_daily": -0.0007523212098948844,
+      "is_delta_annualized_sharpe": -0.9048026502635802,
+      "note": "PASSES mechanically (p=0.04 <= 0.05) but in the WRONG DIRECTION: the significant IS delta is NEGATIVE (-7.5bp/day) - statistically detectable harm, not edge.",
+      "pass": true
+    },
+    "gate3_cpcv_all_combinations_mean_gt_0_on_delta": {
+      "worst_combination_mean_delta": -0.001940711296400305,
+      "combinations_failing": 61,
+      "combination_count": 62,
+      "K": 6,
+      "embargo_days": 10,
+      "worst_combination": [6],
+      "note": "61/62 combinations have non-positive mean delta.",
+      "pass": false
+    },
+    "gate4_walk_forward_expanding_5_folds_on_delta": {
+      "min_cumulative_delta_sharpe": -3.5313779343968594,
+      "max_incremental_fold_share_of_cumulative_oos_delta_sum": 0.3361300834112028,
+      "share_cap": 0.6,
+      "total_oos_delta_sum": -0.804280534685885,
+      "note": "Cumulative delta Sharpe negative through every expanding fold (min -3.531); cumulative OOS delta sum -0.804.",
+      "pass": false
+    },
+    "gate5_permutation_null_survival_on_delta": {
+      "observed_oos_annualized_delta_sharpe": -1.6201240599509197,
+      "null_p95": -1.4871278576598987,
+      "null_mean": -1.6151063997925428,
+      "n_null": 1000,
+      "block_days": 10,
+      "seed": 7,
+      "note": "Observed annualized delta-Sharpe (-1.620) below null p95 (-1.487); null centered at observed value (circular shuffle preserves negative drift). No survival.",
+      "pass": false
+    },
+    "charter_bar_cagr_and_sharpe_gt_spy": {
+      "oos_net_cagr_overlay": 0.5396001238271682,
+      "oos_net_cagr_spy": 0.22276084562662835,
+      "oos_net_sharpe_overlay": 1.5408474227497315,
+      "oos_net_sharpe_spy": 1.3393529422411306,
+      "pass": true
+    },
+    "additional_frozen_claim_maxdd_shallower_than_minus_30pct": {
+      "overlay_oos_maxdd": -0.23230953059502435,
+      "floor": -0.30,
+      "pass": true
+    },
+    "primary_acceptance_sharpe_margin_ge_plus_0_10_vs_baseline": {
+      "oos_net_sharpe_overlay": 1.5408474227497315,
+      "oos_net_sharpe_baseline_incumbent": 1.7727050422558512,
+      "sharpe_margin": -0.23185761950611972,
+      "bar": ">= +0.10",
+      "turnover_delta_trades": -872,
+      "note": "Drawdown-ratchet de-risking runs m<1 for 94.7% of months (28% pinned at the 0.25 floor), sacrificing OOS Sharpe BELOW the incumbent (-0.232 margin).",
+      "pass": false
+    }
+  },
+  "headline": {
+    "overlay_oos": { "cagr": 0.5396001238271682, "sharpe": 1.5408474227497315, "maxdd": -0.23230953059502435 },
+    "baseline_incumbent_oos": { "sharpe": 1.7727050422558512 },
+    "delta_series": {
+      "definition": "paired overlay-minus-incumbent daily NET returns, identical calendar/costs/fills",
+      "is_mean_daily": -0.0007523212098948844,
+      "is_annualized_sharpe": -0.9048026502635802,
+      "oos_mean_daily": -0.0012335591022789648,
+      "oos_annualized_sharpe": -1.6201240599509197,
+      "oos_sum": -0.804280534685885
+    },
+    "effective_evaluated_start": "2020-05-08",
+    "universe_size": 481,
+    "trades_baseline": 1264,
+    "trades_overlay": 392,
+    "m_stats": { "n_months": 75, "mean": 0.5512924524288083, "min": 0.25, "max": 1.0, "frac_at_cap": 0.05333333333333334, "frac_at_floor": 0.28, "frac_under_1": 0.9466666666666667 },
+    "dd_stats": { "n_months": 75, "mean_month_end_dd": 0.09707821825443333, "max_month_end_dd": 0.2123729224260006 },
+    "results_artifact": "docs/data/wave2_h2_results.json"
+  },
+  "diagnosis": "The loss-ratchet mechanism is decisively falsified as an increment over the incumbent: mean paired delta is negative in both segments (-7.5bp/day IS, -12.3bp/day OOS; ann delta-Sharpe -0.90 / -1.62). G2 technically passes (p=0.04) but against the claim's direction - the IS delta is SIGNIFICANTLY NEGATIVE, i.e. detectable harm. G3 61/62 combos non-positive, G4 all expanding-fold delta Sharpes negative (min -3.531, cum sum -0.804), G5 observed below its null p95. The ratchet spends 94.7% of months under-invested (28% at the 0.25 floor) because the strategy spends most of its life 5-20% below its own equity peak in this drift-dominated window; the cost is OOS Sharpe 1.541 vs incumbent 1.773 (margin -0.232) and CAGR 54.0% vs incumbent's 100.3%. Its risk goals did land (OOS maxDD -23.2%, shallower than the -30% frozen bar; charter bar vs SPY TRUE) but those are de-risking artifacts, not alpha. Verdict FAIL per kill criteria. LANE CLOSURE TRIGGERED: with W2-H1 (vol-state) and W2-H2 (drawdown-state) both failed on paired-delta gates, the ENTIRE deterministic-sizing lane CLOSES per preregs' section 5 - reopening requires genuinely new data or a new mechanism, not new statistics on these arms.",
+  "audit_lineage": {
+    "producer": "MAIN seat (ox-alpha) authored scripts/wave2_h2_test.py inline (engine + gate machinery IMPORTED VERBATIM from scripts/wave1_h3_test.py; only the m_t state-variable block differs) and executed it deterministically (seeded, offline)",
+    "builder_seat": "UNAVAILABLE - coder dispatch blocked twice by swarm workflow gates (ACCEPTANCE/TASK plan-id binding foreign to hunt session); MAIN absorbed builder duty per HUNT_MEGA_PROMPT v4 section 11.5 escalation ladder",
+    "cold_auditor": "UNAVAILABLE - arise/task subagent infrastructure returned empty outputs during prior session; operator may commission a cold nemotron-3-ultra-free audit of docs/data/wave2_h2_results.json before wave closure",
+    "disagreement": null
+  },
+  "verdict": "FAIL"
+}
