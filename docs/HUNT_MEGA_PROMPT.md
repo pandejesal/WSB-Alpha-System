@@ -5,7 +5,7 @@
 > The active session maintains this file (bump version, update ledger/slate) and tells
 > you to re-paste it whenever context runs low or a wave completes.
 
-version: 4 · generated: 2026-08-25 · change: wave-1 results folded into §4 ledger (H1/H2/H3 honest FAIL); §6 slate replaced with wave-2 batch frozen @ ddc1fe4 · superseded-by: —
+version: 5 · generated: 2026-08-25 · change: wave-2 results folded into §4 ledger (W2-H1/W2-H2/W2-H3 honest FAIL); deterministic-sizing lane and mega-cap-scoped-core lane CLOSED; §6 replaced with H4-first next slate · superseded-by: —
 
 ## 0. First actions (before ANY research)
 
@@ -64,19 +64,28 @@ under these rules.
 | Mega-cap-only momentum core, Universe A bare scoping (Wave-1 H1) | FAIL all gates (G2 p=0.056, G4 fold-share 2.97) | `docs/data/eval_wave1_h1.json` |
 | FRED RISK_ON label gate on momentum core (Wave-1 H2) | FAIL all gates despite charter-bar pass | `docs/data/eval_wave1_h2.json` |
 | Vol-target sizing m=clamp(0.15/σ̂21d,.25,1) on incumbent, absolute-excess gates (Wave-1 H3) | FAIL G2/G3/G5; G4+charter+primary pass; obs 1.374 < null MEAN | `docs/data/eval_wave1_h3.json` |
+| Vol-target sizing DELTA (byte-identical m_t), paired-delta gates (Wave-2 W2-H1) | FAIL all delta gates (G2 p=0.102, G3 60/62, G4 cum −2.67, G5 −1.46<p95); charter+primary pass; mean delta NEGATIVE both segments | `docs/data/eval_wave2_h1.json` |
+| Drawdown-ratchet sizing DELTA m=clamp(1−DD/0.20,.25,1), paired-delta gates (Wave-2 W2-H2) | FAIL G3 61/62, G4 cum −3.53, G5 −1.62<p95; G2 p=0.04 passes NEGATIVELY (significant harm); primary fails margin −0.23 | `docs/data/eval_wave2_h2.json` |
+| Absolute-momentum gate inside Universe A, 12-1 EW-A index >0 else cash (Wave-2 W2-H3) | FAIL all gates incl. CHARTER (Sharpe 1.09 vs SPY 1.34; G2 p=0.426, G4 fold-share 2.94, G5 below null mean); loses to passive EW-A buy-and-hold | `docs/data/eval_wave2_h3.json` |
 
 Standing rule: any hypothesis overlapping a listed family must cite that failure and
-name its CHANGED CONDITIONS in `prior_art.md`. The closure explicitly excluded four
-lanes; exits are now also tested-and-closed, and wave-1 closed the absolute-excess
-forms of universe scoping, macro gating, and sigma-state sizing.
+name its CHANGED CONDITIONS in `prior_art.md`. CLOSED LANES after wave-2:
+(1) exits (H-SLX-1); (2) absolute-excess forms of universe scoping / macro gating /
+sigma-state sizing (wave-1); (3) DETERMINISTIC SIZING ENTIRELY — W2-H1 vol-state and
+W2-H2 drawdown-state BOTH failed paired-delta gates; the overlay Sharpe edge is
+purchased purely with variance reduction at negative mean increment. Reopening
+requires genuinely new data or a new mechanism, not new statistics on these arms;
+(4) MEGA-CAP-SCOPED-CORE ENTIRELY — bare scoping (H1), macro-label gating (H2), and
+price-derived gating (W2-H3) all tested-and-failed.
 
-Wave-1 diagnosis (mine this): under the dominant 2024–26 drift regime, ANY long-biased
-path's absolute OOS excess sits inside its own block-shuffle null — H3's observed
-excess Sharpe fell BELOW its permutation-null mean. Absolute-excess gate batteries
-cannot separate overlay value from beta drift in this window. Wave-2 therefore tests
-PAIRED INCREMENTS (overlay-minus-incumbent delta series), not absolutes. Remaining
-open lanes: sizing delta (W2-H1/W2-H2), price-derived gating on the scoped core
-(W2-H3), new data (H4).
+Wave-1→2 diagnosis (mine this): under the dominant 2024–26 drift regime, ANY long-biased
+path's absolute OOS excess sits inside its own block-shuffle null, and sizing overlays
+buy their total-path Sharpe edge with variance reduction while sacrificing expected
+return day-by-day — paired-delta gates expose this cleanly (both wave-2 sizing deltas
+were negative in IS *and* OOS). Price/regime gates on a drift-dominated universe flip
+rarely (W2-H3 ON 84% of months) and cost more than they protect. Remaining open lanes:
+NEW DATA ONLY — H4 politician/Cramer carryover; future waves must originate from
+free-tier data sources outside every closed family or genuinely new mechanisms.
 
 ## 5. Wave protocol (rolling)
 
@@ -87,39 +96,32 @@ open lanes: sizing delta (W2-H1/W2-H2), price-derived gating on the scoped core
 - Failures feed the next wave's slate. Never tune post hoc — a new idea is a new
   preregistration with declared changed conditions.
 
-## 6. Approved Wave-2 slate (status @ v4)
+## 6. Wave boundary slate (status @ v5)
 
-Wave-1 outcome: H1 FAIL / H2 FAIL / H3 FAIL — all honest, ledgered in §4.
-H4 DEFERRED pending dataset hash-lock. Incumbent `us_momentum_top5` remains
-canonical until beaten under rules.
+Wave-2 outcome: W2-H1 FAIL / W2-H2 FAIL / W2-H3 FAIL — all honest, ledgered in §4.
+Deterministic-sizing lane CLOSED; mega-cap-scoped-core lane CLOSED.
+Incumbent `us_momentum_top5` remains canonical until beaten under rules
+(OOS CAGR 95.1% / Sharpe 1.77 vs SPY 1.34 in-engine).
 
-Three new hypotheses PREREGISTERED — frozen specs committed 2026-08-25 at repo
-commit `ddc1fe4` (gate-1 provenance; wave-2 DSR trials charged {w2h1:1, w2h2:1,
-w2h3:1}; h4 carried {h4:3}). NO in-sample runs exist yet. Next session's job:
-SERIAL single-file testing in order W2-H1 → W2-H2 → W2-H3 (all local-data-ready;
-extend the `scripts/wave1_h3_test.py` engine lineage), then H4 once its dataset
-is acquired and hash-locked.
+Next session's job, IN ORDER:
 
-1. **W2-H1 Vol-target sizing DELTA test** — PREREGISTERED
-   `docs/data/wave2_h1_voltarget_delta_prereg.md`. m_t formula byte-identical to
-   wave-1 H3 (zero parameter changes, anti-p-hacking); ALL five statistical
-   gates computed on the paired daily overlay-minus-incumbent delta series;
-   charter bar AND primary Sharpe margin (+0.10) unchanged.
-2. **W2-H2 Drawdown-ratchet sizing DELTA test** — PREREGISTERED
-   `docs/data/wave2_h2_drawdown_ratchet_delta_prereg.md`. Different state
-   variable (own-equity drawdown depth): m_t = clamp(1 - DD_t/0.20, 0.25, 1.00)
-   at month-ends; same paired-delta gate machinery as W2-H1; extra frozen claim:
-   overlay OOS maxDD shallower than -30%.
-3. **W2-H3 Absolute-momentum gate inside Universe A** — PREREGISTERED
-   `docs/data/wave2_h3_absmom_gate_prereg.md`. Six gates verbatim from the
-   wave-1 H1 spec; price-derived gate = EW Universe-A index 12-1 return > 0 at
-   month-end else cash; exec_delay 1 bar on ALL orders including gate flips;
-   no SMA fallback permitted.
-4. **H4 Politician-trade replication + Cramer follow-vs-fade pair** — CARRYOVER,
-   prereg `docs/data/wave1_h4_poltrade_cramer_prereg.md` UNCHANGED. Next session
-   FIRST acquires STOCK Act PTRs + public Cramer records via free endpoints,
-   hash-locks them (SHA-256 recorded in the run artifact), then tests under the
-   frozen spec; <40 events/arm ⇒ INSUFFICIENT_POWER no-op.
+1. **H4 Politician-trade replication + Cramer follow-vs-fade pair** — CARRYOVER,
+   prereg `docs/data/wave1_h4_poltrade_cramer_prereg.md` UNCHANGED, trials {h4:3}.
+   FIRST acquire STOCK Act PTRs + public Cramer records via free endpoints,
+   hash-lock them (SHA-256 recorded in the run artifact), then test under the
+   frozen spec; <40 events/arm ⇒ INSUFFICIENT_POWER no-op (recorded honestly).
+2. **Draft the Wave-3 batch** (4–6 preregs, committed before any testing) ONLY
+   from open lanes: new free-tier data (§7 pre-authorized list) or genuinely new
+   mechanisms that cite every overlapping §4 family + changed conditions in
+   `prior_art.md`. Do NOT propose: sizing overlays on momentum cores, gates or
+   scoping on mega-cap cores, ML overlays/exits, RSI(2), SMA-regime variants —
+   all closed. Promising directions for drafting: cross-sectional event studies
+   on the NEW datasets themselves (PTR filings, Cramer picks), sentiment-pipeline
+   derivatives not yet tested, crypto OHLCV structures, fundamentals-based
+   selection universes disjoint from momentum ranking.
+
+Wave-2 engine lineage available for reuse: `scripts/wave2_h{1,2,3}_test.py`
+(import gate machinery verbatim; never re-implement stochastic code).
 
 ## 7. Data policy — FREE TIER ONLY
 
