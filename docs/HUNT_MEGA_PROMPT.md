@@ -5,7 +5,7 @@
 > The active session maintains this file (bump version, update ledger/slate) and tells
 > you to re-paste it whenever context runs low or a wave completes.
 
-version: 3 · generated: 2026-08-24 · change: wave-1 preregs frozen @ 6d0b3f5; §6 slate statused; §7 FRED path corrected · superseded-by: —
+version: 4 · generated: 2026-08-25 · change: wave-1 results folded into §4 ledger (H1/H2/H3 honest FAIL); §6 slate replaced with wave-2 batch frozen @ ddc1fe4 · superseded-by: —
 
 ## 0. First actions (before ANY research)
 
@@ -61,14 +61,22 @@ under these rules.
 | Round 1 candidate families (11) | 5 FAIL / 6 ABANDON | `round1_consolidation.json` |
 | RSI(2)-entry family | saturated; 8 candidates, 0 pass (round 3.5) | `hunt-lessons.md` |
 | Confluence/trend/surge universal signal stack | regime CLOSED 2026-08-14 | `improvement_regime_conclusion.md` |
+| Mega-cap-only momentum core, Universe A bare scoping (Wave-1 H1) | FAIL all gates (G2 p=0.056, G4 fold-share 2.97) | `docs/data/eval_wave1_h1.json` |
+| FRED RISK_ON label gate on momentum core (Wave-1 H2) | FAIL all gates despite charter-bar pass | `docs/data/eval_wave1_h2.json` |
+| Vol-target sizing m=clamp(0.15/σ̂21d,.25,1) on incumbent, absolute-excess gates (Wave-1 H3) | FAIL G2/G3/G5; G4+charter+primary pass; obs 1.374 < null MEAN | `docs/data/eval_wave1_h3.json` |
 
 Standing rule: any hypothesis overlapping a listed family must cite that failure and
 name its CHANGED CONDITIONS in `prior_art.md`. The closure explicitly excluded four
-lanes, which are therefore YOUR prime hunting ground: **different data, exits were now
-also tested-and-closed, remaining open = sizing, claim scoping, new data**.
+lanes; exits are now also tested-and-closed, and wave-1 closed the absolute-excess
+forms of universe scoping, macro gating, and sigma-state sizing.
 
-Mine this structural finding: mega-cap-only conditioning cleared B-gates 3×
-independently while full-universe variants failed; A+B never co-passed.
+Wave-1 diagnosis (mine this): under the dominant 2024–26 drift regime, ANY long-biased
+path's absolute OOS excess sits inside its own block-shuffle null — H3's observed
+excess Sharpe fell BELOW its permutation-null mean. Absolute-excess gate batteries
+cannot separate overlay value from beta drift in this window. Wave-2 therefore tests
+PAIRED INCREMENTS (overlay-minus-incumbent delta series), not absolutes. Remaining
+open lanes: sizing delta (W2-H1/W2-H2), price-derived gating on the scoped core
+(W2-H3), new data (H4).
 
 ## 5. Wave protocol (rolling)
 
@@ -79,31 +87,39 @@ independently while full-universe variants failed; A+B never co-passed.
 - Failures feed the next wave's slate. Never tune post hoc — a new idea is a new
   preregistration with declared changed conditions.
 
-## 6. Approved Wave-1 slate (status @ v3)
+## 6. Approved Wave-2 slate (status @ v4)
 
-All four hypotheses are PREREGISTERED — frozen specs committed 2026-08-24 at
-repo commit `6d0b3f5` (gate-1 provenance; DSR trials charged {h1:1, h2:1, h3:1, h4:3}).
-NO in-sample runs exist yet. Next session's job: SERIAL single-file testing in
-order H1 → H2 → H3 (local-data-ready), then H4 once its dataset is acquired and
-hash-locked.
+Wave-1 outcome: H1 FAIL / H2 FAIL / H3 FAIL — all honest, ledgered in §4.
+H4 DEFERRED pending dataset hash-lock. Incumbent `us_momentum_top5` remains
+canonical until beaten under rules.
 
-1. **H1 Mega-cap-only momentum top5** — PREREGISTERED
-   `docs/data/wave1_h1_megacap_momentum_prereg.md`. Universe A verbatim
-   (AAPL MSFT GOOGL AMZN NVDA META TSLA JPM V JNJ WMT MA UNH XOM DIS); rule/
-   costs byte-identical to us_momentum_top5.yaml; descriptive passive control.
-2. **H2 Regime-conditioned momentum** — PREREGISTERED
-   `docs/data/wave1_h2_fred_regime_momentum_prereg.md`. RISK_ON ⇒ invested else
-   cash; point-in-time branch A/B pre-declared (verify generator before run;
-   unverifiable ⇒ mandatory 5-day lag primary).
-3. **H3 Vol-targeted sizing overlay** — PREREGISTERED
-   `docs/data/wave1_h3_voltarget_overlay_prereg.md`. "Best validated core"
-   resolved to the incumbent us_momentum_top5 AT FREEZE TIME (anti-cherry-pick);
-   m = clamp(0.15/σ̂21d, 0.25, 1.00), no-margin cap.
-4. **H4 Politician-trade replication + Cramer follow-vs-fade pair** —
-   PREREGISTERED `docs/data/wave1_h4_poltrade_cramer_prereg.md` under ONE prereg,
-   both directions tested, gates decide. Scraper engineering vs STOCK Act PTRs /
-   public Cramer records may run in parallel; testing deferred until dataset is
-   hash-locked; power gate <40 events/arm ⇒ INSUFFICIENT_POWER no-op.
+Three new hypotheses PREREGISTERED — frozen specs committed 2026-08-25 at repo
+commit `ddc1fe4` (gate-1 provenance; wave-2 DSR trials charged {w2h1:1, w2h2:1,
+w2h3:1}; h4 carried {h4:3}). NO in-sample runs exist yet. Next session's job:
+SERIAL single-file testing in order W2-H1 → W2-H2 → W2-H3 (all local-data-ready;
+extend the `scripts/wave1_h3_test.py` engine lineage), then H4 once its dataset
+is acquired and hash-locked.
+
+1. **W2-H1 Vol-target sizing DELTA test** — PREREGISTERED
+   `docs/data/wave2_h1_voltarget_delta_prereg.md`. m_t formula byte-identical to
+   wave-1 H3 (zero parameter changes, anti-p-hacking); ALL five statistical
+   gates computed on the paired daily overlay-minus-incumbent delta series;
+   charter bar AND primary Sharpe margin (+0.10) unchanged.
+2. **W2-H2 Drawdown-ratchet sizing DELTA test** — PREREGISTERED
+   `docs/data/wave2_h2_drawdown_ratchet_delta_prereg.md`. Different state
+   variable (own-equity drawdown depth): m_t = clamp(1 - DD_t/0.20, 0.25, 1.00)
+   at month-ends; same paired-delta gate machinery as W2-H1; extra frozen claim:
+   overlay OOS maxDD shallower than -30%.
+3. **W2-H3 Absolute-momentum gate inside Universe A** — PREREGISTERED
+   `docs/data/wave2_h3_absmom_gate_prereg.md`. Six gates verbatim from the
+   wave-1 H1 spec; price-derived gate = EW Universe-A index 12-1 return > 0 at
+   month-end else cash; exec_delay 1 bar on ALL orders including gate flips;
+   no SMA fallback permitted.
+4. **H4 Politician-trade replication + Cramer follow-vs-fade pair** — CARRYOVER,
+   prereg `docs/data/wave1_h4_poltrade_cramer_prereg.md` UNCHANGED. Next session
+   FIRST acquires STOCK Act PTRs + public Cramer records via free endpoints,
+   hash-locks them (SHA-256 recorded in the run artifact), then tests under the
+   frozen spec; <40 events/arm ⇒ INSUFFICIENT_POWER no-op.
 
 ## 7. Data policy — FREE TIER ONLY
 
