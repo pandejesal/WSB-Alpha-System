@@ -32,6 +32,9 @@ sys.path.insert(0, os.path.join(BASE, "scripts"))
 
 import wave1_h3_test as W1  # noqa: E402  (constants + gate machinery, verbatim)
 
+IS_END = W1.IS_END
+OOS_START = W1.OOS_START
+
 OHLCV_DIR = W1.OHLCV_DIR
 RAW_DIR = os.path.join(BASE, "data", "h4_raw")
 OUT_RESULTS = os.path.join(BASE, "docs", "data", "wave1_h4_results.json")
@@ -59,7 +62,7 @@ def sha256_file(path):
     return h.hexdigest()
 
 
-def load_panel(tickers):
+def load_panel(tickers, cal):
     frames = {}
     for t in sorted(set(tickers)):
         p = os.path.join(OHLCV_DIR, f"{t}.csv")
@@ -69,13 +72,12 @@ def load_panel(tickers):
         if df.empty:
             raise SystemExit(f"FAIL-CLOSED: empty OHLCV file for {t}")
         frames[t] = df.set_index("date")["close"].astype(float).sort_index()
-    cal = pd.DatetimeIndex(sorted(set().union(*[s.index for s in frames.values()])))
-    cal = cal[cal <= EVAL_WINDOW_END]
+    missing_bars = int((frames[BENCHMARK].index > cal).sum())
     close_ffill = {t: s.reindex(cal).ffill() for t, s in frames.items()}
-    return cal, close_ffill
+    return close_ffill
 
 
-def build_arm_p_events(local_tickers):
+def build_arm_p_events(cal, local_tickers):
     path = os.path.join(RAW_DIR, "house_transactions_raw.csv")
     if not os.path.isfile(path):
         raise SystemExit("FAIL-CLOSED: house_transactions_raw.csv missing (acquire first)")
@@ -150,6 +152,7 @@ def run_portfolio(events, cal, close_ffill, instrument_of):
     eq_vals = np.full(len(cal), np.nan)
     prev_eq = INIT_EQUITY
     n_bars = len(cal)
+    last_exit_i = -1
     for i in range(n_bars):
         due = [t for t, rec in positions.items() if i - rec["entry_i"] >= HOLD_BARS]
         for t in sorted(due):
@@ -162,6 +165,7 @@ def run_portfolio(events, cal, close_ffill, instrument_of):
             if i - rec["entry_i"] > HOLD_BARS:
                 extended_exits += 1
             cash += rec["shares"] * float(px) * (1.0 - COST)
+            last_exit_i = max(last_exit_i, i)
         if i in by_day:
             for ev in by_day[i]:
                 t = instrument_of(ev)
@@ -188,7 +192,8 @@ def run_portfolio(events, cal, close_ffill, instrument_of):
     eq = pd.Series(eq_vals, index=cal)
     stats = {"skipped_overflow": skipped_overflow,
              "skipped_reentry": skipped_reentry,
-             "extended_exits": extended_exits}
+             "extended_exits": extended_exits,
+             "last_exit_i": int(last_exit_i)}
     return eq, stats
 
 
@@ -200,7 +205,11 @@ def fold_ends_for_span(span):
     return ends
 
 
-def evaluate_arm(name, strat_eq, spy_eq, extra=None):
+def evaluate_arm(name, strat_eq, spy_eq, active_end_i, extra=None):
+    a5_truncated = int(active_end_i) < len(strat_eq) - 1
+    if a5_truncated:
+        strat_eq = strat_eq.iloc[:int(active_end_i) + 1]
+        spy_eq = spy_eq.iloc[:int(active_end_i) + 1]
     r_s = strat_eq.pct_change()
     r_b = spy_eq.pct_change()
     ex = (r_s - r_b).dropna()
@@ -209,9 +218,14 @@ def evaluate_arm(name, strat_eq, spy_eq, extra=None):
     span = ex.index
     is_ex = ex[ex.index <= IS_END]
     oos_ex = ex[ex.index >= OOS_START]
+    is_r_s = r_s[r_s.index <= IS_END]
+    oos_r_s = r_s[r_s.index >= OOS_START]
+    is_r_b = r_b[r_b.index <= IS_END]
+    oos_r_b = r_b[r_b.index >= OOS_START]
     out = {
         "arm": name,
         "span": [str(span[0].date()), str(span[-1].date())],
+        "a5_span_truncated": bool(a5_truncated),
         "n_eval_days": int(len(ex)),
         "n_is_days": int(len(is_ex)), "n_oos_days": int(len(oos_ex)),
         "observed": {
@@ -221,13 +235,28 @@ def evaluate_arm(name, strat_eq, spy_eq, extra=None):
             "oos_sum_net_excess": float(oos_ex.sum()) if len(oos_ex) else None,
         },
         "strategy_metrics": {
-            "is": {"sharpe": W1.sharpe(r_s[r_s.index <= IS_END]),
+            "is": {"sharpe": W1.sharpe(is_r_s),
                    "cagr": W1.cagr(strat_eq[strat_eq.index <= IS_END]),
                    "maxdd": W1.max_dd(strat_eq[strat_eq.index <= IS_END])},
-            "oos": {"sharpe": W1.sharpe(r_s[r_s.index >= OOS_START]),
+            "oos": {"sharpe": W1.sharpe(oos_r_s),
                     "cagr": W1.cagr(strat_eq[strat_eq.index >= OOS_START]),
                     "maxdd": W1.max_dd(strat_eq[strat_eq.index >= OOS_START])},
         },
+        "benchmark_twin_metrics": {
+            "is": {"sharpe": W1.sharpe(is_r_b),
+                   "cagr": W1.cagr(spy_eq[spy_eq.index <= IS_END])},
+            "oos": {"sharpe": W1.sharpe(oos_r_b),
+                    "cagr": W1.cagr(spy_eq[spy_eq.index >= OOS_START])},
+        },
+    }
+    sm, bm = out["strategy_metrics"]["oos"], out["benchmark_twin_metrics"]["oos"]
+    out["charter_bar"] = {
+        "rule": "OOS net CAGR > SPY twin AND OOS net Sharpe > SPY twin (same engine/window/fees)",
+        "cagr_pass": bool(sm["cagr"] > bm["cagr"]),
+        "sharpe_pass": bool(sm["sharpe"] > bm["sharpe"]),
+        "pass": bool(sm["cagr"] > bm["cagr"] and sm["sharpe"] > bm["sharpe"]),
+        "oos_strategy_cagr": sm["cagr"], "oos_spYwin_cagr": bm["cagr"],
+        "oos_strategy_sharpe": sm["sharpe"], "oos_spywin_sharpe": bm["sharpe"],
     }
     if extra:
         out["engine_stats"] = extra
@@ -259,8 +288,13 @@ def main():
     local = {f[:-4].upper() for f in os.listdir(OHLCV_DIR) if f.endswith(".csv")}
     local.discard(BENCHMARK)
 
-    p_events, p_counts = build_arm_p_events(local)
-    c_events, c_counts = build_arm_c_events(local)
+    spy_df = pd.read_csv(os.path.join(OHLCV_DIR, f"{BENCHMARK}.csv"),
+                         parse_dates=["date"])
+    cal = pd.DatetimeIndex(sorted(spy_df["date"].unique()))
+    cal = cal[cal <= EVAL_WINDOW_END]
+
+    p_events, p_counts = build_arm_p_events(cal, local)
+    c_events, c_counts = build_arm_c_events(cal, local)
 
     results = {"generated_note": "wave1_h4 test run; paper-only; gates imported "
                                  "verbatim from scripts/wave1_h3_test.py",
@@ -277,7 +311,11 @@ def main():
             results["provenance"]["house_parse_report"] = json.load(fh)
 
     needed = {BENCHMARK} | {e["ticker"] for e in p_events} | {e["ticker"] for e in c_events}
-    cal, close_ffill = load_panel(needed)
+    close_ffill = load_panel(needed, cal)
+    integrity = {"canonical_calendar": "SPY trading days <= 2026-08-07",
+                 "n_bars": int(len(cal)),
+                 "first": str(cal[0].date()), "last": str(cal[-1].date())}
+    results["integrity"] = integrity
 
     def spy_of(ev):
         return BENCHMARK
@@ -297,13 +335,17 @@ def main():
         sched = sorted(events, key=lambda e: (e["entry_i"], e["ticker"]))
         strat_eq, st = run_portfolio(sched, cal, close_ffill, lambda e: e["ticker"])
         spy_eq, _ = run_portfolio(sched, cal, close_ffill, spy_of)
-        arm.update(evaluate_arm(name, strat_eq, spy_eq, extra=st))
+        active_end_i = st["last_exit_i"]
+        arm.update(evaluate_arm(name, strat_eq, spy_eq, active_end_i, extra=st))
         if name.startswith("P"):
-            arm["verdict"] = ("PASS" if arm["statistical_gates_pass"] else "FAIL")
+            arm["verdict"] = ("PASS" if (arm["statistical_gates_pass"]
+                                         and arm["charter_bar"]["pass"]) else "FAIL")
         else:
-            follow_pass = arm["statistical_gates_pass"]
-            r_s = strat_eq.pct_change()
-            r_b = spy_eq.pct_change()
+            follow_pass = bool(arm["statistical_gates_pass"]
+                               and arm["charter_bar"]["pass"])
+            a5i = int(active_end_i)
+            r_s = strat_eq.iloc[:a5i + 1].pct_change()
+            r_b = spy_eq.iloc[:a5i + 1].pct_change()
             fade_ex = ((r_s - r_b) * -1.0).dropna()
             span = fade_ex.index
             is_f = fade_ex[fade_ex.index <= IS_END]
