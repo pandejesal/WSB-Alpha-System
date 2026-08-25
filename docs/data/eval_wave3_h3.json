@@ -1,0 +1,34 @@
+{
+ "claim": "Wave-3/H3: confining incumbent us_momentum_top5 to turn-of-month windows (-1/+4 TD) beats SPY B&H net on both OOS CAGR and Sharpe and passes all six gates",
+ "family": "wave3_h3_tom_timing",
+ "candidate_id": "wave3_h3",
+ "date": "2026-08-25",
+ "preregistration": "docs/data/wave3_h3_tom_timing_prereg.md (frozen @ 664ed78)",
+ "engine_lineage": "signals byte-identical from scripts/wave1_h3_test.py load_data constants; custom TOM window loop; gates verbatim",
+ "bar_pass": true,
+ "dsr_ledger": {
+  "trials_charged_this_eval": 1
+ },
+ "checks": {
+  "gate2_is_bootstrap_p": 0.218,
+  "gate2_pass": false,
+  "gate3_combinations_failing": 9,
+  "gate3_pass": false,
+  "gate4_pass": false,
+  "gate4_max_fold_share": 1.9989106246695558,
+  "gate5_observed_vs_p95": [
+   0.16055271832421175,
+   0.3054263119051283
+  ],
+  "gate5_pass": false,
+  "charter_bar_pass": true,
+  "windows_completed": 75
+ },
+ "verdict": "FAIL",
+ "diagnosis_note": "charter TRUE but G4 fold concentration extreme (single window share 1.999 of cumulative OOS excess); all statistical gates fail.",
+ "two_lineage_gate_verdict": {
+  "producer": "ox-alpha MAIN inline",
+  "cold_auditor": "pending-dispatch-or-absent-note",
+  "audit_verdict": null
+ }
+}
