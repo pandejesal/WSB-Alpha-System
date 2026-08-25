@@ -1,0 +1,39 @@
+{
+ "claim": "Wave-3/H1: monthly top-5 ranked by 52-week-high proximity beats SPY B&H net on both OOS CAGR and Sharpe and passes all six gates",
+ "family": "wave3_h1_52wh_proximity",
+ "candidate_id": "wave3_h1",
+ "date": "2026-08-25",
+ "preregistration": "docs/data/wave3_h1_52wh_proximity_prereg.md (frozen @ 664ed78)",
+ "engine_lineage": "signal injected into incumbent selection slot; simulate() byte-identical from scripts/wave1_h1_test.py; gates verbatim from scripts/wave1_h3_test.py",
+ "bar_pass": false,
+ "dsr_ledger": {
+  "trials_charged_this_eval": 1,
+  "wave3_trial_budget": {
+   "h1": 1,
+   "h2": 1,
+   "h3": 1,
+   "h4": 1
+  }
+ },
+ "checks": {
+  "gate2_is_bootstrap_p": 0.926,
+  "gate2_pass": false,
+  "gate3_combinations_failing": 53,
+  "gate3_pass": false,
+  "gate4_pass": false,
+  "gate5_observed_vs_p95": [
+   -0.8961578684056342,
+   -0.784024346395629
+  ],
+  "gate5_pass": false,
+  "charter_bar_pass": false,
+  "oos_strategy_sharpe": 0.33858859608042347,
+  "oos_spy_sharpe": 1.3393529422411306
+ },
+ "verdict": "FAIL",
+ "two_lineage_gate_verdict": {
+  "producer": "ox-alpha MAIN inline",
+  "cold_auditor": "pending-dispatch-or-absent-note",
+  "audit_verdict": null
+ }
+}

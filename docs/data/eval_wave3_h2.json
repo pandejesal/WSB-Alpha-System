@@ -1,0 +1,52 @@
+{
+ "claim": "Wave-3/H2: monthly top-5 ranked by residual market-model 12-1 momentum beats SPY B&H net on both OOS CAGR and Sharpe and passes all six gates",
+ "family": "wave3_h2_residual_momentum",
+ "candidate_id": "wave3_h2",
+ "date": "2026-08-25",
+ "preregistration": "docs/data/wave3_h2_residual_momentum_prereg.md (frozen @ 664ed78)",
+ "engine_lineage": "signal injected into incumbent selection slot; simulate() byte-identical from scripts/wave1_h1_test.py; gates verbatim from scripts/wave1_h3_test.py",
+ "bar_pass": true,
+ "dsr_ledger": {
+  "trials_charged_this_eval": 1,
+  "wave3_trial_budget": {
+   "h1": 1,
+   "h2": 1,
+   "h3": 1,
+   "h4": 1
+  }
+ },
+ "checks": {
+  "gate1_prereg_committed_before_testing": {
+   "value": "664ed78 frozen before any run",
+   "pass": true
+  },
+  "gate2_is_bootstrap_p": 0.018,
+  "gate2_pass": true,
+  "gate3_combinations_failing": 0,
+  "gate3_pass": true,
+  "gate4_pass": true,
+  "gate4_max_fold_share": 0.4334158790188962,
+  "gate5_observed_vs_p95": [
+   1.5168727193493678,
+   1.648804904238194
+  ],
+  "gate5_null_mean": 1.5423462699660635,
+  "gate5_pass": false,
+  "charter_bar_pass": true,
+  "oos_strategy_sharpe_cagr": [
+   1.7299636009924408,
+   0.9461907957325071
+  ],
+  "oos_spy_sharpe_cagr": [
+   1.3393529422411306,
+   0.22276084562662835
+  ]
+ },
+ "verdict": "FAIL",
+ "diagnosis_note": "FOURTH independent G5 block-shuffle-null miss of the hunt (W1-H3, W2-H1 delta, W1-H4 Arm P, W3-H2) despite strongest IS+CPCV+WF+charter profile yet; obs above null mean, below p95. Fail-closed: no rescue, no re-tuning.",
+ "two_lineage_gate_verdict": {
+  "producer": "ox-alpha MAIN inline",
+  "cold_auditor": "pending-dispatch-or-absent-note",
+  "audit_verdict": null
+ }
+}
