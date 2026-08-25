@@ -1,0 +1,236 @@
+{
+ "claim": "Wave-1/H4 (Amendment A): (Arm P) US equities PURCHASED per House STOCK Act PTRs, entered at close of first bar >= filing_date+45d, beat SPY buy-and-hold net-of-cost over fixed 90-trading-day holds on BOTH OOS net CAGR and Sharpe AND pass all six gates; (Arm C) Jim Cramer start_long picks show positive (C1) / negative (C2-fade, synthetic inverse-excess, non-deployable) risk-adjusted drift vs SPY over identical holds, at most one direction passing its full chain.",
+ "family": "wave1_h4_poltrade_cramer",
+ "candidate_id": "wave1_h4",
+ "date": "2026-08-25",
+ "preregistration": "docs/data/wave1_h4_poltrade_cramer_prereg.md",
+ "amendments": {
+  "commit": "2abb5b1 (A1-A3) + 5f45a5d (A4,A5), both BEFORE any in-sample run",
+  "summary": "A1 House-only (Senate eFD 403-blocks machine); A2 Arm C window truncated to 2024-12-31; A3 long-side-only universe; A4 provenance/hash-lock rules; A5 per-arm evaluation-span rule"
+ },
+ "engine_lineage": "scripts/wave1_h4_test.py; gates + stochastic machinery imported VERBATIM from scripts/wave1_h3_test.py (seeds 7/1000 draws unchanged); canonical calendar = SPY trading days <= 2026-08-07",
+ "runs": {
+  "run_1_voided_for_span_padding": {
+   "artifact": "docs/data/wave1_h4_results_run1_spanpadding_deviation.json",
+   "deviation": "executed before A5 truncation was implemented: Arm C evaluated through 2026-08-07 with ~370 zero-return dead days; Arm P carried one extra bar (1909 vs 1908 days)",
+   "consequence": "Arm P G3 flipped PASS->FAIL under corrected span (conservative direction); all arm-level verdicts FAIL in both runs; superseded by run_2",
+   "disclosure": "auditor finding: 'no verdict changed' is true at ARM level only, not gate level"
+  },
+  "run_2_authoritative": {
+   "artifact": "docs/data/wave1_h4_results.json",
+   "determinism_check": "Arm P G2 p=0.022 and G4 max_fold_share=0.46036213825028766 reproduce run-1 bit-exactly"
+  }
+ },
+ "provenance": {
+  "house_source": "official House Clerk FD.xml index (FilingType=P) -> ptr-pdfs/{publication-year}/{DocID}.pdf with adjacent-year fallback; retrieved 2026-08-25",
+  "cramer_source": "andreskull/cramer-mad-money-research @ public-main 03e33c61 (CC-BY-4.0), signal-level cramer_snapshot_full.csv",
+  "hashes_sha256": {
+   "house_transactions_raw.csv": "e4809c86782a7267ac3190eaf0de41bb4219ce890100f5e06a242b2af0fd8a43",
+   "house_ptr_filings.csv": "176ee037022b7c647fda9b0f0cb5a69b59527425a1a7777c00b05c5842480414",
+   "house_parse_report.json": "86c74d15354063c8e7c58733a24c1f16bf7331196a7245e53913f35b21079b83",
+   "cramer_snapshot_full.csv": "adb9eadcdb536234b6a40ebbe6b47af3e31040664b53af08696db5fb5e681634"
+  },
+  "acquisition_coverage": {
+   "generated_note": "consolidated: main acquisition run 2026-08-25 + recovery pass (smoke-12 refetch, http_error retries with adjacent-year folder fallback)",
+   "source_base": "https://disclosures-clerk.house.gov/public_disc",
+   "retrieved": "2026-08-25",
+   "eligible_filings": 4667,
+   "status_counts_total": {
+    "fetched": 3736,
+    "parse_empty": 103,
+    "image_only": 823,
+    "http_error": 5
+   },
+   "transactions_extracted": 39157,
+   "transactions_confident_ticker": 33898,
+   "purchase_rows_confident": 16326,
+   "unpublished_index_entries_no_pdf_any_year": [
+    "8216835",
+    "8219061",
+    "8219062",
+    "8219906",
+    "8221334"
+   ],
+   "per_year_manifest": {
+    "2018": {
+     "filings": 157,
+     "fetched": 96,
+     "parse_empty": 4,
+     "image_only": 56,
+     "http_error": 1
+    },
+    "2019": {
+     "filings": 683,
+     "fetched": 502,
+     "parse_empty": 18,
+     "image_only": 162,
+     "http_error": 1
+    },
+    "2020": {
+     "filings": 733,
+     "fetched": 545,
+     "parse_empty": 52,
+     "image_only": 134,
+     "http_error": 2
+    },
+    "2021": {
+     "filings": 680,
+     "fetched": 558,
+     "parse_empty": 7,
+     "image_only": 115,
+     "http_error": 0
+    },
+    "2022": {
+     "filings": 624,
+     "fetched": 502,
+     "parse_empty": 3,
+     "image_only": 119,
+     "http_error": 0
+    },
+    "2023": {
+     "filings": 460,
+     "fetched": 381,
+     "parse_empty": 7,
+     "image_only": 72,
+     "http_error": 0
+    },
+    "2024": {
+     "filings": 451,
+     "fetched": 389,
+     "parse_empty": 5,
+     "image_only": 56,
+     "http_error": 1
+    },
+    "2025": {
+     "filings": 515,
+     "fetched": 444,
+     "parse_empty": 5,
+     "image_only": 66,
+     "http_error": 0
+    },
+    "2026": {
+     "filings": 364,
+     "fetched": 319,
+     "parse_empty": 2,
+     "image_only": 43,
+     "http_error": 0
+    }
+   }
+  }
+ },
+ "bar_pass": false,
+ "dsr_ledger": {
+  "trials_charged_this_eval": {
+   "arm_P_house_follow": 1,
+   "arm_C_cramer_pair_both_directions": 2
+  },
+  "h4_budget_at_freeze": {
+   "h4": 3
+  },
+  "budget_consumed": true,
+  "note": "Trials charged per prereg section 4 regardless of outcome; both directions of Arm C counted."
+ },
+ "checks": {
+  "power_gate": {
+   "threshold_min_events": 40,
+   "arm_P_admitted": 8163,
+   "arm_C_admitted": 6251,
+   "pass": true,
+   "note": "both arms admitted post-dedup/post-incomplete-drop; slot-constrained execution is spec-declared (max 10 open, FCFS deterministic)"
+  },
+  "gate2_is_stationary_bootstrap_p_le_0_05": {
+   "value": 0.022,
+   "bar": "<= 0.05 (borderline = FAILURE)",
+   "is_mean_daily_net_excess": 0.0007928187799973251,
+   "pass": true
+  },
+  "gate3_cpcv_all_combinations_positive": {
+   "combinations_failing": 1,
+   "combination_count": 62,
+   "worst_combination_mean_net_excess": -6.71548212952655e-05,
+   "pass": false
+  },
+  "gate4_walk_forward_expanding_folds": {
+   "min_cum_sharpe": 0.18333197542955798,
+   "max_incremental_fold_share": 0.46036213825028766,
+   "share_cap": 0.6,
+   "fold_ends_used": [
+    "2024-06-30",
+    "2024-12-31",
+    "2025-06-30",
+    "2025-12-31",
+    "2026-08-06"
+   ],
+   "pass": true
+  },
+  "gate5_permutation_null_survival": {
+   "observed_oos_ann_sharpe_net_excess": 1.1545373963383287,
+   "null_p95": 1.2154374993194357,
+   "null_mean": 1.1198675259052155,
+   "method": "circular block shuffle (multiset-preserving permutation), observed annualized net-excess Sharpe vs null p95",
+   "pass": false
+  },
+  "fade_arm_C2_synthetic_inverse_excess": {
+   "non_deployable_note": "synthetic inverse-excess; NON-DEPLOYABLE as cash account (declared prereg \u00a73); signal validation only",
+   "span": [
+    "2019-01-03",
+    "2025-02-19"
+   ],
+   "G2_p_value": 0.138,
+   "G3_combinations_failing": 59,
+   "G4_min_cum_sharpe": -0.6449332157779394,
+   "G5_observed_vs_p95": [
+    -0.2346051851494402,
+    0.017910701697141145
+   ],
+   "pass": false
+  },
+  "charter_bar_oos_cagr_and_sharpe_gt_spy_twin": {
+   "arm_P": {
+    "strategy_oos_sharpe": 1.2095723444183493,
+    "spy_twin_oos_sharpe": 1.3652514544298209,
+    "cagr_strategy_vs_twin": [
+     0.18603046305072368,
+     0.021282647985254588
+    ],
+    "pass": false
+   },
+   "arm_C": {
+    "strategy_oos_sharpe": 0.3661490181998859,
+    "spy_twin_oos_sharpe": 1.8218412818230718,
+    "cagr_strategy_vs_twin": [
+     0.05001955848845996,
+     0.024029670845284068
+    ],
+    "pass": false
+   },
+   "note": "SPY twin = identical event schedule/slots/costs invested in SPY (signal-date-aligned legs per prereg); both arms fail the Sharpe leg",
+   "pass": false
+  },
+  "gate6_dsr_ledger_entry": {
+   "value": "this document; trials charged as declared; verdict FAIL all arms",
+   "pass": false
+  }
+ },
+ "verdicts": {
+  "arm_P_house_ptr_follow": "FAIL",
+  "arm_C1_cramer_follow": "FAIL",
+  "arm_C2_cramer_fade_nondeployable": "FAIL"
+ },
+ "two_lineage_gate_verdict": {
+  "producer": "ox-alpha MAIN inline (builder seat absorbed per \u00a711.5 after ACCEPTANCE/SCOPE dispatch gates)",
+  "cold_auditor": "nemotron-3-ultra-free lineage, read-only skeptic audit",
+  "audit_verdict": "AGREE",
+  "per_arm": [
+   "AGREE_FAIL",
+   "AGREE_FAIL",
+   "AGREE_FAIL"
+  ],
+  "audit_findings_incorporated": [
+   "run-1 padded BOTH arms (C ~370 bars, P one bar); P-G3 flip disclosed above",
+   "A5 flatten prediction '~April 2025' vs actual last exit 2025-02-19 (max-10 FCFS exhaustion) - benign",
+   "slot utilization thin by design: ~201/8163 (P) and ~170/6251 (C) admitted events open positions under declared max-10 FCFS slots; twin-symmetric",
+   "'deduped_events' label = post-dedup AND post-incomplete-drop admitted count"
+  ]
+ }
+}
