@@ -246,8 +246,24 @@ def main() -> int:
             text_chars = 0
             pdf_sha = ""
             n_tx = 0
+            url_year = row["year"]
             try:
-                data = http_get(url)
+                data = None
+                try:
+                    data = http_get(url)
+                except RuntimeError:
+                    for alt in (url_year - 1, url_year + 1):
+                        try:
+                            data = http_get(
+                                f"{BASE}/ptr-pdfs/{alt}/{row['docid']}.pdf")
+                            url_year = alt
+                            break
+                        except RuntimeError:
+                            continue
+                    if data is None:
+                        raise RuntimeError(
+                            f"no PDF under years "
+                            f"{url_year - 1}/{url_year}/{url_year + 1}")
                 pdf_sha = hashlib.sha256(data).hexdigest()
                 reader = PdfReader(io.BytesIO(data))
                 text = "\n".join((p.extract_text() or "") for p in reader.pages)
