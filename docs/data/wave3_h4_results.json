@@ -1,0 +1,237 @@
+{
+  "generated_note": "wave3_h4 test; paper-only; overnight capture on incumbent basket; PRE-RUN DISAMBIGUATION declared in module docstring",
+  "prereg_frozen_commit": "664ed78",
+  "signal_spec": {
+    "name": "overnight_capture",
+    "entry": "close of first trading day of ISO week (at that close)",
+    "exit": "open of last trading day of same ISO week"
+  },
+  "arms": {
+    "strategy_overnight_incumbent": {
+      "is": {
+        "sharpe": 0.7575373243205787,
+        "cagr": 0.19951948059480618,
+        "maxdd": -0.4171036059221308
+      },
+      "oos": {
+        "sharpe": 1.37271383689148,
+        "cagr": 0.7167078584821844,
+        "maxdd": -0.41572615585472683
+      },
+      "engine": {
+        "weeks_entered": 323,
+        "weeks_skipped_single_day_or_gap": 0
+      }
+    },
+    "spy_benchmark": {
+      "is": {
+        "sharpe": 0.4927225743319522,
+        "cagr": 0.0648656829528611,
+        "maxdd": -0.27467407077507466
+      },
+      "oos": {
+        "sharpe": 1.0165506033830845,
+        "cagr": 0.1623871115267319,
+        "maxdd": -0.1928547419955745
+      }
+    }
+  },
+  "charter_bar": {
+    "rule": "OOS net CAGR and Sharpe both > SPY same-engine",
+    "pass": true
+  },
+  "gates": {
+    "G2_is_bootstrap": {
+      "pass": false,
+      "statistic": 0.000605231371167825,
+      "p_value": 0.224,
+      "threshold": 0.05,
+      "borderline_flag": false,
+      "details": {
+        "method": "two-sided stationary block bootstrap p-value (Hall-Wilson): p = 2*min(P(T*-Tbar >= Tbar), P(T*-Tbar <= Tbar)), T* = bootstrap means",
+        "mean_block_days": 21,
+        "draws": 1000,
+        "seed": 7,
+        "series_len": 1257,
+        "boot_mean_dist": {
+          "mean": 0.0006049491293301207,
+          "std": 0.0004954314191070984
+        }
+      }
+    },
+    "G3_cpcv": {
+      "pass": false,
+      "statistic": 0.0,
+      "threshold": 0.0,
+      "details": {
+        "K": 6,
+        "embargo_days": 10,
+        "combination_semantics": "all non-empty proper subsets of K folds = test sets; embargo purged at train/test edges inside each test fold",
+        "combination_count": 62,
+        "combinations_failing": 1,
+        "worst_combinations": [
+          {
+            "combo": [
+              1
+            ],
+            "mean_net_excess": 0.0
+          },
+          {
+            "combo": [
+              1,
+              3
+            ],
+            "mean_net_excess": 2.016535720683299e-05
+          },
+          {
+            "combo": [
+              3
+            ],
+            "mean_net_excess": 4.1075073236736996e-05
+          },
+          {
+            "combo": [
+              1,
+              3,
+              5
+            ],
+            "mean_net_excess": 0.00020939083961762664
+          },
+          {
+            "combo": [
+              1,
+              5
+            ],
+            "mean_net_excess": 0.000292023621135757
+          }
+        ],
+        "best_combination": {
+          "combo": [
+            6
+          ],
+          "mean_net_excess": 0.0033116449294986997
+        },
+        "evaluated_history": {
+          "n_days": 1909,
+          "start": "2019-01-03",
+          "end": "2026-08-07"
+        }
+      }
+    },
+    "G4_walk_forward": {
+      "pass": true,
+      "statistic": 0.4013923670275245,
+      "threshold": 0.0,
+      "details": {
+        "rule": "expanding-span net-excess Sharpe > 0 in EVERY fold AND max incremental fold share <= 0.60 of cumulative OOS net excess",
+        "min_cum_sharpe": 0.4013923670275245,
+        "max_fold_share": 0.4402762264875718,
+        "max_share_threshold": 0.6,
+        "total_oos_sum_net_excess": 1.2595328121138851,
+        "per_fold_table": [
+          {
+            "fold": 1,
+            "expanding_span": [
+              "2024-01-02",
+              "2024-06-28"
+            ],
+            "cum_n_days": 124,
+            "cum_net_excess_sharpe": 1.5526291854969605,
+            "incremental_segment": [
+              "2024-01-02",
+              "2024-06-28"
+            ],
+            "incremental_n_days": 124,
+            "incremental_sum_net_excess": 0.24625651774378898,
+            "incremental_sharpe_descriptive": 1.5526291854969605,
+            "share_of_cumulative_oos_net_excess": 0.19551417428379217
+          },
+          {
+            "fold": 2,
+            "expanding_span": [
+              "2024-01-02",
+              "2024-12-31"
+            ],
+            "cum_n_days": 252,
+            "cum_net_excess_sharpe": 0.8637170797772659,
+            "incremental_segment": [
+              "2024-07-01",
+              "2024-12-31"
+            ],
+            "incremental_n_days": 128,
+            "incremental_sum_net_excess": 0.040113725246719856,
+            "incremental_sharpe_descriptive": 0.23158757565737156,
+            "share_of_cumulative_oos_net_excess": 0.03184809864492266
+          },
+          {
+            "fold": 3,
+            "expanding_span": [
+              "2024-01-02",
+              "2025-06-30"
+            ],
+            "cum_n_days": 374,
+            "cum_net_excess_sharpe": 0.4013923670275245,
+            "incremental_segment": [
+              "2025-01-02",
+              "2025-06-30"
+            ],
+            "incremental_n_days": 122,
+            "incremental_sum_net_excess": -0.09274439285904212,
+            "incremental_sharpe_descriptive": -0.6150528773414766,
+            "share_of_cumulative_oos_net_excess": -0.07363396329738198
+          },
+          {
+            "fold": 4,
+            "expanding_span": [
+              "2024-01-02",
+              "2025-12-31"
+            ],
+            "cum_n_days": 502,
+            "cum_net_excess_sharpe": 1.0975633995188356,
+            "incremental_segment": [
+              "2025-07-01",
+              "2025-12-31"
+            ],
+            "incremental_n_days": 128,
+            "incremental_sum_net_excess": 0.5113646083276372,
+            "incremental_sharpe_descriptive": 3.222917473891141,
+            "share_of_cumulative_oos_net_excess": 0.40599546388109525
+          },
+          {
+            "fold": 5,
+            "expanding_span": [
+              "2024-01-02",
+              "2026-08-07"
+            ],
+            "cum_n_days": 652,
+            "cum_net_excess_sharpe": 1.246778486694285,
+            "incremental_segment": [
+              "2026-01-02",
+              "2026-08-07"
+            ],
+            "incremental_n_days": 150,
+            "incremental_sum_net_excess": 0.5545423536547811,
+            "incremental_sharpe_descriptive": 1.6586335514242474,
+            "share_of_cumulative_oos_net_excess": 0.4402762264875718
+          }
+        ]
+      }
+    },
+    "G5_permutation_null": {
+      "pass": false,
+      "statistic": 1.246778486694285,
+      "threshold": 1.3415002454064828,
+      "details": {
+        "method": "circular block shuffle (multiset-preserving permutation), observed annualized net-excess Sharpe vs null p95",
+        "block_days": 10,
+        "draws": 1000,
+        "seed": 7,
+        "series_len": 652,
+        "null_mean": 1.2316868817707187,
+        "null_std": 0.07008748338425878
+      }
+    }
+  },
+  "verdict": "FAIL",
+  "gates_all_pass": false
+}

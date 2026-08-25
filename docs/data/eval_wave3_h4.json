@@ -1,0 +1,35 @@
+{
+ "claim": "Wave-3/H4: holding incumbent top-5 basket only overnight (first-TD close to last-TD open weekly) beats SPY B&H net on both OOS CAGR and Sharpe and passes all six gates",
+ "family": "wave3_h4_overnight_capture",
+ "candidate_id": "wave3_h4",
+ "date": "2026-08-25",
+ "preregistration": "docs/data/wave3_h4_overnight_capture_prereg.md (frozen @ 664ed78)",
+ "pre_run_disambiguation": "spec parenthetical (Mon-Thu overnight legs) governs over conflicting exec_delay clause; entry fills AT first-TD close; declared before any run",
+ "engine_lineage": "signals byte-identical from scripts/wave1_h3_test.py load_data; custom ISO-week window loop incl open prices; gates verbatim",
+ "bar_pass": true,
+ "dsr_ledger": {
+  "trials_charged_this_eval": 1
+ },
+ "checks": {
+  "gate2_is_bootstrap_p": 0.224,
+  "gate2_pass": false,
+  "gate3_combinations_failing": 1,
+  "gate3_pass": false,
+  "gate4_pass": true,
+  "gate4_max_fold_share": 0.4402762264875718,
+  "gate5_observed_vs_p95": [
+   1.246778486694285,
+   1.3415002454064828
+  ],
+  "gate5_pass": false,
+  "charter_bar_pass": true,
+  "weeks_entered": 323
+ },
+ "verdict": "FAIL",
+ "diagnosis_note": "FIFTH G5 block-shuffle-null miss of the hunt; charter+G4 pass. Pattern: every mechanism with real IS/CPCV structure lands above null MEAN below null p95.",
+ "two_lineage_gate_verdict": {
+  "producer": "ox-alpha MAIN inline",
+  "cold_auditor": "pending-dispatch-or-absent-note",
+  "audit_verdict": null
+ }
+}
