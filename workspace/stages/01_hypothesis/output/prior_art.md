@@ -40,3 +40,13 @@
   (labels RISK_ON/NEUTRAL/RISK_OFF/STAGFLATION, 2003→2026-08-14), six-gate +
   DSR trial-ledger machinery live.
 - Any IS p ≈ 0.05 is recorded as FAIL, never encouragement.
+
+## Wave-3 batch differentiation (frozen 2026-08-25)
+
+| Candidate | New mechanism | Nearest closed family + why distinct |
+|---|---|---|
+| W3-H1 52wH proximity | salient-anchor level signal (George-Hwang) | TA-rule variants measured rate-of-change; no closure used anchor distance |
+| W3-H2 residual momentum | beta-residualized 12-1 ranking (Blitz et al.), market model from local panel only | incumbent raw momentum = same window, different signal object; not ML, not scoping |
+| W3-H3 TOM timing | calendar-window concentration (-1/+4 TD) on unchanged incumbent signals | closures cover sizing/scoping/regime gates; none conditioned month-turn dates |
+| W3-H4 overnight capture | session-conditioned holding (Mon close→Fri open) | no prior family conditioned intraday-vs-overnight capture |
+| — lanes considered and REJECTED pre-freeze | fundamentals screen: market_data_2019_2026/fundamentals/ EMPTY (PIT impossible); sentiment-ranking: CO_MENTION cache absent (round-1 plumbing lesson); BTC/ETH rotation: overlaps registry btc_vol_target_sma100 + absolute-gate mechanism |
