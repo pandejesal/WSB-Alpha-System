@@ -5,7 +5,7 @@
 > The active session maintains this file (bump version, update ledger/slate) and tells
 > you to re-paste it whenever context runs low or a wave completes.
 
-version: 5 · generated: 2026-08-25 · change: wave-2 results folded into §4 ledger (W2-H1/W2-H2/W2-H3 honest FAIL); deterministic-sizing lane and mega-cap-scoped-core lane CLOSED; §6 replaced with H4-first next slate · superseded-by: —
+version: 6 · generated: 2026-08-25 · change: wave-1 H4 executed end-to-end (Arm P FAIL / C1 / C2 honest FAIL, cold-audited AGREE); politician-follow + Cramer follow/fade lanes closed in §4; Wave-3 batch frozen @ 664ed78 (52wH proximity, residual momentum, TOM timing, overnight capture) · superseded-by: —
 
 ## 0. First actions (before ANY research)
 
@@ -67,25 +67,28 @@ under these rules.
 | Vol-target sizing DELTA (byte-identical m_t), paired-delta gates (Wave-2 W2-H1) | FAIL all delta gates (G2 p=0.102, G3 60/62, G4 cum −2.67, G5 −1.46<p95); charter+primary pass; mean delta NEGATIVE both segments | `docs/data/eval_wave2_h1.json` |
 | Drawdown-ratchet sizing DELTA m=clamp(1−DD/0.20,.25,1), paired-delta gates (Wave-2 W2-H2) | FAIL G3 61/62, G4 cum −3.53, G5 −1.62<p95; G2 p=0.04 passes NEGATIVELY (significant harm); primary fails margin −0.23 | `docs/data/eval_wave2_h2.json` |
 | Absolute-momentum gate inside Universe A, 12-1 EW-A index >0 else cash (Wave-2 W2-H3) | FAIL all gates incl. CHARTER (Sharpe 1.09 vs SPY 1.34; G2 p=0.426, G4 fold-share 2.94, G5 below null mean); loses to passive EW-A buy-and-hold | `docs/data/eval_wave2_h3.json` |
+| House STOCK-Act PTR purchase-follow, filing+45d entry, 90-bar holds, max-10 slots (Wave-1 H4 Arm P) | FAIL: G2 p=0.022 PASS + G4 PASS (share .46) but G3 1/62 neg, G5 obs 1.155 < null p95 1.215 (block-shuffle luck), charter Sharpe 1.21 < SPY-twin 1.37 | `docs/data/eval_wave1_h4.json` |
+| Cramer long-side pick follow (C1) vs synthetic fade (C2), air-date T+1, 90-bar holds (Wave-1 H4 Arms C1/C2, Kull set truncated 2024-12) | FAIL all gates BOTH directions (C1 G2 p=0.138, G4 fold-share .863; C2 mirror-fails) | `docs/data/eval_wave1_h4.json` |
 
 Standing rule: any hypothesis overlapping a listed family must cite that failure and
-name its CHANGED CONDITIONS in `prior_art.md`. CLOSED LANES after wave-2:
+name its CHANGED CONDITIONS in `prior_art.md`. CLOSED LANES after wave-1 H4:
 (1) exits (H-SLX-1); (2) absolute-excess forms of universe scoping / macro gating /
-sigma-state sizing (wave-1); (3) DETERMINISTIC SIZING ENTIRELY — W2-H1 vol-state and
-W2-H2 drawdown-state BOTH failed paired-delta gates; the overlay Sharpe edge is
-purchased purely with variance reduction at negative mean increment. Reopening
-requires genuinely new data or a new mechanism, not new statistics on these arms;
-(4) MEGA-CAP-SCOPED-CORE ENTIRELY — bare scoping (H1), macro-label gating (H2), and
-price-derived gating (W2-H3) all tested-and-failed.
+sigma-state sizing (wave-1); (3) DETERMINISTIC SIZING ENTIRELY (W2-H1+W2-H2);
+(4) MEGA-CAP-SCOPED-CORE ENTIRELY (H1/H2/W2-H3); (5) POLITICIAN-TRADE FOLLOW —
+House PTR purchase-follow tested-and-failed; Senate never tested (eFD 403-blocks
+the acquisition machine as of 2026-08-25) — reopening requires working Senate
+access or a genuinely different mechanism on these datasets, not re-priced
+horizons/entries; (6) CRAMER DIRECTIONAL FOLLOW/FADE on long-side picks through
+2024-12 — reopening requires post-2024 free pick data or a structurally different
+conditioning, and any variant MUST cite the failed pair.
 
-Wave-1→2 diagnosis (mine this): under the dominant 2024–26 drift regime, ANY long-biased
-path's absolute OOS excess sits inside its own block-shuffle null, and sizing overlays
-buy their total-path Sharpe edge with variance reduction while sacrificing expected
-return day-by-day — paired-delta gates expose this cleanly (both wave-2 sizing deltas
-were negative in IS *and* OOS). Price/regime gates on a drift-dominated universe flip
-rarely (W2-H3 ON 84% of months) and cost more than they protect. Remaining open lanes:
-NEW DATA ONLY — H4 politician/Cramer carryover; future waves must originate from
-free-tier data sources outside every closed family or genuinely new mechanisms.
+Wave-1→3 diagnosis (mine this): under the dominant 2024–26 drift regime, ANY long-biased
+path's absolute OOS excess sits inside its own block-shuffle null (now THREE
+independent G5 misses: W1-H3, W2-H1 delta, W1-H4 Arm P despite 8k+ events), and
+event-study portfolios under max-10 FCFS slots exercise only ~200 of admitted
+events. Open lanes remain: NEW DATA or genuinely NEW MECHANISMS (signal-object,
+session-timing, calendar-timing) — Wave-3 tests four such mechanisms on local
+data only.
 
 ## 5. Wave protocol (rolling)
 
@@ -96,32 +99,38 @@ free-tier data sources outside every closed family or genuinely new mechanisms.
 - Failures feed the next wave's slate. Never tune post hoc — a new idea is a new
   preregistration with declared changed conditions.
 
-## 6. Wave boundary slate (status @ v5)
+## 6. Wave boundary slate (status @ v6)
 
-Wave-2 outcome: W2-H1 FAIL / W2-H2 FAIL / W2-H3 FAIL — all honest, ledgered in §4.
-Deterministic-sizing lane CLOSED; mega-cap-scoped-core lane CLOSED.
-Incumbent `us_momentum_top5` remains canonical until beaten under rules
-(OOS CAGR 95.1% / Sharpe 1.77 vs SPY 1.34 in-engine).
+Wave-1 H4 outcome: Arm P FAIL / C1 FAIL / C2 FAIL — honest, ledgered in §4;
+politician-follow and Cramer follow/fade lanes closed. Wave-1 slate fully
+executed: H1/H2/H3/H4 all FAIL. Incumbent `us_momentum_top5` remains canonical
+until beaten under rules (OOS CAGR 95.1% / Sharpe 1.77 vs SPY 1.34 in-engine).
+
+Wave-3 batch FROZEN @ commit `664ed78` — four preregs in `docs/data/`, ZERO
+in-sample runs executed:
+
+1. **W3-H1** `wave3_h1_52wh_proximity_prereg.md` — 52-week-high proximity top-5
+   monthly core (George-Hwang anchor mechanism).
+2. **W3-H2** `wave3_h2_residual_momentum_prereg.md` — residual (market-model,
+   SPY-beta-stripped) 12-1 momentum top-5 core (Blitz-Huij-Martens).
+3. **W3-H3** `wave3_h3_tom_timing_prereg.md` — turn-of-month (-1/+4 TD)
+   execution-timing concentration on unchanged incumbent signals.
+4. **W3-H4** `wave3_h4_overnight_capture_prereg.md` — overnight-session capture
+   (first-TD close → last-TD open) on the incumbent basket (Lou-Polk-Skouras).
 
 Next session's job, IN ORDER:
 
-1. **H4 Politician-trade replication + Cramer follow-vs-fade pair** — CARRYOVER,
-   prereg `docs/data/wave1_h4_poltrade_cramer_prereg.md` UNCHANGED, trials {h4:3}.
-   FIRST acquire STOCK Act PTRs + public Cramer records via free endpoints,
-   hash-lock them (SHA-256 recorded in the run artifact), then test under the
-   frozen spec; <40 events/arm ⇒ INSUFFICIENT_POWER no-op (recorded honestly).
-2. **Draft the Wave-3 batch** (4–6 preregs, committed before any testing) ONLY
-   from open lanes: new free-tier data (§7 pre-authorized list) or genuinely new
-   mechanisms that cite every overlapping §4 family + changed conditions in
-   `prior_art.md`. Do NOT propose: sizing overlays on momentum cores, gates or
-   scoping on mega-cap cores, ML overlays/exits, RSI(2), SMA-regime variants —
-   all closed. Promising directions for drafting: cross-sectional event studies
-   on the NEW datasets themselves (PTR filings, Cramer picks), sentiment-pipeline
-   derivatives not yet tested, crypto OHLCV structures, fundamentals-based
-   selection universes disjoint from momentum ranking.
+1. Run §0 law chain; verify wave-3 preregs frozen @ `664ed78`.
+2. Build test scripts reusing gate machinery verbatim (import from
+   `scripts/wave1_h3_test.py`; event-window patterns from `scripts/wave1_h4_test.py`
+   where timing windows need custom masks). Commit each script BEFORE its first run.
+3. Test serially W3-H1 → W3-H2 → W3-H3 → W3-H4; record every verdict honestly;
+   DSR trials {h1:1, h2:1, h3:1, h4:1}; cold-auditor second lineage per §11.5.
+4. At boundary: fold results into §4, close/annotate lanes, regenerate this file.
 
-Wave-2 engine lineage available for reuse: `scripts/wave2_h{1,2,3}_test.py`
-(import gate machinery verbatim; never re-implement stochastic code).
+Rejected pre-freeze lanes (do NOT resurrect without new evidence): fundamentals
+screen (local PIT data absent), sentiment-ranking core (CO_MENTION cache absent),
+BTC/ETH rotation (overlaps registry + absolute-gate mechanism).
 
 ## 7. Data policy — FREE TIER ONLY
 
