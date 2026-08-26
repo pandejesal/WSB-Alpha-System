@@ -5,7 +5,7 @@
 > The active session maintains this file (bump version, update ledger/slate) and tells
 > you to re-paste it whenever context runs low or a wave completes.
 
-version: 7 · generated: 2026-08-25 · change: wave-3 executed same-session (all four honest FAIL; W3-H2 closest-ever G2+G3+G4+charter pass killed by G5 alone); §4 +4 rows and 4 lane closures; G5-calibration question surfaced as OPERATOR decision item in §6 · superseded-by: —
+version: 8 · generated: 2026-08-26 · change: OPERATOR GRILL RULINGS recorded (vault 03-Decisions/2026-08-26-grill-rulings.md): Q1 G5 dual-track — binding verbatim + mandatory non-binding diag_g5_residual field; Q2 Nemotron auditor rehearsal HARD-GATES wave-4 testing; Q3 wave-4 frontier = sentiment rebuild ONLY; Q4 paper-months SPY-excess ledger dispatched to Jules pre-Sept-1; Q5 six stale upstream PRs closed (#159 #166 #172 #173 #176 #177); Q6 §5 amended: minimum 2 hypotheses when frontier-constrained · superseded-by: —
 
 ## 0. First actions (before ANY research)
 
@@ -104,6 +104,9 @@ fail-closed.
   (`docs/data/<id>_prereg.md` + `workspace/stages/01_hypothesis/output/{hypothesis_brief.yaml,prior_art.md}`),
   committed before testing, tested serially, every result ledgared honestly
   (HONEST_NO_OP if nothing passes).
+  **OPERATOR AMENDMENT 2026-08-26:** minimum 2 hypotheses when genuinely
+  frontier-constrained. Fewer trials = smaller Deflated-Sharpe penalty; never pad
+  slates with near-duplicate variants.
 - Failures feed the next wave's slate. Never tune post hoc — a new idea is a new
   preregistration with declared changed conditions.
 
@@ -116,17 +119,47 @@ Incumbent `us_momentum_top5` remains canonical until beaten under rules
 
 Next session's job, IN ORDER:
 
-1. Run §0 law chain; surface the §4 G5-CALIBRATION QUESTION to the operator and
-   record their ruling in `03-Decisions/` BEFORE drafting anything:
-   - Option A: keep G5 verbatim (hunt continues; expect more null-luck misses);
-   - Option B: amend G5 for trending regimes (e.g., compare against a
-     drift-matched null or report p-value instead of p95 survival) — requires an
-     explicit, dated, versioned amendment to §3 by the OPERATOR, never an agent;
-   - Option C: pause the hunt; confirm incumbent via paper track instead.
-2. If hunting continues: draft Wave-4 batch ONLY from genuinely new data lanes
-   (§7 list minus everything closed) — the local-price mechanism space is now
-   heavily mined; new free DATA is the highest-value frontier.
-3. Any candidate overlapping §4 rows must cite them + name changed conditions.
+1. Run §0 law chain. RULINGS ALREADY RECORDED — do NOT re-surface them (vault
+   `03-Decisions/2026-08-26-grill-rulings.md`); summarized:
+   - **Q1 G5 DUAL-TRACK:** binding G5 stands VERBATIM and fail-closed forever until
+     an explicit dated operator amendment. Every future eval_<id>.json ADDITIONALLY
+     records a NON-BINDING diagnostic `diag_g5_residual = {obs_resid, p95_resid,
+     obs_ge_p95}`: recompute the SAME statistic on market-model residualized daily
+     returns `r_res(t) = r_strat(t) − β·r_spy(t)` (β OLS full-window; per expanding
+     fold if the statistic is fold-based), circular-block shuffle with IDENTICAL
+     block length. One spec, no variants. All 11 wave FAILs STAND AS RECORDED; the
+     diagnostic applies to NEW preregs only.
+   - **Q2 AUDITOR REHEARSAL FIRST:** before ANY wave-4 prereg test executes,
+     restart opencode (swarm upgrade pending since 2026-08-25) and rehearse the
+     Nemotron cold-auditor lane end-to-end: cold-read `docs/data/eval_wave3_h2.json`,
+     return a structured AGREE/DISAGREE verdict. Rehearsal failure blocks ALL
+     wave-4 testing (builder keeps FAIL-only recording).
+   - **Q6 WAVE SIZING:** 4–6 hypotheses when frontiers allow; minimum 2 when
+     genuinely frontier-constrained (dated amendment in §5).
+2. **STRAY-WORK TRIAGE (discovered 2026-08-26 audit, pre-drafts):** the working tree
+   carries UNCOMMITTED hedge-fund-sweep artifacts dated 2026-08-25 (modified
+   `src/ops/signals.py` +268 lines: factor_momentum/quality_low_vol/donchian_breakout/
+   cta_trend_ensemble/pead_quality handlers; `docs/data/cycle{6..11}_prereg_*.md`;
+   5 `strategies/*.yaml`; `scripts/eval_new_specs.py`;
+   `docs/research/{ALPHA_DECAY_AND_SENTIMENT_SIGNALS,hedge-fund-indicators-2026-08-25}.md`;
+   `docs/data/wave3_eval_results.json`). All four attempted gate runs ERRORED
+   ('dict' object has no attribute 'empty'; missing beats_spy_sharpe key) — ZERO valid
+   results. Preregs were never committed ⇒ G1 violated by construction. Do NOT inherit
+   or delete silently: create a dedicated branch (e.g. `stray-sweep-review-20260826`),
+   move these artifacts onto it, restore main tree clean, then proceed. Their ideas may
+   re-enter hunting ONLY via fresh committed preregs citing changed conditions.
+3. **Q3 SENTIMENT-CORPUS REPAIR (authorized frontier):** run
+   `market_data_2019_2026/tools/news_redo.py` to replace the empty news harvest
+   (0 articles since v1); rebuild the CO_MENTION cache. NOT authorized: Senate PTR
+   acquisition via GitHub Actions; crypto rotation stays closed per wave-3 freeze.
+4. Draft the wave slate ONLY from sentiment families on the rebuilt corpus, citing
+   prior art honestly: cycle-1 sentiment overlays (SPY-timing threshold filters,
+   eval_sentiment_overlay*.json all FAIL) are NOT this family — cross-sectional
+   ranking on a rebuilt corpus is declared changed conditions in `prior_art.md`,
+   alongside any applicable §4 rows.
+5. Paper bookkeeping (Q4: `docs/data/ops/paper_months.jsonl` w/ strategy + SPY net
+   returns, absolute-green AND excess-green flags) is DISPATCHED TO JULES separately;
+   do not duplicate inline unless Jules is unavailable past Sept 1.
 
 Engine lineage available: `scripts/wave1_h3_test.py` (gate machinery + baseline
 simulate), `scripts/wave1_h4_test.py` (event-study pattern),
