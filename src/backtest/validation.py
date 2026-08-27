@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
+from src.gs_compat.calendar import business_day_offset
+
 logger = logging.getLogger(__name__)
 import yfinance as yf
 from tqdm import (
@@ -156,7 +158,7 @@ def run_walk_forward_test(posts_df, stock_dfs, spy_close):
     windows = []
     current_start = start_date
     while current_start < end_date:
-        window_end = current_start + timedelta(days=90)
+        window_end = pd.to_datetime(business_day_offset(current_start, 90))
         windows.append((current_start, window_end))
         current_start = window_end
 
