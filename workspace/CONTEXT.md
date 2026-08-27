@@ -20,3 +20,7 @@ registry-ready strategy export, with human review at every boundary.
 - Backtest wrapper: `scripts/run_backtest.py` (delegates to repo's evaluate_candidate.py)
 
 Stages run strictly in order 01→02→03→04 for a given run. Never skip 03.
+
+## Definitions (Glossary)
+- **TradingDay**: A business day on the exchange (NYSE by default), excluding weekends and exchange holidays. Used instead of calendar days to align with actual market hours.
+- **Window**: A span of `n` consecutive TradingDays. Used for rolling calculations and backtest walk-forward folding.
