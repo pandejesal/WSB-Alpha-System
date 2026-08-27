@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from src.gs_compat.calendar import business_day_offset
 from src.risk.fred_macro_provider import FredMacroProvider
 
 
@@ -48,7 +49,7 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
             continue
         df = ticker_frames[ticker]
 
-        exec_date = pd.to_datetime(post_date) + pd.tseries.offsets.BDay(1)
+        exec_date = pd.to_datetime(business_day_offset(post_date, 1))
         exec_date = exec_date.normalize()
 
         pos = int(np.searchsorted(ticker_date_arrays[ticker], np.datetime64(exec_date)))
