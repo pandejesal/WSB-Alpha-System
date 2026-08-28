@@ -430,3 +430,45 @@ def test_resolve_edge_claim_priority_and_fallback():
     assert _resolve_edge_claim({"family": "no_such_family"}) == "Default claim"
     # Empty spec also falls back.
     assert _resolve_edge_claim({}) == "Default claim"
+
+# Branch tests — merged (simpler synthetic helpers)
+def test_build_signal_posts_ta_rules_ema_cross():
+    from scripts.evaluate_candidate import build_signal_posts
+    combined, _, _, _ = create_synthetic_data(tickers=["T1"], rows=250)
+    combined['Close'] = 150.0
+    combined.loc[:229, 'Close'] = 100.0
+    combined.loc[230:, 'Close'] = 120.0
+    spec = {
+        "family": "ta_rules",
+        "parameters": {"ema_fast": 2, "ema_slow": 5, "sma_window": 10},
+        "signal": {"entry": "ema_cross"}
+    }
+    posts_df = build_signal_posts(spec, combined, ["T1"])
+    assert not posts_df.empty
+    assert "ticker" in posts_df.columns
+
+def test_build_signal_posts_sentiment_overlay():
+    from scripts.evaluate_candidate import build_signal_posts
+    combined, _, _, _ = create_synthetic_data(tickers=["T1"], rows=100)
+    combined['Close'] = 100.0
+    combined.loc[50:, 'Close'] = 110.0
+    spec = {
+        "family": "sentiment_overlay",
+        "parameters": {"window": 20}
+    }
+    posts_df = build_signal_posts(spec, combined, ["T1"])
+    assert not posts_df.empty
+    assert posts_df["sentiment_score"].iloc[0] == 0.5
+
+def test_build_signal_posts_xgboost_exits():
+    from scripts.evaluate_candidate import build_signal_posts
+    combined, _, _, _ = create_synthetic_data(tickers=["T1", "T2"], rows=200)
+    combined.loc[combined['Ticker'] == 'T1', 'Close'] = np.linspace(100, 200, len(combined[combined['Ticker'] == 'T1']))
+    combined.loc[combined['Ticker'] == 'T2', 'Close'] = np.linspace(200, 100, len(combined[combined['Ticker'] == 'T2']))
+    spec = {
+        "family": "xgboost_exits",
+        "parameters": {"lookback_days": 20, "skip_days": 5, "top_n": 1}
+    }
+    posts_df = build_signal_posts(spec, combined, ["T1", "T2"])
+    assert not posts_df.empty
+    assert (posts_df['ticker'] == 'T1').all()
