@@ -116,6 +116,12 @@ def test_do_run(mock_load_registry, mock_freeze, mock_datetime, tmp_path):
 
     mock_freeze.assert_called_once()
 
+    # check if session log got updated
+    with open(out_dir / "session_log.yaml") as f:
+        log_data = yaml.safe_load(f)
+        assert "prereg_frozen_at" in log_data
+        assert "prereg_cycle_id" in log_data
+
 @mock.patch("scripts.hunt_runner.datetime")
 @mock.patch("scripts.hunt_runner.preregistration.freeze_preregistration")
 @mock.patch("scripts.hunt_runner.strategy_registry.load_registry")
@@ -147,9 +153,13 @@ def test_do_run_freeze_fails_aborts(mock_load_registry, mock_freeze, mock_dateti
 
     assert e.value.code == 2
 
-    # Verify session log does NOT exist
+    # Verify session log DOES exist as a stub, since it's written before freeze in v2
     log_path = out_dir / "session_log.yaml"
-    assert not os.path.exists(log_path)
+    assert os.path.exists(log_path)
+    with open(log_path) as f:
+        log_data = yaml.safe_load(f)
+        assert log_data["status"] == "initialized"
+        assert "prereg_frozen_at" not in log_data
 
     captured = capsys.readouterr()
     assert "Error freezing preregistration: Mocked freeze failure" in captured.out
@@ -186,8 +196,8 @@ def test_do_collect(tmp_path, capsys):
 
     captured = capsys.readouterr()
 
-    assert "[VALID] Spec: valid.yaml" in captured.out
-    assert "[REJECTED] invalid.yaml" in captured.out
+    assert "✅ Valid Spec: valid.yaml" in captured.out
+    assert "❌ Rejected: invalid.yaml" in captured.out
 
     # invalid.yaml should be moved
     assert not os.path.exists(invalid_spec_path)
@@ -211,7 +221,7 @@ def test_do_collect_yaml_error(tmp_path, capsys):
 
     captured = capsys.readouterr()
 
-    assert "[REJECTED] invalid_yaml.yaml" in captured.out
+    assert "❌ Rejected: invalid_yaml.yaml" in captured.out
 
     # file should be moved to rejected/
     assert not os.path.exists(invalid_yaml_path)
@@ -254,11 +264,11 @@ def test_do_collect_non_mapping(tmp_path, capsys):
     captured = capsys.readouterr()
 
     # The loop should process the valid file successfully
-    assert "[VALID] Spec: valid.yaml" in captured.out
+    assert "✅ Valid Spec: valid.yaml" in captured.out
 
     # Both invalid files should be rejected
-    assert "[REJECTED] empty.yaml" in captured.out
-    assert "[REJECTED] scalar.yaml" in captured.out
+    assert "❌ Rejected: empty.yaml" in captured.out
+    assert "❌ Rejected: scalar.yaml" in captured.out
 
     # Valid file remains
     assert os.path.exists(valid_path)
