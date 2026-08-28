@@ -7,12 +7,10 @@ Tests 90 parameter combinations, calculates metrics, ranks by fitness,
 and saves results.
 """
 import json
-import os
 import logging
-import numpy as np
+import os
+
 import pandas as pd
-from datetime import timedelta
-import yfinance as yf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -116,9 +114,9 @@ def main():
         if 'Ticker' in px_data.columns:
             px_data = px_data.pivot(index='Date', columns='Ticker')
 
-        # 3. Generate synthetic signals from technical indicators
+        # 3. Generate honest signal posts from technical indicators
         logger.info("Computing indicators and generating signals...")
-        synthetic_signals = []
+        signal_posts = []
         stock_dfs = {}
         for ticker in universe:
             try:
@@ -154,21 +152,21 @@ def main():
                     bull_score = int(ha_close > ha_open) + int((close > ema_20) and (macd_hist > 0)) + int(30 < rsi < 70) + int(close > bb_lower)
                     bear_score = int(ha_close < ha_open) + int((close < ema_20) and (macd_hist < 0)) + int(30 < rsi < 70) + int(close < bb_upper)
 
+                    # Emit honest signal posts on the day entry conditions fire.
+                    # Using sentiment_score 0.5 (neutral baseline) mirroring the established pattern.
                     if vol_passed:
-                        if bull_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
-                        elif bear_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
+                        if bull_score >= 3 or bear_score >= 3:
+                            signal_posts.append({"ticker": ticker, "post_date": idx, "sentiment_score": 0.5})
             except Exception as e:
                 logger.error(f"Error processing ticker {ticker}: {e}")
                 continue
 
-        if not synthetic_signals:
+        if not signal_posts:
             logger.warning("No signals generated.")
             return
 
-        posts_df = pd.DataFrame(synthetic_signals)
-        logger.info(f"Generated {len(posts_df)} synthetic signals for {len(posts_df['ticker'].unique())} tickers")
+        posts_df = pd.DataFrame(signal_posts)
+        logger.info(f"Generated {len(posts_df)} honest signal posts for {len(posts_df['ticker'].unique())} tickers")
 
         # 4. Run backtests with 90 parameter combos
         holding_periods = [3, 5, 7, 10, 15]

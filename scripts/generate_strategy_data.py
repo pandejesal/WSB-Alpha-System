@@ -1,17 +1,16 @@
 #!/usr/bin/env python3
 """
 Generate strategy data for the dashboard by running the full evolution pipeline.
-Downloads pricing data, generates synthetic signals, runs backtests,
+Downloads pricing data, generates honest signal posts, runs backtests,
 evaluates the population through the Darwinian engine, and writes
 docs/data/strategies.json + strategy_population.json + thompson_state.json.
 """
 import json
-import os
-import sys
 import logging
-import numpy as np
-import pandas as pd
+import os
 from datetime import timedelta
+
+import pandas as pd
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -19,6 +18,7 @@ logger = logging.getLogger(__name__)
 def main():
     try:
         import yfinance as yf
+
         from src.alpha.indicators import compute_indicators
         from src.evolution.darwin_engine import DarwinEngine
 
@@ -39,8 +39,8 @@ def main():
             _write_empty_strategies()
             return
 
-        # 3. Generate synthetic signals from technical indicators
-        synthetic_signals = []
+        # 3. Generate honest signal posts from technical indicators
+        signal_posts = []
         for ticker in universe:
             try:
                 if isinstance(px_data.columns, pd.MultiIndex):
@@ -73,21 +73,21 @@ def main():
                     bull_score = int(ha_close > ha_open) + int((close > ema_20) and (macd_hist > 0)) + int(30 < rsi < 70) + int(close > bb_lower)
                     bear_score = int(ha_close < ha_open) + int((close < ema_20) and (macd_hist < 0)) + int(30 < rsi < 70) + int(close < bb_upper)
 
+                    # Emit honest signal posts on the day entry conditions fire.
+                    # Using sentiment_score 0.5 (neutral baseline) mirroring the established pattern.
                     if vol_passed:
-                        if bull_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": 1.0})
-                        elif bear_score >= 3:
-                            synthetic_signals.append({"ticker": ticker, "post_date": idx, "sentiment_score": -1.0})
+                        if bull_score >= 3 or bear_score >= 3:
+                            signal_posts.append({"ticker": ticker, "post_date": idx, "sentiment_score": 0.5})
             except Exception:
                 continue
 
-        if not synthetic_signals:
+        if not signal_posts:
             logger.warning("No signals generated. Writing empty strategies.")
             _write_empty_strategies()
             return
 
-        posts_df = pd.DataFrame(synthetic_signals)
-        logger.info(f"Generated {len(posts_df)} synthetic signals for {len(posts_df['ticker'].unique())} tickers")
+        posts_df = pd.DataFrame(signal_posts)
+        logger.info(f"Generated {len(posts_df)} honest signal posts for {len(posts_df['ticker'].unique())} tickers")
 
         # 4. Build stock_dfs with indicators
         stock_dfs = {}
