@@ -1,6 +1,3 @@
-import logging
-
-logger = logging.getLogger(__name__)
 """
 🤖 Live Bybit Perpetual Broker Execution Template: Man AHL Multi-Horizon Momentum
 
@@ -16,8 +13,8 @@ gracefully scaling down or adjusting sizes if the exchange rejects our orders.
 To run this in production, schedule this script to run daily at 00:01 UTC via cron:
 $ python live_crypto_executor.py
 """
-
 import json  # noqa: E402
+import logging  # noqa: E402
 import os  # noqa: E402
 
 try:
@@ -45,9 +42,11 @@ load_dotenv()
 # ============================================================================
 # BYBIT CONFIGURATION
 # ============================================================================
-from src.utils.config import (  # noqa: E402
+from src.utils.config import (  # noqa: E402 - config must load after dotenv
     config,
 )
+
+logger = logging.getLogger(__name__)
 
 BYBIT_API_KEY = config.api_keys.binance_api_key  # Assume binance/ccxt key map for now, or fallback
 try:
@@ -375,14 +374,40 @@ def main():
 
     # 6. Execute Orders on exchange
     print("\n[*] Executing required portfolio adjustments:")
+    current_active_positions = active_pos_count
     for ticker, required in rebalance_required.items():
         symbol = BYBIT_SYMBOLS[ticker]
         current_pos = current_positions[ticker]
-        target_size = target_sizes[ticker]
+        raw_target_size = target_sizes[ticker]
 
         if required:
             print(f"\n[*] Rebalancing {ticker}:")
-            execute_bybit_order(exchange, symbol, target_size, current_pos)
+
+            # Clamp per-entry target size
+            max_size = equity * risk_config.MAX_POSITION_SIZE_PCT
+            clamped_target_size = raw_target_size
+            if abs(raw_target_size) > max_size:
+                clamped_target_size = max_size if raw_target_size > 0 else -max_size
+                print(f"  [!] Target size exceeds max allowed. Clamping from ${raw_target_size:.2f} to ${clamped_target_size:.2f}")
+
+            if abs(clamped_target_size) < MIN_ORDER_SIZE and current_pos == 0:
+                print(f"  [*] Clamped size below MIN_ORDER_SIZE (${MIN_ORDER_SIZE}). Skipping.")
+                continue
+
+            # Determine if this is a new position
+            is_new_entry = abs(current_pos) < 1e-7 and abs(clamped_target_size) >= MIN_ORDER_SIZE
+            is_full_close = abs(current_pos) >= MIN_ORDER_SIZE and abs(clamped_target_size) < 1e-7
+
+            if is_new_entry:
+                if current_active_positions >= risk_config.MAX_CONCURRENT_POSITIONS:
+                    print(f"  [!] Skipping {ticker} entry: MAX_CONCURRENT_POSITIONS ({risk_config.MAX_CONCURRENT_POSITIONS}) reached.")
+                    continue
+                else:
+                    current_active_positions += 1
+            elif is_full_close:
+                current_active_positions -= 1
+
+            execute_bybit_order(exchange, symbol, clamped_target_size, current_pos)
         else:
             print(f"  -> {ticker}: Stay at current position (${current_pos:.2f}), drift is within tolerance.")
 
