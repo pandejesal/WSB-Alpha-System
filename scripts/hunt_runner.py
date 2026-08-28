@@ -2,14 +2,14 @@ import argparse
 import json
 import os
 import shutil
-from datetime import datetime
+import sys
+from datetime import datetime, timezone
 
 import yaml
 
 from src.ops import preregistration, strategy_registry
 
-# Known families as per HUNT_PROTOCOL.md or other references
-KNOWN_FAMILIES = ["momentum", "trend", "mean_reversion", "breakout_burst"]
+KNOWN_FAMILIES = ["momentum", "mean_reversion", "carry", "volatility", "sentiment", "arbitrage"]
 
 def load_brief(brief_path):
     with open(brief_path, 'r') as f:
@@ -37,7 +37,6 @@ def do_run(args):
     brief = load_brief(args.brief)
     family = brief["family"]
 
-    from datetime import timezone
     now = datetime.now(timezone.utc)
     # YYYYMMDD-HHMM family-slug
     run_id_prefix = now.strftime('%Y%m%d-%H%M')
@@ -60,6 +59,17 @@ def do_run(args):
     brief_copy_path = os.path.join(out_dir, "brief.yaml")
     shutil.copy(args.brief, brief_copy_path)
 
+    # Session log stub
+    log_path = os.path.join(out_dir, "session_log.yaml")
+    with open(log_path, 'w') as f:
+        yaml.safe_dump({
+            "run_id": run_id,
+            "family": family,
+            "started_at": now.isoformat(),
+            "status": "initialized",
+            "cycle_id": f"{family}-{run_id_slug}"
+        }, f)
+
     # Copy registry via load_registry
     registry_snapshot_path = os.path.join(out_dir, "registry_snapshot.json")
     try:
@@ -80,7 +90,11 @@ def do_run(args):
     with open(brief_spec_path, 'w') as f:
         yaml.safe_dump(brief, f)
 
-    cycle_int = int(now.strftime('%Y%m%d'))
+    dummy_spec_path = os.path.join(out_dir, "dummy_spec.yaml")
+    with open(dummy_spec_path, 'w') as f:
+        yaml.safe_dump({"family": family}, f)
+
+    # cycle_int = int(now.strftime('%Y%m%d'))
     cycle_id_str = f"{family}-{run_id_slug}"
 
     docs_dir = os.path.join(out_dir, "docs", "data")
@@ -88,38 +102,34 @@ def do_run(args):
 
     try:
         preregistration.freeze_preregistration(
-            spec_path=brief_spec_path,
+            spec_path=dummy_spec_path,
             claim=brief["hypothesis"],
-            cycle=cycle_int,
+            cycle=cycle_id_str,
             docs_dir=docs_dir
         )
     except FileExistsError as e:
         if not args.force_reuse:
-            import sys
             print(f"Error: {e}")
             print("Use --force-reuse to bypass.")
             sys.exit(2)
         else:
             print("WARNING: Reusing existing preregistration freeze (--force-reuse).")
     except Exception as e: # noqa: BLE001
-        import sys
         print(f"Error freezing preregistration: {e}")
         sys.exit(2)
 
-    # Write session log only after successful freeze
-    log_path = os.path.join(out_dir, "session_log.yaml")
-    from datetime import timezone
-    log_data = {
-        "run_id": run_id,
-        "family": family,
-        "started_at": now.isoformat(),
-        "status": "initialized",
-        "cycle_id": cycle_id_str,
-        "prereg_frozen_at": datetime.now(timezone.utc).isoformat(),
-        "prereg_cycle_id": cycle_id_str
-    }
+    # Update session log with frozen prereg
+    with open(log_path, 'r') as f:
+        log_data = yaml.safe_load(f)
+
+    log_data["prereg_frozen_at"] = datetime.now(timezone.utc).isoformat()
+    log_data["prereg_cycle_id"] = cycle_id_str
     with open(log_path, 'w') as f:
         yaml.safe_dump(log_data, f)
+
+    # Remove dummy spec
+    if os.path.exists(dummy_spec_path):
+        os.remove(dummy_spec_path)
 
     # Print the session brief payload
     print("=========================================")
@@ -181,7 +191,7 @@ def do_collect(args):
                 if not os.path.exists(eval_file) and not os.path.exists(os.path.join(results_dir, os.path.basename(eval_file))):
                      missing_items.append(f"Eval records not found at {eval_file} or in results/")
 
-            print(f"[VALID] Spec: {cand_file}")
+            print(f"✅ Valid Spec: {cand_file}")
             if missing_items:
                 print("   Missing items for registry entry:")
                 for item in missing_items:
@@ -190,7 +200,7 @@ def do_collect(args):
                 print("   Ready for registry merging (human-gated step).")
 
         except (strategy_registry.MalformedSpecError, yaml.YAMLError, OSError) as e:
-            print(f"[REJECTED] {cand_file} - {e}")
+            print(f"❌ Rejected: {cand_file} - {e}")
             shutil.move(cand_path, os.path.join(rejected_dir, cand_file))
             # Create a rejection reason file
             with open(os.path.join(rejected_dir, f"{cand_file}.reason"), 'w') as f:
