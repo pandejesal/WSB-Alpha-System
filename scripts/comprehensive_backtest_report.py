@@ -1,14 +1,19 @@
 import json
 import logging
-import pandas as pd
-import numpy as np
-import yfinance as yf
-from datetime import datetime
 import os
+from datetime import datetime
+
+import numpy as np
+import pandas as pd
+import yfinance as yf
 
 # Set up logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
+
+# Set True when market data download fails and local unadjusted fallback data is used.
+# While True, results must NOT be published to docs/data (daily CI pushes them to Pages).
+DATA_IS_MOCK = False
 
 def load_universe():
     try:
@@ -40,7 +45,9 @@ def download_data(tickers, start_date, end_date):
 
         return data, spy_data
     except Exception as e:
-        logger.warning(f"Download failed ({e}), falling back to local unadjusted CSVs.")
+        global DATA_IS_MOCK
+        DATA_IS_MOCK = True
+        logger.warning(f"Download failed ({e}), falling back to local unadjusted CSVs — results will NOT be published")
 
         # Fallback for SPY
         spy_csv_path = "market_data_2019_2026/ohlcv/SPY.csv"
@@ -259,8 +266,7 @@ class Portfolio:
             pos['days_held'] += 1
             if pos['ticker'] in current_highs:
                 high_price = current_highs[pos['ticker']]
-                if high_price > pos['highest_high']:
-                    pos['highest_high'] = high_price
+                pos['highest_high'] = max(pos['highest_high'], high_price)
 
         # Calculate current equity
         pos_value = 0
@@ -726,7 +732,7 @@ def main():
     for ticker in tickers:
         try:
             if isinstance(raw_data.columns, pd.MultiIndex):
-                # The fallback local data might not have 'Ticker' as a name but just be a multiindex
+                # The unadjusted fallback data might not have 'Ticker' as a name but just be a multiindex
                 if 'Ticker' in raw_data.columns.names:
                     df = raw_data.xs(ticker, level='Ticker', axis=1)
                 elif len(raw_data.columns.levels) > 1:
@@ -938,6 +944,11 @@ def main():
             "Risk-free rate: fixed 2.9% blended average used across whole period"
         ]
     }
+
+    # Publish guard: never write/publish reports computed on local unadjusted fallback data
+    if DATA_IS_MOCK:
+        logger.error("DATA_IS_MOCK=True: results are based on local unadjusted fallback data, refusing to publish to docs/data/.")
+        return
 
     with open("docs/data/backtest_report.json", "w") as f:
         json.dump(report, f, indent=2)
