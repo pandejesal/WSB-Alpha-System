@@ -828,6 +828,19 @@ def main():
 
     logger.info(f"Best Strategy: {best_name} (Sharpe: {best_sharpe:.2f})")
 
+    # Minerva robustness grade (non-blocking)
+    try:
+        from src.backtest.defend.minerva_score import minerva_score
+        T = len(spy_df.index)
+        sr = float(best_metrics.get("sharpe") or 0.0)
+        N = int(best_metrics.get("total_trades") or 0)
+        mr = minerva_score(T=T, sr=sr, N=N)
+        logger.info(
+            f"Minerva: score={mr.display_0_100} seal={'PASS' if mr.seal else 'FAIL'} verdict={mr.verdict}"
+        )
+    except Exception:
+        logger.info("Minerva: n/a")
+
     # Generate Output Files
     os.makedirs("docs/data", exist_ok=True)
 
