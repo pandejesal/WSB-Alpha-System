@@ -42,3 +42,8 @@ docs/reports/
 market_data_2019_2026/ohlcv/
 market_data_2019_2026/fundamentals/
 data/h4_raw/
+
+# Live-written / derived (never commit)
+docs/arxiv_qfin*
+docs/ARXIV_*
+hunts/evolve/

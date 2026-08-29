@@ -1,0 +1,12 @@
+acceptance: YAML spec + prereg in docs/data/, passes walk-forward + permutation +
+  DSR ledger
+edge_gate_params:
+  dsr_threshold: 0.95
+  max_dd: 0.15
+  permutation_tests: 1000
+  walk_forward: true
+family: gold_kelly
+hypothesis: Gold walk-forward 10y train/6m test trend-momentum with fractional Kelly
+  sqrt-impact gamma 0.02 + ATR exits delivers Sharpe 2.88 net per 2511.08571
+lookback_constraints: Daily OHLCV, no intraday, walk-forward 10y/6m, no lookahead
+universe: GLD, 2015-2025 Daily OHLCV

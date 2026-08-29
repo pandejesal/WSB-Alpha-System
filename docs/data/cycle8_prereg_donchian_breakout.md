@@ -1,0 +1,63 @@
+# Pre-registration: donchian_breakout
+Cycle: 8
+Date: 2026-08-25 10:59:33
+
+## Claim
+BTC Donchian 20/10 Turtle System1: Donchian 20-high entry 10-low exit ATR20 N 1% risk 2N stop pyramid 0.5N up to 4 units long/flat on BTC-USD daily beats BTC buy-hold OOS net CAGR and Sharpe and passes all 5 gates.
+
+## Strategy Spec
+```yaml
+id: btc_donchian_20_10
+name: BTC Donchian 20/10 Breakout (Turtle System 1)
+family: donchian_breakout
+venue: alpaca
+universe: BTC-USD (single instrument; daily bars UTC)
+pre_registration_ref: "docs/data/cycle6_prereg_btc_donchian_20_10.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: null
+signal:
+  entry: >
+    On any bar where high >= highest(high, 20) over prior 20 bars
+    (shifted, no lookahead), AND no current position, enter long at
+    next bar open (exec_delay=1). Donchian 20-day channel breakout per
+    Curtis Faith System 1.
+  exit: >
+    On any bar where low <= lowest(low, 10) over prior 10 bars
+    (shifted, no lookahead), close long at next bar open. 10-day trailing exit.
+  sizing: >
+    ATR(20) based: N = ATR(20). One unit sized so 1N adverse move = 1% equity.
+    position_value = 0.01 * equity / N. Stop at entry - 2N. Pyramid at
+    entry + 0.5N, +1.0N, +1.5N (max 4 units). Long/flat only (Alpaca spot).
+  caps:
+    max_concurrent_positions: 1
+    exec_delay: 1
+parameters:
+  entry_channel: 20
+  exit_channel: 10
+  atr_window: 20
+  stop_multiple: 2.0
+  pyramid_increment: 0.5
+  max_units: 4
+  risk_per_unit: 0.01
+  exec_delay: 1
+indicators:
+  - "donchian_high_20: 20-day rolling max of daily high (shifted 1 bar)"
+  - "donchian_low_10: 10-day rolling min of daily low (shifted 1 bar)"
+  - "atr_20: Average True Range over 20 daily bars"
+position_sizing:
+  - "Unit size = 0.01 * equity / N where N = ATR(20)"
+  - "Pyramid up to 4 units at 0.5N intervals"
+  - "Stop at entry_price - 2.0 * N"
+  - "Long/flat only: Alpaca spot BTC/USD, no margin"
+fee_model:
+  commission: "0 bps (Alpaca); 10 bps taker if Binance fallback"
+  slippage: "5 bps per side"
+  settlement: "T+0; min $5 notional (Alpaca CCXTBroker)"
+venue_notes: >
+  CCXTBroker only. T+0. Min order $5. BTC-USD 24/7 but bar boundaries UTC.
+  Paper only, fail-closed until live gate FR-023.
+version: 1
+status: "pre_gate"
+
+```

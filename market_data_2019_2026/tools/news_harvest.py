@@ -16,7 +16,7 @@ import csv, json, os, sys, time
 from datetime import date as dt_date, timedelta as dt_timedelta
 import urllib.parse, urllib.request
 
-ROOT = r"C:\Users\DELL\Documents\Default Project\WSB-Alpha-System-latest"
+ROOT = r"C:\Users\DELL\Documents\Default Project\WSB-Alpha-System-build"
 NEWS = os.path.join(ROOT, "market_data_2019_2026", "news")
 RAW  = os.path.join(NEWS, "raw")
 RUN  = os.path.join(NEWS, "run")
@@ -100,21 +100,33 @@ def cell_request(q, sym, mode):
         raise RuntimeError("non-JSON response: " + body[:120])
     if mode == "artlist" and isinstance(data.get("articles"), list):
         return data["articles"]
+    if mode in ("TimelineVol", "TimelineTone", "TimelineLangDist") and isinstance(data.get("timeline"), list):
+        return data["timeline"]
     if mode == "TimelineVol" and isinstance(data.get("timeline"), list):
         return data["timeline"]
     raise RuntimeError("unexpected payload: " + body[:120])
 
 def fetch_cell(q, sym):
-    """Returns (row_dict, tops_list) after up to 3 tries with 30/60/120 backoff."""
+    """Returns (row_dict, tops_list) after up to 3 tries with 30/60/120 backoff. Fixed TimelineVol float aggregation and Tone capture (paper 2505.16136)."""
     for attempt in (1, 2, 3):
         try:
             tl = cell_request(q, sym, "TimelineVol")
-            count = 0
+            count = 0.0
             for it in tl:
                 try:
-                    count += int(it.get("value", 0) or 0)
+                    # Fix: value may be float string; sum as float then int
+                    count += float(it.get("value", 0) or 0)
                 except (TypeError, ValueError):
                     pass
+            count = int(round(count))
+            # Tone for FinBERT daily indices (mean tone, dispersion) per 2505.16136
+            try:
+                tone_tl = cell_request(q, sym, "TimelineTone")
+                tone_vals = [float(x.get("value", 0) or 0) for x in tone_tl if x.get("value") is not None]
+                mean_tone = sum(tone_vals)/len(tone_vals) if tone_vals else 0.0
+                tone_disp = (sum((v-mean_tone)**2 for v in tone_vals)/len(tone_vals))**0.5 if len(tone_vals)>1 else 0.0
+            except Exception:
+                mean_tone, tone_disp = 0.0, 0.0
             arts = cell_request(q, sym, "artlist")
             row = {"quarter": q, "symbol": sym, "doc_count": count,
                    "top1_url": "", "top1_title": "", "top1_domain": ""}

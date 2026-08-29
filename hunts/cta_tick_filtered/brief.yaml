@@ -1,0 +1,10 @@
+family: cta_tick_filtered
+universe: "sp500_481_frozen, 2019-2026 Daily OHLCV"
+hypothesis: "Large-tick (tickProxy=0.01/ATR20 top 50% rank) exhibits positive 5-20d trend following alpha; small-tick does not — microstructural feedback loop per 2607.01550"
+acceptance: "YAML spec + prereg in docs/data/, passes walk-forward + permutation + DSR ledger"
+lookback_constraints: "Daily OHLCV, no intraday, no lookahead, ATR20 warmup 60d"
+edge_gate_params:
+  walk_forward: true
+  permutation_tests: 1000
+  dsr_threshold: 0.95
+  max_dd: 0.40

@@ -1,0 +1,7 @@
+cycle_id: cta_tick_filtered-20260829-1415_cta-tick-filtered
+family: cta_tick_filtered
+prereg_cycle_id: cta_tick_filtered-20260829-1415_cta-tick-filtered
+prereg_frozen_at: '2026-08-29T14:15:05.780886+00:00'
+run_id: 20260829-1415 cta-tick-filtered
+started_at: '2026-08-29T14:15:05.551224+00:00'
+status: initialized

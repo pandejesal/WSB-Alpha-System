@@ -1,0 +1,81 @@
+# Pre-registration: pead_quality
+Cycle: 10
+Date: 2026-08-25 11:00:26
+
+## Claim
+PEAD Quality Top-5: Two-stage daily quality pre-filter (ROE top50 or D/E<2 & OPM>0) then PEAD surprise top5 hold5d equal-weight beats SPY OOS and passes all 5 gates. Bernard-Thomas + QMJ interaction.
+
+## Strategy Spec
+```yaml
+id: us_pead_quality_top5
+name: "US PEAD Quality Top-5 (Surprise + Quality Pre-Filter)"
+family: pead_quality
+venue: alpaca
+version: 1
+status: "HUNT_CANDIDATE"
+universe: >
+  100-stock liquid large-cap panel (frozen S&P 500 snapshot) minus
+  SPY/QQQ/AGG/BND/SHY/GLD/VTI/IWM. Survivorship bias documented.
+pre_registration_ref: "docs/data/cycleN_prereg_pead_quality_top5.md"
+gates_passed: "0/5"
+verdict: "HUNT_CANDIDATE"
+eval_records: "docs/data/cycleN_eval_pead_quality_top5.json"
+signal:
+  entry: >
+    Two-stage daily: STAGE1 Quality pre-filter - retain only names where
+    (a) ROE top 50% AND ROE stability top 50%, OR (b) Debt/Equity <2.0 AND
+    Operating Margin >0. STAGE2 PEAD - among survivors with earnings on
+    prior day where Surprise% >= threshold, rank by Surprise% descending,
+    select top 5. Entry next bar exec_delay=1, filing lag +1d enforced.
+  exit: >
+    Exit after hold_days bars, cohort exit to 0.0. No early stop-loss.
+  sizing: >
+    Equal weight 1/N_active per day, max 5 concurrent, fractional shares via Alpaca.
+  caps:
+    max_concurrent_positions: 5
+  rebalance: "daily target rows, drift band 5%"
+params:
+  surprise_threshold_pct: 0.0
+  hold_days: 5
+  max_k: 5
+  exec_delay: 1
+  drift_rebal: 0.05
+  quality_mode: "any_of"
+  roe_percentile_floor: 50
+  roe_stability_percentile_floor: 50
+  debt_equity_ceiling: 2.0
+  op_margin_floor: 0.0
+variant_grid:
+  surprise_threshold_pct: [0.0, 2.0]
+  hold_days: [3, 5, 10]
+  quality_mode: ["any_of", "both_of"]
+  frozen_combination:
+    surprise_threshold_pct: 0.0
+    hold_days: 5
+    quality_mode: "any_of"
+indicators:
+  - "earnings_dates: yfinance get_earnings_dates(limit=100), 2001-2026"
+  - "surprise_pct: (Reported - Estimate)/abs(Estimate)"
+  - "filing_lag: +1 business day"
+  - "roe: trailing 8Q ROE"
+  - "roe_stability: std-dev of trailing 8Q ROE"
+  - "debt_equity: total debt / total equity"
+  - "operating_margin: trailing 12M operating income / revenue"
+position_sizing:
+  - "Equal weight up to max 5 concurrent"
+  - "Fractional shares via Alpaca"
+  - "1/N_active per position, drift 5%"
+fee_model:
+  commission: "$0 (Alpaca)"
+  slippage: "0.05% per side (10 bps round-trip)"
+  settlement: "T+1 cash"
+citations:
+  - "Bernard & Thomas 1989 SUE 4.2%/60d; Asness Frazzini Pedersen 2019 QMJ"
+  - "Livnat & Mendenhall 2006 3.2%/60d"
+feasibility_at_100:
+  - "Quality filter 100 -> ~30-50 survivors; 5 x $20 fractional"
+  - "Earnings quarterly - 10-20 trades/mo expected"
+risks:
+  - "Reduced sample for permutation, fundamentals latency, PEAD decay"
+
+```

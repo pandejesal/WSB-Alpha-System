@@ -1,0 +1,26 @@
+[
+  {
+    "spec": "factor_momentum_top3",
+    "family": "factor_momentum",
+    "gate": "ERROR",
+    "error": "'dict' object has no attribute 'empty'"
+  },
+  {
+    "spec": "quality_lowvol_top10",
+    "family": "quality_lowvol",
+    "gate": "ERROR",
+    "error": "'dict' object has no attribute 'empty'"
+  },
+  {
+    "spec": "cta_ensemble_3speed",
+    "family": "cta_trend",
+    "gate": "ERROR",
+    "error": "'dict' object has no attribute 'empty'"
+  },
+  {
+    "spec": "donchian_breakout",
+    "family": "donchian_breakout",
+    "gate": "ERROR",
+    "error": "'beats_spy_sharpe'"
+  }
+]

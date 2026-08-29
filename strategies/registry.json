@@ -87,6 +87,899 @@
       "rank": 8,
       "status": "ported",
       "ported_at": "2026-08-18"
+    },
+    {
+      "id": "us_momentum_top5_evol_20260829-151807",
+      "name": "US Cross-Sectional Momentum Top-5 (no regime filter)",
+      "family": "momentum",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_momentum_top5\\us_momentum_top5_evolved_20260829-151807.yaml",
+      "gates_passed": "5/5",
+      "rank": 9,
+      "status": "paper",
+      "evolved_from": "us_momentum_top5",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "btc_vol_target_sma100_evol_20260829-152329",
+      "name": "BTC Vol-Targeting (30% annualized) with SMA(100) Regime Gate",
+      "family": "vol_targeting",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\btc_vol_target_sma100\\btc_vol_target_sma100_evolved_20260829-152329.yaml",
+      "gates_passed": "5/5",
+      "rank": 10,
+      "status": "paper",
+      "evolved_from": "btc_vol_target_sma100",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-155345",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-155345.yaml",
+      "gates_passed": "5/5",
+      "rank": 11,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-155412",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-155412.yaml",
+      "gates_passed": "5/5",
+      "rank": 12,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_momentum_top5_evol_20260829-155736",
+      "name": "US Cross-Sectional Momentum Top-5 (no regime filter)",
+      "family": "momentum",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_momentum_top5\\us_momentum_top5_evolved_20260829-155736.yaml",
+      "gates_passed": "5/5",
+      "rank": 13,
+      "status": "paper",
+      "evolved_from": "us_momentum_top5",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "spy_sma200_evol_20260829-160031",
+      "name": "SPY SMA-200 Trend Timing",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\spy_sma200\\spy_sma200_evolved_20260829-160031.yaml",
+      "gates_passed": "5/5",
+      "rank": 14,
+      "status": "paper",
+      "evolved_from": "spy_sma200",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-160433",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-160433.yaml",
+      "gates_passed": "5/5",
+      "rank": 15,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "gold_trend_kelly_evol_20260829-160611",
+      "name": "Gold Forecast-to-Fill Walk-Forward Kelly (paper 2511.08571)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\gold_trend_kelly\\gold_trend_kelly_evolved_20260829-160611.yaml",
+      "gates_passed": "5/5",
+      "rank": 16,
+      "status": "paper",
+      "evolved_from": "gold_trend_kelly",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-160704",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-160704.yaml",
+      "gates_passed": "5/5",
+      "rank": 17,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "gold_trend_kelly_evol_20260829-163125",
+      "name": "Gold Forecast-to-Fill Walk-Forward Kelly (paper 2511.08571)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\gold_trend_kelly\\gold_trend_kelly_evolved_20260829-163125.yaml",
+      "gates_passed": "5/5",
+      "rank": 18,
+      "status": "paper",
+      "evolved_from": "gold_trend_kelly",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "spy_sma200_evol_20260829-163324",
+      "name": "SPY SMA-200 Trend Timing",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\spy_sma200\\spy_sma200_evolved_20260829-163324.yaml",
+      "gates_passed": "5/5",
+      "rank": 19,
+      "status": "paper",
+      "evolved_from": "spy_sma200",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_lowvol_top30_evol_20260829-163649",
+      "name": "US Low-Volatility Top-30 (recent-calm)",
+      "family": "low_vol",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_lowvol_top30\\us_lowvol_top30_evolved_20260829-163649.yaml",
+      "gates_passed": "5/5",
+      "rank": 20,
+      "status": "paper",
+      "evolved_from": "us_lowvol_top30",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_lowvol_top30_evol_20260829-164815",
+      "name": "US Low-Volatility Top-30 (recent-calm)",
+      "family": "low_vol",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_lowvol_top30\\us_lowvol_top30_evolved_20260829-164815.yaml",
+      "gates_passed": "5/5",
+      "rank": 21,
+      "status": "paper",
+      "evolved_from": "us_lowvol_top30",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "btc_vol_target_sma100_evol_20260829-165640",
+      "name": "BTC Vol-Targeting (30% annualized) with SMA(100) Regime Gate",
+      "family": "vol_targeting",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\btc_vol_target_sma100\\btc_vol_target_sma100_evolved_20260829-165640.yaml",
+      "gates_passed": "5/5",
+      "rank": 22,
+      "status": "paper",
+      "evolved_from": "btc_vol_target_sma100",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-170123",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-170123.yaml",
+      "gates_passed": "5/5",
+      "rank": 23,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-170413",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-170413.yaml",
+      "gates_passed": "5/5",
+      "rank": 24,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "gold_trend_kelly_evol_20260829-170437",
+      "name": "Gold Forecast-to-Fill Walk-Forward Kelly (paper 2511.08571)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\gold_trend_kelly\\gold_trend_kelly_evolved_20260829-170437.yaml",
+      "gates_passed": "5/5",
+      "rank": 25,
+      "status": "paper",
+      "evolved_from": "gold_trend_kelly",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-171132",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-171132.yaml",
+      "gates_passed": "5/5",
+      "rank": 26,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_momentum_top5_evol_20260829-171854",
+      "name": "US Cross-Sectional Momentum Top-5 (no regime filter)",
+      "family": "momentum",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_momentum_top5\\us_momentum_top5_evolved_20260829-171854.yaml",
+      "gates_passed": "5/5",
+      "rank": 27,
+      "status": "paper",
+      "evolved_from": "us_momentum_top5",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_lowvol_top30_evol_20260829-173300",
+      "name": "US Low-Volatility Top-30 (recent-calm)",
+      "family": "low_vol",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_lowvol_top30\\us_lowvol_top30_evolved_20260829-173300.yaml",
+      "gates_passed": "5/5",
+      "rank": 28,
+      "status": "paper",
+      "evolved_from": "us_lowvol_top30",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-173855",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-173855.yaml",
+      "gates_passed": "5/5",
+      "rank": 29,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "gold_trend_kelly_evol_20260829-175200",
+      "name": "Gold Forecast-to-Fill Walk-Forward Kelly (paper 2511.08571)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\gold_trend_kelly\\gold_trend_kelly_evolved_20260829-175200.yaml",
+      "gates_passed": "5/5",
+      "rank": 30,
+      "status": "paper",
+      "evolved_from": "gold_trend_kelly",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "spy_sma200_evol_20260829-175516",
+      "name": "SPY SMA-200 Trend Timing",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\spy_sma200\\spy_sma200_evolved_20260829-175516.yaml",
+      "gates_passed": "5/5",
+      "rank": 31,
+      "status": "paper",
+      "evolved_from": "spy_sma200",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-180011",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-180011.yaml",
+      "gates_passed": "5/5",
+      "rank": 32,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "btc_vol_target_sma100_evol_20260829-183336",
+      "name": "BTC Vol-Targeting (30% annualized) with SMA(100) Regime Gate",
+      "family": "vol_targeting",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\btc_vol_target_sma100\\btc_vol_target_sma100_evolved_20260829-183336.yaml",
+      "gates_passed": "5/5",
+      "rank": 33,
+      "status": "paper",
+      "evolved_from": "btc_vol_target_sma100",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_lowvol_top30_evol_20260829-183545",
+      "name": "US Low-Volatility Top-30 (recent-calm)",
+      "family": "low_vol",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_lowvol_top30\\us_lowvol_top30_evolved_20260829-183545.yaml",
+      "gates_passed": "5/5",
+      "rank": 34,
+      "status": "paper",
+      "evolved_from": "us_lowvol_top30",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_momentum_top5_evol_20260829-184130",
+      "name": "US Cross-Sectional Momentum Top-5 (no regime filter)",
+      "family": "momentum",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_momentum_top5\\us_momentum_top5_evolved_20260829-184130.yaml",
+      "gates_passed": "5/5",
+      "rank": 35,
+      "status": "paper",
+      "evolved_from": "us_momentum_top5",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "spy_sma200_evol_20260829-184533",
+      "name": "SPY SMA-200 Trend Timing",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\spy_sma200\\spy_sma200_evolved_20260829-184533.yaml",
+      "gates_passed": "5/5",
+      "rank": 36,
+      "status": "paper",
+      "evolved_from": "spy_sma200",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-185151",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-185151.yaml",
+      "gates_passed": "5/5",
+      "rank": 37,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_momentum_top5_evol_20260829-190030",
+      "name": "US Cross-Sectional Momentum Top-5 (no regime filter)",
+      "family": "momentum",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_momentum_top5\\us_momentum_top5_evolved_20260829-190030.yaml",
+      "gates_passed": "5/5",
+      "rank": 38,
+      "status": "paper",
+      "evolved_from": "us_momentum_top5",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_momentum_top5_evol_20260829-190249",
+      "name": "US Cross-Sectional Momentum Top-5 (no regime filter)",
+      "family": "momentum",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_momentum_top5\\us_momentum_top5_evolved_20260829-190249.yaml",
+      "gates_passed": "5/5",
+      "rank": 39,
+      "status": "paper",
+      "evolved_from": "us_momentum_top5",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-191402",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-191402.yaml",
+      "gates_passed": "5/5",
+      "rank": 40,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-191621",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-191621.yaml",
+      "gates_passed": "5/5",
+      "rank": 41,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "btc_vol_target_sma100_evol_20260829-192528",
+      "name": "BTC Vol-Targeting (30% annualized) with SMA(100) Regime Gate",
+      "family": "vol_targeting",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\btc_vol_target_sma100\\btc_vol_target_sma100_evolved_20260829-192528.yaml",
+      "gates_passed": "5/5",
+      "rank": 42,
+      "status": "paper",
+      "evolved_from": "btc_vol_target_sma100",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "btc_vol_target_sma100_evol_20260829-192742",
+      "name": "BTC Vol-Targeting (30% annualized) with SMA(100) Regime Gate",
+      "family": "vol_targeting",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\btc_vol_target_sma100\\btc_vol_target_sma100_evolved_20260829-192742.yaml",
+      "gates_passed": "5/5",
+      "rank": 43,
+      "status": "paper",
+      "evolved_from": "btc_vol_target_sma100",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "us_lowvol_top30_evol_20260829-192818",
+      "name": "US Low-Volatility Top-30 (recent-calm)",
+      "family": "low_vol",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\us_lowvol_top30\\us_lowvol_top30_evolved_20260829-192818.yaml",
+      "gates_passed": "5/5",
+      "rank": 44,
+      "status": "paper",
+      "evolved_from": "us_lowvol_top30",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-193339",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-193339.yaml",
+      "gates_passed": "5/5",
+      "rank": 45,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-193552",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-193552.yaml",
+      "gates_passed": "5/5",
+      "rank": 46,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-194946",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-194946.yaml",
+      "gates_passed": "5/5",
+      "rank": 47,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-195303",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-195303.yaml",
+      "gates_passed": "5/5",
+      "rank": 48,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "continuous_growth_defensive_evol_20260829-195511",
+      "name": "Continuous Growth-Defensive Timing (paper 2605.20636)",
+      "family": "rotation",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\continuous_growth_defensive\\continuous_growth_defensive_evolved_20260829-195511.yaml",
+      "gates_passed": "5/5",
+      "rank": 49,
+      "status": "paper",
+      "evolved_from": "continuous_growth_defensive",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "spy_sma200_evol_20260829-200121",
+      "name": "SPY SMA-200 Trend Timing",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\spy_sma200\\spy_sma200_evolved_20260829-200121.yaml",
+      "gates_passed": "5/5",
+      "rank": 50,
+      "status": "paper",
+      "evolved_from": "spy_sma200",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-200658",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-200658.yaml",
+      "gates_passed": "5/5",
+      "rank": 51,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "gold_trend_kelly_evol_20260829-201222",
+      "name": "Gold Forecast-to-Fill Walk-Forward Kelly (paper 2511.08571)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\gold_trend_kelly\\gold_trend_kelly_evolved_20260829-201222.yaml",
+      "gates_passed": "5/5",
+      "rank": 52,
+      "status": "paper",
+      "evolved_from": "gold_trend_kelly",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "btc_vol_target_sma100_evol_20260829-201836",
+      "name": "BTC Vol-Targeting (30% annualized) with SMA(100) Regime Gate",
+      "family": "vol_targeting",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\btc_vol_target_sma100\\btc_vol_target_sma100_evolved_20260829-201836.yaml",
+      "gates_passed": "5/5",
+      "rank": 53,
+      "status": "paper",
+      "evolved_from": "btc_vol_target_sma100",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "cta_tick_filtered_evol_20260829-202106",
+      "name": "CTA Tick-Size Filtered Trend (paper 2607.01550)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\cta_tick_filtered\\cta_tick_filtered_evolved_20260829-202106.yaml",
+      "gates_passed": "5/5",
+      "rank": 54,
+      "status": "paper",
+      "evolved_from": "cta_tick_filtered",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
+    },
+    {
+      "id": "gold_trend_kelly_evol_20260829-204022",
+      "name": "Gold Forecast-to-Fill Walk-Forward Kelly (paper 2511.08571)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "hunts\\evolve\\gold_trend_kelly\\gold_trend_kelly_evolved_20260829-204022.yaml",
+      "gates_passed": "5/5",
+      "rank": 55,
+      "status": "paper",
+      "evolved_from": "gold_trend_kelly",
+      "metrics": {
+        "sharpe": 1.3,
+        "cagr": 0.18,
+        "max_dd": 0.18,
+        "dsr": 0.97,
+        "minerva": 82,
+        "passed": true
+      }
     }
   ],
   "portfolio": {

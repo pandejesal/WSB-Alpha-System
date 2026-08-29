@@ -1,0 +1,11 @@
+acceptance: YAML spec + prereg in docs/data/, passes walk-forward + permutation +
+  DSR ledger
+edge_gate_params:
+  dsr_threshold: 0.95
+  permutation_tests: 1000
+  walk_forward: true
+family: growth_defensive
+hypothesis: Continuous softplus+tanh+EWMA macro score allocates growth vs defensive
+  and beats binary FRED RISK_ON on Sharpe and drawdown per 2605.20636
+lookback_constraints: Daily OHLCV, FRED, VIX, no intraday, no lookahead
+universe: G=[QQQ,VUG,XLK] vs D=[VTV,XLP,XLU,TLT], 2019-2026 Daily OHLCV + FRED

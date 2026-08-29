@@ -1,0 +1,98 @@
+# Pre-registration: cta_trend_ensemble
+Cycle: 11
+Date: 2026-08-25 11:00:27
+
+## Claim
+CTA Ensemble 3-speed: MAC EMA 4/12+16/48+32/96 vote>=2 long/flat on BTC/SPY/QQQ daily equal-weight or vol-scaled ensemble beats SPY OOS and passes bootstrap CPCV WF permutation DSR. ManAHL Winton multi-speed basis.
+
+## Strategy Spec
+```yaml
+id: cta_ensemble_3speed
+name: CTA Ensemble Multi-Speed Trend (3x MAC EMA Crossover)
+family: cta_trend_ensemble
+venue: alpaca
+universe:
+  - BTC-USD
+  - SPY
+  - QQQ
+session: 24/7
+timeframe: 1d
+pre_registration_ref: "docs/data/cycle1_prereg_cta_ensemble_3speed.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: null
+signal:
+  entry: >
+    For each instrument, compute three sub-signals daily (shifted, no lookahead):
+    sub_fast=+1 if EMA4>EMA12 else -1, sub_med=+1 if EMA16>EMA48 else -1,
+    sub_slow=+1 if EMA32>EMA96 else -1. Ensemble vote = sum. ENTRY: long next bar
+    (exec_delay=1) when vote >= +2 (at least 2 of 3 speeds agree). Long/flat only.
+  exit: >
+    EXIT to flat next bar when vote < +2 (fewer than 2 speeds agree).
+  sizing: >
+    Vol-scaled default: allocation_i = (target_vol/vol_i)/sum(target_vol/vol_j),
+    capped at 1.5x. Equal-weight fallback: 1/N. Max gross 3.0x, single leg 1.5x.
+  caps:
+    max_concurrent_positions: 3
+    exec_delay: 1
+    max_gross_exposure: 3.0
+    max_single_leg: 1.5
+parameters:
+  fast_ema_fast: 4
+  fast_ema_slow: 12
+  medium_ema_fast: 16
+  medium_ema_slow: 48
+  slow_ema_fast: 32
+  slow_ema_slow: 96
+  vote_threshold: 2
+  sizing_mode: "vol_scaled"
+  target_risk: 0.15
+  vol_window: 20
+  leverage_cap: 1.5
+  max_gross_exposure: 3.0
+  exec_delay: 1
+  rebalance: "daily"
+  drift_band: 0.05
+  btc_weight_cap: 0.50
+indicators:
+  - "ema_fast_4: 4-day EMA close"
+  - "ema_slow_12: 12-day EMA close"
+  - "ema_fast_16: 16-day EMA close"
+  - "ema_slow_48: 48-day EMA close"
+  - "ema_fast_32: 32-day EMA close"
+  - "ema_slow_96: 96-day EMA close"
+  - "sub_fast: sign(EMA4-EMA12)"
+  - "sub_med: sign(EMA16-EMA48)"
+  - "sub_slow: sign(EMA32-EMA96)"
+  - "ensemble_vote: sum -3 to +3"
+  - "vol_20d: 20-day rolling std annualized"
+position_sizing:
+  - "Vol-scaled: allocation_i = (target_vol/vol_i)/sum, capped 1.5x"
+  - "Equal weight fallback: 1/N"
+  - "Max gross 3.0x, single leg 1.5x, BTC cap 50%"
+  - "$100 fractional, min $1, no margin"
+fee_model:
+  equity:
+    commission: "$0 (Alpaca)"
+    slippage: "5 bps per side"
+    settlement: "T+1 cash; min $1"
+  crypto:
+    commission: "$0 (Alpaca crypto)"
+    slippage: "10 bps per side"
+    settlement: "T+0; min $5"
+venue_notes: >
+  Equities: Alpaca stock $0 fractional T+1. Crypto: Alpaca crypto via CCXTBroker
+  T+0 min $5. Paper only until live gate FR-023. BTC 24/7 UTC close.
+benchmark_result:
+  benchmark: "SPY buy-and-hold"
+  full: "TBD - pending backtest"
+  oos_2023plus: "TBD"
+feasibility_at_100:
+  - "3 liquid instruments, fractional, daily rebalance, $0 equity fees"
+  - "BTC leg min $5 works with $100 split 3 ways"
+risks:
+  - "Multi-speed lag in V-recoveries, BTC vs QQQ correlation in crashes, daily churn"
+version: 1
+status: "pre_gate"
+
+```
