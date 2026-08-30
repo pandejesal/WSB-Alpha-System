@@ -12,9 +12,14 @@ Writes:
 CLI:
   python news_harvest.py [--rebuild] [--max-seconds N] [--sleep S]
 """
-import csv, json, os, sys, time
+import csv
+import json
+import os
+import sys
+import time
 from datetime import date as dt_date, timedelta as dt_timedelta
-import urllib.parse, urllib.request
+import urllib.parse
+import urllib.request
 
 ROOT = r"C:\Users\DELL\Documents\Default Project\WSB-Alpha-System-build"
 NEWS = os.path.join(ROOT, "market_data_2019_2026", "news")
@@ -67,7 +72,8 @@ def quarters(y0=2019, y1=2026, q0=1, q1=2):
 QUARTERS = quarters()
 
 def q_dates(q):
-    y = int(q[:4]); qn = int(q[5])
+    y = int(q[:4])
+    qn = int(q[5])
     start = dt_date(y, 1 + 3 * (qn - 1), 1)
     if qn == 4:
         end = dt_date(y, 12, 31)
@@ -125,11 +131,17 @@ def fetch_cell(q, sym):
                 tone_vals = [float(x.get("value", 0) or 0) for x in tone_tl if x.get("value") is not None]
                 mean_tone = sum(tone_vals)/len(tone_vals) if tone_vals else 0.0
                 tone_disp = (sum((v-mean_tone)**2 for v in tone_vals)/len(tone_vals))**0.5 if len(tone_vals)>1 else 0.0
+                # eventImpact (paper 2505.16136): peak absolute tonal intensity over the window,
+                # a robust proxy for the magnitude of the strongest sentiment event in the quarter.
+                event_impact = max((abs(v) for v in tone_vals), default=0.0)
             except Exception:
-                mean_tone, tone_disp = 0.0, 0.0
+                mean_tone, tone_disp, event_impact = 0.0, 0.0, 0.0
             arts = cell_request(q, sym, "artlist")
             row = {"quarter": q, "symbol": sym, "doc_count": count,
-                   "top1_url": "", "top1_title": "", "top1_domain": ""}
+                   "top1_url": "", "top1_title": "", "top1_domain": "",
+                   "avg_tone": round(mean_tone, 4),
+                   "tone_disp": round(tone_disp, 4),
+                   "event_impact": round(event_impact, 4)}
             tops = []
             for a in arts[:10]:
                 if not isinstance(a, dict):
@@ -137,13 +149,21 @@ def fetch_cell(q, sym):
                 u = a.get("url", "") or ""
                 t = a.get("title", "") or ""
                 dom = a.get("domain", "") or ""
+                # GDELT Doc 2.0 'seendate' is YYYYMMDDHHMMSS -> ISO for downstream consumers
+                seendate = a.get("seendate", "") or ""
+                dt_iso = ""
+                if len(seendate) >= 8 and seendate.isdigit():
+                    dt_iso = (f"{seendate[:4]}-{seendate[4:6]}-{seendate[6:8]}"
+                              + (f" {seendate[8:10]}:{seendate[10:12]}:{seendate[12:14]}"
+                                 if len(seendate) >= 14 else ""))
                 if not dom and u:
                     try:
                         dom = urllib.parse.urlparse(u).netloc
                     except Exception:
                         dom = ""
                 tops.append({"quarter": q, "symbol": sym, "url": u,
-                             "title": t, "domain": dom})
+                             "title": t, "domain": dom,
+                             "datetime": dt_iso, "date": dt_iso[:10]})
                 if not row["top1_url"] and u:
                     row["top1_url"] = u
                     row["top1_title"] = t
@@ -171,7 +191,7 @@ def main():
 
     if REBUILD:
         with open(INDEX_CSV, "w", newline="", encoding="utf-8") as f:
-            csv.writer(f).writerow(["quarter","symbol","doc_count","top1_url","top1_title","top1_domain"])
+            csv.writer(f).writerow(["quarter","symbol","doc_count","top1_url","top1_title","top1_domain","avg_tone","tone_disp","event_impact"])
         with open(ERR_CSV, "w", newline="", encoding="utf-8") as f:
             csv.writer(f).writerow(["quarter","symbol","error"])
         for q in QUARTERS:
@@ -200,13 +220,16 @@ def main():
     errw = csv.writer(errf)
 
     start = time.time()
-    n_ok = 0; n_err = 0; processed = 0
+    n_ok = 0
+    n_err = 0
+    processed = 0
     for cell in todo:
         sym, q = cell.split(":", 1)
         try:
             row, tops = fetch_cell(q, sym)
             writer.writerow([row["quarter"], row["symbol"], row["doc_count"],
-                             row["top1_url"], row["top1_title"], row["top1_domain"]])
+                             row["top1_url"], row["top1_title"], row["top1_domain"],
+                             row["avg_tone"], row["tone_disp"], row["event_impact"]])
             idx.flush()
             with open(os.path.join(RAW, f"g_{q}.jsonl"), "a", encoding="utf-8") as jf:
                 for t in tops:
@@ -229,7 +252,8 @@ def main():
             break
         time.sleep(SLEEP)
 
-    idx.close(); errf.close()
+    idx.close()
+    errf.close()
     print(f"INVOCATION DONE processed={processed} ok={n_ok} err={n_err}", flush=True)
 
 if __name__ == "__main__":
