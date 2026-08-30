@@ -6,7 +6,8 @@
 - 34 symbols covered (13 INDEX + 19 EQUITY + 2 CRYPTO); missing.csv empty (0 missing)
 
 ## 2. News index (GDELT)
-- DEGRADED: news_index.csv 435 rows; quarters present 2019Q1..2020Q1 (5 of 30); all doc_count=0 -> 0 articles indexed (local news harvest failed this run)
+- DEGRADED: news_index.csv 449 rows; quarters present 2019Q1..2020Q1 (5 of 30); all doc_count=0 -> 0 articles indexed (local news harvest failed this run)
+- Schema updated to 9 cols (adds avg_tone, tone_disp, event_impact from GDELT Doc 2.0 TimelineTone); rebuild via news_redo.py deferred while GDELT API is unreachable (network/TLS)
 
 ## 3. Institutions (13F)
 - 13f_universe_index.csv: 30 quarters (2019Q1..2026Q2), ~10000 HR + ~1500-2000 NT filings per quarter
@@ -28,7 +29,7 @@
 ## 7. Data dictionary
 - ohlcv/instruments.csv: symbol,kind,note
 - ohlcv/missing.csv: symbol,reason
-- news/news_index.csv: quarter,symbol,doc_count,top1_url,top1_title,top1_domain
+- news/news_index.csv: quarter,symbol,doc_count,top1_url,top1_title,top1_domain,avg_tone,tone_disp,event_impact
 - institutions/13f_universe_index.csv: quarter,filing_13f_hr_count,filing_13f_nt_count,top_new_filers_json
 - events/events_all.json: symbol,date,r,sigma20,z,threshold_hit,kind
 - events/scan_summary.csv: symbol,bars,hits_raw,kept
@@ -37,5 +38,5 @@
 
 ## 8. Reproduction notes
 - venv python: C:\Users\DELL\AppData\Local\Temp\opencode\wsb-verify-venv\Scripts\python.exe
-- tools: news_harvest.py (GDELT quarterly harvest), C_scan_events.py (z-score scan, |z|>=3.67), C_causation.py (GDELT artlist per event, 2.5s pacing)
-- degradation: local news raw empty -> causation used GDELT fallback
+- tools: news_harvest.py (GDELT quarterly harvest), news_redo.py (resumable rebuild: schema + raw g_*.jsonl + gdelt daily indices), C_scan_events.py (z-score scan, |z|>=3.67), C_causation.py (GDELT artlist per event, 2.5s pacing)
+- degradation: local news raw empty -> causation used GDELT fallback; news rebuild deferred while GDELT API is unreachable (network/TLS)

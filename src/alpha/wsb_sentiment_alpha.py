@@ -56,6 +56,12 @@ OUTPUT_CSV = os.path.join(SCRIPT_DIR, "wsb_factual_research_data.csv")
 CO_MENTION_JSON = os.path.join(SCRIPT_DIR, "co_mentions.json")
 OUTPUT_PNG = os.path.join(SCRIPT_DIR, "wsb_stock_trajectories.png")
 
+# GDELT macro news directory (from news_harvest.py / news_redo.py rebuild).
+# Repo root is two levels up from src/alpha/: market_data_2019_2026/news
+NEWS_DIR = os.path.abspath(os.path.join(SCRIPT_DIR, "..", "..", "market_data_2019_2026", "news"))
+NEWS_INDEX_CSV = os.path.join(NEWS_DIR, "news_index.csv")
+NEWS_RAW_DIR = os.path.join(NEWS_DIR, "raw")
+
 # Global Configuration Parameters
 
 FINBERT_MODEL = "ProsusAI/finbert"
@@ -201,6 +207,83 @@ def fetch_rss_feed() -> list[dict]:
     except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
         logger.info(f"Error fetching RSS feed: {e}")
         return []
+
+
+# ----------------------------------------------------------------------------
+# GDELT MACRO SENTIMENT BRANCH
+# ----------------------------------------------------------------------------
+def compute_gdelt_macro_sentiment() -> pd.DataFrame:
+    """Build daily GDELT macro sentiment indices from the news_redo.py rebuild.
+
+    Reads market_data_2019_2026/news/raw/g_*.jsonl (and falls back to the
+    aggregate news_index.csv) and computes per-day macro indices:
+      gdelt_doc_count, gdelt_net_tonality (mean avg_tone),
+      gdelt_dispersion (mean tone_disp), gdelt_event_impact (peak abs tone).
+
+    Fails closed: if no non-empty GDELT data is present, returns an empty
+    DataFrame so the pipeline continues on Reddit signals alone.
+    """
+    empty = pd.DataFrame(
+        columns=["post_date", "gdelt_doc_count", "gdelt_net_tonality",
+                 "gdelt_dispersion", "gdelt_event_impact"]
+    )
+    if not os.path.isdir(NEWS_RAW_DIR):
+        logger.info("GDELT raw news dir not found; skipping GDELT macro branch.")
+        return empty
+
+    records = []
+    for name in sorted(os.listdir(NEWS_RAW_DIR)):
+        if not (name.startswith("g_") and name.endswith(".jsonl")):
+            continue
+        path = os.path.join(NEWS_RAW_DIR, name)
+        if os.path.getsize(path) == 0:
+            continue
+        try:
+            with open(path, "r", encoding="utf-8") as fh:
+                for line in fh:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        row = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    dt = row.get("datetime") or row.get("date")
+                    if not dt:
+                        continue
+                    day = str(dt)[:10]
+                    avg_tone = row.get("avg_tone")
+                    tone_disp = row.get("tone_disp")
+                    event_impact = row.get("event_impact")
+                    records.append({
+                        "post_date": day,
+                        "avg_tone": float(avg_tone) if avg_tone is not None else None,
+                        "tone_disp": float(tone_disp) if tone_disp is not None else None,
+                        "event_impact": float(event_impact) if event_impact is not None else None,
+                    })
+        except (OSError, IOError) as e:  # noqa: BLE001
+            logger.info(f"Skipping unreadable GDELT raw file {name}: {e}")
+
+    if not records:
+        logger.info("No non-empty GDELT raw data present; skipping GDELT macro branch.")
+        return empty
+
+    df = pd.DataFrame(records).dropna(subset=["post_date"])
+    if df.empty:
+        return empty
+
+    grouped = df.groupby("post_date")
+    out = pd.DataFrame({
+        "post_date": grouped.size().index,
+        "gdelt_doc_count": grouped.size().values,
+        "gdelt_net_tonality": grouped["avg_tone"].mean().values,
+        "gdelt_dispersion": grouped["tone_disp"].mean().values,
+        "gdelt_event_impact": grouped["event_impact"].mean().values,
+    })
+    out = out.round({"gdelt_net_tonality": 4, "gdelt_dispersion": 4, "gdelt_event_impact": 4})
+    logger.info(f"GDELT macro branch: {len(out)} daily sentiment days computed.")
+    return out
+
 
 # ============================================================================
 # PHASE 1: INCREMENTAL SCRAPING & SENTIMENT RE-EVALUATION PIPELINE
@@ -684,6 +767,14 @@ def run_sentiment_pipeline():
                 combined.update(updated_df)
                 combined = combined.reset_index()
             
+    # Merge GDELT daily macro sentiment indices onto the synchronized database.
+    gdelt_idx = compute_gdelt_macro_sentiment()
+    if not gdelt_idx.empty and "post_date" in combined.columns:
+        for col in ["gdelt_doc_count", "gdelt_net_tonality", "gdelt_dispersion", "gdelt_event_impact"]:
+            if col in combined.columns:
+                combined = combined.drop(columns=[col])
+        combined = combined.merge(gdelt_idx, on="post_date", how="left")
+
     # Save the synchronized database (with OS permission lock failsafe)
     safe_write_csv(combined, OUTPUT_CSV)
     
