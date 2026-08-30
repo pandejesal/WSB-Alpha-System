@@ -1,27 +1,9 @@
 import logging
 
-from src.research.ticker_extractor import extract_tickers
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
-logger = logging.getLogger(__name__)
-
-# -*- coding: utf-8 -*-
-# ============================================================================
-# WSB DD SENTIMENT ANALYTICS & PLOTTER - UNIFIED INCREMENTAL SYSTEM
-# ============================================================================
-import nltk
-
-try:
-    nltk.data.find('tokenizers/punkt_tab')
-    nltk.data.find('taggers/averaged_perceptron_tagger_eng')
-except LookupError:
-    nltk.download('punkt_tab')
-    nltk.download('averaged_perceptron_tagger_eng')
-
-
 import json
 import os
 import re
+import time
 from collections import (
     defaultdict,
 )
@@ -32,6 +14,7 @@ from datetime import (
 
 import defusedxml.ElementTree as ET
 import matplotlib.pyplot as plt
+import nltk
 import numpy as np
 import pandas as pd
 import requests
@@ -44,6 +27,22 @@ from src.alpha.indicators import (
     compute_indicators,
     compute_regime_returns,
 )
+from src.research.ticker_extractor import extract_tickers
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
+logger = logging.getLogger(__name__)
+
+# -*- coding: utf-8 -*-
+# ============================================================================
+# WSB DD SENTIMENT ANALYTICS & PLOTTER - UNIFIED INCREMENTAL SYSTEM
+# ============================================================================
+
+try:
+    nltk.data.find('tokenizers/punkt_tab')
+    nltk.data.find('taggers/averaged_perceptron_tagger_eng')
+except LookupError:
+    nltk.download('punkt_tab')
+    nltk.download('averaged_perceptron_tagger_eng')
 
 # ============================================================================
 # DYNAMIC SYSTEM PATH CONFIGURATION
@@ -128,8 +127,6 @@ def load_finbert():
 def finbert_sentiment(text: str, tokenizer, model, device) -> dict:
     logger.warning("finbert_sentiment called but finbert is removed, returning neutral")
     return {"bullish": 0.0, "bearish": 0.0, "neutral": 1.0}
-
-import time
 
 
 def safe_write_csv(df, path):
@@ -477,7 +474,7 @@ def run_sentiment_pipeline():
     if "regime_holding_days" not in combined.columns:
         combined["regime_holding_days"] = 5
 
-    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & (combined["pricing_failed"] != True)]
+    needs_calculation = combined[combined[return_cols].isna().any(axis=1) & combined["pricing_failed"].ne(True)]
     logger.info(f"Records requiring pricing updates/re-evaluation: {len(needs_calculation)}")
     
     if not needs_calculation.empty:
@@ -834,7 +831,7 @@ def run_trajectory_plotter(top_n_tickers=5):
     df['post_date'] = pd.to_datetime(df['post_date'])
     
     # Filter out tickers that are marked as pricing_failed to ensure we only select tickers with valid price data for plotting
-    valid_df = df[df['pricing_failed'] != True]
+    valid_df = df[df['pricing_failed'].ne(True)]
     top_tickers = valid_df['ticker'].value_counts().head(top_n_tickers).index.tolist()
     logger.info(f"Selected top {top_n_tickers} tickers for plotting: {top_tickers}")
     
