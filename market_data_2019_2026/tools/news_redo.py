@@ -48,7 +48,7 @@ UA = {
     "User-Agent": "Mozilla/5.0 (research harvest; keyless) GDELT",
     "Accept": "application/json, text/plain, */*",
 }
-API_BASE = "https://api.gdeltproject.org/api/v2/doc/doc"
+API_BASE = "http://api.gdeltproject.org/api/v2/doc/doc"
 HEADER = [
     "quarter",
     "symbol",
