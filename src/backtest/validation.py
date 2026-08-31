@@ -7,7 +7,6 @@ import pandas as pd
 
 from src.gs_compat.calendar import business_day_offset
 
-logger = logging.getLogger(__name__)
 import yfinance as yf
 from tqdm import (
     tqdm,
@@ -17,6 +16,8 @@ import src.backtest.run_historic_backtest as rb
 from src.alpha import (
     indicators,
 )
+
+logger = logging.getLogger(__name__)
 
 # E-1 fix (audit): the tearsheet/reporting block previously rebound to the
 # legacy engine (deleted_legacy_backtest), so the weekly report mixed
@@ -114,10 +115,17 @@ def run_in_sample_test(posts_df, stock_dfs, spy_close):
     permuted_rets = []
     permuted_sharpes = []
 
-    # Identify eligible dates per ticker
+    # Identify eligible dates per ticker — supports both DatetimeIndex and Date/date column (RangeIndex case)
     eligible_dates_per_ticker = {}
     for ticker, df in stock_dfs.items():
-        eligible_dates_per_ticker[ticker] = df.index.tolist()
+        if isinstance(df.index, pd.DatetimeIndex):
+            eligible_dates_per_ticker[ticker] = df.index.tolist()
+        elif "Date" in df.columns:
+            eligible_dates_per_ticker[ticker] = pd.to_datetime(df["Date"]).tolist()
+        elif "date" in df.columns:
+            eligible_dates_per_ticker[ticker] = pd.to_datetime(df["date"]).tolist()
+        else:
+            eligible_dates_per_ticker[ticker] = df.index.tolist()
 
     for i in tqdm(range(NUM_PERMUTATIONS), desc="In-Sample Permutations"):
         shuffled_posts = posts_df.copy()
@@ -206,8 +214,16 @@ def run_walk_forward_test(posts_df, stock_dfs, spy_close):
                 if n_signals == 0:
                     continue
 
-                # Eligible dates within the window
-                t_dates = stock_dfs[ticker].index
+                # Eligible dates within the window — handles DatetimeIndex and Date column
+                _df = stock_dfs[ticker]
+                if isinstance(_df.index, pd.DatetimeIndex):
+                    t_dates = _df.index
+                elif "Date" in _df.columns:
+                    t_dates = pd.to_datetime(_df["Date"])
+                elif "date" in _df.columns:
+                    t_dates = pd.to_datetime(_df["date"])
+                else:
+                    t_dates = _df.index
                 t_dates_in_w = t_dates[(t_dates >= w_start) & (t_dates < w_end)]
                 if len(t_dates_in_w) == 0:
                     continue # Fallback, shouldn't really happen if signals were generated

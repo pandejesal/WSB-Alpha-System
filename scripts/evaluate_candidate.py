@@ -496,6 +496,8 @@ def main():
     spec_fingerprint = hashlib.sha256(spec_content.encode('utf-8')).hexdigest()
 
     # 4 & 5. Evaluation and Signal Generation
+    posts_df = pd.DataFrame()
+    exit_overlay_not_simulated = False
     try:
         # Check for families that need plumbing this harness cannot run.
         # multi_factor: factor modules missing. xgboost_exits: the exit

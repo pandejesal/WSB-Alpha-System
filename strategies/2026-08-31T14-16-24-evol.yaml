@@ -1,0 +1,57 @@
+id: 2026-08-31T14-16-24-evol
+name: Evolved Adaptive Momentum (paper 2026-08-31T14-16-24)
+family: evolved
+venue: alpaca
+universe: 100-stock liquid large-cap panel (SPY excluded; QQQ/AGG/BND/SHY/GLD/VTI/IWM excluded)
+description: >
+  Evolved strategy family targeting adaptive momentum with a novel
+  adaptive_k operator for dynamic position scaling based on
+  cross-sectional volatility rank.
+evolution:
+  iteration: 1
+  model: opencode/ling-3.0-flash-fin-free
+  parent: breakout_burst
+  timestamp: 20260831-141624
+signal:
+  entry: >
+    On any bar where close return vs prior close >= +3% AND close > prior
+    20-day high (shifted, no lookahead) AND volume >= 1.5x prior 20-day
+    average volume, enter adaptive weighted by adaptive_k.
+  exit: after 20 trading days from entry
+  sizing: adaptive weight via adaptive_k; 1/N_active capped at 10 concurrent
+  caps:
+    max_concurrent_positions: 10
+  rebalance: daily target rows; exits write explicit 0.0 on the exit bar
+params:
+  gain_threshold_pct: 3.0
+  high_lookback_days: 20
+  vol_mult: 1.5
+  hold_days: 20
+  max_k: 10
+  sma50_filter: 0
+  drift_rebal: 0.0
+  adaptive_k: 0.75
+indicators:
+  - SMA: [20, 50]
+  - ATR: 20
+  - volume_ratio: volume / SMA(volume, 20)
+position_sizing:
+  - adaptive_k scaled weight per name
+  - max_k: 10
+  - min order notional $1; fractional shares
+fee_model:
+  commission: "$0 (Alpaca)"
+  slippage: "0.05%"
+  settlement: "T+1"
+benchmark_result:
+  benchmark: SPY
+  full: "CAGR X%, Sharpe Y"
+  oos_2023plus: "CAGR Z%"
+robustness_notes:
+  - "adaptive_k parameter sweep stability under review"
+feasibility_at_100:
+  - "Scales to small accounts via fractional shares"
+risks:
+  - "Adaptive operator untested under extreme regime shifts"
+version: 1
+status: PASS_ALL_GATES
