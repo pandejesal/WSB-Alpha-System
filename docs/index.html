@@ -1,144 +1,18 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WSB-Alpha-System</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="css/style.css">
-</head>
-<body class="bg-gray-900 text-white min-h-screen">
-    <!-- Header -->
-    <nav class="bg-gray-800 border-b border-gray-700 px-6 py-3">
-        <div class="flex items-center justify-between max-w-7xl mx-auto">
-            <h1 class="text-xl font-bold text-green-400">WSB-Alpha-System - OVERHAUL V1</h1>
-            <div class="relative">
-                <button onclick="document.getElementById('dropdown').classList.toggle('hidden')"
-                        class="px-4 py-2 rounded-lg bg-gray-700 hover:bg-gray-600 text-sm font-medium">
-                    Paper: <span id="paper-status">LOADING</span> ▼
-                </button>
-                <div id="dropdown" class="hidden absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-lg border border-gray-700 z-50">
-                    <button onclick="togglePaperTrading(true)" class="w-full text-left px-4 py-2 hover:bg-gray-700 text-green-400 rounded-t-lg">
-                        ✓ Turn ON
-                    </button>
-                    <button onclick="togglePaperTrading(false)" class="w-full text-left px-4 py-2 hover:bg-gray-700 text-red-400 rounded-b-lg">
-                        ✗ Turn OFF
-                    </button>
-                </div>
-            </div>
-        </div>
-    </nav>
-
-    <main class="max-w-7xl mx-auto px-6 py-6">
-        <!-- Status Cards -->
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
-            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <p class="text-gray-400 text-xs uppercase">Equity</p>
-                <p id="equity" class="text-2xl font-bold text-green-400">—</p>
-                <p id="equity-change" class="text-xs text-gray-400">—</p>
-            </div>
-            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <p class="text-gray-400 text-xs uppercase">Walk-Forward Eff.</p>
-                <p id="wf-efficiency" class="text-2xl font-bold">—</p>
-                <p id="wf-status" class="text-xs text-gray-400">—</p>
-            </div>
-            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <p class="text-gray-400 text-xs uppercase">OOS P-Value (MC)</p>
-                <p id="monte-carlo-p" class="text-2xl font-bold text-blue-400">—</p>
-                <p class="text-xs text-gray-400">Target < 0.01</p>
-            </div>
-            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <p class="text-gray-400 text-xs uppercase">Regime</p>
-                <p id="regime-text" class="text-2xl font-bold text-yellow-400">—</p>
-                <p id="gk-vol" class="text-xs text-gray-400">—</p>
-            </div>
-            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                 <p class="text-gray-400 text-xs uppercase">Active Hypothesis</p>
-                 <p id="active-hypothesis" class="text-md font-bold text-purple-400 truncate">—</p>
-                 <p id="hypothesis-confidence" class="text-xs text-gray-400">—</p>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Open Positions -->
-            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Open Positions</h2>
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="text-gray-500 border-b border-gray-700 text-xs">
-                            <th class="text-left py-2">Ticker</th>
-                            <th class="text-right py-2">Qty</th>
-                            <th class="text-right py-2">Entry</th>
-                            <th class="text-right py-2">Current</th>
-                            <th class="text-right py-2">P&L</th>
-                        </tr>
-                    </thead>
-                    <tbody id="positions-table">
-                        <tr><td colspan="5" class="py-4 text-center text-gray-500">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Strategy Leaderboard -->
-            <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Top Strategies (OOS Filtered)</h2>
-                <table class="w-full text-sm">
-                    <thead>
-                        <tr class="text-gray-500 border-b border-gray-700 text-xs">
-                            <th class="text-left py-2">#</th>
-                            <th class="text-left py-2">Name</th>
-                            <th class="text-right py-2">OOS Sharpe</th>
-                            <th class="text-right py-2">P-Value</th>
-                            <th class="text-right py-2">Complexity</th>
-                        </tr>
-                    </thead>
-                    <tbody id="strategy-table">
-                        <tr><td colspan="5" class="py-4 text-center text-gray-500">Loading...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Recent Trades -->
-        <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 mt-6">
-            <h2 class="text-sm font-semibold text-gray-400 uppercase mb-3">Recent Executions</h2>
-            <table class="w-full text-sm">
-                <thead>
-                    <tr class="text-gray-500 border-b border-gray-700 text-xs">
-                        <th class="text-left py-2">Date</th>
-                        <th class="text-left py-2">Ticker</th>
-                        <th class="text-left py-2">Side</th>
-                        <th class="text-right py-2">P&L</th>
-                    </tr>
-                </thead>
-                <tbody id="trades-table">
-                    <tr><td colspan="4" class="py-4 text-center text-gray-500">Loading...</td></tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Historical Backtest Section -->
-        <section id="backtest-section" class="mt-8 mb-6">
-            <h2 class="text-xl font-bold text-white mb-4">Historical Backtest (2019-2026)</h2>
-            <div id="equity-chart" class="bg-gray-800 rounded-lg p-4 mb-4 border border-gray-700">
-                <canvas id="equity-canvas" width="800" height="300" style="width: 100%; height: auto;"></canvas>
-            </div>
-            <div id="backtest-cards" class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4"></div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                    <h3 class="text-sm font-semibold text-gray-400 uppercase mb-3">Yearly Performance</h3>
-                    <div id="yearly-table"></div>
-                </div>
-                <div class="bg-gray-800 rounded-lg p-4 border border-gray-700">
-                    <h3 class="text-sm font-semibold text-gray-400 uppercase mb-3">Strategy Rankings (Top 10)</h3>
-                    <div id="strategy-rankings"></div>
-                </div>
-            </div>
-            <div id="overfitting-analysis" class="bg-gray-800 rounded-lg p-4 mt-4 border border-gray-700"></div>
-        </section>
-    </main>
-
-
-    <script src="js/app.js"></script>
-</body>
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238b5cf6' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polygon points='12 2 2 7 12 12 22 7 12 2'/><polyline points='2 17 12 22 22 17'/><polyline points='2 12 12 17 22 12'/></svg>" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WSB Vault Command Center</title>
+    <!-- Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="./assets/index-BUQwkX4-.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-CSm6B8yP.css">
+  </head>
+  <body class="bg-[#09090b] text-[#f4f4f5] antialiased selection:bg-violet-500/30 selection:text-violet-200 overflow-hidden">
+    <div id="root"></div>
+  </body>
 </html>
