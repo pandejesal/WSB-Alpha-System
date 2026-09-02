@@ -1,8 +1,7 @@
 import unittest
 import pandas as pd
 import numpy as np
-from src.alpha.indicators import compute_indicators
-from src.research.ticker_extractor import extract_tickers
+from src.alpha import compute_indicators
 from src.research.ticker_extractor import extract_tickers
 
 class TestIndicators(unittest.TestCase):

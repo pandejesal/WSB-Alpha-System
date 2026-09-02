@@ -1,9 +1,18 @@
 import unittest
-from src.alpha.schemas import StrategySpecification, Parameter
-from src.alpha.generator import PythonGenerator
+from src.alpha import get_strategy
+
+# Lazy-load schemas and generator (from private repo)
+try:
+    from src.alpha.schemas import StrategySpecification, Parameter
+    from src.alpha.generator import PythonGenerator
+    HAS_PRIVATE = True
+except ImportError:
+    HAS_PRIVATE = False
 
 class TestGenerator(unittest.TestCase):
     def test_python_generation(self):
+        if not HAS_PRIVATE:
+            self.skipTest("Private strategies repo not available")
         spec = StrategySpecification(
             id="1234-abcd",
             name="Test Strategy",

@@ -1,8 +1,7 @@
 import unittest
 import pandas as pd
 import numpy as np
-from src.alpha.strategy_man_ahl import ManAHLStrategy
-from src.alpha.strategy_wsb_alpha import WSBAlphaStrategy
+from src.alpha import get_strategy
 
 class TestStrategies(unittest.TestCase):
     def setUp(self):
@@ -17,13 +16,17 @@ class TestStrategies(unittest.TestCase):
         }, index=dates)
 
     def test_man_ahl_strategy(self):
-        strategy = ManAHLStrategy(windows=[5, 10], vol_window=20)
+        strategy = get_strategy("ManAHLStrategy")
+        if strategy is None:
+            self.skipTest("Private strategies repo not available")
         df_res = strategy.generate_signals(self.df.copy())
         self.assertIn('signal', df_res.columns)
         self.assertTrue(set(df_res['signal'].unique()).issubset({-1, 0, 1}))
 
     def test_wsb_alpha_strategy(self):
-        strategy = WSBAlphaStrategy()
+        strategy = get_strategy("WSBAlphaStrategy")
+        if strategy is None:
+            self.skipTest("Private strategies repo not available")
         df_res = strategy.generate_signals(self.df.copy())
         self.assertIn('signal', df_res.columns)
         self.assertTrue(set(df_res['signal'].unique()).issubset({-1, 0, 1}))

@@ -5,7 +5,7 @@ import sys
 import os
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src.alpha.indicators import compute_indicators
+from src.alpha import compute_indicators
 
 class TestIndicators(unittest.TestCase):
     def setUp(self):

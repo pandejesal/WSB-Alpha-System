@@ -13,7 +13,7 @@ import numpy as np
 import pandas as pd
 import yfinance as yf
 
-from src.alpha.man_ahl_legacy import (
+from src.alpha import (
     calculate_momentum_score,
     calculate_target_position_sizes,
     calculate_volatility_and_atr,
