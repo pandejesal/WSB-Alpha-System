@@ -1,1 +1,8 @@
 environment: 'development'
+
+benchmark_spider:
+  enabled: true
+  symbol: 'SPY'
+  lookback_days: 252
+  min_sharpe_ratio: 0.5
+  max_drawdown_pct: 0.15

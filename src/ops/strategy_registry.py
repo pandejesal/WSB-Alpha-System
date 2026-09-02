@@ -3,6 +3,8 @@ import os
 import yaml
 from typing import List, Dict, Any, Tuple
 
+from src.utils.config import config
+
 class MalformedSpecError(Exception):
     pass
 
@@ -151,6 +153,32 @@ def load_registry(registry_path: str = "strategies/registry.json") -> Tuple[List
         # Add the loaded spec into the entry dict for easy access
         entry_with_spec = entry.copy()
         entry_with_spec["spec"] = spec
+        
+        # Task 7.3: Wire benchmark_spider as default baseline for SPY-based strategies
+        # Only add baseline metadata if benchmark_spider is enabled and strategy is SPY-based
+        # This does NOT modify spec.params to avoid the params passthrough issue from PR #160
+        if config.benchmark_spider.enabled:
+            universe = spec.get("universe", "")
+            strategy_id = spec.get("id", "")
+            
+            # Check if strategy is SPY-based (universe or id contains SPY)
+            is_spy_based = False
+            if isinstance(universe, str) and "SPY" in universe.upper():
+                is_spy_based = True
+            elif isinstance(universe, list) and any("SPY" in str(u).upper() for u in universe):
+                is_spy_based = True
+            elif "SPY" in strategy_id.upper():
+                is_spy_based = True
+            
+            # Add benchmark baseline for SPY-based strategies
+            if is_spy_based:
+                entry_with_spec["benchmark_baseline"] = {
+                    "symbol": config.benchmark_spider.symbol,
+                    "lookback_days": config.benchmark_spider.lookback_days,
+                    "min_sharpe_ratio": config.benchmark_spider.min_sharpe_ratio,
+                    "max_drawdown_pct": config.benchmark_spider.max_drawdown_pct
+                }
+        
         loaded_entries.append(entry_with_spec)
         seen_specs.add(os.path.abspath(spec_path))
 

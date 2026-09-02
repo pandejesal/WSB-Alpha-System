@@ -81,6 +81,77 @@ def test_load_registry_success(mock_registry_dir):
     assert entries[0]["id"] == "mock_strat"
     assert entries[0]["spec"]["family"] == "momentum"
 
+def test_load_registry_benchmark_baseline_spy(mock_registry_dir):
+    """Task 7.3: SPY-based strategies get benchmark_spider baseline defaults."""
+    spec = {
+        "id": "spy_sma200",
+        "name": "SPY SMA200",
+        "family": "trend",
+        "universe": "SPY",
+        "parameters": {"window": 200},
+        "signal": {"entry": "buy"}
+    }
+    spec_path = mock_registry_dir / "spy_sma200.yaml"
+    with open(spec_path, 'w') as f:
+        yaml.dump(spec, f)
+
+    registry = {
+        "strategies": [
+            {
+                "id": "spy_sma200",
+                "spec_file": str(spec_path),
+                "status": "active"
+            }
+        ]
+    }
+    reg_path = mock_registry_dir / "registry.json"
+    with open(reg_path, 'w') as f:
+        json.dump(registry, f)
+
+    entries, portfolio = load_registry(str(reg_path))
+    assert len(entries) == 1
+    assert "benchmark_baseline" in entries[0]
+    baseline = entries[0]["benchmark_baseline"]
+    assert baseline["symbol"] == "SPY"
+    assert baseline["lookback_days"] == 252
+    assert baseline["min_sharpe_ratio"] == 0.5
+    assert baseline["max_drawdown_pct"] == 0.15
+    # Ensure spec params are NOT modified (PR #160 regression guard)
+    assert entries[0]["spec"]["parameters"] == {"window": 200}
+
+
+def test_load_registry_no_benchmark_baseline_non_spy(mock_registry_dir):
+    """Task 7.3: Non-SPY strategies do NOT get benchmark baseline."""
+    spec = {
+        "id": "btc_trend",
+        "name": "BTC Trend",
+        "family": "trend",
+        "universe": "BTC",
+        "parameters": {"window": 200},
+        "signal": {"entry": "buy"}
+    }
+    spec_path = mock_registry_dir / "btc_trend.yaml"
+    with open(spec_path, 'w') as f:
+        yaml.dump(spec, f)
+
+    registry = {
+        "strategies": [
+            {
+                "id": "btc_trend",
+                "spec_file": str(spec_path),
+                "status": "active"
+            }
+        ]
+    }
+    reg_path = mock_registry_dir / "registry.json"
+    with open(reg_path, 'w') as f:
+        json.dump(registry, f)
+
+    entries, portfolio = load_registry(str(reg_path))
+    assert len(entries) == 1
+    assert "benchmark_baseline" not in entries[0]
+
+
 @mock.patch("src.ops.signals.get_us_momentum_top5_signal")
 def test_generate_signals_from_registry(mock_momentum, mock_registry_dir):
     mock_momentum.return_value = {"signal": "LONG", "targets": ["AAPL"]}
