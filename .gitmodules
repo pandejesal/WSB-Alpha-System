@@ -1,0 +1,3 @@
+[submodule "strategies"]
+	url = https://github.com/pandejesal/WSB-Alpha-Strategies.git
+	path = strategies
