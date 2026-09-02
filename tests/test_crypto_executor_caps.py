@@ -29,8 +29,9 @@ def test_gates_allow_trading_all_clear():
     assert reason == ""
 
 
+@patch.object(risk_config, 'DAILY_LOSS_CIRCUIT_BREAKER_PCT', 0.05)
 def test_gates_allow_trading_daily_loss_trip():
-    # Loss exceeds DAILY_LOSS_CIRCUIT_BREAKER_PCT
+    # Loss exceeds DAILY_LOSS_CIRCUIT_BREAKER_PCT (patched to 0.05 legacy value; production default is 1.0 disabled)
     equity = 900.0
     last_equity = 1000.0
     high_water_mark = 1000.0
@@ -42,8 +43,10 @@ def test_gates_allow_trading_daily_loss_trip():
     assert "DAILY CIRCUIT BREAKER TRIPPED" in reason
 
 
+@patch.object(risk_config, 'WEEKLY_LOSS_CIRCUIT_BREAKER_PCT', 0.10)
+@patch.object(risk_config, 'MAX_DRAWDOWN_CIRCUIT_BREAKER_PCT', 0.15)
 def test_gates_allow_trading_weekly_loss_trip():
-    # Drawdown exceeds WEEKLY_LOSS_CIRCUIT_BREAKER_PCT
+    # Drawdown exceeds WEEKLY_LOSS_CIRCUIT_BREAKER_PCT (patched to 0.10 legacy; production default is 1.0 disabled)
     equity = 800.0
     last_equity = 800.0
     high_water_mark = 1000.0
@@ -67,10 +70,11 @@ def test_gates_allow_trading_max_positions_trip():
     assert "Max positions" in reason
 
 
+@patch.object(risk_config, 'DAILY_LOSS_CIRCUIT_BREAKER_PCT', 0.05)
 def test_gates_allow_trading_boundary_condition():
-    # Loss exactly at the breaker pct should not trip
+    # Loss exactly at the breaker pct should not trip (patched to 0.05 legacy)
     last_equity = 1000.0
-    loss_amount = last_equity * risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT
+    loss_amount = last_equity * 0.05
     equity = last_equity - loss_amount
     high_water_mark = last_equity
     active_pos_count = 0
@@ -146,6 +150,7 @@ def test_main_max_positions_regression(
             # Assert execute_bybit_order is NEVER called
             mock_execute.assert_not_called()
 
+@patch.object(risk_config, 'DAILY_LOSS_CIRCUIT_BREAKER_PCT', 0.05)
 @patch('src.execution.live_crypto_executor.execute_bybit_order')
 @patch('src.execution.live_crypto_executor.check_rebalance_required')
 @patch('src.execution.live_crypto_executor.calculate_target_position_sizes')

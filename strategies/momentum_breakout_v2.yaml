@@ -1,0 +1,62 @@
+id: momentum_breakout_v2
+name: Momentum Breakout v2
+family: momentum
+version: "2.0"
+status: active
+venue: alpaca
+universe: SPY
+
+pre_registration_ref: docs/data/prereg_momentum_breakout_v2.md
+gates_passed: "5/5"
+verdict: PASS_ALL_GATES
+eval_records: docs/data/eval_momentum_breakout_v2.json
+
+signal:
+  entry: "Breakout entry with 2.5% threshold and volume confirmation"
+  exit: "8 trading days or RSI>70 or 8% retrace"
+  sizing: "equal weight, 1/N per day"
+  caps:
+    max_concurrent_positions: 8
+  rebalance: daily
+
+parameters:
+  gain_threshold_pct: 2.5
+  high_lookback_days: 20
+  vol_mult: 1.3
+  hold_days: 8
+  max_k: 8
+  sma50_filter: 1
+
+indicators:
+  - rsi14
+  - sma50
+  - volume_ma20
+
+fee_model:
+  commission: "$0 (Alpaca)"
+  slippage: 0.1
+  settlement: T+1
+
+benchmark_result:
+  benchmark: SPY buy-and-hold
+  full: "CAGR 12.5%, Sharpe 1.80"
+  oos_2023plus: "CAGR 14.8%, Sharpe 2.15"
+  trades: 420
+  win_rate: 61.9
+
+robustness_notes:
+  - "parameter sweep: all OOS Sharpe 1.65-2.05"
+  - "SMA50 filter adds regime adaptation"
+  - "complexity penalty 0.15 keeps fitness competitive"
+
+feasibility_at_100:
+  - "$0 commissions make 420 trades affordable"
+  - "Breakout on SPY effective; holds 5-8 days"
+
+risks:
+  - "Mean-reversion into crashing market"
+  - "Breakout fills can be worse than modeled"
+  - "4 params subject to overfitting"
+
+fitness_metric: "ROI * Sharpe * regime_adaptation / complexity_penalty"
+complexity_penalty: 0.15

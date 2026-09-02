@@ -4,34 +4,25 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+
 class FadeStrategy:
-    """
-    Implements a mean-reversion shorting strategy ("The Fade").
-    Trigger condition:
-    1. FinBERT sentiment is historically high (> 90th percentile, trailing 30-day window).
-    2. Technical Confluence shows momentum breaking down.
-    """
+    """Implements a mean-reversion shorting strategy ("The Fade")."""
 
     def __init__(self, historical_90th_percentile: float | None = None):
-        """
-        Initialize with the pre-calculated 90th percentile of sentiment scores from the trailing 30 days.
-        """
+        """Initialize with the pre-calculated 90th percentile of sentiment scores from the trailing 30 days."""
         self.threshold = historical_90th_percentile
 
     def is_sentiment_euphoric(self, current_score: float) -> bool:
-        """
-        Checks if the current sentiment is above the 90th percentile of the trailing 30-day baseline.
-        """
+        """Checks if the current sentiment is above the 90th percentile of the trailing 30-day baseline."""
         if self.threshold is None:
             # Need a minimum baseline to safely calculate percentiles
             return False
-
-        logger.debug(f"Current Score: {current_score:.4f}, 90th Pct Threshold: {self.threshold:.4f}")
+        logger.debug("Current Score: %s, 90th Pct Threshold: %s", current_score, self.threshold)
         return current_score > self.threshold
 
     def evaluate(self, current_score: float, technical_data: pd.Series) -> bool:
-        """
-        Evaluates if the conditions for the Fade Strategy are met.
+        """Evaluates if the conditions for the Fade Strategy are met.
+
         Technical criteria for momentum breaking down:
         - Heikin-Ashi turns red (Close < Open)
         - MACD crosses below MACD Signal
@@ -50,13 +41,11 @@ class FadeStrategy:
                 return True
             return False
         except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
-            logger.error(f"Error evaluating Fade Strategy technicals: {e}")
+            logger.error("Error evaluating Fade Strategy technicals: %s", e)
             return False
 
     def generate_signal(self, ticker: str, current_score: float, technical_data: pd.Series, base_qty: int, cvar: float) -> dict:
-        """
-        Returns a formatted short signal if the strategy triggers, otherwise None.
-        """
+        """Returns a formatted short signal if the strategy triggers, otherwise None."""
         if self.evaluate(current_score, technical_data):
             # We enforce a SELL (short) order for the Fade Strategy
             signal = {
@@ -65,7 +54,7 @@ class FadeStrategy:
                 "quantity": base_qty,
                 "order_type": "MARKET",
                 "target_cvar_allocation": cvar,
-                "strategy": "FadeStrategy"
+                "strategy": "FadeStrategy",
             }
             return signal
         return None

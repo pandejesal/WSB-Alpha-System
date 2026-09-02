@@ -2424,6 +2424,42 @@
         "minerva": 82,
         "passed": true
       }
+    },
+    {
+      "id": "momentum_breakout_v2",
+      "name": "US Momentum Breakout v2 (Evolved)",
+      "family": "momentum",
+      "venue": "alpaca",
+      "spec_file": "strategies/momentum_breakout_v2.yaml",
+      "gates_passed": "5/5",
+      "rank": 1,
+      "status": "paper",
+      "ported_at": "2026-09-02",
+      "evolution_notes": "Optimized breakout thresholds for range-bound regimes, complexity penalty 0.15, all 5 gates pass"
+    },
+    {
+      "id": "mean_reversion_enhanced",
+      "name": "US Mean Reversion Enhanced (Evolved)",
+      "family": "mean_reversion",
+      "venue": "alpaca",
+      "spec_file": "strategies/mean_reversion_enhanced.yaml",
+      "gates_passed": "5/5",
+      "rank": 2,
+      "status": "paper",
+      "ported_at": "2026-09-02",
+      "evolution_notes": "21-period RSI with vol-regime filter, dynamic stops, complexity penalty 0.12, all 5 gates pass"
+    },
+    {
+      "id": "trend_following_v3",
+      "name": "US Trend Following v3 (Evolved)",
+      "family": "trend",
+      "venue": "alpaca",
+      "spec_file": "strategies/trend_following_v3.yaml",
+      "gates_passed": "5/5",
+      "rank": 3,
+      "status": "paper",
+      "ported_at": "2026-09-02",
+      "evolution_notes": "10/30 EMA crossover with trend strength filter, Mnemosyne regime tracking, complexity penalty 0.10, all 5 gates pass"
     }
   ],
   "portfolio": {

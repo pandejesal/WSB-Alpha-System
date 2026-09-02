@@ -1,0 +1,64 @@
+id: trend_following_v3
+name: Trend Following v3
+family: trend
+version: "3.0"
+status: active
+venue: alpaca
+universe: SPY
+
+pre_registration_ref: docs/data/prereg_trend_following_v3.md
+gates_passed: "5/5"
+verdict: PASS_ALL_GATES
+eval_records: docs/data/eval_trend_following_v3.json
+
+signal:
+  entry: "MA crossover entry with trend strength filter"
+  exit: "20 trading days or MA cross reverse or 15% drawdown from peak"
+  sizing: "volatility-adjusted, half-Kelly based on historical win rate"
+  caps:
+    max_concurrent_positions: 3
+  rebalance: daily
+
+parameters:
+  ma_fast: 10
+  ma_slow: 30
+  min_trend_strength: 0.25
+  hold_days: 20
+  gk_vol_limit: 0.03
+  complexity_penalty: 0.10
+  mnemosyne_regime_tracking: true
+
+indicators:
+  - ma_fast: 10-period EMA of SPY close
+  - ma_slow: 30-period EMA of SPY close
+  - gk_vol: Garman-Klass volatility estimator
+  - regime_flag: RISK_ON/RISK_OFF/STAGFLATION/NEUTRAL (from FRED)
+
+fee_model:
+  commission: "$0 (Alpaca)"
+  slippage: 0.1
+  settlement: T+1
+
+benchmark_result:
+  benchmark: SPY buy-and-hold
+  full: "CAGR 11.2%, Sharpe 1.88"
+  oos_2023plus: "CAGR 13.5%, Sharpe 2.10"
+  trades: 280
+  win_rate: 52.1
+
+robustness_notes:
+  - "MA parameters optimized for current interest-rate environment"
+  - "Mnemosyne integration for regime persistence tracking"
+  - "complexity penalty 0.10 (6 params) balanced"
+
+feasibility_at_100:
+  - "$0 commissions make 280 trades affordable"
+  - "Trend following on SPY viable; holds 15-20 days"
+
+risks:
+  - "Trend can fail in sideways/range-bound markets"
+  - "Interest-rate regime shifts can whipsaw MA crossovers"
+  - "6 params subject to overfitting; penalty enforced"
+
+fitness_metric: "ROI * Sharpe * regime_adaptation / complexity_penalty"
+complexity_penalty: 0.10

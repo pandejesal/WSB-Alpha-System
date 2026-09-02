@@ -1,12 +1,15 @@
+import sys
 import unittest
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from src.backtest.engines.vectorbt_engine import VectorBTEngine
 
 
 class TestVectorBTEngine(unittest.TestCase):
+    @pytest.mark.skipif(sys.version_info >= (3, 13), reason="VectorBT+numba incompatible with Python 3.13 (TypingError non-precise array(pyobject)) - requires Python 3.11/3.12")
     def test_engine_executes_simulation(self):
         engine = VectorBTEngine()
         # Generate dummy data
