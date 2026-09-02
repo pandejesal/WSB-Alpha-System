@@ -72,7 +72,7 @@ def test_max_concurrent_positions_cap(
 
     # Check log output for the skip message
     captured = capsys.readouterr().out
-    assert "Skipping SOL-USD entry: MAX_CONCURRENT_POSITIONS" in captured
+    assert "Max positions (2) reached or exceeded." in captured
 
 @patch("src.execution.live_crypto_executor.init_bybit_exchange")
 @patch("src.execution.live_crypto_executor.fetch_account_equity")

@@ -29,7 +29,12 @@ def test_gates_allow_trading_all_clear():
     assert reason == ""
 
 
-def test_gates_allow_trading_daily_loss_trip():
+@patch("src.execution.live_crypto_executor.risk_config")
+def test_gates_allow_trading_daily_loss_trip(mock_risk_config):
+    mock_risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT = 0.05
+    mock_risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT = 0.10
+    mock_risk_config.MAX_DRAWDOWN_CIRCUIT_BREAKER_PCT = 0.15
+    mock_risk_config.MAX_CONCURRENT_POSITIONS = 4
     # Loss exceeds DAILY_LOSS_CIRCUIT_BREAKER_PCT
     equity = 900.0
     last_equity = 1000.0
@@ -42,7 +47,12 @@ def test_gates_allow_trading_daily_loss_trip():
     assert "DAILY CIRCUIT BREAKER TRIPPED" in reason
 
 
-def test_gates_allow_trading_weekly_loss_trip():
+@patch("src.execution.live_crypto_executor.risk_config")
+def test_gates_allow_trading_weekly_loss_trip(mock_risk_config):
+    mock_risk_config.DAILY_LOSS_CIRCUIT_BREAKER_PCT = 0.05
+    mock_risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT = 0.10
+    mock_risk_config.MAX_DRAWDOWN_CIRCUIT_BREAKER_PCT = 0.15
+    mock_risk_config.MAX_CONCURRENT_POSITIONS = 4
     # Drawdown exceeds WEEKLY_LOSS_CIRCUIT_BREAKER_PCT
     equity = 800.0
     last_equity = 800.0
