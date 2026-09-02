@@ -1,449 +1,732 @@
-quarter,symbol,doc_count,top1_url,top1_title,top1_domain
-2019Q1,NVDA,0,,,
-2019Q1,MSFT,0,,,
-2019Q1,NVDA,0,,,
-2019Q1,AMZN,0,,,
-2019Q1,NVDA,0,,,
-2019Q1,GOOGL,0,,,
-2019Q1,AMZN,0,,,
-2019Q1,AMZN,0,,,
-2019Q1,META,0,,,
-2019Q1,GOOGL,0,,,
-2019Q1,GOOGL,0,,,
-2019Q1,TSLA,0,,,
-2019Q1,META,0,,,
-2019Q1,META,0,,,
-2019Q1,AVGO,0,,,
-2019Q1,TSLA,0,,,
-2019Q1,TSLA,0,,,
-2019Q1,JPM,0,,,
-2019Q1,AVGO,0,,,
-2019Q1,AVGO,0,,,
-2019Q1,BAC,0,,,
-2019Q1,JPM,0,,,
-2019Q1,JPM,0,,,
-2019Q1,WMT,0,,,
-2019Q1,BAC,0,,,
-2019Q1,BAC,0,,,
-2019Q1,XOM,0,,,
-2019Q1,WMT,0,,,
-2019Q1,WMT,0,,,
-2019Q1,UNH,0,,,
-2019Q1,XOM,0,,,
-2019Q1,XOM,0,,,
-2019Q1,JNJ,0,,,
-2019Q1,UNH,0,,,
-2019Q1,UNH,0,,,
-2019Q1,V,0,,,
-2019Q1,JNJ,0,,,
-2019Q1,JNJ,0,,,
-2019Q1,MA,0,,,
-2019Q1,V,0,,,
-2019Q1,V,0,,,
-2019Q1,NFLX,0,,,
-2019Q1,MA,0,,,
-2019Q1,MA,0,,,
-2019Q1,DIS,0,,,
-2019Q1,NFLX,0,,,
-2019Q1,NFLX,0,,,
-2019Q1,AMD,0,,,
-2019Q1,DIS,0,,,
-2019Q1,DIS,0,,,
-2019Q1,ADBE,0,,,
-2019Q1,AMD,0,,,
-2019Q1,AMD,0,,,
-2019Q1,BTC,0,,,
-2019Q1,ADBE,0,,,
-2019Q1,ADBE,0,,,
-2019Q1,ETH,0,,,
-2019Q1,BTC,0,,,
-2019Q1,BTC,0,,,
-2019Q2,SPY,0,,,
-2019Q1,ETH,0,,,
-2019Q1,ETH,0,,,
-2019Q2,QQQ,0,,,
-2019Q2,SPY,0,,,
-2019Q2,SPY,0,,,
-2019Q2,DIA,0,,,
-2019Q2,QQQ,0,,,
-2019Q2,QQQ,0,,,
-2019Q2,IWM,0,,,
-2019Q2,DIA,0,,,
-2019Q2,EEM,0,,,
-2019Q2,DIA,0,,,
-2019Q2,IWM,0,,,
-2019Q2,GLD,0,,,
-2019Q2,IWM,0,,,
-2019Q2,EEM,0,,,
-2019Q2,SLV,0,,,
-2019Q2,EEM,0,,,
-2019Q2,TLT,0,,,
-2019Q2,GLD,0,,,
-2019Q2,GLD,0,,,
-2019Q2,HYG,0,,,
-2019Q2,SLV,0,,,
-2019Q2,SLV,0,,,
-2019Q2,XLE,0,,,
-2019Q2,TLT,0,,,
-2019Q2,TLT,0,,,
-2019Q2,XLF,0,,,
-2019Q2,HYG,0,,,
-2019Q2,HYG,0,,,
-2019Q2,^VIX,0,,,
-2019Q2,XLE,0,,,
-2019Q2,XLE,0,,,
-2019Q2,AAPL,0,,,
-2019Q2,XLF,0,,,
-2019Q2,XLF,0,,,
-2019Q2,MSFT,0,,,
-2019Q2,^VIX,0,,,
-2019Q2,^VIX,0,,,
-2019Q2,NVDA,0,,,
-2019Q2,AAPL,0,,,
-2019Q2,AAPL,0,,,
-2019Q2,AMZN,0,,,
-2019Q2,MSFT,0,,,
-2019Q2,MSFT,0,,,
-2019Q2,GOOGL,0,,,
-2019Q2,NVDA,0,,,
-2019Q2,NVDA,0,,,
-2019Q2,META,0,,,
-2019Q2,AMZN,0,,,
-2019Q2,AMZN,0,,,
-2019Q2,TSLA,0,,,
-2019Q2,GOOGL,0,,,
-2019Q2,GOOGL,0,,,
-2019Q2,AVGO,0,,,
-2019Q2,META,0,,,
-2019Q2,META,0,,,
-2019Q2,TSLA,0,,,
-2019Q2,JPM,0,,,
-2019Q2,TSLA,0,,,
-2019Q2,BAC,0,,,
-
-2019Q2,AVGO,0,,,
-2019Q2,WMT,0,,,
-2019Q2,JPM,0,,,
-2019Q2,JPM,0,,,
-2019Q2,BAC,0,,,
-2019Q2,XOM,0,,,
-2019Q2,BAC,0,,,
-2019Q2,WMT,0,,,
-2019Q2,UNH,0,,,
-2019Q2,WMT,0,,,
-2019Q2,XOM,0,,,
-2019Q2,JNJ,0,,,
-2019Q2,XOM,0,,,
-2019Q2,UNH,0,,,
-2019Q2,V,0,,,
-2019Q2,UNH,0,,,
-2019Q2,JNJ,0,,,
-2019Q2,MA,0,,,
-2019Q2,JNJ,0,,,
-2019Q2,V,0,,,
-2019Q2,NFLX,0,,,
-2019Q2,V,0,,,
-2019Q2,MA,0,,,
-2019Q2,DIS,0,,,
-2019Q2,MA,0,,,
-2019Q2,NFLX,0,,,
-2019Q2,AMD,0,,,
-2019Q2,NFLX,0,,,
-2019Q2,DIS,0,,,
-2019Q2,ADBE,0,,,
-2019Q2,AMD,0,,,
-2019Q2,DIS,0,,,
-2019Q2,BTC,0,,,
-2019Q2,AMD,0,,,
-2019Q2,ADBE,0,,,
-2019Q2,ETH,0,,,
-2019Q2,ADBE,0,,,
-2019Q2,BTC,0,,,
-2019Q3,SPY,0,,,
-2019Q2,ETH,0,,,
-2019Q2,BTC,0,,,
-2019Q3,QQQ,0,,,
-2019Q3,SPY,0,,,
-2019Q2,ETH,0,,,
-2019Q3,DIA,0,,,
-2019Q3,QQQ,0,,,
-2019Q3,SPY,0,,,
-2019Q3,IWM,0,,,
-2019Q3,DIA,0,,,
-2019Q3,QQQ,0,,,
-2019Q3,EEM,0,,,
-2019Q3,IWM,0,,,
-2019Q3,DIA,0,,,
-2019Q3,GLD,0,,,
-2019Q3,EEM,0,,,
-2019Q3,IWM,0,,,
-2019Q3,SLV,0,,,
-2019Q3,GLD,0,,,
-2019Q3,EEM,0,,,
-2019Q3,TLT,0,,,
-2019Q3,SLV,0,,,
-2019Q3,GLD,0,,,
-2019Q3,HYG,0,,,
-2019Q3,TLT,0,,,
-2019Q3,SLV,0,,,
-2019Q3,XLE,0,,,
-2019Q3,HYG,0,,,
-2019Q3,TLT,0,,,
-2019Q3,XLF,0,,,
-2019Q3,XLE,0,,,
-2019Q3,HYG,0,,,
-2019Q3,^VIX,0,,,
-2019Q3,XLF,0,,,
-2019Q3,XLE,0,,,
-2019Q3,^VIX,0,,,
-2019Q3,AAPL,0,,,
-2019Q3,XLF,0,,,
-2019Q3,AAPL,0,,,
-2019Q3,MSFT,0,,,
-2019Q3,^VIX,0,,,
-2019Q3,MSFT,0,,,
-2019Q3,NVDA,0,,,
-2019Q3,AAPL,0,,,
-2019Q3,NVDA,0,,,
-2019Q3,AMZN,0,,,
-2019Q3,MSFT,0,,,
-2019Q3,AMZN,0,,,
-2019Q3,GOOGL,0,,,
-2019Q3,NVDA,0,,,
-2019Q3,GOOGL,0,,,
-2019Q3,AMZN,0,,,
-2019Q3,META,0,,,
-2019Q3,META,0,,,
-2019Q3,TSLA,0,,,
-2019Q3,GOOGL,0,,,
-2019Q3,TSLA,0,,,
-2019Q3,AVGO,0,,,
-2019Q3,META,0,,,
-2019Q3,AVGO,0,,,
-2019Q3,JPM,0,,,
-2019Q3,TSLA,0,,,
-2019Q3,JPM,0,,,
-2019Q3,AVGO,0,,,
-2019Q3,BAC,0,,,
-2019Q3,BAC,0,,,
-2019Q3,JPM,0,,,
-2019Q3,WMT,0,,,
-2019Q3,WMT,0,,,
-2019Q3,BAC,0,,,
-2019Q3,XOM,0,,,
-2019Q3,XOM,0,,,
-2019Q3,UNH,0,,,
-2019Q3,WMT,0,,,
-2019Q3,UNH,0,,,
-2019Q3,JNJ,0,,,
-2019Q3,XOM,0,,,
-2019Q3,JNJ,0,,,
-2019Q3,V,0,,,
-2019Q3,UNH,0,,,
-2019Q3,V,0,,,
-2019Q3,MA,0,,,
-2019Q3,MA,0,,,
-2019Q3,JNJ,0,,,
-2019Q3,NFLX,0,,,
-2019Q3,NFLX,0,,,
-2019Q3,V,0,,,
-2019Q3,DIS,0,,,
-2019Q3,DIS,0,,,
-2019Q3,MA,0,,,
-2019Q3,AMD,0,,,
-2019Q3,AMD,0,,,
-2019Q3,NFLX,0,,,
-2019Q3,ADBE,0,,,
-2019Q3,ADBE,0,,,
-2019Q3,DIS,0,,,
-2019Q3,BTC,0,,,
-2019Q3,BTC,0,,,
-2019Q3,AMD,0,,,
-2019Q3,ETH,0,,,
-2019Q3,ETH,0,,,
-2019Q3,ADBE,0,,,
-2019Q4,SPY,0,,,
-2019Q4,SPY,0,,,
-2019Q3,BTC,0,,,
-2019Q4,QQQ,0,,,
-2019Q4,QQQ,0,,,
-2019Q3,ETH,0,,,
-2019Q4,DIA,0,,,
-2019Q4,DIA,0,,,
-2019Q4,SPY,0,,,
-2019Q4,IWM,0,,,
-2019Q4,IWM,0,,,
-2019Q4,QQQ,0,,,
-2019Q4,EEM,0,,,
-2019Q4,EEM,0,,,
-2019Q4,DIA,0,,,
-2019Q4,GLD,0,,,
-2019Q4,GLD,0,,,
-2019Q4,IWM,0,,,
-2019Q4,SLV,0,,,
-2019Q4,SLV,0,,,
-2019Q4,EEM,0,,,
-2019Q4,TLT,0,,,
-2019Q4,TLT,0,,,
-2019Q4,GLD,0,,,
-2019Q4,HYG,0,,,
-2019Q4,HYG,0,,,
-2019Q4,SLV,0,,,
-2019Q4,XLE,0,,,
-2019Q4,XLE,0,,,
-2019Q4,TLT,0,,,
-2019Q4,XLF,0,,,
-2019Q4,XLF,0,,,
-2019Q4,HYG,0,,,
-2019Q4,^VIX,0,,,
-2019Q4,^VIX,0,,,
-2019Q4,XLE,0,,,
-2019Q4,AAPL,0,,,
-2019Q4,AAPL,0,,,
-2019Q4,XLF,0,,,
-2019Q4,MSFT,0,,,
-2019Q4,^VIX,0,,,
-2019Q4,MSFT,0,,,
-2019Q4,NVDA,0,,,
-2019Q4,AAPL,0,,,
-2019Q4,NVDA,0,,,
-2019Q4,AMZN,0,,,
-2019Q4,MSFT,0,,,
-2019Q4,AMZN,0,,,
-2019Q4,GOOGL,0,,,
-2019Q4,NVDA,0,,,
-2019Q4,GOOGL,0,,,
-2019Q4,META,0,,,
-2019Q4,AMZN,0,,,
-2019Q4,META,0,,,
-2019Q4,TSLA,0,,,
-2019Q4,GOOGL,0,,,
-2019Q4,TSLA,0,,,
-2019Q4,AVGO,0,,,
-2019Q4,META,0,,,
-2019Q4,AVGO,0,,,
-2019Q4,JPM,0,,,
-2019Q4,TSLA,0,,,
-2019Q4,JPM,0,,,
-2019Q4,BAC,0,,,
-2019Q4,AVGO,0,,,
-2019Q4,BAC,0,,,
-2019Q4,WMT,0,,,
-2019Q4,JPM,0,,,
-2019Q4,WMT,0,,,
-2019Q4,XOM,0,,,
-2019Q4,BAC,0,,,
-2019Q4,XOM,0,,,
-2019Q4,UNH,0,,,
-2019Q4,UNH,0,,,
-2019Q4,WMT,0,,,
-2019Q4,JNJ,0,,,
-2019Q4,JNJ,0,,,
-2019Q4,XOM,0,,,
-2019Q4,V,0,,,
-2019Q4,V,0,,,
-2019Q4,UNH,0,,,
-2019Q4,MA,0,,,
-2019Q4,MA,0,,,
-2019Q4,JNJ,0,,,
-2019Q4,NFLX,0,,,
-2019Q4,NFLX,0,,,
-2019Q4,V,0,,,
-2019Q4,DIS,0,,,
-2019Q4,DIS,0,,,
-2019Q4,MA,0,,,
-2019Q4,AMD,0,,,
-2019Q4,AMD,0,,,
-2019Q4,NFLX,0,,,
-2019Q4,ADBE,0,,,
-2019Q4,ADBE,0,,,
-2019Q4,DIS,0,,,
-2019Q4,BTC,0,,,
-2019Q4,BTC,0,,,
-2019Q4,ETH,0,,,
-2019Q4,AMD,0,,,
-2019Q4,ETH,0,,,
-2020Q1,SPY,0,,,
-2019Q4,ADBE,0,,,
-2020Q1,SPY,0,,,
-2020Q1,QQQ,0,,,
-2019Q4,BTC,0,,,
-2020Q1,QQQ,0,,,
-2020Q1,DIA,0,,,
-2020Q1,DIA,0,,,
-2019Q4,ETH,0,,,
-2020Q1,IWM,0,,,
-2020Q1,SPY,0,,,
-2020Q1,IWM,0,,,
-2020Q1,EEM,0,,,
-2020Q1,EEM,0,,,
-2020Q1,QQQ,0,,,
-2020Q1,GLD,0,,,
-2020Q1,GLD,0,,,
-2020Q1,DIA,0,,,
-2020Q1,SLV,0,,,
-2020Q1,SLV,0,,,
-2020Q1,IWM,0,,,
-2020Q1,TLT,0,,,
-2020Q1,EEM,0,,,
-2020Q1,TLT,0,,,
-2020Q1,HYG,0,,,
-2020Q1,HYG,0,,,
-2020Q1,GLD,0,,,
-2020Q1,XLE,0,,,
-2020Q1,XLE,0,,,
-2020Q1,SLV,0,,,
-2020Q1,XLF,0,,,
-2020Q1,XLF,0,,,
-2020Q1,TLT,0,,,
-2020Q1,^VIX,0,,,
-2020Q1,^VIX,0,,,
-2020Q1,HYG,0,,,
-2020Q1,AAPL,0,,,
-2020Q1,AAPL,0,,,
-2020Q1,XLE,0,,,
-2020Q1,MSFT,0,,,
-2020Q1,MSFT,0,,,
-2020Q1,XLF,0,,,
-2020Q1,NVDA,0,,,
-2020Q1,NVDA,0,,,
-2020Q1,^VIX,0,,,
-2020Q1,AMZN,0,,,
-2020Q1,AMZN,0,,,
-2020Q1,AAPL,0,,,
-2020Q1,GOOGL,0,,,
-2020Q1,GOOGL,0,,,
-2020Q1,MSFT,0,,,
-2020Q1,META,0,,,
-2020Q1,META,0,,,
-2020Q1,NVDA,0,,,
-2020Q1,TSLA,0,,,
-2020Q1,TSLA,0,,,
-2020Q1,AMZN,0,,,
-2020Q1,AVGO,0,,,
-2020Q1,GOOGL,0,,,
-2020Q1,JPM,0,,,
-2020Q1,JPM,0,,,
-2020Q1,META,0,,,
-2020Q1,BAC,0,,,
-2020Q1,BAC,0,,,
-2020Q1,TSLA,0,,,
-2020Q1,WMT,0,,,
-2020Q1,WMT,0,,,
-2020Q1,AVGO,0,,,
-2020Q1,XOM,0,,,
-2020Q1,XOM,0,,,
-2020Q1,JPM,0,,,
-2020Q1,UNH,0,,,
-2020Q1,BAC,0,,,
-2020Q1,JNJ,0,,,
-2020Q1,JNJ,0,,,
-2020Q1,WMT,0,,,
-2020Q1,V,0,,,
-2020Q1,V,0,,,
-2020Q1,XOM,0,,,
-2020Q1,MA,0,,,
-2020Q1,MA,0,,,
-2020Q1,UNH,0,,,
-2020Q1,NFLX,0,,,
-2020Q1,NFLX,0,,,
+quarter,symbol,doc_count,top1_url,top1_title,top1_domain,avg_tone,tone_disp,event_impact
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,JNJ,0,https://seekingalpha.com/article/4248004-johnson-and-johnson-still-attractive-investment,Why Johnson & Johnson Is Still An Attractive Investment,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,JNJ,0,https://seekingalpha.com/article/4248004-johnson-and-johnson-still-attractive-investment,Why Johnson & Johnson Is Still An Attractive Investment,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,JNJ,0,https://seekingalpha.com/article/4248004-johnson-and-johnson-still-attractive-investment,Why Johnson & Johnson Is Still An Attractive Investment,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,JNJ,0,https://seekingalpha.com/article/4248004-johnson-and-johnson-still-attractive-investment,Why Johnson & Johnson Is Still An Attractive Investment,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,JNJ,0,https://seekingalpha.com/article/4248004-johnson-and-johnson-still-attractive-investment,Why Johnson & Johnson Is Still An Attractive Investment,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,JNJ,0,https://seekingalpha.com/article/4248004-johnson-and-johnson-still-attractive-investment,Why Johnson & Johnson Is Still An Attractive Investment,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,JNJ,0,https://seekingalpha.com/article/4248004-johnson-and-johnson-still-attractive-investment,Why Johnson & Johnson Is Still An Attractive Investment,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,JNJ,0,https://seekingalpha.com/article/4248004-johnson-and-johnson-still-attractive-investment,Why Johnson & Johnson Is Still An Attractive Investment,seekingalpha.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,BAC,0,http://www.benzinga.com/topic/brian-moynihan,Brian Moynihan,benzinga.com,0.0,0.0,0.0
+2019Q1,WMT,0,https://www.insidermonkey.com/blog/were-hedge-funds-right-about-walmart-inc-wmt-730539/,Were Hedge Funds Right About Walmart Inc . ( WMT )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,XOM,0,https://dminute.com/2019/02/21/kanawha-capital-management-cut-its-exxon-mobil-xom-stake-harvest-capital-credit-hcap-has-2-25-sentiment/,Kanawha Capital Management Cut Its Exxon Mobil ( XOM ) Stake ; Harvest Capital Credit ( HCAP ) Has 2 . 25 Sentiment,dminute.com,0.0,0.0,0.0
+2019Q1,UNH,0,https://dminute.com/2019/01/26/as-unitedhealth-group-unh-market-value-rose-shareholder-gw-henssler-bridgewater-associates-lp-has-raised-its-kohls-kss-holding-by-2-75-million-as-valuation/,"As Unitedhealth Group ( UNH ) Market Value Rose , Shareholder Gw Henssler & Associates LTD Has Lowered Position ; Bridgewater Associates LP Has Raised Its Kohls ( KSS ) Holding by $2 . 75 Million as Valuation Declined",dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,META,0,https://hilight.kapook.com/view/183160,เจ้ย อภิชาติพงศ์ ผู้กำกับหนังชาวไทย คว้ารางวัลศิลปะระดับโลก Artes Mundi Prize,hilight.kapook.com,0.0,0.0,0.0
+2019Q1,TSLA,0,https://investorplace.com/2019/02/risks-rewards-tsla-stock-tesla-stock/,The Risks and Rewards of Tesla Stock,investorplace.com,0.0,0.0,0.0
+2019Q1,AVGO,0,https://www.insidermonkey.com/blog/do-hedge-funds-love-broadcom-inc-avgo-730765/,Do Hedge Funds Love Broadcom Inc ( AVGO )? ,insidermonkey.com,0.0,0.0,0.0
+2019Q1,JPM,0,https://dminute.com/2019/03/14/pettee-investors-trimmed-its-jpmorgan-chase-jpm-stake-aradigm-ardm-sentiment-is-0-83/,Pettee Investors Trimmed Its Jpmorgan Chase ( JPM ) Stake ; Aradigm ( ARDM ) Sentiment Is 0 . 83,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,GOOGL,0,https://investorplace.com/2019/02/goog-google-stock-split/,GOOG vs . GOOGL : All You Need to Know About the Google Stock Split,investorplace.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,HYG,0,https://www.wkrb13.com/2019/01/26/palladium-partners-llc-reduces-position-in-ishares-iboxx-high-yield-corporate-bond-etf-hyg.html,Palladium Partners LLC Reduces Position in iShares iBoxx $ High Yield Corporate Bond ETF ( HYG ) ,wkrb13.com,0.0,0.0,0.0
+2019Q1,XLE,0,https://www.etftrends.com/thematic-investing-channel/can-energy-sector-rally-again/,Can the Energy Sector Rally Again ? ,etftrends.com,0.0,0.0,0.0
+2019Q1,XLF,0,https://www.cnbc.com/2019/01/14/as-big-bank-earnings-kick-off-top-technician-says-to-fade-the-space.html,"As big bank earnings kick off , top technician says to fade the space",cnbc.com,0.0,0.0,0.0
+2019Q1,^VIX,0,https://www.wsj.com/articles/vix-auction-bets-land-chicago-trader-with-1-3-million-fine-11549054937,VIX Auction Bets Land Chicago Trader With $1 . 3 Million Fine,wsj.com,0.0,0.0,0.0
+2019Q1,AAPL,0,http://www.benzinga.com/topic/9to5mac,9TO5Mac | Benzinga,benzinga.com,0.0,0.0,0.0
+2019Q1,MSFT,0,https://dminute.com/2019/03/11/hoplite-capital-management-lp-has-lowered-microsoft-msft-position-cadian-capital-management-lp-upped-its-zendesk-zen-stake/,Hoplite Capital Management LP Has Lowered Microsoft ( MSFT ) Position ; Cadian Capital Management LP Upped Its Zendesk ( ZEN ) Stake,dminute.com,0.0,0.0,0.0
+2019Q1,NVDA,0,https://dminute.com/2019/02/25/baldwin-investment-management-stake-in-nvidia-nvda-has-upped-as-stock-price-declined-as-becton-dickinson-co-bdx-shares-declined-shareholder-peak-asset-management-has-lowered-stake/,"Baldwin Investment Management Stake in Nvidia ( NVDA ) Has Upped as Stock Price Declined ; As Becton Dickinson & Co ( BDX ) Shares Declined , Shareholder Peak Asset Management Has Lowered Stake",dminute.com,0.0,0.0,0.0
+2019Q1,AMZN,0,https://dminute.com/2019/03/14/lockheed-martin-investment-management-company-has-lifted-amazon-com-amzn-holding-by-2-88-million-bolsa-mexicana-de-valores-s-a-b-de-c-v-bomxf-shorts-lowered-by-0-77/,Lockheed Martin Investment Management Company Has Lifted Amazon . Com ( AMZN ) Holding By $2 . 88 Million ; BOLSA MEXICANA DE VALORES S . A . B . DE C . V . ( BOMXF ) Shorts Lowered By 0 . 77 % ,dminute.com,0.0,0.0,0.0
+2019Q1,SPY,0,https://www.fairfieldcurrent.com/news/2019/02/07/benin-management-corp-has-49-12-million-position-in-spdr-sp-500-etf-trust-spy.html,SPDR S & P 500 ETF Trust ( NYSEARCA : SPY ) is Benin Management CORP Largest Position,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,QQQ,0,https://www.dailypolitical.com/2019/01/08/invesco-qqq-trust-qqq-shares-bought-by-north-star-investment-management-corp.html,Invesco QQQ Trust ( QQQ ) Shares Bought by North Star Investment Management Corp . ,dailypolitical.com,0.0,0.0,0.0
+2019Q1,DIA,0,https://www.fairfieldcurrent.com/news/2019/02/06/benin-management-corp-boosts-stake-in-spdr-dow-jones-industrial-average-etf-trust-dia.html,SPDR Dow Jones Industrial Average ETF Trust ( NYSEARCA : DIA ) Holdings Lifted by Benin Management CORP,fairfieldcurrent.com,0.0,0.0,0.0
+2019Q1,IWM,0,https://www.dailypolitical.com/2019/03/08/ishares-russell-2000-etf-iwm-shares-sold-by-cpwm-llc.html,iShares Russell 2000 ETF ( IWM ) Shares Sold by Cpwm LLC,dailypolitical.com,0.0,0.0,0.0
+2019Q1,EEM,0,https://seekingalpha.com/article/4243869-emerging-markets-momentum-lagging,Emerging Markets With Momentum And Those That Are Lagging,seekingalpha.com,0.0,0.0,0.0
+2019Q1,GLD,0,https://www.etftrends.com/2019-year-gold-etfs/,Why 2019 Might Be The Year for Gold ETFs,etftrends.com,0.0,0.0,0.0
+2019Q1,SLV,0,https://seekingalpha.com/article/4246963-silver-weekly-opportunity,Silver Weekly : This Is An Opportunity,seekingalpha.com,0.0,0.0,0.0
+2019Q1,TLT,0,https://www.dailypolitical.com/2019/02/28/foundations-investment-advisors-llc-has-6-82-million-stake-in-ishares-20-year-treasury-bond-etf-tlt.html,Foundations Investment Advisors LLC Has $6 . 82 Million Stake in iShares 20+ Year Treasury Bond ETF ( TLT ) ,dailypolitical.com,0.0,0.0,0.0

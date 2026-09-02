@@ -3,15 +3,20 @@ import tempfile
 import json
 import sqlite3
 import os
+import gc
+import time
 
 from src.research.memory_engine import MemoryEngine
 
 @pytest.fixture
-def memory_engine():
-    with tempfile.TemporaryDirectory() as tmp_dir:
-        db_path = os.path.join(tmp_dir, "test_memory.db")
-        engine = MemoryEngine(db_path=db_path)
-        yield engine
+def memory_engine(tmp_path):
+    # Use pytest tmp_path (handles Windows file locks better than TemporaryDirectory)
+    db_path = tmp_path / "test_memory.db"
+    engine = MemoryEngine(db_path=str(db_path))
+    yield engine
+    # Windows SQLite file lock: ensure connections closed before tmp_path cleanup
+    gc.collect()
+    time.sleep(0.05)
 
 def test_memory_engine_init(memory_engine):
     assert os.path.exists(memory_engine.db_path)
