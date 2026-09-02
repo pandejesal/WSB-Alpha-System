@@ -45,13 +45,13 @@ def _find_strategies_path() -> Optional[str]:
     """Find the private strategies repository path."""
     # Check common locations
     candidates = [
-        os.path.join(os.path.dirname(__file__), "..", "..", "strategies", "src"),
+        os.path.join(os.path.dirname(__file__), "..", "..", "strategies"),
         os.environ.get("ALPHA_STRATEGIES_PATH", ""),
-        os.path.join(os.path.dirname(__file__), "..", "strategies", "src"),
+        os.path.join(os.path.dirname(__file__), "..", "strategies"),
     ]
     
     for path in candidates:
-        if path and os.path.exists(os.path.join(path, "alpha")):
+        if path and os.path.exists(os.path.join(path, "src", "alpha")):
             return os.path.abspath(path)
     return None
 
@@ -68,28 +68,35 @@ def _load_private_strategies() -> None:
     if not strategies_path:
         return
     
-    if strategies_path not in sys.path:
-        sys.path.insert(0, strategies_path)
+    # The private repo has structure: strategies/src/alpha/
+    # We need to add strategies/src to sys.path so alpha can be imported
+    private_src = os.path.join(strategies_path, "src")
+    if private_src not in sys.path:
+        sys.path.insert(0, private_src)
     
     try:
-        # Import the private alpha package
-        import alpha.strategies as private_strategies
-        import alpha.indicators as private_indicators
+        # Import the private alpha package (it's at strategies/src/alpha/)
+        import alpha as private_alpha
         
         # Cache indicators module for direct access
-        _STRATEGY_CACHE["_indicators_module"] = private_indicators
+        _STRATEGY_CACHE["_indicators_module"] = private_alpha
         
-        # Auto-register all BaseStrategy subclasses
-        for attr_name in dir(private_strategies):
-            attr = getattr(private_strategies, attr_name)
-            if isinstance(attr, type) and issubclass(attr, BaseStrategy) and attr != BaseStrategy:
+        # Use the private repo's BaseStrategy for identity checks
+        PrivateBaseStrategy = getattr(private_alpha, "BaseStrategy", BaseStrategy)
+        
+        # Register all exported strategy classes
+        for attr_name in getattr(private_alpha, "__all__", []):
+            attr = getattr(private_alpha, attr_name, None)
+            if attr and isinstance(attr, type) and (hasattr(attr, 'generate_signals') or hasattr(attr, 'generate_signal')) and attr is not PrivateBaseStrategy:
                 _STRATEGY_CACHE[attr_name] = attr()
                 
     except ImportError as e:
         # Private repo not available - will use fallback
         pass
-    except Exception:
+    except Exception as e:
         # Any other error - fail silently
+        import logging
+        logging.debug(f"Failed to load private strategies: {e}")
         pass
 
 
