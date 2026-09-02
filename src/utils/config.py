@@ -1,8 +1,17 @@
 import os
 
 import yaml
-from pydantic import Field, SecretStr, model_validator
+from pydantic import BaseModel, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class BenchmarkSpiderConfig(BaseModel):
+    """SPY baseline benchmark configuration per paper 2608.26106 (score 10)."""
+    enabled: bool = Field(default=True, description="Enable SPY baseline benchmark comparison")
+    symbol: str = Field(default="SPY", description="Benchmark symbol for baseline comparison")
+    lookback_days: int = Field(default=252, description="Trading days lookback for benchmark (1 year)")
+    min_sharpe_ratio: float = Field(default=0.5, description="Minimum Sharpe ratio vs benchmark")
+    max_drawdown_pct: float = Field(default=0.15, description="Maximum drawdown percentage vs benchmark")
 
 
 class Settings(BaseSettings):
@@ -25,6 +34,8 @@ class Settings(BaseSettings):
     paper_trading_enabled: bool = True
     initial_capital: float = 100.0
 
+    benchmark_spider: BenchmarkSpiderConfig = Field(default_factory=BenchmarkSpiderConfig)
+
     @classmethod
     def load_from_yaml(cls, path="config/settings.yaml"):
         # Load default settings from yaml, then env variables override them automatically
@@ -36,6 +47,8 @@ class Settings(BaseSettings):
                     yaml_data['live_trading_enabled'] = data['trading'].get('live_trading_enabled', False)
                     yaml_data['paper_trading_enabled'] = data['trading'].get('paper_trading_enabled', True)
                     yaml_data['initial_capital'] = data['trading'].get('initial_capital', 100.0)
+                if 'benchmark_spider' in data:
+                    yaml_data['benchmark_spider'] = data['benchmark_spider']
                 yaml_data['environment'] = data.get('environment', 'development')
 
         return cls(**yaml_data)
@@ -62,11 +75,21 @@ class TradingStub:
         self.paper_trading_enabled = s.paper_trading_enabled
         self.initial_capital = s.initial_capital
 
+class BenchmarkSpiderStub:
+    def __init__(self, s):
+        bs = s.benchmark_spider
+        self.enabled = bs.enabled
+        self.symbol = bs.symbol
+        self.lookback_days = bs.lookback_days
+        self.min_sharpe_ratio = bs.min_sharpe_ratio
+        self.max_drawdown_pct = bs.max_drawdown_pct
+
 class ConfigWrapper:
     def __init__(self, settings: Settings):
         self.settings = settings
         self.environment = settings.environment
         self.api_keys = APIKeysStub(settings)
         self.trading = TradingStub(settings)
+        self.benchmark_spider = BenchmarkSpiderStub(settings)
 
 config = ConfigWrapper(Settings.load_from_yaml())
