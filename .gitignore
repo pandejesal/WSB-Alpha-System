@@ -47,3 +47,6 @@ data/h4_raw/
 docs/arxiv_qfin*
 docs/ARXIV_*
 hunts/evolve/
+
+# Private strategies - never commit to GitHub
+strategies/
