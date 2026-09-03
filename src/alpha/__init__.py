@@ -18,8 +18,9 @@ def _get_private_schemas():
         if mod:
             import alpha.schemas as private_schemas
             return private_schemas
-    except Exception:
-        pass
+    except ImportError:
+        import logging
+        logging.debug("Private schemas module not available.")
     return None
 
 # These are lazy-loaded

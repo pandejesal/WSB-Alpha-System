@@ -17,20 +17,26 @@ import pandas as pd
 
 
 class BaseStrategy(ABC):
-    """Abstract base class for all trading strategies."""
-    
+    """Abstract base class for all trading strategies.
+
+    This is the fallback definition used when the private strategies
+    submodule is unavailable.  When the submodule is present, the
+    adapter re-exports its ``BaseStrategy`` instead so that all
+    strategy classes share a single canonical base.
+    """
+
     @abstractmethod
     def generate_signals(self, df: pd.DataFrame) -> pd.DataFrame:
         """Generate trading signals from market data.
-        
+
         Args:
             df: DataFrame with OHLCV columns
-            
+
         Returns:
             DataFrame with 'signal' column (1=long, -1=short, 0=flat)
         """
         pass
-    
+
     def get_name(self) -> str:
         """Return strategy identifier."""
         return self.__class__.__name__
@@ -77,27 +83,27 @@ def _load_private_strategies() -> None:
     try:
         # Import the private alpha package (it's at strategies/src/alpha/)
         import alpha as private_alpha
-        
+
         # Cache indicators module for direct access
         _STRATEGY_CACHE["_indicators_module"] = private_alpha
-        
+
         # Use the private repo's BaseStrategy for identity checks
         PrivateBaseStrategy = getattr(private_alpha, "BaseStrategy", BaseStrategy)
-        
+
         # Register all exported strategy classes
         for attr_name in getattr(private_alpha, "__all__", []):
             attr = getattr(private_alpha, attr_name, None)
             if attr and isinstance(attr, type) and (hasattr(attr, 'generate_signals') or hasattr(attr, 'generate_signal')) and attr is not PrivateBaseStrategy:
                 _STRATEGY_CACHE[attr_name] = attr()
                 
-    except ImportError as e:
+    except ImportError:
         # Private repo not available - will use fallback
-        pass
-    except Exception as e:
-        # Any other error - fail silently
         import logging
-        logging.debug(f"Failed to load private strategies: {e}")
-        pass
+        logging.debug("Private strategies submodule not found; using fallback indicators.")
+    except Exception as exc:
+        # Unexpected error loading private strategies
+        import logging
+        logging.debug("Failed to load private strategies: %s", exc)
 
 
 def get_indicators_module():
@@ -244,12 +250,15 @@ def _fallback_compute_indicators(df: pd.DataFrame) -> pd.DataFrame:
             rolling_var.append(0.02)
             rolling_cvar.append(0.04)
         else:
-            window_rets = daily_pct_returns.iloc[i-19:i+1]
-            sorted_rets = np.sort(window_rets.values)
-            var_idx = max(0, int(0.05 * len(sorted_rets)) - 1) if len(sorted_rets) == 20 else int(0.05 * len(sorted_rets))
-            var_val = -sorted_rets[var_idx] if var_idx < len(sorted_rets) else 0.02
-            losses_below_var = sorted_rets[:var_idx+1]
-            cvar_val = -losses_below_var.mean() if len(losses_below_var) > 0 else 0.04
+            window_rets = daily_pct_returns.iloc[i-19:i+1].dropna()
+            sorted_rets = np.sort(window_rets.values.astype(float)) if len(window_rets) > 0 else np.array([], dtype=float)
+            if len(sorted_rets) > 0:
+                var_idx = max(0, int(0.05 * len(sorted_rets)) - 1)
+                var_val = -sorted_rets[var_idx]
+                cvar_val = -sorted_rets[:var_idx + 1].mean()
+            else:
+                var_val = 0.02
+                cvar_val = 0.04
             rolling_var.append(max(var_val, 0.0))
             rolling_cvar.append(max(cvar_val, 0.0))
     
