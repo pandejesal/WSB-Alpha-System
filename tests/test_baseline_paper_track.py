@@ -87,3 +87,14 @@ def test_render_verdict_md_contains_verdict(mod):
         "monthly_realized_pnl": {},
     })
     assert "NEED_MORE_PAPER_TIME" in md and "Paper Approval Verdict" in md
+
+
+def test_verify_risk_scaling_kelly_verified(mod):
+    rs = mod.verify_risk_scaling(account_equity=100.0)
+    assert rs["sizing_method"] == "kelly"
+    assert rs["kelly_sized_allocation_usd"] == pytest.approx(20.0)
+    assert rs["proposed_trade_risk_usd"] == pytest.approx(0.20)
+    assert rs["per_trade_risk_cap_usd"] == pytest.approx(2.0)
+    assert rs["risk_within_budget"] is True
+    assert rs["kelly_verified"] is True
+    assert rs["fail_closed_no_history"] is True

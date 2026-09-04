@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -128,6 +129,60 @@ def max_drawdown_from_monthly(monthly: dict[str, float]) -> float:
     return round(mdd, 4)
 
 
+def verify_risk_scaling(account_equity: float = 100.0) -> dict:
+    """Verify Kelly-based per-trade risk scaling at a $100-equivalent basis (Task 6.2).
+
+    Uses the Kelly-enabled PortfolioManager (src/risk/portfolio_manager.py):
+
+      - registers one strategy at confidence 100 (base allocation 50%),
+      - records a small positive trade history so the Kelly sizer's
+        historical fallback yields a positive edge,
+      - asserts the dual-constraint target (min of confidence and Kelly
+        amounts) and the per-trade risk budget (2% default),
+      - asserts fail-closed behavior with no trade history (target 0.0).
+
+    Pure computation, no network. Returns a structured verification record.
+    """
+    # Lazy import keeps this module hermetic when only scripts/ is on sys.path.
+    if str(REPO_ROOT) not in sys.path:
+        sys.path.insert(0, str(REPO_ROOT))
+    from src.risk.portfolio_manager import PortfolioManager  # noqa: E402
+
+    pm = PortfolioManager(max_strategies=1, max_allocation_per_strategy_pct=0.5)
+    pm.register_strategy("S1", confidence_score=100)
+
+    # Small positive history -> historical fallback edge (0.02) > min_edge (0.01).
+    for ret in (0.02, 0.03, 0.01):
+        pm.kelly_sizer.record_trade({"return": ret})
+
+    target = pm.get_target_allocation("S1", account_equity, trade_features={})
+    edge, variance = pm.kelly_sizer.predict_edge_and_variance({})
+
+    # Per-trade risk check: 0.2 shares, entry 100, stop 99 -> $0.20 risk.
+    shares = 0.2
+    entry, stop = 100.0, 99.0
+    proposed_risk = pm.compute_trade_risk(entry, stop, shares)
+    within_budget = pm.check_risk_budget(account_equity, proposed_risk)
+
+    # Fail-closed: no history -> zero edge -> zero allocation.
+    pm2 = PortfolioManager(max_strategies=1, max_allocation_per_strategy_pct=0.5)
+    pm2.register_strategy("S1", confidence_score=100)
+    fail_closed_target = pm2.get_target_allocation("S1", account_equity, trade_features={})
+
+    return {
+        "account_equity_basis": account_equity,
+        "sizing_method": "kelly",
+        "per_trade_risk_cap_pct": pm.max_per_trade_risk_pct,
+        "per_trade_risk_cap_usd": round(account_equity * pm.max_per_trade_risk_pct, 2),
+        "static_1pct_usd": round(account_equity * 0.01, 2),
+        "kelly_sized_allocation_usd": round(target, 2),
+        "proposed_trade_risk_usd": round(proposed_risk, 2),
+        "risk_within_budget": within_budget,
+        "kelly_verified": within_budget and target > 0.0 and target <= account_equity * 0.5,
+        "fail_closed_no_history": fail_closed_target == 0.0,
+    }
+
+
 def build_dashboard(min_months: int = MIN_MONTHS_DEFAULT, max_dd_limit: float = MAX_DD_LIMIT_DEFAULT) -> dict:
     fills_doc = _load(OPS_DIR / "fills.json")
     orders_doc = _load(OPS_DIR / "orders.json")
@@ -185,6 +240,7 @@ def build_dashboard(min_months: int = MIN_MONTHS_DEFAULT, max_dd_limit: float = 
             "status": "NOT_EVALUABLE_INSUFFICIENT_PAPER_HISTORY",
             "note": "Requires >= min_months of daily paper marks vs backtest curve.",
         },
+        "risk_scaling": verify_risk_scaling(),
     }
     return dashboard
 
@@ -199,10 +255,16 @@ def render_verdict_md(dashboard: dict) -> str:
         f"- All months green: **{c['all_months_green']}**",
         f"- Max drawdown: **{c['max_drawdown']}** (limit {c['max_dd_limit']})",
         f"- Broken executions: **{len(c['broken_executions'])}**",
-        "",
-        "| Month | Realized PnL ($) |",
-        "|-------|------------------|",
     ]
+    rs = dashboard.get("risk_scaling")
+    if rs:
+        lines.append(
+            f"- Risk scaling (${rs.get('account_equity_basis', 100.0)} equiv): Kelly target "
+            f"**${rs.get('kelly_sized_allocation_usd')}**, per-trade risk cap "
+            f"**{rs.get('per_trade_risk_cap_pct', 0.0) * 100:.0f}%** (${rs.get('per_trade_risk_cap_usd')}), "
+            f"verified **{rs.get('kelly_verified')}**, fail-closed **{rs.get('fail_closed_no_history')}**"
+        )
+    lines += ["", "| Month | Realized PnL ($) |", "|-------|------------------|"]
     for month, pnl in dashboard["monthly_realized_pnl"].items():
         lines.append(f"| {month} | {pnl} |")
     if not dashboard["monthly_realized_pnl"]:
