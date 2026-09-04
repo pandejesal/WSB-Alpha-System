@@ -4,8 +4,8 @@ import pandas as pd
 import yfinance as yf
 
 from src.alpha.indicators import compute_indicators
+from src.alpha.leakage_guard import guard_signals
 from src.research.debate_engine import DebateEngine
-import datetime
 
 class UnsupportedRuleShape(Exception):
     pass
@@ -88,7 +88,6 @@ def get_sentiment_overlay_signal(data: pd.DataFrame, tickers: list[str], **kwarg
         return {'signal': 'FLAT'}
 
     from src.research.browser_scraper import fetch_headlines, score_text
-    from src.research.debate_engine import DebateEngine
 
     threshold = kwargs.get('sentiment_threshold', 0.6)
     debate_engine = DebateEngine()
@@ -776,6 +775,11 @@ def generate_signals_from_registry(data: pd.DataFrame, registry_entries: list[di
         spec = entry.get("spec", {})
         if not spec:
             continue
+
+        # Leakage guard: fail-closed validation of temporal/data boundaries for
+        # LLM-augmented strategies before any signal is generated. Raises
+        # LeakageViolation on the first offending entry.
+        guard_signals(data, [entry])
 
         spec_id = spec["id"]
         family = spec.get("family", "")
