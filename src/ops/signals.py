@@ -758,10 +758,15 @@ def _hybrid_download(tickers, *args, **kwargs):
 
 yf.download = _hybrid_download
 
-def generate_signals_from_registry(data: pd.DataFrame, registry_entries: list[dict], tickers: list[str] = None) -> dict:
+def generate_signals_from_registry(data: pd.DataFrame, registry_entries: list[dict], tickers: list[str] = None, *, use_multi_agent: bool = False) -> dict:
     """
     Dynamically generates signals for active registry entries.
     Parses rule shapes based on the family or signal definition and delegates to existing logic.
+
+    When ``use_multi_agent=True``, each generated signal is additionally routed
+    through the multi-agent specialist pipeline (researcher → risk → execution)
+    before being stored in results.  This is a non-breaking opt-in: existing
+    callers see no change when the flag is off (default).
     """
     results = {}
 
@@ -846,9 +851,23 @@ def generate_signals_from_registry(data: pd.DataFrame, registry_entries: list[di
             filtered_params = {k: v for k, v in mapped_params.items() if k in sig.parameters}
 
             if needs_tickers:
-                results[spec_id] = delegate(data, tickers, **filtered_params)
+                raw_signal = delegate(data, tickers, **filtered_params)
             else:
-                results[spec_id] = delegate(data, **filtered_params)
+                raw_signal = delegate(data, **filtered_params)
+
+            # Multi-agent pipeline: route through specialist roles when
+            # enable_multi_agent routing is active.  Existing family dispatch
+            # behaviour is preserved — this is an additive post-processing step.
+            if use_multi_agent:
+                from src.alpha.multi_agent_roles import route_signal_through_agents
+                raw_signal = route_signal_through_agents(
+                    raw_signal,
+                    family,
+                    data=data,
+                    tickers=tickers if needs_tickers else None,
+                )
+
+            results[spec_id] = raw_signal
 
         except TypeError as e:
             raise UnsupportedRuleShape(f"Unsupported parameters for family '{family}': {e}")
