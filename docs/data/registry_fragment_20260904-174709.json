@@ -1,0 +1,5 @@
+spec_file": "strategies/flagship_portfolio_v1.yaml",
+    "allocation": "inverse_volatility_12m",
+    "status": "ported"
+  }
+}

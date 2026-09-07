@@ -109,6 +109,15 @@ async function refreshDashboard() {
     updatePositions(portfolioData);
     updateStrategies(strategyData);
     updateTrades(tradesData);
+    
+    // Update heatmaps (LuxAlgo-style day-of-week / monthly)
+    if (typeof window.updateHeatmaps === 'function') {
+        try {
+            await window.updateHeatmaps();
+        } catch (e) {
+            console.warn('Heatmap update failed:', e);
+        }
+    }
 }
 
 // Initial Load

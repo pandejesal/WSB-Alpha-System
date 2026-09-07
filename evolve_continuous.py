@@ -19,7 +19,7 @@ PIPELINE_GATE = ROOT / "docs/PIPELINE_GATE.md"
 EVOLVE_LOG = ROOT / "docs/data/evolve_continuous.log"
 EVOLVE_LOG.parent.mkdir(parents=True, exist_ok=True)
 TOP_FAMILIES = ["us_momentum_top5","spy_sma200","us_lowvol_top30","cta_tick_filtered","continuous_growth_defensive","gold_trend_kelly","btc_vol_target_sma100"]
-GATE = dict(sharpe_min=1.0, max_dd=0.25, cagr_min=0.15, dsr_min=0.95, minerva_seal=80)
+GATE = dict(sharpe_min=1.35, max_dd=0.20, cagr_min=0.16, dsr_min=0.95, minerva_seal=80)
 def log(msg):
     ts = datetime.now(timezone.utc).isoformat()
     line = f"[{ts}] {msg}"

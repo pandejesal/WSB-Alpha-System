@@ -1,11 +1,14 @@
 import numpy as np
 import pandas as pd
 
+from src.backtest.adaptive_tp import AdaptiveTPSelector
+from src.backtest.choppiness_filter import ChoppinessFilter
 from src.gs_compat.calendar import business_day_offset
 from src.risk.fred_macro_provider import FredMacroProvider
+from src.research.strategy_decision_trace import DecisionTrace
 
 
-def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_high, gk_vol_limit, min_confluence_score, spy_close_preloaded=None, stop_loss_pct=0.0):
+def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_high, gk_vol_limit, min_confluence_score, spy_close_preloaded=None, stop_loss_pct=0.0, choppiness_filter=False, adaptive_tp=False, decision_trace=False):
     """Run backtest with specific parameter combination, with honest entry/exit rules."""
     if posts_df is None or posts_df.empty:
         return pd.DataFrame(columns=['post_date', 'ticker', 'sentiment_score', 'entry_price', 'exit_price', 'return', 'holding_days', 'regime', 'spy_return', 'excess_return'])
@@ -30,6 +33,9 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
             d = d.reset_index()
             if "Date" not in d.columns and "Datetime" in d.columns:
                 d = d.rename(columns={"Datetime": "Date"})
+            # If index was unnamed, reset_index creates 'index' column - rename to 'Date'
+            if "Date" not in d.columns and "index" in d.columns:
+                d = d.rename(columns={"index": "Date"})
         if "Date" not in d.columns:
             continue
         if not pd.api.types.is_datetime64_any_dtype(d["Date"]):
@@ -92,6 +98,22 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
         if score < min_confluence_score:
             continue
 
+        # ATR Choppiness Filter (opt-in, LuxAlgo Universal Signal Backtester concept)
+        if choppiness_filter:
+            cf = ChoppinessFilter()
+            if cf.is_choppy(decision_idx, df):
+                continue  # suppress this entry during chop
+
+        # Adaptive TP Selector (opt-in, LuxAlgo "Sign Post" concept)
+        tp_selector = None
+        if adaptive_tp:
+            tp_selector = AdaptiveTPSelector(n_tp_levels=3, lookback_days=20)
+
+        # Decision Trace (opt-in, LuxAlgo "Sign Post" textual equivalent)
+        trace = None
+        if decision_trace:
+            trace = DecisionTrace(strategy_id="backtest")
+
         # Fill at Open of the entry bar
         entry_idx = df.index[entry_iloc]
         entry_price = df.loc[entry_idx, "Open"]
@@ -147,6 +169,48 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
 
         excess_return = trade_ret - spy_ret
 
+        # Decision Trace logging (entry)
+        if decision_trace and trace is not None:
+            entry_reason = {
+                "confluence_score": score,
+                "rsi_val": rsi_val,
+                "ha_close_gt_ha_open": ha_close > ha_open if sentiment_score > 0 else ha_close < ha_open,
+                "close_gt_ema20_macd": (close > ema_20 and macd_hist > 0) if sentiment_score > 0 else (close < ema_20 and macd_hist < 0),
+                "rsi_30_70": 30 < rsi_val < 70,
+                "close_vs_bb": close > bb_lower if sentiment_score > 0 else close < bb_upper,
+            }
+            # Pass the actual date from the dataframe
+            trace.log_entry(df["Date"].iloc[decision_iloc], ticker, entry_reason)
+
+        actual_exec_date = df.loc[entry_idx, "Date"]
+
+        # SPY benchmark
+        spy_ret = 0.0
+        if spy_close_preloaded is not None:
+            spy_start = spy_close_preloaded.get(actual_exec_date)
+            spy_end = spy_close_preloaded.get(df.loc[exit_idx, "Date"])
+            if spy_start is not None and spy_end is not None:
+                spy_ret = (spy_end - spy_start) / spy_start * direction
+
+        excess_return = trade_ret - spy_ret
+
+        # Decision Trace logging (exit)
+        if decision_trace and trace is not None:
+            exit_reason = {
+                "trade_return": trade_ret,
+                "spy_return": spy_ret,
+                "excess_return": excess_return,
+                "exit_type": "stop_loss" if stop_loss_pct > 0.0 and is_breached else "time_based",
+                "holding_days": holding_days,
+            }
+            trace.log_exit(df["Date"].iloc[exit_iloc], ticker, exit_reason)
+
+        # Record adaptive TP outcome if enabled
+        if adaptive_tp and tp_selector is not None:
+            # For simplicity, record the default exit (holding_days) as TP0
+            # In a full implementation, you'd track which TP level triggered
+            tp_selector.record_outcome(0, trade_ret > 0)
+
         results.append({
             "post_date": post_date,
             "ticker": ticker,
@@ -160,7 +224,12 @@ def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_hig
             "excess_return": excess_return
         })
 
+    # Save decision traces if enabled
+    if decision_trace and trace is not None:
+        trace.save()
+
     return pd.DataFrame(results)
+
 
 def run_backtest(custom_posts_df=None, stock_dfs_preloaded=None, spy_close_preloaded=None):
     """

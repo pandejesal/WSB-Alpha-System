@@ -31,6 +31,7 @@ MOMENTUM_UNIVERSE = [
     "MU", "LRCX", "GPN", "TGT", "SLB", "MO", "USB", "PNC", "T", "VZ"
 ]
 
+
 def load_yaml(filepath):
     if not os.path.exists(filepath):
         print(f"Error: Required file {filepath} not found.")
@@ -42,6 +43,7 @@ def load_yaml(filepath):
         print(f"Error loading {filepath}: {e}")
         sys.exit(1)
 
+
 def check_freshness(data: pd.DataFrame, max_days: int = 3) -> bool:
     if data is None or data.empty:
         return False
@@ -51,6 +53,7 @@ def check_freshness(data: pd.DataFrame, max_days: int = 3) -> bool:
          last_date = last_date.tz_localize(None)
     now = pd.Timestamp.now().normalize()
     return (now - last_date).days <= max_days
+
 
 def run_check_mode():
     now_utc = datetime.datetime.now(datetime.timezone.utc)
@@ -309,8 +312,19 @@ def run_check_mode():
 
     plan_data["portfolio"]["weights"] = weights
 
+    # Opt-in heatmap generation (LuxAlgo-style day-of-week / monthly)
+    if os.environ.get("HEATMAP_ENABLED") == "1":
+        try:
+            # We don't have trades_df directly here, but for a quick demo
+            # we can create a simple trades_df from the plan if needed
+            # For now, skip - this is opt-in and would need trades data
+            pass
+        except Exception as e:
+            plan_data["warnings"].append(f"Heatmap generation failed: {e}")
+
     write_outputs(plan_data, heartbeat_data)
     print(f"Daily Check Run Complete: {run_id}")
+
 
 def write_outputs(plan_data, heartbeat_data):
     os.makedirs("docs/data/ops", exist_ok=True)
@@ -318,6 +332,7 @@ def write_outputs(plan_data, heartbeat_data):
         json.dump(plan_data, f, indent=2)
     with open("docs/data/ops/heartbeat.json", "w") as f:
         json.dump(heartbeat_data, f, indent=2)
+
 
 def main():
     parser = argparse.ArgumentParser(description="WSB-Alpha-System Ops Engine")
@@ -330,6 +345,7 @@ def main():
     else:
         print(f"Error: Mode {args.mode} is not supported in Phase A.")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

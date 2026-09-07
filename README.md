@@ -151,7 +151,7 @@ WSB-Alpha-System-build/
 │   ├── HUNT_PROTOCOL.md      Hunt session contract (brief → prereg → validation → ledger)
 │   ├── OPTIMIZATION_PLAYBOOK.md  Muse Spark 1.2 XHigh pipeline (bridges, memory, CI)
 │   ├── PIPELINE_GATE.md      30-day victory gate (knowledge/episodic/hunt PASS)
-│   ├── LIVE_DESIGN.md / PIPELINE_GATE / adr/  Additional design & ADRs
+│   ├── LIVE_DESIGN.md / PIPELINE_GATE.md / adr/  Additional design & ADRs
 │   ├── arxiv_qfin/ / *_REPORT.md  arXiv q-fin research corpus
 │   └── build/                (generated site; not hand-edited)
 ├── hunts/                    Hunt factory: ta-rules, sentiment-overlay, xgboost-exits, multi-factor
@@ -203,13 +203,13 @@ WSB-Alpha-System-build/
 └── README.md                 (this file)
 ```
 
-Top-level workspace (`C:\Users\DELL\Documents\Default Project`) additionally contains the Obsidian vault (`Obsidian Vault/`), `opencode.json`, curated skills, and tooling — see `AGENTS.md` for the memory-layer protocol.
+Top-level workspace (outside this repo clone) may additionally hold a personal Obsidian vault, workspace-local `opencode.json(c)`, curated skills, and tooling — see `AGENTS.md` for the memory-layer protocol.
 
 ---
 
 ## Strategies & Registry
 
-`strategies/registry.json` is the **single source of truth** the ops pipeline and `src/ops/signals.py:762 generate_signals_from_registry` consume without code changes.
+`strategies/registry.json` is the **single source of truth** the ops pipeline and `src/ops/signals.py:762 generate_signals_from_registry` consume without code changes. *(Local-only working-tree file; untracked in git since `cb73fb2` — last tracked at `cb73fb2^`, absent from public HEAD.)*
 
 | # | ID | Name | Family | Venue | Gates | Status |
 |---|----|------|--------|-------|-------|--------|
@@ -274,7 +274,7 @@ Anti-overfit posture is institutional-grade:
   - Walk-forward efficiency `OOS Sharpe / IS Sharpe` reported; dashboard marks likely-overfit.
 - **Engines** — `src/backtest/engines/` hosts `vectorbt` and `nautilus_trader` engines; `walk_forward_engine.py` + `whites_reality_check.py` (Hansen's SPA).
 
-Historical note: prior report bugs (near-zero-std Sharpe artifacts, `comprehensive_backtest_report.py:461` indentation) are audited in `docs/ANALYSIS_REPORT.md` and guarded by `AUDIT_REPORT.md`.
+Historical note: prior report bugs (near-zero-std Sharpe artifacts, `comprehensive_backtest_report.py:461` indentation) are audited in `ANALYSIS_REPORT.md` and guarded by `AUDIT_REPORT.md`.
 
 ---
 
@@ -293,7 +293,7 @@ Historical note: prior report bugs (near-zero-std Sharpe artifacts, `comprehensi
 |------|-------|---------|
 | **Paper (GitHub)** | `paper_trade.yml` / `paper_trading_sandbox.py` | Weekday 3:55 PM ET simulated portfolio → `docs/data/` |
 | **Sandbox** | `sandbox.yml` | 5-day scripted sandbox (pre-trading sims) |
-| **Live (opt-in)** | `live_alpaca_executor.py`, `live_crypto_executor.py`, `main_live.py` | Requires `LIVE_TRADING_ENABLED=True` + real keys; default **disabled** |
+| **Live (opt-in)** | `live_alpaca_executor.py`, `live_crypto_executor.py`, `src/execution/main_live.py` | Requires `LIVE_TRADING_ENABLED=True` + real keys; default **disabled** |
 
 Brokers (`src/execution/`):
 
@@ -337,7 +337,7 @@ Ops artifacts are idempotent and committed by workflows; `docs/data/ops/*.json` 
 
 Hunts discover **new** strategy families; the weekly `self_improvement_agent` only tunes **active** ones — distinct lanes per `HUNT_PROTOCOL.md:97`.
 
-**Families on record** (in `hunts/`): `ta-rules`, `sentiment-overlay`, `xgboost-exits`, `multi-factor`, plus wave cycles (`wave1_h1`–`wave3_h4`, cycles 1–9, `cta_trend_ensemble`, `quality_low_vol`, etc.). Current pipeline state: `0 / 20+` preregistered candidates PASS across wave-3 (see `PIPELINE_GATE.md`).
+**Families on record** (in `hunts/`): `ta-rules`, `sentiment-overlay`, `xgboost-exits`, `multi-factor`, plus wave cycles (`wave1_h1`–`wave3_h4`, cycles 1–9, `cta_trend_ensemble`, `quality_low_vol`, etc.). Current pipeline state: `0 / 20+` preregistered candidates PASS across wave-3 (see `docs/PIPELINE_GATE.md`; gate table as last rendered at `7e2895a` — the current file head also carries evolve-loop log lines appended since `ec6b941`).
 
 **Lifecycle** (`scripts/hunt_runner.py`):
 
@@ -496,7 +496,7 @@ See `launch/README.md` — paste `launch/run_forever.md` into a **new** opencode
 | `strategies/*.yaml` | Strategy specs | `id`, `family`, `universe`, `signal`, `parameters` + `gates_passed`, `status` |
 | `strategies/registry.json` | Registry | Ranked `strategies[]` + `portfolio` (`inverse_volatility_12m`) |
 | `bandit.toml` | Security | `[bandit] skips, exclude_dirs` |
-| `opencode.json` | Workspace | `default_model: hy3-free`, MCP servers (tradingview, market-data, backtester, ...) |
+| `.opencode/` | Workspace (in repo) | Swarm config (`opencode-swarm.json`); model/MCP defaults live in workspace-local `opencode.json(c)` (not in repo) |
 
 Universe today: 18 equities (`AAPL, MSFT, GOOGL, AMZN, NVDA, META, TSLA, BRK.A, JPM, V, JNJ, WMT, MA, PG, UNH, XOM, HD, DIS`) + `BTC/USD, ETH/USD` (see `config/universe.json:1`); ops daily expands to `~104` (adds `SPY, QQQ, AGG` + 100 S&P-100 names in `src/ops/daily.py:21`).
 
@@ -566,7 +566,7 @@ Coverage and covenant thresholds are enforced in `tests/` — new strategies mus
 | `self_improvement_log.md` | Append-only log of every weekly self-improvement commit |
 | `AGENTS.md` | Agent guidelines: `update_task_status` session discipline, edge gates, delegation to Jules vs OpenCode hunts |
 
-Web research corpus: `web-research/*.md`, `research-deliverables/`, `research-awake-prompts/`.
+Web research corpus: `web-research/*.md`.
 
 ---
 
@@ -588,11 +588,11 @@ This is a personal trading system; external PRs are triaged per `AGENTS.md`:
 
 1. **Read before any edit:** `docs/OPTIMIZATION_PLAYBOOK.md` + `docs/HUNT_PROTOCOL.md`.
 2. **Edge gates are mandatory** — `preregister freeze → validation → trial_ledger DSR → preregister record` — before touching `strategies/registry.json`.
-3. **Routing:** standard code → `jules_create` (`sources/github/pandejesal/<repo>`, one task/session, pinned versions); new alpha hunts → parallel OpenCode sessions (`04-Prompt-Queues/` self-contained briefs). See `01-Context/Workflow.md` + `99-Meta/Vault Guide.md` (Obsidian vault at `C:\Users\DELL\Documents\Obsidian Vault`).
+3. **Routing:** standard code → `jules_create` (`sources/github/pandejesal/<repo>`, one task/session, pinned versions); new alpha hunts → parallel OpenCode sessions (self-contained hunt briefs per `docs/HUNT_PROTOCOL.md`). See `docs/HUNT_PROTOCOL.md` + `docs/OPTIMIZATION_PLAYBOOK.md`.
 4. **Quality gates:** `PYTHONPATH=. pytest` + `ruff check .` + `bandit -r src/` must pass before merge.
 5. **Memory layer:** `memory_recall <task>` at session start; `memory_store` one fact per non-obvious decision; `memory_sleep` at handoff.
 
-Canonical repo folder in this workspace checkout: `WSB-Alpha-System-build/` (standalone clone of `github.com/pandejesal/WSB-Alpha-System`, branch `main`). After any Jules PR merges upstream, `git -C WSB-Alpha-System-build pull --ff-only`.
+Canonical repo clone: `WSB-Alpha-System` (standalone clone of `github.com/pandejesal/WSB-Alpha-System`, branch `main`; checked out in this workspace as `WSB-Alpha-System-build/`). After any Jules PR merges upstream, `git pull --ff-only`.
 
 ---
 
@@ -604,7 +604,7 @@ For **educational and research purposes only**. Not investment advice. Paper tra
 
 ## License
 
-MIT — see `LICENSE` (or the repo's default). Trading strategies and research notes are the author's; market data via Alpaca/Tiingo/Binance/Yahoo is subject to each provider's terms.
+MIT — see the repo's default license (no separate `LICENSE` file in tree). Trading strategies and research notes are the author's; market data via Alpaca/Tiingo/Binance/Yahoo is subject to each provider's terms.
 
 ---
 

@@ -1,0 +1,87 @@
+{
+  "timestamp": "2026-09-04T18:33:59.220244",
+  "regime": {
+    "label": "LowVol-Neutral",
+    "confidence": 0.497,
+    "vol_percentile_252d": 11.9,
+    "momentum_63d": 0.0232
+  },
+  "best_genome": {
+    "strategy_family": "mean_reversion",
+    "params": {
+      "lookback": 30,
+      "z_entry": 1.5,
+      "z_exit": 0.0,
+      "stop_loss_z": 3.0
+    },
+    "fitness": 0.4846663668663106,
+    "sharpe_train": 0.5466421072998959,
+    "sharpe_test": 1.2629365346732129,
+    "sortino": 0.19834078010801603,
+    "max_drawdown": 0.2843692200791817,
+    "win_rate": 0.5052083333333334,
+    "profit_factor": 1.1472208254367962,
+    "trade_count": 24,
+    "walk_forward_efficiency": 2.310353552731984,
+    "regime_label": "Unknown"
+  },
+  "critic_verdict": {
+    "approved": true,
+    "reason": "All checks passed"
+  },
+  "spy_baseline": {
+    "sharpe": 0.902,
+    "max_drawdown": 0.3372,
+    "total_return_pct": 203.08
+  },
+  "evolution_history": [
+    {
+      "generation": 0,
+      "best_fitness": 0.4846663668663106,
+      "best_sharpe_test": 1.2629365346732129,
+      "best_family": "mean_reversion",
+      "avg_fitness": 0.29239524011221285,
+      "population_size": 20
+    },
+    {
+      "generation": 1,
+      "best_fitness": 0.4846663668663106,
+      "best_sharpe_test": 1.2629365346732129,
+      "best_family": "mean_reversion",
+      "avg_fitness": 0.4326049751696509,
+      "population_size": 20
+    },
+    {
+      "generation": 2,
+      "best_fitness": 0.4846663668663106,
+      "best_sharpe_test": 1.2629365346732129,
+      "best_family": "mean_reversion",
+      "avg_fitness": 0.454426953965483,
+      "population_size": 20
+    },
+    {
+      "generation": 3,
+      "best_fitness": 0.4846663668663106,
+      "best_sharpe_test": 1.2629365346732129,
+      "best_family": "mean_reversion",
+      "avg_fitness": 0.4611309324977036,
+      "population_size": 20
+    },
+    {
+      "generation": 4,
+      "best_fitness": 0.4846663668663106,
+      "best_sharpe_test": 1.2629365346732129,
+      "best_family": "mean_reversion",
+      "avg_fitness": 0.42754184833925485,
+      "population_size": 20
+    }
+  ],
+  "families_evolved": null,
+  "config": {
+    "generations": 5,
+    "population_size": 20,
+    "n_splits": 5,
+    "slippage_bps": 5.0,
+    "initial_cash": 100000.0
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-03T20:46:18.968092Z",
+  "generated_at": "2026-09-06T03:26:32.118189Z",
   "verdict": "NEED_MORE_PAPER_TIME",
   "criteria": {
     "months_tracked": 0,
@@ -21,5 +21,17 @@
   "tracking_error": {
     "status": "NOT_EVALUABLE_INSUFFICIENT_PAPER_HISTORY",
     "note": "Requires >= min_months of daily paper marks vs backtest curve."
+  },
+  "risk_scaling": {
+    "account_equity_basis": 100.0,
+    "sizing_method": "kelly",
+    "per_trade_risk_cap_pct": 0.02,
+    "per_trade_risk_cap_usd": 2.0,
+    "static_1pct_usd": 1.0,
+    "kelly_sized_allocation_usd": 20.0,
+    "proposed_trade_risk_usd": 0.2,
+    "risk_within_budget": true,
+    "kelly_verified": true,
+    "fail_closed_no_history": true
   }
 }
