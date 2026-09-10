@@ -27,7 +27,7 @@ opencode.json default = 1.3 only. 1.2 definition block REMOVED. No fallback anyw
 
 ## Running / queued
 - Batch 5 tail: S7 universe fail-closed DONE inline; S11 queue triage DONE inline (F3 orphan claim stale — queue is generator-fed/tracked; #13 ABANDONED as Awake-mirror dedup, rest stay Queued)
-- Batch 6: tails + full-suite verify + merge + evolution-lessons update (LOOP_COMPLETE after)
+- Batch 6: G5 weakest-track raised (0.50/0.70→0.60/0.80) + G6 MLP steering removed (44/44 gatespec green); backup branch quant-improve-20260911 (d3bd30a); lessons L037-L040 written; FULL SUITE running
 
 ## Invariants (never break)
 Paper-only. LIVE_TRADING_ENABLED stays False. Circuit breakers stay OFF (user order). Scoped files per prompt;

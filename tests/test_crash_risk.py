@@ -330,7 +330,7 @@ class TestNoExecutionSurface:
         "yfinance",
         "pandas",
     }
-    ALLOWED_ROOTS = {"numpy", "dataclasses", "typing", "__future__"}
+    ALLOWED_ROOTS = {"numpy", "dataclasses", "typing", "__future__", "collections"}  # collections.abc.Sequence is stdlib, no execution surface
 
     @staticmethod
     def _module_source() -> str:

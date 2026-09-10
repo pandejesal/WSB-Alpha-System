@@ -102,6 +102,26 @@ class KillSwitch:
         """
         return self.get_state() == "off"
 
+    def get_sleeve_state(self, sleeve_id: str) -> str:
+        """
+        Returns per-sleeve state from the ``sleeves`` mapping in the state file.
+        Unknown sleeve -> global state (a global halt still halts it).
+        Any file error -> "halt_new_orders" (fail closed).
+        """
+        try:
+            with open(self.filepath, "r") as f:
+                data = yaml.safe_load(f)
+            if isinstance(data, dict):
+                sleeves = data.get("sleeves", {})
+                if isinstance(sleeves, dict) and sleeve_id in sleeves:
+                    state = sleeves[sleeve_id]
+                    if state in self.valid_states:
+                        return state
+            return self.get_state()
+        except Exception:
+            logger.error("Failed to read sleeve state; failing closed.")
+            return "halt_new_orders"
+
 
 def dual_gate_allows_trading(live_enabled: bool, filepath: str = "config/ops_state.yaml") -> tuple[bool, str]:
     """
