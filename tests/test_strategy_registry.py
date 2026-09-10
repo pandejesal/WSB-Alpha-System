@@ -1,11 +1,13 @@
 import json
-import yaml
-import pytest
-import pandas as pd
 from unittest import mock
 
-from src.ops.strategy_registry import load_registry, validate_spec, MalformedSpecError
-from src.ops.signals import generate_signals_from_registry, UnsupportedRuleShape
+import pandas as pd
+import pytest
+import yaml
+
+from src.ops.signals import UnsupportedRuleShape, generate_signals_from_registry
+from src.ops.strategy_registry import MalformedSpecError, load_registry, validate_spec
+
 
 @pytest.fixture
 def mock_registry_dir(tmp_path):

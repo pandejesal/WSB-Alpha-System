@@ -30,7 +30,7 @@ class DecisionMemoryLog:
             self.path.write_text("# Decision Memory Log\n", encoding="utf-8")
 
     def record(self, symbol: str, action: str, strategy: str, price: float,
-               notional: float, reasons: List[str]) -> int:
+               notional: float, reasons: list[str]) -> int:
         entry_id = sum(1 for _ in self._entries()) + 1
         block = (f"\n## {entry_id} {symbol} {action} [{strategy}] {_now()}\n"
                  f"- entry: {price} notional: {notional}\n"
@@ -41,7 +41,7 @@ class DecisionMemoryLog:
         return entry_id
 
     def resolve(self, entry_id: int, exit_price: float,
-                reflection: str = "") -> Dict[str, Any]:
+                reflection: str = "") -> dict[str, Any]:
         text = self.path.read_text(encoding="utf-8")
         m = re.search(rf"## {entry_id} (\S+) (\S+) \[(.*?)\].*?\n- entry: ([\d.]+) notional: ([\d.]+)",
                       text)
@@ -59,7 +59,7 @@ class DecisionMemoryLog:
         self.path.write_text(text, encoding="utf-8")
         return {"entry_id": entry_id, "realized_pct": round(realized, 2)}
 
-    def stats(self, strategy: str | None = None) -> Dict[str, float]:
+    def stats(self, strategy: str | None = None) -> dict[str, float]:
         text = self.path.read_text(encoding="utf-8")
         realized = [float(x) for x in re.findall(r"realized: ([-\d.]+)%", text)]
         if strategy:

@@ -1,9 +1,15 @@
-import unittest
-import sys
 import os
+import sys
+import unittest
+
+import requests
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src.execution.execution_adapter import PaperbrokerClient, ExecutionAdapter
+from src.execution.execution_adapter import (  # noqa: E402
+    ExecutionAdapter,
+    PaperbrokerClient,
+)
+
 
 class DummyResponse:
     def __init__(self, json_data, status_code):
@@ -20,11 +26,12 @@ class DummyResponse:
 class MockRequests:
     def __init__(self):
         self.last_post_kwargs = None
+
     def post(self, url, json=None, headers=None):
         self.last_post_kwargs = {'url': url, 'json': json, 'headers': headers}
         return DummyResponse({"status": "success", "order_id": 123}, 200)
 
-import requests
+
 requests.post = MockRequests().post
 
 class TestExecutionAdapter(unittest.TestCase):

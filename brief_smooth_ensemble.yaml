@@ -1,0 +1,52 @@
+family: smooth_ensemble
+universe: "SPY + 100-stock liquid large-cap panel + BTC-USD (daily OHLCV 2019-2026, 1910 bars loop window, identical-window SPY twin for excess, T+1 tiered cost W5)"
+hypothesis: "Single-family momentum/vol bets carry left-tail DD >30% and DSR fragility (N_family 500-1000 requires Sharpe 1.38-1.49 for DSR 0.80 vs global N=10k needs 1.71) that fail excess/DD gates; 2-4 family blends (spy_sma200 trend + us_lowvol_top30 defensive + btc_vol_target_sma100 vol-scaled + quality_lowvol_top10) with vol-weighted or equal-risk allocation, monthly rebalance, long/flat only smooth the curve: 5000-trial audit shows ensemble variance reduction 30-40%, DSR uplift +0.15-0.20, maxDD compression 8-12pp vs single-family median, targeting conservative_timing (Track3), tail_risk_sentinel (Track4), statistical_rigor (Track7) with paper-only fail-closed execution."
+acceptance: "Edge claim pre-registered via hunt_runner run freeze (docs/data prereg cycle smooth_ensemble); YAML specs (2-4 family ensembles, new family name smooth_ensemble) parse via strategy_registry.validate_spec; registry wired via hunt_runner collect only (never hand-edit registry.json); L1: Sharpe>=0.50 maxDD<=0.35 excess>0 trips>=5 on full 1910-bar window; L2: must clear >=1 of conservative_timing (sharpe>=0.50 maxDD<=0.35 oos>=0.35 excess>=0.15 dsr>=0.70 trips>=5) OR tail_risk_sentinel (sharpe>=0.55 maxDD<=0.25 oos>=0.35 excess>=0.03 dsr>=0.75 trips>=6) OR statistical_rigor (sharpe>=0.70 maxDD<=0.35 oos>=0.45 excess>=0.02 dsr>=0.92 trips>=15) per GATESPEC38_TRACKS; perm_p<=0.05 boot_p<=0.05 where simulated; honest ABANDON if 0 survivors after 3-4 candidates; paper-only long/flat, monthly rebalance, vol-weighted/equal-risk, T+1, tiered cost W5."
+lookback_constraints: "Daily OHLCV only (no intraday), 1910-bar loop window 2019-01-02 to 2026-08-07, no lookahead (signal.shift(1) T+1 exec_delay=1), monthly rebalance last trading bar forward-filled until next month, vol-weighted allocation uses trailing 20d realized vol (sqrt252) inverse-vol weights capped 1.5x, equal-risk fallback 1/N, long/flat only (no short, no leverage >1.0 gross per sleeve, max 3.0x flag not used), tiered cost W5 identical in backtest and rotation_result (equities 5-7bps+1bp vol_scalar, BTC 15-25bps+1bp), identical-window SPY twin for excess over +245.5% loop window, T=1910 for DSR per-family N, 5000-trial bootstrap/block21 and permutation audit for DSR+DD tail proof."
+edge_gate_params:
+  tracks_targeted: ["conservative_timing", "tail_risk_sentinel", "statistical_rigor"]
+  primary_track: conservative_timing
+  secondary_track: tail_risk_sentinel
+  tertiary_track: statistical_rigor
+  conservative_timing:
+    sharpe_min: 0.50
+    max_dd_max: 0.35
+    oos_min: 0.35
+    excess_min: 0.15
+    dsr_min: 0.70
+    trips_min: 5
+  tail_risk_sentinel:
+    sharpe_min: 0.55
+    max_dd_max: 0.25
+    oos_min: 0.35
+    excess_min: 0.03
+    dsr_min: 0.75
+    trips_min: 6
+  statistical_rigor:
+    sharpe_min: 0.70
+    max_dd_max: 0.35
+    oos_min: 0.45
+    excess_min: 0.02
+    dsr_min: 0.92
+    trips_min: 15
+  L1_gate:
+    sharpe_min: 0.50
+    max_dd_max: 0.35
+    excess_min: 0.0
+    trips_min: 5
+  param_grid:
+    sleeves_options:
+      - ["spy_sma200", "us_lowvol_top30", "btc_vol_target_sma100", "quality_lowvol_top10"]
+      - ["spy_sma200", "us_lowvol_top30", "btc_vol_target_sma100"]
+      - ["spy_sma200", "quality_lowvol_top10"]
+      - ["us_lowvol_top30", "quality_lowvol_top10", "btc_vol_target_sma100"]
+    allocation: ["vol_weighted", "equal_risk"]
+    rebalance: ["monthly"]
+    vol_window: [20]
+    drift_band: [0.05]
+    exec_delay: [1]
+  cost_model: "tiered W5 equities 5-7bps+1bp BTC 15-25bps+1bp vol_scalar rolling_std(20)/median_60 scale2 cap2 BTC scale10 cap10 fallback 5bps never 0 identical-window SPY twin"
+  audit_trials: 5000
+  paper_only: true
+  fail_closed: true
+  benchmarks: ["SPY identical-window 1910 bars +245.5%", "stationary bootstrap K=200 block21", "permutation 200", "DSR per-family N T=1910"]

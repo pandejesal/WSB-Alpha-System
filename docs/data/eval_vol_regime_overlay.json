@@ -1,0 +1,83 @@
+{
+  "id": "vol_regime_overlay",
+  "family": "vol_regime",
+  "spec_file": "strategies/vol_regime_overlay.yaml",
+  "pre_registration_ref": "docs/data/cycle14_prereg_vol_regime.md",
+  "evaluation_date": "2026-09-09",
+  "paper_only": true,
+  "live_trading_enabled": false,
+  "cost_model": "tiered W5 T+1 5bps slippage + vol_scalar",
+  "intraday_data": "none - daily OHLCV only, no intraday/hourly/minute feed",
+  "vix_usage": "read-only tagging from market_data_2019_2026/ohlcv/^VIX.csv, never scales",
+  "proxy_limitation": "Daily vol-of-vol proxies 40-60% of intraday variance concentration (Barndorff-Nielsen 2009); cannot capture overnight gaps or vol-surface skew; VIX read-only",
+  "overlay_logic": "20d vol <0.8*60d median ->1.5x, >1.4*median ->0.5x else 1.0x, clip spy 0-1.5 btc 0-1.0, via src/backtest/metrics.py vol_regime_scale()",
+  "overlay_on": [
+    "spy_sma (SMA200)",
+    "btc_vol (target 0.30/vol30/gate100)"
+  ],
+  "full_window": {
+    "bars": 1910,
+    "period": "2019-01-02 to 2026-08-07",
+    "sharpe": 0.9567,
+    "max_dd": 0.2111,
+    "oos_sharpe": 1.1078,
+    "excess_vs_spy": -104.77,
+    "baseline_excess": -120.46,
+    "delta_excess_pp": 15.69,
+    "dsr_T1910_N100": 0.5399,
+    "trips": 67,
+    "tmin": 0.7204,
+    "perm_p": 0.04,
+    "boot_p": 0.04,
+    "track_1_core_timing_overlay": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": true,
+        "max_dd_max": true,
+        "oos_min": true,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Low-exposure timing overlay (10-40% time-in-market)"
+    }
+  },
+  "vix_regime_tagging": {
+    "source": "market_data_2019_2026/ohlcv/^VIX.csv",
+    "counts": {
+      "normal": 1145,
+      "low": 418,
+      "high": 288,
+      "extreme": 59
+    },
+    "bins": "low<15 normal15-25 high25-35 extreme>35",
+    "usage": "read-only tagging only"
+  },
+  "window_overlay_vs_baseline": {
+    "COVID": {
+      "start": "2020-02-19",
+      "end": "2020-12-31",
+      "baseline_excess": -8.38,
+      "overlay_excess": 10.11,
+      "delta_pp": 18.49,
+      "meets_2pp": true
+    },
+    "2022": {
+      "start": "2022-01-01",
+      "end": "2022-12-31",
+      "baseline_excess": 2.65,
+      "overlay_excess": 2.0,
+      "delta_pp": -0.66,
+      "meets_2pp": false
+    }
+  },
+  "l2_target": "Track 1 +2pp excess on COVID/2022 windows vs no-overlay baseline",
+  "l2_result": {
+    "COVID_meets": true,
+    "2022_meets": false,
+    "verdict": "PARTIAL - COVID +18.49pp passes, 2022 -0.66pp fails (proxy limitation honest)",
+    "honest_abandon": true
+  },
+  "hunt_runner": "specs via hunts/vol_regime/20260909-vol-regime/candidates/vol_regime_overlay.yaml + results/eval_vol_regime_overlay.json",
+  "no_intraday_feed": true
+}

@@ -1,0 +1,34 @@
+id: tail_risk_sentinel_v1
+name: "Tail Risk Sentinel v1 (VIX20/22 ATR2.0 vol0.22)"
+family: tail_risk_sentinel
+venue: alpaca
+universe: "SPY + 100-stock liquid large-cap panel with VIX proxy (market_data_2019_2026/ohlcv/^VIX.csv)"
+pre_registration_ref: "hunts/tail_risk_sentinel/20260909-tail-sentinel/docs/data/cycletail_risk_sentinel-20260909-0109_tail-risk-sentinel_prereg_tail_risk_sentinel.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/tail_risk_sentinel/20260909-tail-sentinel/results/eval_tail_risk_sentinel_v1.json"
+status: "paper"
+version: 1
+signal:
+  entry: "SPY position when VIX(20) close <=22 and SPY 20d vol <=0.22; otherwise flat (cash) — tail hedge"
+  exit: "ATR 2.0x stop: if daily TR >2.0*ATR20 then flat next bar; re-enter when VIX/vol gate clears"
+  sizing: "Single SPY position 100% when gate long, 0% when hedged; fractional"
+  caps:
+    max_concurrent_positions: 1
+  rebalance: "daily"
+parameters:
+  vix_window: 20
+  vix_entry: 22
+  atr_stop: 2.0
+  vol_regime_cap: 0.22
+  exec_delay: 1
+indicators:
+  - "VIX close rolling mean 20"
+  - "SPY 20d realized vol annualized"
+  - "ATR20 proxy high-low / close"
+position_sizing:
+  - "100% SPY when regime RISK_ON else cash"
+fee_model:
+  commission: "$0 +1bp"
+  slippage: "5-7bps + vol term"
+  settlement: "T+1"

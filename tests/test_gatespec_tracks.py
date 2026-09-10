@@ -10,14 +10,13 @@ Coverage:
 import pytest
 
 from src.backtest.gatespec_tracks import (
-    TRACKS,
     SPY_BASELINE,
+    TRACKS,
     check_track,
     get_track,
     get_track_names,
     recompute_dsr,
 )
-
 
 # --- Fixtures ---
 

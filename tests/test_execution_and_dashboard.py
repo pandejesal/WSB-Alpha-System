@@ -1,12 +1,13 @@
-import unittest
-import os
 import json
+import os
 import sys
+import unittest
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.execution.alpaca_broker import AlpacaBroker
-from src.risk.circuit_breakers import CircuitBreaker, TradingHaltedException
 from src.monitoring.telegram_bot import TelegramBot
+from src.risk.circuit_breakers import CircuitBreaker, TradingHaltedException
+
 
 class TestPhase5(unittest.TestCase):
 

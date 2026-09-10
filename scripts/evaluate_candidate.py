@@ -11,7 +11,11 @@ import numpy as np
 import pandas as pd
 
 from src.alpha.indicators import compute_indicators
-from src.backtest.validation import NUM_PERMUTATIONS, run_in_sample_test, run_walk_forward_test
+from src.backtest.validation import (
+    NUM_PERMUTATIONS,
+    run_in_sample_test,
+    run_walk_forward_test,
+)
 from src.data.providers.chain import get_provider
 from src.ops.signals import UnsupportedRuleShape, generate_signals_from_registry
 from src.ops.strategy_registry import validate_spec
@@ -78,142 +82,6 @@ def compute_dsr(real_sharpe, permuted_sharpes):
     return norm.cdf(z)
 
 
-def build_signal_posts(spec_dict, df, tickers):
-    import pandas as pd
-
-    from src.alpha.indicators import compute_indicators
-    from src.ops.signals import UnsupportedRuleShape
-
-    posts_data = []
-    family = spec_dict.get("family")
-    params = spec_dict.get("parameters") or spec_dict.get("params", {})
-
-    posts_df = pd.DataFrame()
-    exit_overlay_not_simulated = False
-    if family == "multi_factor":
-        raise UnsupportedRuleShape("NOT_EVALUABLE: missing factor modules")
-
-    # We will build posts per ticker
-    for ticker in tickers:
-        ticker_df = df[df['Ticker'] == ticker].copy() if 'Ticker' in df.columns else df.copy()
-        ticker_df = ticker_df.sort_values("Date")
-        if len(ticker_df) < 60:
-            continue
-
-        ind_df = compute_indicators(ticker_df)
-        if ind_df is None or len(ind_df) == 0:
-            continue
-
-        if family == "ta_rules":
-            entry_rule = spec_dict.get("signal", {}).get("entry", "")
-            if 'ema_cross' in entry_rule:
-                fast = params.get('ema_fast') or params.get('fast_ma', 10)
-                slow = params.get('ema_slow') or params.get('slow_ma', 50)
-                sma_window = params.get('sma_window', 200)
-
-                fast_col = f"EMA_{fast}"
-                slow_col = f"EMA_{slow}"
-                sma_col = f"SMA_{sma_window}"
-
-                if fast_col not in ind_df.columns:
-                    ind_df[fast_col] = ticker_df["Close"].ewm(span=fast, adjust=False).mean()
-                if slow_col not in ind_df.columns:
-                    ind_df[slow_col] = ticker_df["Close"].ewm(span=slow, adjust=False).mean()
-                if sma_col not in ind_df.columns:
-                    ind_df[sma_col] = ticker_df["Close"].rolling(window=sma_window).mean()
-
-                # Cross above condition
-                ind_df['prev_fast'] = ind_df[fast_col].shift(1)
-                ind_df['prev_slow'] = ind_df[slow_col].shift(1)
-
-                mask = (ind_df['prev_fast'] <= ind_df['prev_slow']) & \
-                       (ind_df[fast_col] > ind_df[slow_col]) & \
-                       (ticker_df["Close"] > ind_df[sma_col])
-
-                dates = ind_df.index[mask] if isinstance(ind_df.index, pd.DatetimeIndex) else ind_df[mask]['Date'] if 'Date' in ind_df.columns else ticker_df.loc[mask, 'Date']
-                for d in dates:
-                    posts_data.append({"post_date": pd.to_datetime(d), "ticker": ticker, "sentiment_score": 1.0})
-
-            elif 'macd_histogram' in entry_rule:
-                consecutive_days = params.get('consecutive_days', 2)
-                mask = ind_df['MACD_Hist'] > 0
-                for i in range(1, consecutive_days + 1):
-                    mask = mask & (ind_df['MACD_Hist'].shift(i - 1) > ind_df['MACD_Hist'].shift(i))
-
-                dates = ind_df.index[mask] if isinstance(ind_df.index, pd.DatetimeIndex) else ind_df[mask]['Date'] if 'Date' in ind_df.columns else ticker_df.loc[mask, 'Date']
-                for d in dates:
-                    posts_data.append({"post_date": pd.to_datetime(d), "ticker": ticker, "sentiment_score": 1.0})
-
-            elif 'rsi2' in entry_rule:
-                period = params.get('rsi_period', 2)
-                rsi_col = f"RSI_{period}" if period != 2 else "RSI_2"
-
-                if rsi_col not in ind_df.columns:
-                    delta = ticker_df["Close"].diff()
-                    gain = (delta.where(delta > 0, 0)).fillna(0)
-                    loss = (-delta.where(delta < 0, 0)).fillna(0)
-                    avg_gain = gain.ewm(alpha=1/period, adjust=False).mean()
-                    avg_loss = loss.ewm(alpha=1/period, adjust=False).mean()
-                    rs = avg_gain / (avg_loss + 1e-10)
-                    ind_df[rsi_col] = 100 - (100 / (1 + rs))
-
-                entry_threshold = spec_dict.get("signal", {}).get("entry_threshold", params.get("entry", 10))
-                mask = ind_df[rsi_col] < entry_threshold
-
-                dates = ind_df.index[mask] if isinstance(ind_df.index, pd.DatetimeIndex) else ind_df[mask]['Date'] if 'Date' in ind_df.columns else ticker_df.loc[mask, 'Date']
-                for d in dates:
-                    posts_data.append({"post_date": pd.to_datetime(d), "ticker": ticker, "sentiment_score": 1.0})
-
-        elif family == "sentiment_overlay":
-            window = params.get('window', 200)
-            sma_col = f"SMA_{window}"
-            if sma_col not in ind_df.columns:
-                ind_df[sma_col] = ticker_df["Close"].rolling(window=window).mean()
-
-            mask = ticker_df["Close"] > ind_df[sma_col]
-            dates = ind_df.index[mask] if isinstance(ind_df.index, pd.DatetimeIndex) else ind_df[mask]['Date'] if 'Date' in ind_df.columns else ticker_df.loc[mask, 'Date']
-            for d in dates:
-                posts_data.append({"post_date": pd.to_datetime(d), "ticker": ticker, "sentiment_score": 0.5})
-
-    if family == "xgboost_exits":
-        lookback_days = params.get('lookback_days', 126)
-        skip_days = params.get('skip_days', 21)
-        top_n = params.get('top_n', 5)
-
-        # Resample to month-end trading days
-        # We find the last trading day of each month in the dataset
-        if 'Date' in df.columns:
-            all_dates = pd.Series(pd.to_datetime(df['Date'].unique())).sort_values()
-        else:
-            all_dates = pd.Series(pd.to_datetime(df.index.unique())).sort_values()
-
-        all_dates_df = pd.DataFrame({'Date': all_dates})
-        all_dates_df['YearMonth'] = all_dates_df['Date'].dt.to_period('M')
-        month_ends = all_dates_df.groupby('YearMonth')['Date'].max()
-
-        for me_date in month_ends:
-            # Calculate momentum for all tickers at this date
-            momenta = {}
-            for ticker in tickers:
-                ticker_df = df[df['Ticker'] == ticker] if 'Ticker' in df.columns else df
-                if 'Date' in ticker_df.columns:
-                    ticker_df = ticker_df.set_index('Date')
-
-                # Get data up to me_date
-                t_hist = ticker_df.loc[:me_date]
-                if len(t_hist) > (lookback_days + skip_days):
-                    p_skip = t_hist['Close'].iloc[-(skip_days + 1)]
-                    p_lookback = t_hist['Close'].iloc[-(lookback_days + skip_days + 1)]
-                    if p_lookback > 0:
-                        momenta[ticker] = float((p_skip / p_lookback) - 1)
-
-            if momenta:
-                sorted_mom = sorted(momenta.items(), key=lambda x: x[1], reverse=True)
-                top_tickers = [t for t, _ in sorted_mom[:top_n]]
-                for t in top_tickers:
-                    posts_data.append({"post_date": pd.to_datetime(me_date), "ticker": t, "sentiment_score": 1.0})
-
-    return pd.DataFrame(posts_data)
 
 
 def _get_universe(tickers_arg):
@@ -248,7 +116,7 @@ def _resolve_edge_claim(spec_dict):
                 hyp = (brief or {}).get("hypothesis")
                 if hyp:
                     return str(hyp)
-        except Exception as e:  # noqa: BLE001 - brief is best-effort metadata
+        except Exception as e:
             logger.warning(f"Could not read brief hypothesis from {brief_path}: {e}")
     return "Default claim"
 
@@ -423,7 +291,7 @@ def _cached_coverage(provider):
         if res.empty or pd.isna(res.iloc[0]['m']) or pd.isna(res.iloc[0]['x']):
             return None
         return pd.Timestamp(res.iloc[0]['m']), pd.Timestamp(res.iloc[0]['x'])
-    except Exception:  # noqa: BLE001 - cache must never block evaluation
+    except Exception:
         return None
 
 def _clamp_to_cache(start_date, end_date, provider):
@@ -573,13 +441,11 @@ def main():
             "oos_sharpe": real_pooled_sharpe,
             "dsr": dsr,
             "permutations_used": args.permutations,
-            "signal_post_count": int(len(posts_df)),
+            "signal_post_count": len(posts_df),
             "edge_gate_params": spec_dict.get("edge_gate_params", {}),
             "spec_fingerprint": spec_fingerprint,
             "timestamp": datetime.utcnow().isoformat(),
-            "signal_post_count": len(posts_df),
-            "exit_overlay_not_simulated": exit_overlay_not_simulated,
-            "permutations_used": args.permutations
+            "exit_overlay_not_simulated": exit_overlay_not_simulated
         }
 
     except UnsupportedRuleShape as e:

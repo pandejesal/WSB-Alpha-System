@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+
 import numpy as np
 
 from src.backtest.metrics import safe_sharpe

@@ -1,8 +1,11 @@
-import unittest
-import pandas as pd
-import numpy as np
 import os
+import unittest
+
+import numpy as np
+import pandas as pd
+
 from src.alpha.reporting import PerformanceReporter
+
 
 class TestReporting(unittest.TestCase):
     def test_plot_trajectories(self):

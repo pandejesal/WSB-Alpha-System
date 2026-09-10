@@ -1,6 +1,7 @@
+import logging
 import os
 import sys
-import logging
+
 from src.execution.paper_executor import PaperExecutor
 
 logging.basicConfig(level=logging.INFO)

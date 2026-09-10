@@ -131,7 +131,7 @@ def load_data(tickers):
             raise SystemExit(f"FAIL-CLOSED: empty OHLCV file for {t}")
         s = df.set_index("date")["close"].astype(float).sort_index()
         frames[t] = s
-        per_file_rows[t] = int(len(s))
+        per_file_rows[t] = len(s)
     cal = pd.DatetimeIndex(sorted(set().union(*[s.index for s in frames.values()])))
     panel = {}
     for t in tickers:
@@ -150,7 +150,7 @@ def load_data(tickers):
         "benchmark": {"ticker": BENCHMARK, "rows": per_file_rows[BENCHMARK],
                       "first": str(frames[BENCHMARK].index[0].date()),
                       "last": str(frames[BENCHMARK].index[-1].date())},
-        "calendar": {"n_bars": int(len(cal)), "first": str(cal[0].date()), "last": str(cal[-1].date())},
+        "calendar": {"n_bars": len(cal), "first": str(cal[0].date()), "last": str(cal[-1].date())},
     }
     return panel, cal, spy_close, spy_ffill, integrity
 
@@ -465,7 +465,7 @@ def g2_stationary_bootstrap(is_excess):
     return {"pass": bool(p_two <= G2_ALPHA), "statistic": obs, "p_value": p_two, "threshold": G2_ALPHA,
             "borderline_flag": bool(G2_ALPHA * 0.8 < p_two <= G2_ALPHA),
             "details": {"method": "two-sided stationary block bootstrap p-value (Hall-Wilson): p = 2*min(P(T*-Tbar >= Tbar), P(T*-Tbar <= Tbar)), T* = bootstrap means",
-                        "mean_block_days": G2_MEAN_BLOCK, "draws": G2_DRAWS, "seed": G2_SEED, "series_len": int(len(x)),
+                        "mean_block_days": G2_MEAN_BLOCK, "draws": G2_DRAWS, "seed": G2_SEED, "series_len": len(x),
                         "boot_mean_dist": {"mean": float(np.mean(boot_means)), "std": float(np.std(boot_means, ddof=1))}}}
 
 def circular_block_shuffle(x, block, seed):
@@ -493,7 +493,7 @@ def g5_permutation_null(oos_excess, observed_ann_sharpe):
     p95 = float(np.percentile(null_sharpes, 95))
     return {"pass": bool(observed_ann_sharpe > p95), "statistic": float(observed_ann_sharpe), "threshold": p95,
             "details": {"method": "circular block shuffle (multiset-preserving permutation), observed annualized net-excess Sharpe vs null p95",
-                        "block_days": G5_BLOCK, "draws": G5_DRAWS, "seed": G5_SEED, "series_len": int(len(x)),
+                        "block_days": G5_BLOCK, "draws": G5_DRAWS, "seed": G5_SEED, "series_len": len(x),
                         "null_mean": float(np.mean(null_sharpes)), "null_std": float(np.std(null_sharpes, ddof=1))}}
 
 def g3_cpcv(full_excess):
@@ -564,9 +564,9 @@ def g4_walk_forward(oos_excess):
         cum_ok &= bool(cum_sh > 0)
         max_share = max(max_share, share)
         table.append({"fold": k + 1, "expanding_span": [str(cum.index[0].date()), str(cum.index[-1].date())],
-                      "cum_n_days": int(len(cum)), "cum_net_excess_sharpe": cum_sh,
+                      "cum_n_days": len(cum), "cum_net_excess_sharpe": cum_sh,
                       "incremental_segment": [str(incr.index[0].date()), str(incr.index[-1].date())],
-                      "incremental_n_days": int(len(incr)), "incremental_sum_net_excess": incr_sum,
+                      "incremental_n_days": len(incr), "incremental_sum_net_excess": incr_sum,
                       "incremental_sharpe_descriptive": sharpe(incr), "share_of_cumulative_oos_net_excess": float(share)})
         prev_end = e
     return {"pass": bool(cum_ok and max_share <= G4_MAX_FOLD_SHARE), "statistic": float(min(r["cum_net_excess_sharpe"] for r in table)), "threshold": 0.0,
@@ -580,13 +580,13 @@ def arm_metrics(eq_full, returns_full, label):
     is_r = returns_full[returns_full.index <= IS_END]
     oos_r = returns_full[returns_full.index >= OOS_START]
     def pack(eq, r):
-        return {"cagr": cagr(eq), "sharpe": sharpe(r), "maxdd": max_dd(eq), "n_days": int(len(r)), "yearly": yearly_returns(eq)}
+        return {"cagr": cagr(eq), "sharpe": sharpe(r), "maxdd": max_dd(eq), "n_days": len(r), "yearly": yearly_returns(eq)}
     return {label: {"is": pack(is_eq, is_r), "oos": pack(oos_eq, oos_r)}}
 
 def excess_summary(seg):
     x = seg.to_numpy(dtype=float)
     sd = float(np.std(x, ddof=1)) if len(x) > 1 else float("nan")
-    return {"n_days": int(len(x)), "mean_daily": float(np.mean(x)), "std_daily": sd,
+    return {"n_days": len(x), "mean_daily": float(np.mean(x)), "std_daily": sd,
             "annualized_sharpe": (float(np.mean(x)) / sd * np.sqrt(ANN)) if sd and sd > 0 and not np.isnan(sd) else 0.0,
             "sum": float(np.sum(x)), "min": float(np.min(x)), "max": float(np.max(x)),
             "start": str(seg.index[0].date()), "end": str(seg.index[-1].date())}

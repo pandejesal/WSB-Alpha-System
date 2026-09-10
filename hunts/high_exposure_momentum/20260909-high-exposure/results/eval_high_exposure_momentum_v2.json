@@ -1,0 +1,22 @@
+{
+  "id": "high_exposure_momentum_v2",
+  "family": "high_exposure_momentum",
+  "metrics": {
+    "sharpe": 1.181,
+    "cagr": 0.362,
+    "max_dd": 0.488,
+    "oos_sharpe": 1.313,
+    "excess": 6.97,
+    "tmin": 0.9,
+    "dsr": 0.834,
+    "trips": 0,
+    "perm_p": 0.04,
+    "boot_p": 0.03,
+    "n_bars": 1910,
+    "fam_trials": 51
+  },
+  "tracks_cleared": 0,
+  "tracks": [],
+  "L1_pass": false,
+  "L2_Track5_pass": false
+}

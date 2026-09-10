@@ -17,12 +17,11 @@ Note:
 
 from __future__ import annotations
 
-from typing import List, Dict, Tuple
-
+from typing import Dict, List, Tuple
 
 # === Finance-specific sentiment lexicons ===
 
-POSITIVE_LEXICON: Dict[str, float] = {
+POSITIVE_LEXICON: dict[str, float] = {
     # Strong positive (0.7-1.0)
     "surge": 0.85, "rally": 0.8, "soar": 0.85, "breakout": 0.75,
     "record high": 0.9, "all-time high": 0.9, "upgrade": 0.7,
@@ -48,7 +47,7 @@ POSITIVE_LEXICON: Dict[str, float] = {
     "beat estimates": 0.6, "beat forecast": 0.6,
 }
 
-NEGATIVE_LEXICON: Dict[str, float] = {
+NEGATIVE_LEXICON: dict[str, float] = {
     # Strong negative (0.7-1.0)
     "crash": 0.9, "crashes": 0.9, "crashing": 0.85, "collapse": 0.85,
     "plunge": 0.85, "plunges": 0.85, "plunging": 0.85,
@@ -82,7 +81,7 @@ NEGATIVE_LEXICON: Dict[str, float] = {
 }
 
 # Intensifiers that amplify sentiment
-INTENSIFIERS: Dict[str, float] = {
+INTENSIFIERS: dict[str, float] = {
     "very": 1.3, "extremely": 1.5, "significantly": 1.4,
     "substantially": 1.4, "considerably": 1.3, "dramatically": 1.5,
     "sharply": 1.4, "steeply": 1.4, "massively": 1.5,
@@ -101,7 +100,7 @@ NEGATORS: set[str] = {
 }
 
 # Sample evaluation set (FPB-style taxonomy)
-SAMPLE_EVAL_SET: List[Dict[str, str]] = [
+SAMPLE_EVAL_SET: list[dict[str, str]] = [
     # Positive (10)
     {"text": "Company reports strong Q3 earnings, beating analyst expectations", "label": "positive"},
     {"text": "Stock surges to all-time high on record revenue growth", "label": "positive"},
@@ -153,12 +152,12 @@ SAMPLE_EVAL_SET: List[Dict[str, str]] = [
 ]
 
 
-def _tokenize(text: str) -> List[str]:
+def _tokenize(text: str) -> list[str]:
     """Tokenize text into lowercase words."""
     return text.lower().split()
 
 
-def _count_sentiment_words(tokens: List[str], lexicon: Dict[str, float]) -> List[Tuple[str, float]]:
+def _count_sentiment_words(tokens: list[str], lexicon: dict[str, float]) -> list[tuple[str, float]]:
     """Find sentiment words in token list and return their weights."""
     hits = []
     for token in tokens:
@@ -167,12 +166,12 @@ def _count_sentiment_words(tokens: List[str], lexicon: Dict[str, float]) -> List
     return hits
 
 
-def _detect_negation(tokens: List[str]) -> bool:
+def _detect_negation(tokens: list[str]) -> bool:
     """Check if any negator appears before sentiment words."""
     return any(token in NEGATORS for token in tokens)
 
 
-def _get_intensifier_multiplier(tokens: List[str]) -> float:
+def _get_intensifier_multiplier(tokens: list[str]) -> float:
     """Calculate intensifier multiplier from tokens."""
     multiplier = 1.0
     for token in tokens:
@@ -181,7 +180,7 @@ def _get_intensifier_multiplier(tokens: List[str]) -> float:
     return min(multiplier, 2.0)  # Cap at 2x
 
 
-def score_sentiment(text: str) -> Dict[str, object]:
+def score_sentiment(text: str) -> dict[str, object]:
     """Score financial text sentiment.
 
     Args:
@@ -267,7 +266,7 @@ def score_sentiment(text: str) -> Dict[str, object]:
     }
 
 
-def score_batch(texts: List[str]) -> List[Dict[str, object]]:
+def score_batch(texts: list[str]) -> list[dict[str, object]]:
     """Score multiple texts for sentiment.
 
     Args:
@@ -283,7 +282,7 @@ def map_sentiment_to_signal(
     score: float,
     threshold_pos: float = 0.2,
     threshold_neg: float = -0.2,
-) -> Dict[str, object]:
+) -> dict[str, object]:
     """Map sentiment score to trading signal.
 
     Args:
@@ -320,10 +319,10 @@ def map_sentiment_to_signal(
 
 
 def generate_synthetic_sentiment(
-    returns: List[float],
+    returns: list[float],
     lookback: int = 5,
     noise_std: float = 0.1,
-) -> List[float]:
+) -> list[float]:
     """Generate synthetic sentiment from returns (for backtesting only).
 
     WARNING: This is synthetic sentiment. Any backtest results are FRAUDULENT
@@ -361,7 +360,7 @@ def generate_synthetic_sentiment(
     return sentiments
 
 
-def run_evaluation() -> Dict[str, object]:
+def run_evaluation() -> dict[str, object]:
     """Run evaluation on sample set.
 
     Returns:

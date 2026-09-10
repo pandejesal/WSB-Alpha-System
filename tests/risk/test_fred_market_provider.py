@@ -1,8 +1,10 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
 import requests
 
 from src.risk.fred_macro_provider import FredMacroProvider
+
 
 class MockResponse:
     def __init__(self, json_data, status_code):

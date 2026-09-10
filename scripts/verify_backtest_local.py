@@ -98,7 +98,7 @@ def trade_metrics(trades_df):
     annualized_return = ((1 + total_return) ** (1 / years) - 1) if years > 0 else total_return
     return {"sharpe": float(sharpe), "sortino": float(sortino), "calmar": float(calmar),
             "win_rate": float(win_rate), "profit_factor": float(profit_factor),
-            "max_drawdown": float(max_dd), "total_trades": int(len(rets)),
+            "max_drawdown": float(max_dd), "total_trades": len(rets),
             "total_return": float(total_return), "annualized_return": float(annualized_return),
             "avg_excess_return": float(trades_df["excess_return"].fillna(0).mean()),
             "spy_total_return": float(trades_df["spy_return"].fillna(0).sum()),
@@ -106,8 +106,8 @@ def trade_metrics(trades_df):
 
 
 def main():
-    from src.backtest.metrics import safe_sharpe
     from src.backtest import run_historic_backtest as rb
+    from src.backtest.metrics import safe_sharpe
     from src.risk.fred_macro_provider import FredMacroProvider
 
     _cache = {}

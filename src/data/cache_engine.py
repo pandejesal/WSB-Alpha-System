@@ -2,16 +2,25 @@ import logging
 import os
 from datetime import datetime, timedelta
 
-import duckdb
+try:
+    import duckdb  # type: ignore
+
+    _DUCKDB_AVAILABLE = True
+except ModuleNotFoundError:
+    duckdb = None  # type: ignore
+    _DUCKDB_AVAILABLE = False
+
 import pandas as pd
 
 logger = logging.getLogger(__name__)
 
 class CacheEngine:
     def __init__(self, db_path: str = "data/cache/market_data.duckdb"):
+        if not _DUCKDB_AVAILABLE or duckdb is None:
+            raise ImportError("duckdb not installed — install 'duckdb' to use CacheEngine")
         self.db_path = db_path
         os.makedirs(os.path.dirname(self.db_path), exist_ok=True)
-        self.conn = duckdb.connect(self.db_path)
+        self.conn = duckdb.connect(self.db_path)  # type: ignore
         self._initialize_tables()
 
     def _initialize_tables(self):
@@ -52,7 +61,7 @@ class CacheEngine:
         """
         try:
             return self.conn.execute(query).df()
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.error(f"Failed to fetch OHLCV from cache: {e}")
             return pd.DataFrame()
 
@@ -86,25 +95,25 @@ class CacheEngine:
                     close = excluded.close,
                     volume = excluded.volume
             """)
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.error(f"Failed to store OHLCV to cache: {e}")
 
     def clear_expired_cache(self, ttl_days: int = 30):
         """Maintenance utility to clear old cache."""
-        cutoff_date = (datetime.now() - timedelta(days=ttl_days)).strftime('%Y-%m-%d')  # noqa: DTZ005 - Timezone not critical for this usage
+        cutoff_date = (datetime.now() - timedelta(days=ttl_days)).strftime('%Y-%m-%d')
         try:
             # For backtesting we often need old data, but per requirements we provide this utility
             # We'll clear data older than TTL to demonstrate capability
-            res = self.conn.execute(f"DELETE FROM ohlcv WHERE date < '{cutoff_date}'")  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
+            res = self.conn.execute(f"DELETE FROM ohlcv WHERE date < '{cutoff_date}'")
             logger.info(f"Cleared OHLCV cache older than {ttl_days} days.")
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.error(f"Failed to clear expired cache: {e}")
 
 
     def get_sentiment(self, limit: int) -> pd.DataFrame:
         try:
             return self.conn.execute(f"SELECT * FROM sentiment ORDER BY post_date DESC LIMIT {limit}").df()
-        except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception:
             return pd.DataFrame()
 
     def store_sentiment(self, df: pd.DataFrame):
@@ -117,7 +126,7 @@ class CacheEngine:
                 SELECT * FROM temp_sent
                 ON CONFLICT (post_id) DO NOTHING
             """)
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.error(f"Failed to store sentiment to cache: {e}")
 
     def determine_missing_ranges(self, tickers: list[str], start_date: str, end_date: str) -> dict:

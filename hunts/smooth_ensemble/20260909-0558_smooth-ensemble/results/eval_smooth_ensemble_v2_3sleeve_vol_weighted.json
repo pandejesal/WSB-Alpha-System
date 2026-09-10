@@ -1,0 +1,161 @@
+{
+  "id": "smooth_ensemble_v2_3sleeve_vol_weighted",
+  "family": "smooth_ensemble",
+  "params": {
+    "sleeves": [
+      "spy_sma200",
+      "us_lowvol_top30",
+      "btc_vol_target_sma100"
+    ],
+    "allocation": "vol_weighted",
+    "rebalance": "monthly",
+    "vol_window": 20,
+    "drift_band": 0.05,
+    "exec_delay": 1
+  },
+  "metrics": {
+    "sharpe": 0.379,
+    "cagr": 0.0287,
+    "max_dd": 0.1605,
+    "oos_sharpe": 0.297,
+    "oos": 0.297,
+    "excess": -221.5506,
+    "excess_spy": -221.5506,
+    "tmin": 0.796,
+    "dsr": 0.02,
+    "dsr_fam": 0.02,
+    "fam_trials": 580,
+    "trips": 59,
+    "round_trips": 59,
+    "trades": 118,
+    "perm_p": 0.475,
+    "boot_p": 0.155,
+    "n_bars": 1910,
+    "T": 1910
+  },
+  "tracks": [],
+  "detailed": {
+    "core_timing_overlay": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Low-exposure timing overlay (10-40% time-in-market)"
+    },
+    "drawdown_warrior": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Low-exposure drawdown-avoidance timing"
+    },
+    "conservative_timing": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Low-exposure conservative timing overlay"
+    },
+    "tail_risk_sentinel": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Asymmetric downside hedge / crisis alpha overlay"
+    },
+    "high_exposure_momentum": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "tmin_min": true
+      },
+      "archetype": "High time-in-market momentum / trend-following"
+    },
+    "buy_hold_companion": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "tmin_min": false
+      },
+      "archetype": "Near-buy-hold momentum / rotation"
+    },
+    "statistical_rigor": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Statistically validated timing or rotation"
+    },
+    "absolute_return_focus": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Absolute-return focused timing or rotation"
+    },
+    "risk_adjusted_discipline": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Risk-disciplined timing with strict drawdown control"
+    },
+    "benchmark_parity": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": false,
+        "max_dd_max": true,
+        "oos_min": false,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Benchmark parity reference (calibration check)"
+    }
+  },
+  "L1_pass": false,
+  "verdict": "ABANDON"
+}

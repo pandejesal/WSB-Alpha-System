@@ -84,10 +84,10 @@ def simulate(df, res_s, entry_s):
             if i - (ei + 1) < MIN_HOLD:
                 continue
             bar_log = np.log(close.iloc[i])
-            if s_ok and sc.iloc[i] <= EXIT_S:
+            if s_ok and sc.iloc[i] <= EXIT_S:  # noqa: SIM114
                 trades.append((df.index[i], entry_log - bar_log, i - ei));
                 pos = 0
-            elif i - ei >= STOP_DAYS + 1:
+            elif i - ei >= STOP_DAYS + 1:  # noqa: SIM114
                 trades.append((df.index[i], entry_log - bar_log, i - ei));
                 pos = 0
             elif sl_log is not None and bar_log <= sl_log:

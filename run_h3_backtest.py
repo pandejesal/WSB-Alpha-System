@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Run H3 ensemble backtests and compare to WSB baseline."""
-import sys
 import os
-import pandas as pd
-import numpy as np
+import sys
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent / "src"))

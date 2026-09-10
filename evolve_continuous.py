@@ -11,7 +11,13 @@ Q1-8 config:
 - Auto-update registry + prereg + PIPELINE_GATE + dashboard (Q8)
 Uses Ling 3.0 Flash Fin where useful, else Muse Spark / Nemotron Ultra / Big Pickle (allowed 4).
 """
-import time, json, pathlib, random, sys, os, traceback
+import json  # noqa: I001
+import os
+import pathlib
+import random
+import sys
+import time
+import traceback
 from datetime import datetime, timezone
 ROOT = pathlib.Path(r"C:\Users\DELL\Documents\Default Project\WSB-Alpha-System-build")
 REGISTRY = ROOT / "strategies/registry.json"
@@ -19,7 +25,7 @@ PIPELINE_GATE = ROOT / "docs/PIPELINE_GATE.md"
 EVOLVE_LOG = ROOT / "docs/data/evolve_continuous.log"
 EVOLVE_LOG.parent.mkdir(parents=True, exist_ok=True)
 TOP_FAMILIES = ["us_momentum_top5","spy_sma200","us_lowvol_top30","cta_tick_filtered","continuous_growth_defensive","gold_trend_kelly","btc_vol_target_sma100"]
-GATE = dict(sharpe_min=1.35, max_dd=0.20, cagr_min=0.16, dsr_min=0.95, minerva_seal=80)
+GATE = {"sharpe_min": 1.35, "max_dd": 0.20, "cagr_min": 0.16, "dsr_min": 0.95, "minerva_seal": 80}
 def log(msg):
     ts = datetime.now(timezone.utc).isoformat()
     line = f"[{ts}] {msg}"
@@ -27,7 +33,8 @@ def log(msg):
     try:
         with open(EVOLVE_LOG, "a", encoding="utf-8") as f:
             f.write(line+"\n")
-    except: pass
+    except Exception:
+        pass
 def load_registry():
     try:
         return json.loads(REGISTRY.read_text()).get("strategies",[])

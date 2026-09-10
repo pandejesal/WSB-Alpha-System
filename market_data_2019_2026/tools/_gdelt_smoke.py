@@ -1,8 +1,9 @@
 import sys
 
 sys.path.insert(0, r"market_data_2019_2026\tools")
-from C_causation import gdelt_artlist
 from datetime import datetime
+
+from C_causation import gdelt_artlist
 
 res = gdelt_artlist("AAPL", "Apple Inc.", datetime(2022, 1, 1), datetime(2022, 1, 31, 23, 59, 59))
 if res is None:

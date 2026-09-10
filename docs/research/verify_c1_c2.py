@@ -20,8 +20,8 @@ SPY = "SPY"
 START, END = "2015-01-01", "2026-08-09"
 
 
-def wilder_atr(h, l, c, n=14):
-    tr = np.maximum(h - l, np.maximum((h - c.shift(1)).abs(), (l - c.shift(1)).abs()))
+def wilder_atr(h, low, c, n=14):
+    tr = np.maximum(h - low, np.maximum((h - c.shift(1)).abs(), (low - c.shift(1)).abs()))
     return tr.ewm(alpha=1 / n, adjust=False).mean()
 
 
@@ -100,7 +100,7 @@ def c1_verify(data):
         results.append((t, sig.sum(), len(runs), ep_lens, fwd))
     tot_sig = sum(r[1] for r in results)
     tot_ep = sum(r[2] for r in results)
-    ep_lens = [l for r in results for l in r[3]]
+    ep_lens = [ep_len for r in results for ep_len in r[3]]
     fw = [x for r in results for (_, x, _) in r[4]]
     tags = [tag for r in results for (_, _, tag) in r[4]]
     print(f"[C1] signal days={tot_sig}  episodes={tot_ep}  trades={len(fw)}")
@@ -138,8 +138,7 @@ def c2_verify(data):
     for d, g in panel.groupby(level=0):
         if len(g) < 10:
             continue
-        r5 = g["close"].pct_change(1).groupby(level=0)
-        r5 = g.groupby(level=0)["close"].pct_change(1)
+        r5 = g.groupby(level=0)["close"].pct_change(1)  # noqa: F841 — probe, keep one line
         per_week.append((d, g))
     # simpler: build weekly returns per ticker, then cross-section
     wide = panel.pivot(columns="ticker", values="close")

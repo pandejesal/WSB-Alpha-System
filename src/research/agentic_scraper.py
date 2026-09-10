@@ -1,9 +1,19 @@
 import logging
 from datetime import datetime, timezone
 
-from playwright.sync_api import sync_playwright
+try:
+    from playwright.sync_api import sync_playwright  # type: ignore
 
-from src.research.browser_scraper import fetch_headlines as fallback_fetch_headlines
+    _PLAYWRIGHT_AVAILABLE = True
+except ModuleNotFoundError:
+    sync_playwright = None  # type: ignore
+    _PLAYWRIGHT_AVAILABLE = False
+
+try:
+    from src.research.browser_scraper import fetch_headlines as fallback_fetch_headlines
+except ImportError:
+    def fallback_fetch_headlines(ticker: str):  # type: ignore
+        return []
 
 logger = logging.getLogger(__name__)
 
@@ -17,7 +27,9 @@ def fetch_agentic_headlines(ticker: str) -> list[dict[str, str]]:
     results: list[dict[str, str]] = []
 
     try:
-        with sync_playwright() as p:
+        if not _PLAYWRIGHT_AVAILABLE or sync_playwright is None:
+            raise ImportError("playwright not installed")
+        with sync_playwright() as p:  # type: ignore
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
 

@@ -1,12 +1,14 @@
-import pytest
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
-from unittest.mock import patch, MagicMock
+import pytest
 
 from src.data.providers.alpaca_data_provider import AlpacaDataProvider
-from src.data.providers.tiingo_provider import TiingoProvider
 from src.data.providers.binance_public_provider import BinancePublicProvider
 from src.data.providers.chain import DataProviderChain
+from src.data.providers.tiingo_provider import TiingoProvider
 from src.data.providers.yfinance_provider import YFinanceProvider
+
 
 # Sample OHLCV data representing Alpaca schema
 def get_mock_alpaca_bars():
@@ -136,9 +138,7 @@ def test_provider_chain(mock_tiingo, mock_alpaca):
     chain = DataProviderChain(cache_engine=mock_cache)
     # Prevent the other providers from running by mocking them
     for provider in chain.providers:
-        if isinstance(provider, BinancePublicProvider):
-            provider.fetch_ohlcv = MagicMock(return_value=pd.DataFrame())
-        elif "YFinanceProvider" in str(type(provider)):
+        if isinstance(provider, BinancePublicProvider) or "YFinanceProvider" in str(type(provider)):
             provider.fetch_ohlcv = MagicMock(return_value=pd.DataFrame())
 
     df = chain.fetch_ohlcv(['AAPL'], '2023-01-01', '2023-01-02')

@@ -1,10 +1,13 @@
-import unittest
-import pandas as pd
-import numpy as np
-from src.data.market_data import MarketDataManager
-from src.data.base_provider import MarketDataProvider
-import shutil
 import os
+import shutil
+import unittest
+
+import numpy as np
+import pandas as pd
+
+from src.data.base_provider import MarketDataProvider
+from src.data.market_data import MarketDataManager
+
 
 class MockProvider(MarketDataProvider):
     def get_historical_data(self, ticker: str, start_date: str, end_date: str, timeframe: str = '1d') -> pd.DataFrame:

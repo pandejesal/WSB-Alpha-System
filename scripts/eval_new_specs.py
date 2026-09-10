@@ -6,27 +6,28 @@ Generates signals from the signal handlers in src/ops/signals.py, runs a
 vectorized backtest with proper holding-period logic, and reports
 CAGR / Sharpe / maxDD / win-rate vs SPY buy-and-hold.
 """
-import sys
-import os
 import json
+import os
+import sys
+from datetime import datetime
+
 import numpy as np
 import pandas as pd
-from datetime import datetime
 
 # Ensure src is importable
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import yaml
+import yfinance as yf
+
+from src.backtest.metrics import safe_sharpe, safe_sortino
 from src.ops.signals import (
-    get_factor_momentum_signal,
-    get_quality_lowvol_signal,
     get_cta_ensemble_signal,
     get_donchian_breakout_signal,
+    get_factor_momentum_signal,
     get_pead_quality_signal,
+    get_quality_lowvol_signal,
 )
-from src.backtest.metrics import safe_sharpe, safe_sortino
-
-import yfinance as yf
-import yaml
 
 # ─── Config ────────────────────────────────────────────────────────────────
 UNIVERSE = [

@@ -1,13 +1,16 @@
-import pytest
 from datetime import date, datetime
+
+import pytest
+
 from src.data.openbb_compat.base import (
-    StandardQuery,
-    StandardData,
-    ProviderAdapter,
-    EmptyDataError,
     AnnotatedResult,
+    EmptyDataError,
+    ProviderAdapter,
+    StandardData,
+    StandardQuery,
 )
 from src.data.openbb_compat.registry import Registry, RegistryLoader
+
 
 class DummyQuery(StandardQuery):
     pass

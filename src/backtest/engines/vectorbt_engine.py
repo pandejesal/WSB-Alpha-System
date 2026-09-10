@@ -1,11 +1,23 @@
+# CH-14 candidate: duplicate backtest engine — candidate for consolidation into src/backtest/engines/canonical.py (no merge in this phase; canonical is engines/canonical.py)
 import pandas as pd
-import vectorbt as vbt
+
+try:
+    import vectorbt as vbt  # type: ignore
+
+    _VBT_AVAILABLE = True
+except (ImportError, ValueError) as _e:
+    # ValueError covers plotly scattermapbox template issue with plotly>=6
+    vbt = None  # type: ignore
+    _VBT_AVAILABLE = False
+    _VBT_IMPORT_ERROR = str(_e)
 
 from ..engine_base import BaseBacktestEngine
 
 
 class VectorBTEngine(BaseBacktestEngine):
     def run_sim(self, strategy_spec: dict, historical_data: pd.DataFrame) -> pd.DataFrame:
+        if not _VBT_AVAILABLE or vbt is None:
+            raise ImportError(f"vectorbt not available: {_VBT_IMPORT_ERROR if '_VBT_IMPORT_ERROR' in globals() else 'not installed'} — install vectorbt and compatible plotly<6")
         if historical_data.empty:
             return pd.DataFrame()
 

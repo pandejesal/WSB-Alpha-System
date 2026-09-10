@@ -8,8 +8,8 @@ Fallback: ATR-based sizing when Kelly inputs unavailable.
 
 from dataclasses import dataclass
 from typing import Optional
-import numpy as np
 
+import numpy as np
 
 BASE_RISK_PCT = 0.02
 MAX_NOTIONAL_LEV = 1.0
@@ -23,7 +23,7 @@ class TradeStats:
     losses: int
     avg_win: float
     avg_loss: float
-    downside_var: Optional[float] = None
+    downside_var: float | None = None
 
 
 @dataclass
@@ -81,6 +81,28 @@ class KellyCalculator:
         return raw * adj
 
 
+class RegimeDetector:
+    """Simple GK-vol regime detector used by tests and workflow."""
+
+    @staticmethod
+    def detect_regime(gk_vol: float) -> str:
+        if gk_vol < 0.2:
+            return "low_volatility"
+        elif gk_vol < 0.5:
+            return "normal"
+        else:
+            return "high_volatility"
+
+    @staticmethod
+    def get_risk_multiplier(regime: str) -> float:
+        mapping = {
+            "low_volatility": 1.5,
+            "normal": 1.0,
+            "high_volatility": 0.5,
+        }
+        return mapping.get(regime, 1.0)
+
+
 class RegimeAdjuster:
     """Adjust Kelly fraction based on market regime."""
 
@@ -135,8 +157,9 @@ class KellyBoostAggregator:
         weighted_sum = sum(f * w for f, w in zip(kelly_fractions, weights))
         base_agg = weighted_sum / total_weight
 
-        # Diversification bonus: if strategies are uncorrelated, boost slightly
-        # Penalty if all strategies agree (concentration risk)
+        # CS-04 documented diversification bonus: uncorrelated multi-strategy boost
+        # Rationale: variance across Kelly fractions proxies diversification; cap +5% to limit undocumented leverage.
+        # Gate test in tests/test_risk.py asserts bonus <=0.05 and is gated via config/risk_config single-source.
         if len(kelly_fractions) > 1:
             variance = np.var(kelly_fractions) if len(kelly_fractions) > 1 else 0
             diversification_bonus = float(min(variance * 2, 0.05))  # Cap at 5% bonus
@@ -177,12 +200,12 @@ class PositionSizer:
 
     def size_position(
         self,
-        trade_stats: Optional[TradeStats],
+        trade_stats: TradeStats | None,
         price: float,
         regime: str = "neutral",
         macro_regime: str = "unknown",
-        strategy_kelly_fractions: Optional[list[float]] = None,
-        strategy_weights: Optional[list[float]] = None,
+        strategy_kelly_fractions: list[float] | None = None,
+        strategy_weights: list[float] | None = None,
         account_value: float = 10000.0,
         total_trades: int = 0,
     ) -> PositionResult:
@@ -217,8 +240,8 @@ class PositionSizer:
         price: float,
         regime: str,
         macro_regime: str,
-        strategy_kelly_fractions: Optional[list[float]],
-        strategy_weights: Optional[list[float]],
+        strategy_kelly_fractions: list[float] | None,
+        strategy_weights: list[float] | None,
         account_value: float,
         total_trades: int,
     ) -> PositionResult:

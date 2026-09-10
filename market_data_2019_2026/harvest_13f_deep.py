@@ -1,10 +1,10 @@
+import csv
+import json
 import os
+import random
 import re
 import sys
 import time
-import json
-import csv
-import random
 import urllib.parse
 import xml.etree.ElementTree as ET
 
@@ -372,9 +372,7 @@ def index_lookup(cik, accn):
     for m in re.finditer(r'href="([^"]+)"', r.text):
         href = m.group(1)
         low = href.lower()
-        if low.endswith(".xml") and ("informationtable" in low or "infotable" in low or "13f" in low):
-            candidates.append(href)
-        elif low.endswith((".htm", ".html")) and low.split("/")[-1].endswith(("13f", "infotable", "informationtable")):
+        if low.endswith(".xml") and ("informationtable" in low or "infotable" in low or "13f" in low) or low.endswith((".htm", ".html")) and low.split("/")[-1].endswith(("13f", "infotable", "informationtable")):
             candidates.append(href)
     if not candidates:
         for m in re.finditer(r'href="([^"]+)"', r.text):
@@ -405,7 +403,7 @@ def index_lookup(cik, accn):
     return url + best.lstrip("/")
 
 
-TABLE_RE = re.compile(r"<((?:\w+:)?)informationTable\b[^>]*>(.*?)</(?:\w+:)?informationTable>", re.S | re.I)
+TABLE_RE = re.compile(r"<((?:\w+:)?)informationTable\b[^>]*>(.*?)</(?:\w+:)?informationTable>", re.DOTALL | re.IGNORECASE)
 
 
 def parse_table(content):

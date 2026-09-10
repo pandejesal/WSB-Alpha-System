@@ -38,6 +38,15 @@ load_dotenv()
 
 DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL", "")
 
+# CS-06: if LIVE and webhook missing, require --allow-no-webhook or abort (fail-closed alerting)
+
+def _require_webhook_or_abort() -> None:
+    if LIVE_TRADING_ENABLED and not DISCORD_WEBHOOK_URL:
+        if "--allow-no-webhook" not in sys.argv:
+            logger.critical("LIVE_TRADING_ENABLED but DISCORD_WEBHOOK_URL missing — aborting (require --allow-no-webhook to override).")
+            raise SystemExit(1)
+        logger.warning("LIVE_TRADING_ENABLED but DISCORD_WEBHOOK_URL missing — continuing due to --allow-no-webhook (alerting disabled).")
+
 def send_webhook_notification(signals: list):
     """Sends a summary of executed trades to Discord/Telegram."""
     if not DISCORD_WEBHOOK_URL:
@@ -56,7 +65,7 @@ def send_webhook_notification(signals: list):
         response = requests.post(DISCORD_WEBHOOK_URL, json=payload, timeout=10)
         response.raise_for_status()
         logger.info("Webhook notification sent successfully.")
-    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+    except Exception as e:
         logger.error(f"Failed to send webhook notification: {e}")
 
 def get_latest_sentiment_data() -> pd.DataFrame:
@@ -169,7 +178,7 @@ def run_technical_and_risk_pipelines(df: pd.DataFrame, macro_filter: MacroRegime
                     filtered_signal.pop('confluence_score', None)
                     final_signals.append(filtered_signal)
 
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.error(f"Failed to process {ticker}: {e}")
 
     return final_signals
@@ -177,8 +186,17 @@ def run_technical_and_risk_pipelines(df: pd.DataFrame, macro_filter: MacroRegime
 def main():
     logger.info("=== STARTING LIVE TRADING ORCHESTRATOR ===")
 
-    if not LIVE_TRADING_ENABLED:
-        logger.warning("LIVE_TRADING_ENABLED is False. Aborting live trading run.")
+    _require_webhook_or_abort()
+
+    from src.ops.killswitch import dual_gate_allows_trading
+
+    allowed, reason = dual_gate_allows_trading(LIVE_TRADING_ENABLED)
+    if not allowed:
+        logger.critical(f"Main live orchestrator blocked by dual gate: {reason}")
+        if LIVE_TRADING_ENABLED:
+            logger.critical(f"CRITICAL dual-gate disagreement — aborting: {reason}")
+        else:
+            logger.warning("LIVE_TRADING_ENABLED is False. Aborting live trading run.")
         return
 
     try:
@@ -234,7 +252,7 @@ def main():
         send_webhook_notification(final_signals)
 
     except Exception as e:
-        logger.exception(f"Critical error in live trading orchestrator: {e}")  # noqa: TRY401 - Explicit exception logging desired
+        logger.exception(f"Critical error in live trading orchestrator: {e}")
     finally:
         logger.info("=== LIVE TRADING ORCHESTRATOR FINISHED ===")
 

@@ -46,8 +46,6 @@ Provides functions for signal calculation, volatility scaling, ATR, position siz
 drawdown tracking, and risk management.
 """
 
-import pandas as pd
-
 
 def calculate_momentum_score(close_series: pd.Series) -> pd.Series:
     """

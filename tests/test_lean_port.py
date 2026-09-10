@@ -13,8 +13,8 @@ from src.backtest.lean_engine import (  # noqa: E402
     Bar,
     FeeModel,
     SecurityHolding,
-    SlippageModel,
     Slice,
+    SlippageModel,
 )
 
 TS = datetime(2024, 1, 1)

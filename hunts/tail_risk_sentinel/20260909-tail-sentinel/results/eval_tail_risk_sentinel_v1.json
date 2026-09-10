@@ -1,0 +1,23 @@
+{
+  "id": "tail_risk_sentinel_v1",
+  "family": "tail_risk_sentinel",
+  "metrics": {
+    "sharpe": 1.133,
+    "cagr": 0.12,
+    "max_dd": 0.192,
+    "oos_sharpe": 1.381,
+    "excess": -0.471,
+    "tmin": 0.86,
+    "dsr": 0.799,
+    "trips": 19,
+    "perm_p": 0.06,
+    "boot_p": 0.04,
+    "n_bars": 1910,
+    "fam_trials": 48
+  },
+  "tracks_cleared": 0,
+  "tracks": [],
+  "L1_pass": false,
+  "L2_Track4_pass": false,
+  "fallback_Track2_pass": false
+}

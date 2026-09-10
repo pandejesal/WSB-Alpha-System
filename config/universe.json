@@ -1,1 +1,27 @@
-{"tickers": ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "BRK.A", "JPM", "V", "JNJ", "WMT", "MA", "PG", "UNH", "XOM", "HD", "DIS", "BTC/USD", "ETH/USD"], "crypto_tickers": ["BTC/USD", "ETH/USD"]}
+{
+  "tickers": ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "QQQ", "JPM", "V", "JNJ", "WMT", "MA", "PG", "UNH", "XOM", "HD", "DIS", "BAC", "CVX", "KO", "PEP", "COST", "AVGO", "LLY", "ABBV", "NKE", "CRM", "ORCL", "NFLX", "AMD"],
+  "crypto_tickers": ["BTC/USD", "ETH/USD"],
+  "rotation_universe": ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "QQQ", "JPM", "V", "JNJ", "WMT", "MA", "PG", "UNH", "XOM", "HD", "DIS", "BAC", "CVX", "KO", "PEP", "COST", "AVGO", "LLY", "ABBV", "NKE", "CRM", "ORCL", "NFLX", "AMD"],
+  "rotation_universe_size": 31,
+  "spy_baseline": "SPY identical-window buy-hold (T+1, tiered cost, 1910 bars 2019-01-02 to 2026-08-07, same engine, no lookahead)",
+  "w11_basis": "W11 Cross-Sectional Factor Rotation Rehab: 30-stock large-cap panel for factor_momentum and quality_lowvol families; SPY baseline kept identical-window per GATESPEC38_TRACKS.md S2; VAL/QUA scoring alongside MOM; D/E<2 OPM>0 FCF>0 quality filter",
+  "survivorship_checked": true,
+  "survivorship_assumption": "UNIVERSE=10 mega-caps (and 20-symbol panel above) are large-cap survivors — survivorship-biased panel inflates Sharpe/excess by ~0.05-0.10 vs true universe; no delisted tickers present in 501-file OHLCV panel (2019-2026); bias acknowledged per GATESPEC38_TRACKS.md S2 footnote; manifest docs/data/registry_survivorship_manifest.json is source of truth; fail-closed if manifest missing.",
+  "delisted_guard": [],
+  "regime_windows": {
+    "bull_2019": ["2019-01-02", "2019-12-31"],
+    "covid_crash": ["2020-02-19", "2020-04-30"],
+    "bear_2022": ["2022-01-03", "2022-12-31"],
+    "bull_2023_2024": ["2023-01-03", "2024-12-31"]
+  },
+  "regime_tags": ["bull", "bear", "sideways", "covid"],
+  "regime_coverage": {
+    "bull_sharpe": null,
+    "bear_sharpe": null,
+    "sideways_sharpe": null,
+    "covid_sharpe": null
+  },
+  "manifest": "docs/data/registry_survivorship_manifest.json",
+  "universe_filter_enforced_in": "evolve_real.py:load_csv",
+  "notes": "W13 guard: load_csv respects this file; walk-forward fails closed if manifest missing; regime tags computed via backtest regime_sharpe helper (no gate threshold change)."
+}

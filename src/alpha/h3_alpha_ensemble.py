@@ -1,8 +1,10 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
 import ta
+
 from src.alpha.base_strategy import BaseStrategy
 from src.alpha.indicators import compute_indicators
+
 
 class H3AlphaEnsemble(BaseStrategy):
     """

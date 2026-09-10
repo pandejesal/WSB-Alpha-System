@@ -1,0 +1,72 @@
+id: smooth_ensemble_v2_3sleeve_vol_weighted
+name: Smooth Ensemble v2 (3-sleeve vol-weighted monthly)
+family: smooth_ensemble
+universe: SPY + 100-stock liquid large-cap panel + BTC-USD (daily OHLCV 2019-2026,
+  1910 bars loop window, identical-window SPY twin for excess, T+1 tiered cost W5)
+venue: alpaca
+status: paper
+version: 1
+paper_only: true
+fail_closed: true
+pre_registration_ref: hunts/smooth_ensemble/20260909-0558_smooth-ensemble/docs/data/cyclesmooth_ensemble-20260909-0558_smooth-ensemble_prereg_smooth_ensemble.md
+eval_records: hunts/smooth_ensemble/20260909-0558_smooth-ensemble/results/eval_smooth_ensemble_v2_3sleeve_vol_weighted.json
+gates_passed: L1:False L2:0/3 ABANDON
+verdict: ABANDON
+parameters:
+  sleeves: &id001
+  - spy_sma200
+  - us_lowvol_top30
+  - btc_vol_target_sma100
+  allocation: vol_weighted
+  rebalance: monthly
+  vol_window: 20
+  drift_band: 0.05
+  exec_delay: 1
+  cost_model: tiered W5 equities 5-7bps+1bp BTC 15-25bps+1bp vol_scalar rolling_std(20)/median_60
+    scale2 cap2 BTC scale10 cap10 fallback 5bps never 0 identical-window SPY twin
+  family_trials: 580
+params:
+  sleeves: *id001
+  allocation: vol_weighted
+  rebalance: monthly
+signal: 'Vol-weighted ensemble of spy_sma200, us_lowvol_top30, btc_vol_target_sma100:
+  trailing 20d inverse-vol weights capped 1.5x equal weight, monthly rebalance last
+  trading bar forward-filled, T+1 exec_delay=1, long/flat only, gross<=1.0.'
+entry_rules:
+- 'Monthly rebalance: compute trailing 20d realized vol per sleeve (sqrt252), inverse-vol
+  weights capped 1.5x equal weight, hold spy_sma200, us_lowvol_top30, btc_vol_target_sma100
+  sleeves at target weights'
+- Forward-fill weights until next month; no intra-month exits except drift-band >5%
+exit_rules:
+- Drop sleeve weight to 0 at month-end if vol estimate missing; otherwise hold target
+  allocation
+- Monthly turnover cost tiered W5 deducted at weight shift
+position_sizing: Vol-weighted 1/N sleeve allocation, monthly rebalance, long/flat
+  only, max gross 1.0
+indicators:
+- rv20 per sleeve
+- inverse-vol weight
+- monthly rebalance
+- tiered cost W5
+benchmark_result:
+  sharpe: 0.379
+  cagr: 0.0287
+  max_dd: 0.1605
+  oos_sharpe: 0.297
+  oos: 0.297
+  excess: -221.5506
+  excess_spy: -221.5506
+  tmin: 0.796
+  dsr: 0.02
+  dsr_fam: 0.02
+  fam_trials: 580
+  trips: 59
+  round_trips: 59
+  trades: 118
+  perm_p: 0.475
+  boot_p: 0.155
+  n_bars: 1910
+  T: 1910
+cost_model: tiered W5
+timeframe: 1d
+session: 24/7

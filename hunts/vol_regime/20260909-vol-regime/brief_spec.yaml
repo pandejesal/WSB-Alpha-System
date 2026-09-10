@@ -1,0 +1,67 @@
+acceptance: Edge claim pre-registered in docs/data via prereg freeze; YAML spec parses
+  via strategy_registry.validate_spec; registry.json wired via hunt_runner collect
+  without code patch; Walk-Forward OOS>=0.40, Sharpe>=0.60, maxDD<=30%, excess>=0.05,
+  DSR>=0.80, trips>=8, perm_p<=0.05 boot_p<=0.05 (GATESPEC38 Track 1 core_timing_overlay);
+  L2 overlay must beat no-overlay baseline by +2pp excess on COVID (2020-02-19 to
+  2020-12-31) and 2022 (2022-01-01 to 2022-12-31) windows; honest ABANDON if 0/3 candidates
+  pass or proxy shows no edge.
+edge_gate_params:
+  benchmarks:
+  - SPY identical-window buy-hold
+  - no-overlay baseline (same signals without scale)
+  - stationary bootstrap K=200 block 21
+  - circular permutation 200
+  boot_p_max: 0.05
+  cost_model: 'tiered W5: equities 5-7bps +1bp vol_scalar=rolling_std(20)/median_60
+    scale 2 cap 2; BTC 15-25bps +1bp scale 10 cap 10'
+  dsr_min: 0.8
+  excess_min: 0.05
+  max_dd_max: 0.3
+  oos_min: 0.4
+  overlay_logic: scale = 1.0; if 20d vol <0.8*60d median -> 1.5x else if vol >1.4*median
+    -> 0.5x else 1.0; applied to spy_sma (clip 0-1.5) and btc_vol lev*trend (clip
+    0-1.0); VIX cut low<15 normal15-25 high25-35 extreme>35 read-only tagging
+  param_grid:
+    high_scale:
+    - 0.5
+    high_thresh:
+    - 1.4
+    low_scale:
+    - 1.5
+    low_thresh:
+    - 0.8
+    median_window:
+    - 60
+    overlay_base:
+    - spy_sma200
+    - btc_vol_target_sma100
+    vol_window:
+    - 20
+  perm_p_max: 0.05
+  proxy_limitation: Daily vol-of-vol proxies only 40-60% of intraday realized variance
+    concentration (Barndorff-Nielsen 2009); cannot capture overnight gaps, intraday
+    volatility clustering, or options-implied vol surface; no 1-min/hourly data attempted
+    (no feed in this repo).
+  sharpe_min: 0.6
+  tmin_min: 0.0
+  track: core_timing_overlay
+  trips_min: 8
+  universe_size: 20
+  vix_source: market_data_2019_2026/ohlcv/^VIX.csv (existing, read-only, no feed)
+family: vol_regime
+hypothesis: 'Daily vol-of-vol proxy (20d realized vol vs 60d median) overlays spy_sma
+  and btc_vol signals: low vol regime (vol <0.8x median) -> 1.5x leverage, high vol
+  regime (vol >1.4x median) -> 0.5x/flat, else 1.0x. VIX is read-only regime tagging
+  (low<15/normal 15-25/high 25-35/extreme>35) never used for scaling. Proxy captures
+  40-60% of intraday variance concentration (Barndorff-Nielsen) without intraday feed.
+  Expected: overlay improves COVID/2022 window excess by +2pp vs no-overlay baseline
+  on same signals via reduced drawdown in stress and levered carry in calm, while
+  maintaining paper-only T+1 + tiered cost (W5).'
+lookback_constraints: 'Daily OHLCV only (market_data_2019_2026/ohlcv/*.csv: SPY, BTC,
+  ^VIX), no intraday/hourly/minute data, no new feed, no options vol surface; signal.shift(1)
+  T+1, tiered cost W5 (equities 5-7bps+1bp, BTC 15-25bps+1bp vol-scaled) applied identically
+  in backtest() and _rotation_result(), identical-window SPY twin for excess, 1910-bar
+  loop window 2019-01-02 to 2026-08-07 for DSR T=1910 N_family per-family; VIX read-only
+  tagging only.'
+universe: SPY (spy_sma) + BTC/USD (btc_vol) daily OHLCV 2019-2026, VIX read-only tagging,
+  identical-window SPY twin for excess

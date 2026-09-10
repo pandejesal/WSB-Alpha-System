@@ -1,4 +1,5 @@
 import inspect
+
 import numpy as np
 import pandas as pd
 import yfinance as yf
@@ -6,6 +7,7 @@ import yfinance as yf
 from src.alpha.indicators import compute_indicators
 from src.alpha.leakage_guard import guard_signals
 from src.research.debate_engine import DebateEngine
+
 
 class UnsupportedRuleShape(Exception):
     pass
@@ -138,8 +140,10 @@ def get_xgboost_exits_signal(data: pd.DataFrame, tickers: list[str], **kwargs) -
 
     # Compute features: SPY SMA200 distance, ATR-14, RSI-5
     from src.alpha.indicators import compute_indicators
+
     ind_df = compute_indicators(df)
-    if ind_df is None: return {'signal': 'FLAT'}
+    if ind_df is None:
+        return {'signal': 'FLAT'}
 
     # We'll use the last 2 years for training
     df['returns_5d'] = df['Close'].shift(-5) / df['Close'] - 1
@@ -529,15 +533,15 @@ def get_dual_momentum_signal(data: pd.DataFrame, tickers: list[str] = None, look
     return signal_data
 
 
-import io  # noqa: E402
-import os  # noqa: E402
-import random  # noqa: E402
-import time  # noqa: E402
+import io
+import os
+import random
+import time
 
-import pandas as pd  # noqa: E402
-import requests  # noqa: E402
-from requests.adapters import HTTPAdapter  # noqa: E402
-from urllib3.util.retry import Retry  # noqa: E402
+import pandas as pd
+import requests
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry
 
 _orig_download = yf.download
 

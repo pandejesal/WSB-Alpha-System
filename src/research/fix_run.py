@@ -1,3 +1,5 @@
+import re
+
 with open("run_historic_backtest.py", "r") as f:
     content = f.read()
 
@@ -5,8 +7,6 @@ with open("run_historic_backtest.py", "r") as f:
 import_str = "from indicators import compute_indicators, compute_regime_returns\n"
 if "from indicators import" not in content:
     content = content.replace("import matplotlib.pyplot as plt", "import matplotlib.pyplot as plt\n" + import_str)
-
-import re
 
 # Remove compute_indicators
 content = re.sub(r'def compute_indicators\(df\):.*?return df', '', content, flags=re.DOTALL)

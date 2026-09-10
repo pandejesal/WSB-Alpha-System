@@ -20,9 +20,9 @@ REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, REPO_ROOT)
 
 from src.signals.fingpt_sentiment import (  # noqa: E402
-    run_evaluation,
-    map_sentiment_to_signal,
     generate_synthetic_sentiment,
+    map_sentiment_to_signal,
+    run_evaluation,
 )
 
 

@@ -1,9 +1,11 @@
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+
 from src.alpha.indicators import compute_indicators
 from src.research.ticker_extractor import extract_tickers
-from src.research.ticker_extractor import extract_tickers
+
 
 class TestIndicators(unittest.TestCase):
     def test_compute_indicators_less_than_20(self):

@@ -1,5 +1,7 @@
 import unittest
+
 from src.risk.position_sizer import RegimeDetector
+
 
 class TestAdaptability(unittest.TestCase):
     def test_regime_detection(self):

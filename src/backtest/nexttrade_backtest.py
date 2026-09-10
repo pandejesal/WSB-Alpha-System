@@ -97,8 +97,8 @@ def run_composable_backtest(
     entry: AbstractCondition,
     prices: pd.DataFrame,
     cfg: BacktestConfig,
-    exit_cond: Optional[AbstractCondition] = None,
-) -> Dict[str, Any]:
+    exit_cond: AbstractCondition | None = None,
+) -> dict[str, Any]:
     """Vectorized long/flat backtest of a condition tree.
 
     Position mirrors the entry signal each bar (NextTrade re-evaluates the
@@ -154,8 +154,8 @@ def run_composable_backtest(
     return {"stats": stats, "detail": detail}
 
 
-def spec_backtest(spec: Dict[str, Any], prices: pd.DataFrame,
-                  cfg: BacktestConfig) -> Dict[str, Any]:
+def spec_backtest(spec: dict[str, Any], prices: pd.DataFrame,
+                  cfg: BacktestConfig) -> dict[str, Any]:
     entry = create(spec["entry"])
     exit_c = create(spec["exit"]) if spec.get("exit") else None
     return run_composable_backtest(entry, prices, cfg, exit_c)

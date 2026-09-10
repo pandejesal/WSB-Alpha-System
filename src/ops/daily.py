@@ -133,6 +133,32 @@ def run_check_mode():
         write_outputs(plan_data, heartbeat_data)
         sys.exit(0)
 
+    # CS-05: extend freshness to every ticker in Close matrix (not only SPY/BTC)
+    try:
+        close_frame = data['Close'] if 'Close' in data else None
+        if close_frame is not None:
+            tickers = list(close_frame.columns)
+            now = pd.Timestamp.now().normalize()
+            for ticker in tickers:
+                series = close_frame[ticker].dropna()
+                if series.empty:
+                    continue
+                last = series.index[-1]
+                if last.tzinfo is not None:
+                    last = last.tz_localize(None)
+                if (now - last).days > 3:
+                    # Keep SPY path above; this extends to single-names
+                    if "STALE_DATA" not in plan_data["blocked"]:
+                        plan_data["blocked"].append("STALE_DATA")
+                    plan_data["warnings"].append(f"{ticker} data is stale. Last date: {last}")
+                    heartbeat_data["alerts"].append(f"WARN: Market data is stale ({ticker}).")
+                    write_outputs(plan_data, heartbeat_data)
+                    sys.exit(0)
+    except SystemExit:
+        raise
+    except Exception as e:
+        plan_data["warnings"].append(f"Stale check loop error: {e}")
+
     # Process sleeves
     # 1. us_momentum_top5
     mom_data = get_us_momentum_top5_signal(data, MOMENTUM_UNIVERSE)

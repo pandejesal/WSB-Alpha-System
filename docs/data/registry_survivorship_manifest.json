@@ -1,0 +1,25 @@
+{
+  "survivorship_checked": true,
+  "generated": "2026-09-09T00:00:00Z",
+  "work_item": "W13 plan_1_gates_strategies.md:295-313",
+  "universe_source": "config/universe.json",
+  "universe_tick_count": 20,
+  "ohlcv_panel_files": 501,
+  "ohlcv_dir": "market_data_2019_2026/ohlcv",
+  "delisted_guard": [],
+  "delisted_guard_note": "No delisted tickers in panel; large-cap survivor bias acknowledged (inflates Sharpe ~0.05-0.10). Guard is explicit empty list — add delisted symbols here when expanding panel beyond mega-caps.",
+  "survivorship_assumption": "UNIVERSE mega-caps are survivors — bias inflates excess vs true historical universe; see GATESPEC38_TRACKS.md S2 footnote.",
+  "load_csv_guard": "evolve_real.py:load_csv enforces universe.json filter + manifest existence check (fail-closed); missing manifest -> WF FAIL per W13.",
+  "regime_windows": {
+    "bull_2019": ["2019-01-02", "2019-12-31"],
+    "covid_crash": ["2020-02-19", "2020-04-30"],
+    "bear_2022": ["2022-01-03", "2022-12-31"],
+    "bull_2023_2024": ["2023-01-03", "2024-12-31"]
+  },
+  "regime_tags": ["bull", "bear", "sideways", "covid"],
+  "regime_coverage_policy": "No gate threshold change (W13 guard only). Evaluation JSON must carry regime_coverage {bull,bear,sideways,covid}_sharpe via evolve_real regime helper; walk-forward must compute per-window regime Sharpe; any regime < -0.5 Sharpe flagged WARN (not REJECT) per plan footnote. Missing manifest -> WF FAILED fail-closed.",
+  "gatespec_reference": "docs/GATESPEC38_TRACKS.md S2 footnote survivorship_checked",
+  "evolve_integration": "evolve_real.py:load_csv + _regime_sharpe + backtest/_rotation_result regime_coverage",
+  "fail_closed": "If docs/data/registry_survivorship_manifest.json absent, walk_forward_engine.validate returns FAILED (insufficient manifest) — see walk_forward_engine.py manifest guard.",
+  "verification": "manifest exists; load_csv respects universe.json filter; regime tags present in evaluation JSON (evolve_real regime_coverage); GATESPEC S2 footnote present."
+}

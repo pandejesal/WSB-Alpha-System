@@ -1,6 +1,9 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
 from src.risk.position_sizer import PositionSizer
+
 
 def test_position_sizer_with_macro_regime():
     with patch('src.risk.position_sizer.FredMacroProvider') as MockProvider:

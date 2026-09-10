@@ -397,7 +397,7 @@ def main():
         "prereg_commit": "5e25748",
         "date": "2026-08-24",
         "universe": {"snapshot_local_intersection": len(tickers)},
-        "train": {"rows": int(len(X)), "base_rate_label1": base_rate},
+        "train": {"rows": len(X), "base_rate_label1": base_rate},
         "static_arm": stat_r,
         "ml_arms": {f"theta_{th}": v for th, v in ml_runs.items()},
         "worse_theta_selected": worse_th,

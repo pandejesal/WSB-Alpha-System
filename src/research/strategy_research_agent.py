@@ -4,21 +4,18 @@ import os
 
 from google import genai
 from google.genai import types
-
-# Setup basic logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger("StrategyResearchAgent")
-
 from google.genai.types import (
     FunctionDeclaration,
     GenerateContentConfig,
     Tool,
 )
 
-from src.research.google_search_provider import (
-    DDGSearchProvider,
-)
+from src.research.google_search_provider import DDGSearchProvider
 from src.utils.config import config
+
+# Setup basic logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger("StrategyResearchAgent")
 
 
 def search_strategy_concepts_online(query: str) -> str:

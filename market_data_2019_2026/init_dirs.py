@@ -1,8 +1,9 @@
-import os
 import json
+import os
 import time
-import requests
 from datetime import datetime
+
+import requests
 
 base_dir = r"C:\Users\DELL\Documents\Default Project\WSB-Alpha-System-latest"
 market_dir = os.path.join(base_dir, "market_data_2019_2026", "institutions")

@@ -1,3 +1,4 @@
+# CH-14 candidate: duplicate backtest engine — candidate for consolidation into src/backtest/engines/canonical.py (no merge in this phase; canonical is engines/canonical.py)
 """
 Institutional Backtester for Man AHL Multi-Horizon Momentum Strategy.
 Strictly handles a $50-$100 micro-account, dynamic leverage (3x), deleveraging breakers,

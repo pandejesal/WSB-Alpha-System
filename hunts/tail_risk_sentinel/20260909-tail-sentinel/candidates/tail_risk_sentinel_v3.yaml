@@ -1,0 +1,26 @@
+id: tail_risk_sentinel_v3
+name: "Tail Risk Sentinel v3 (VIX60/30 ATR3.0 vol0.25)"
+family: tail_risk_sentinel
+venue: alpaca
+universe: "SPY + 100-stock liquid large-cap panel with VIX proxy"
+pre_registration_ref: "hunts/tail_risk_sentinel/20260909-tail-sentinel/docs/data/cycletail_risk_sentinel-20260909-0109_tail-risk-sentinel_prereg_tail_risk_sentinel.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/tail_risk_sentinel/20260909-tail-sentinel/results/eval_tail_risk_sentinel_v3.json"
+status: "paper"
+version: 1
+signal:
+  entry: "VIX60 <=30 and vol <=0.25 then long SPY else cash"
+  exit: "ATR 3.0x stop"
+  sizing: "100% SPY vs cash"
+  caps:
+    max_concurrent_positions: 1
+  rebalance: "daily"
+parameters:
+  vix_window: 60
+  vix_entry: 30
+  atr_stop: 3.0
+  vol_regime_cap: 0.25
+  exec_delay: 1
+indicators:
+  - "VIX 60"

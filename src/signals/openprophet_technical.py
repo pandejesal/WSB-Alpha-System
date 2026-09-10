@@ -76,7 +76,7 @@ def _ema(s: pd.Series, period: int) -> pd.Series:
     return s.ewm(span=period, adjust=False).mean()
 
 
-def _macd(close: pd.Series) -> Optional[tuple]:
+def _macd(close: pd.Series) -> tuple | None:
     if len(close) < MACD_SLOW:
         return None
     macd_line = _ema(close, MACD_FAST) - _ema(close, MACD_SLOW)
@@ -84,7 +84,7 @@ def _macd(close: pd.Series) -> Optional[tuple]:
     return float(macd_line.iloc[-1]), float(signal_line.iloc[-1])
 
 
-def _volume(volume: Optional[pd.Series]) -> tuple:
+def _volume(volume: pd.Series | None) -> tuple:
     if volume is None or len(volume) < VOL_WINDOW:
         return 0.0, "stable"
     cur = float(volume.iloc[-1])

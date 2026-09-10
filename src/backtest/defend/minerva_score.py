@@ -29,7 +29,6 @@ from dataclasses import dataclass
 
 from src.backtest.defend.trial_ledger import deflated_sharpe_ratio
 
-
 # Thresholds per paper (tunable)
 DSR_THRESHOLD = 0.95
 PBO_THRESHOLD = 0.5

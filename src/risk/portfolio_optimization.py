@@ -1,7 +1,14 @@
 import logging
 
 import pandas as pd
-import riskfolio as rp
+
+try:
+    import riskfolio as rp  # type: ignore
+
+    _RISKPORTFOLIO_AVAILABLE = True
+except ModuleNotFoundError:
+    rp = None  # type: ignore
+    _RISKPORTFOLIO_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +26,8 @@ class PortfolioOptimizer:
         """
         Minimize Expected Shortfall (CVaR).
         """
+        if not _RISKPORTFOLIO_AVAILABLE or rp is None:
+            raise ImportError("riskfolio not installed — install 'riskfolio-lib' to use PortfolioOptimizer")
         if returns.empty or returns.shape[1] < 2:
             # Need at least two assets to optimize
             if returns.shape[1] == 1:
@@ -26,8 +35,8 @@ class PortfolioOptimizer:
             return pd.Series(dtype=float)
 
         try:
-            port = rp.Portfolio(returns=returns)
-            port.assets_stats(method_mu='hist', method_cov='hist')
+            port = rp.Portfolio(returns=returns)  # type: ignore
+            port.assets_stats(method_mu='hist', method_cov='hist')  # type: ignore
 
             # Constraints
             # We want weights to sum to (1 - min_cash) because we hold min_cash in cash.
@@ -35,11 +44,11 @@ class PortfolioOptimizer:
             # We will optimize assuming weights sum to 1, then scale down by (1 - min_cash).
             # Actually, Riskfolio allows setting bounds on individual weights.
 
-            port.w_lo = 0.0
-            port.w_up = max_weight / (1.0 - min_cash) # scale up the bound during optimization
+            port.w_lo = 0.0  # type: ignore
+            port.w_up = max_weight / (1.0 - min_cash) # scale up the bound during optimization  # type: ignore
 
             # Estimate optimal portfolio
-            w = port.optimization(model='Classic', rm=self.risk_measure, obj='MinRisk', rf=0.0, l=0, hist=True)
+            w = port.optimization(model='Classic', rm=self.risk_measure, obj='MinRisk', rf=0.0, l=0, hist=True)  # type: ignore
 
             if w is None or w.empty:
                 logger.warning("Optimization failed to converge.")
@@ -69,20 +78,22 @@ class PortfolioOptimizer:
         """
         Equal Risk Contribution (Risk Parity) using CVaR.
         """
+        if not _RISKPORTFOLIO_AVAILABLE or rp is None:
+            raise ImportError("riskfolio not installed — install 'riskfolio-lib' to use PortfolioOptimizer")
         if returns.empty or returns.shape[1] < 2:
             if returns.shape[1] == 1:
                 return pd.Series([1.0 - min_cash], index=returns.columns)
             return pd.Series(dtype=float)
 
         try:
-            port = rp.Portfolio(returns=returns)
-            port.assets_stats(method_mu='hist', method_cov='hist')
+            port = rp.Portfolio(returns=returns)  # type: ignore
+            port.assets_stats(method_mu='hist', method_cov='hist')  # type: ignore
 
-            port.w_lo = 0.0
-            port.w_up = max_weight / (1.0 - min_cash)
+            port.w_lo = 0.0  # type: ignore
+            port.w_up = max_weight / (1.0 - min_cash)  # type: ignore
 
             # Estimate optimal portfolio for ERC
-            w = port.rp_optimization(model='Classic', rm=self.risk_measure, rf=0.0, b=None, hist=True)
+            w = port.rp_optimization(model='Classic', rm=self.risk_measure, rf=0.0, b=None, hist=True)  # type: ignore
 
             if w is None or w.empty:
                 logger.warning("ERC Optimization failed to converge.")

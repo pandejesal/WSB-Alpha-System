@@ -6,14 +6,32 @@ Every track includes an absolute-excess-vs-SPY term AND a multiple-testing
 discount (DSR), plus a risk term (maxDD) and a minimum-activity term (trips or tmin).
 
 Calibration baseline:
-    Loop window (1910 bars, 2019-01-02 to 2026-08-07):
+    Loop window T=1910 bars (2019-01-02 to 2026-08-07):
         Total Return: +245.50%, Sharpe: 0.941, maxDD: 33.72% (~0.34), CAGR: 17.77%.
     Paper gate window (1678 bars, 2020-01-02 to 2026-09-04):
         Total Return: +137.10%, Sharpe: 0.744, maxDD: 34.10% (~0.34), CAGR: 13.85%.
     Calibration actively targets the loop window (+245.5%) since evolve_real.py
     evaluates candidates on this 1910-bar period.
 
-All metrics computed T+1, costs deducted (5bps), identical-window SPY twin.
+DSR N semantics (G4 fix, P1 2026-09-10): DSR uses cross-family N =
+max(FAM_TRIALS[family], registry strategy count, floor 215) with T=1910.
+Per-family-only N (~50 early in a run) understated search multiplicity; the
+registry floor (215 strategies across 15 families) restores the cross-family
+penalty. If N<100 the DSR screen still applies but track-local 0.70 floor
+remains the binding bar; no auto-promotion bypass.
+
+Union-gate FWER control (G3, P1 2026-09-10): the 10-track union inflates the
+family-wise false-pass rate, so promotion requires check_track_gated —
+>=2 cleared tracks, or a lone track with dsr_min>=0.90. check_track stays a
+raw conjunction evaluator for diagnostics.
+
+All metrics computed T+1, tiered costs deducted (W5, 5-26bps range overall:
+equities 5-7bps slippage +1bp commission vol-scaled, BTC 15-25bps +1bp,
+5bps floor never 0; see evolve_real._tiered_cost_bps), identical-window SPY twin. Per-track DSR
+bars run 0.70 (conservative_timing) to 0.95 (buy_hold_companion /
+benchmark_parity); promotion requires the union gate (check_track_gated:
+>=2 cleared tracks, or one track with dsr_min>=0.90 after B1a) — a lone
+weak-track pass never admits.
 """
 
 from __future__ import annotations
@@ -99,20 +117,20 @@ TRACKS: list[dict[str, Any]] = [
         "name": "conservative_timing",
         "terms": ["sharpe", "max_dd", "oos", "excess", "dsr", "trips"],
         "thresholds": {
-            "sharpe_min": 0.50,
+            "sharpe_min": 0.60,
             "max_dd_max": 0.35,
             "oos_min": 0.35,
             "excess_min": 0.15,
-            "dsr_min": 0.70,
+            "dsr_min": 0.80,
             "trips_min": 5,
         },
         "rationale": [
-            "sharpe>=0.50 accommodates strategies with 80%+ cash allocations whose annualized Sharpe is diluted by long uninvested periods despite high trade win rates.",
+            "sharpe>=0.60/dsr>=0.80 (G5: raised from weakest 0.50/0.70) accommodates strategies with 80%+ cash allocations whose annualized Sharpe is diluted by long uninvested periods despite high trade win rates.",
             "excess>=0.15pp enforces the strictest excess return bar among timing tracks (+0.15pp), blocking opportunistic freeloaders and requiring substantial absolute dollar outperformance.",
-            "dsr>=0.70 sets an honest entry bar for low-frequency signals tested across the search space, preventing premature rejection of real edges that trade only 5-10 times.",
+            "dsr>=0.80 sets an honest entry bar for low-frequency signals tested across the search space, preventing premature rejection of real edges that trade only 5-10 times.",
         ],
         "archetype": "Low-exposure conservative timing overlay",
-        "plain_english": "This track means: be in the market as little as 10% of the time, beat SPY by at least 0.15 percentage points total, make at least 5 trades, and pass the multiple-comparison test at 70% confidence after all the attempts the loop has made so far.",
+        "plain_english": "This track means: be in the market as little as 10% of the time, beat SPY by at least 0.15 percentage points total, make at least 5 trades, and pass the multiple-comparison test at 80% confidence after all the attempts the loop has made so far.",
         "spy_passes": False,
         "spy_passes_label": "elite-only",
     },
@@ -309,7 +327,9 @@ def check_track(metrics: dict[str, Any]) -> list[str]:
     """Evaluate a metrics dict against all track conjunctions.
 
     Returns the list of track names that ALL terms satisfy (full conjunction).
-    A candidate promotes by clearing any one track.
+
+    Raw conjunction evaluator for diagnostics — promotion call sites must use
+    check_track_gated (G3 union-gate FWER control), not this directly.
 
     Args:
         metrics: dict with keys like sharpe, max_dd, oos, excess, dsr,
@@ -324,6 +344,64 @@ def check_track(metrics: dict[str, Any]) -> list[str]:
         if all(_check_term(metrics, term, val) for term, val in thresholds.items()):
             passing.append(track["name"])
     return passing
+
+
+# --- G3 union-gate FWER correction + G4 cross-family N floor (P1, 2026-09-10) ---
+# A 10-track union ("promote on ANY single track") inflates the family-wise
+# false-pass rate: ten weak-bar chances per trial. FWER control here is:
+#   * >=2 fully-cleared tracks -> pass (joint fluke far less likely), or
+#   * exactly 1 track AND that track's dsr_min floor >= 0.90 -> pass, or
+#   * otherwise -> fail (single weak-track pass blocked).
+# Full Sidak per-track confidence for FWER 0.05 over m=10 tracks would be
+# (1-0.05)**(1/10) ~= 0.9949 (see sidak_per_track_confidence) — unreachable
+# by design, so the >=2-tracks-or-strong-single rule is the operative control.
+SINGLE_TRACK_MIN_DSR = 0.90
+CROSS_FAMILY_N_FLOOR = 215  # total registry strategies; DSR N never below this
+
+
+def sidak_per_track_confidence(fwer: float = 0.05, m: int | None = None) -> float:
+    """Per-track confidence needed for exact Sidak FWER control.
+
+    Returns (1 - fwer) ** (1 / m) with m = number of union tracks.
+    m=10, fwer=0.05 -> ~0.9949. Reference only: the operative promotion
+    control is apply_union_gate, which uses the reachable >=2-tracks or
+    single-track-with-dsr_min>=0.90 rule instead of bricking the gate.
+    """
+    tracks = len(TRACKS) if m is None else m
+    if not 0.0 < fwer < 1.0 or tracks < 1:
+        return 1.0
+    return float((1.0 - fwer) ** (1.0 / float(tracks)))
+
+
+_TRACK_BY_NAME: dict[str, dict[str, Any]] = {t["name"]: t for t in TRACKS}
+
+
+def apply_union_gate(passing: list[str]) -> tuple[list[str], str]:
+    """Apply G3 FWER control to a raw check_track result.
+
+    Returns (gated_tracks, reason) where reason is one of:
+    no-track | multi-track | single-strong | single-weak-blocked.
+    Fail-closed: unknown track names never admit.
+    """
+    known = [n for n in passing if n in _TRACK_BY_NAME]
+    if len(known) >= 2:
+        return known, "multi-track"
+    if len(known) == 1:
+        track = _TRACK_BY_NAME[known[0]]
+        if float(track["thresholds"].get("dsr_min", 0.0)) >= SINGLE_TRACK_MIN_DSR:
+            return known, "single-strong"
+        return [], "single-weak-blocked"
+    return [], "no-track"
+
+
+def check_track_gated(metrics: dict[str, Any]) -> list[str]:
+    """Raw conjunctions filtered through the G3 union gate.
+
+    Promotion call sites must use this, not check_track, so a lone weak-bar
+    track (dsr_min < 0.90) can no longer promote by itself.
+    """
+    gated, _ = apply_union_gate(check_track(metrics))
+    return gated
 
 
 def check_track_detailed(metrics: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -369,6 +447,7 @@ def recompute_dsr(T: int, sharpe: float, N: int) -> float:
     """Recompute Deflated Sharpe Ratio for a candidate under Bailey-Lopez de Prado.
 
     Wraps src.backtest.defend.trial_ledger.deflated_sharpe_ratio with safe bounds.
+    T=1910 bars (loop window), N=cross-family trials (G4: max(per-family, registry, 215)).
     """
     if T <= 1 or N < 1:
         return 0.0
@@ -382,7 +461,9 @@ def recompute_dsr(T: int, sharpe: float, N: int) -> float:
 def required_sharpe_for_dsr(T: int, N: int, confidence: float = 0.95) -> float:
     """Compute minimum annualized Sharpe needed to achieve a target DSR confidence.
 
-    Wraps deflated_sharpe_threshold.
+    Wraps deflated_sharpe_threshold. T=1910, N=N_family after W1 (per-family
+    scoping); N_global (~10k) kept only for logging. Calibration: N=1000/0.80
+    requires ~1.49, N=10000/0.95 requires 2.01.
     """
     if T <= 1 or N < 1:
         return float("inf")

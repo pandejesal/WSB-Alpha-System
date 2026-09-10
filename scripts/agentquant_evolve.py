@@ -21,9 +21,9 @@ from pathlib import Path
 
 import pandas as pd
 
-from src.signals.agentquant_regime import detect_regime_full, compute_regime_features
-from src.evolution.agentquant_harness import HarnessEvolution
 from src.evolution.agentquant_critic import CriticAgent
+from src.evolution.agentquant_harness import HarnessEvolution
+from src.signals.agentquant_regime import compute_regime_features, detect_regime_full
 
 logging.basicConfig(
     level=logging.INFO,

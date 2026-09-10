@@ -1,0 +1,27 @@
+{
+  "spec_id": "spy_sma300_vol20cap25",
+  "family": "smooth_trend",
+  "params": {
+    "window": 300,
+    "vol_scaled": true,
+    "vol_window": 20,
+    "vol_cap": 0.25
+  },
+  "metrics": {
+    "sharpe": 1.0782203665813328,
+    "max_dd": 0.1806698702367253,
+    "oos": 1.4049589355234973,
+    "excess": -96.95,
+    "dsr": 0.7405,
+    "perm_p": 0.055,
+    "boot_p": 0.0,
+    "trips": 29,
+    "tmin": 0.6895,
+    "cagr": 0.1276400728618834
+  },
+  "per_family_N": 56,
+  "T": 1910,
+  "verdict": "FAIL_L2",
+  "reason": "excess binding (<0) fails DW excess>=0.10 and TR excess>=0.03; also DSR/perm where applicable",
+  "tracks_cleared": []
+}

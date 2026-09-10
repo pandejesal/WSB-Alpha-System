@@ -1,3 +1,4 @@
+# CH-14 candidate: duplicate backtest engine — candidate for consolidation into src/backtest/engines/canonical.py (no merge in this phase; canonical is engines/canonical.py)
 """Port of QuantConnect Lean engine shape into Python.
 
 Provides Algorithm base class, Slice data feed, Portfolio tracking,
@@ -9,10 +10,11 @@ from __future__ import annotations
 
 import csv
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 logger = logging.getLogger(__name__)
 

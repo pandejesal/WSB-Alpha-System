@@ -46,17 +46,17 @@ BANDS = {
 DATE = r"\d{2}/\d{2}/\d{4}"
 PAIR_RE = re.compile(
     rf"({DATE})[^$]{{0,80}}?({DATE})[^$]{{0,12}}?\$\s*([\d,]+)\s*-\s*\$\s*([\d,]+)",
-    re.S,
+    re.DOTALL,
 )
 TICKER_RE = re.compile(r"\(([A-Za-z][A-Za-z.\-]{0,7})\)\s*\[[A-Za-z]{1,4}\]\s*$")
 TYPE_WORD_RE = re.compile(
-    r"(sale\s*\(partial\)|sale\s*\(full\)|sale|purchase|exchange)$", re.I
+    r"(sale\s*\(partial\)|sale\s*\(full\)|sale|purchase|exchange)$", re.IGNORECASE
 )
-TYPE_LETTER_RE = re.compile(r"\b([PSDE])\s*(?:\(\s*(partial|full)\s*\))?$", re.I)
+TYPE_LETTER_RE = re.compile(r"\b([PSDE])\s*(?:\(\s*(partial|full)\s*\))?$", re.IGNORECASE)
 OWNER_GLUED_RE = re.compile(r"^(SP|JT|DC|SC)(?=[A-Za-z])")
 OWNER_RE = re.compile(r"^(SP|JT|DC|SC)\b")
 NOISE_RES = [
-    re.compile(p, re.I)
+    re.compile(p, re.IGNORECASE)
     for p in (
         r"notification\s*date",
         r"amount\s*cap\.\s*gains\s*>\s*\$?\s*200\?",

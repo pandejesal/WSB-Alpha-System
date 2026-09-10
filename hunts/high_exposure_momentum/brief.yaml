@@ -1,0 +1,26 @@
+# Hunt Session Brief: High-Exposure Momentum (W7)
+# Plan: plan_1_gates_strategies.md W7 lines 159-187, Batch-B Hunt Factory Reactivation
+family: high_exposure_momentum
+universe: "100-stock liquid large-cap panel excluding SPY/QQQ/AGG/BND/SHY/GLD/VTI/IWM (daily OHLCV 2019-2026, identical-window SPY twin for excess)"
+hypothesis: "6-month formation skip-1-month reversal + 20-day vol confirmation (vol >1.2x median) + sector relative-strength filter (sector RS rank >60) selects top 3-10 names that maintain 70-85% time-in-market and harvest +2-8pp excess vs SPY buy-hold net of T+1 + tiered cost (W5), Sharpe 0.75-0.85, DSR>=0.90 at per-family N~500-1000."
+acceptance: "Edge claim pre-registered in docs/data via prereg freeze; YAML spec parses via strategy_registry.validate_spec; registry.json wired via hunt_runner collect without code patch; Walk-Forward OOS>=0.50, Sharpe>=0.75, maxDD<=35%, excess>=0.05, DSR>=0.90, tmin>=0.70, perm_p<=0.05 boot_p<=0.05 (GATESPEC38 Track 5 high_exposure_momentum); L1 screen Sharpe>=0.50 DD<15% excess>0; L2 survivor requires full Track 5 conjunction or honest ABANDON if 0/3 pass."
+lookback_constraints: "Daily OHLCV only (market_data_2019_2026/ohlcv/*.csv), no intraday, no lookahead (signal.shift(1) T+1), vol-scaled tiered cost (W5) applied identically in backtest() and _rotation_result(), identical-window SPY twin for excess, 1910-bar loop window 2019-01-02 to 2026-08-07 for DSR T=1910 N_family per-family."
+edge_gate_params:
+  track: high_exposure_momentum
+  sharpe_min: 0.75
+  max_dd_max: 0.35
+  oos_min: 0.50
+  excess_min: 0.05
+  dsr_min: 0.90
+  tmin_min: 0.70
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  trips_min: 0
+  param_grid:
+    lookback: [63, 126, 189, 252]
+    skip: [5, 21, 42]
+    top_n: [3, 5, 10]
+    vol_confirm: [1.2]
+  cost_model: "tiered W5: equities 5-7bps +1bp vol_scalar=rolling_std(20)/median_60 scale 2 cap 2"
+  universe_size: 100
+  benchmarks: ["SPY (identical window)", "stationary bootstrap K=200 block 21", "circular permutation 200"]

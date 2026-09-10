@@ -4,9 +4,6 @@ from datetime import timedelta
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
-from src.gs_compat.calendar import business_day_offset
-
 import yfinance as yf
 from tqdm import (
     tqdm,
@@ -16,6 +13,7 @@ import src.backtest.run_historic_backtest as rb
 from src.alpha import (
     indicators,
 )
+from src.gs_compat.calendar import business_day_offset
 
 logger = logging.getLogger(__name__)
 

@@ -1,5 +1,7 @@
 import pytest
+
 from src.ops.portfolio import PortfolioManager
+
 
 def test_sizing_engine_at_100_dollars():
     manager = PortfolioManager(registry_path="strategies/registry.json")

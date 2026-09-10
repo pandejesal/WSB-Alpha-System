@@ -17,9 +17,10 @@ import json
 import os
 import sys
 import time
-from datetime import date as dt_date, timedelta as dt_timedelta
 import urllib.parse
 import urllib.request
+from datetime import date as dt_date
+from datetime import timedelta as dt_timedelta
 
 ROOT = r"C:\Users\DELL\Documents\Default Project\WSB-Alpha-System-build"
 NEWS = os.path.join(ROOT, "market_data_2019_2026", "news")

@@ -1,7 +1,9 @@
-import os
 import json
-import yaml
+import os
+
 import pytest
+import yaml
+
 
 def load_yaml(filepath):
     with open(filepath, 'r') as f:

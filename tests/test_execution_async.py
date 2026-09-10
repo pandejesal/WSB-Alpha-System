@@ -1,6 +1,8 @@
-import unittest
 import asyncio
+import unittest
+
 from src.execution.async_executor import AsyncExecutor
+
 
 class TestExecution(unittest.TestCase):
     def test_async_executor_runs(self):

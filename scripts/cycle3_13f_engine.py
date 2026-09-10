@@ -38,7 +38,13 @@ import pandas as pd
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE, "scripts"))
-from cycle3_13f_map import clean, spaceless, sorted_tokens, RENAME_ALIASES, CLASS_TWINS  # noqa: E402
+from cycle3_13f_map import (  # noqa: E402
+    CLASS_TWINS,
+    RENAME_ALIASES,
+    clean,
+    sorted_tokens,
+    spaceless,
+)
 
 RNG = np.random.default_rng(7)
 

@@ -1,14 +1,19 @@
-import os
-import json
-import yaml
-import hashlib
-import re
 import datetime
-from typing import Dict, Any, Optional
+import hashlib
+import json
+import os
+import re
+from typing import Any, Dict, Optional
 
-def load_yaml_spec(spec_path: str) -> Dict[str, Any]:
+import yaml
+
+
+def load_yaml_spec(spec_path: str) -> dict[str, Any]:
     with open(spec_path, 'r') as f:
         return yaml.safe_load(f)
+
+def _sha256_text(text: str) -> str:
+    return hashlib.sha256(text.encode('utf-8')).hexdigest()
 
 def _get_max_cycle(docs_dir: str) -> int:
     max_cycle = 0
@@ -19,7 +24,7 @@ def _get_max_cycle(docs_dir: str) -> int:
                 max_cycle = max(max_cycle, int(match.group(1)))
     return max_cycle
 
-def freeze_preregistration(spec_path: str, claim: str, cycle: Optional[int] = None, docs_dir: str = "docs/data") -> str:
+def freeze_preregistration(spec_path: str, claim: str, cycle: int | None = None, docs_dir: str = "docs/data") -> str:
     spec = load_yaml_spec(spec_path)
     family = spec.get('family')
     if not family:
@@ -38,9 +43,12 @@ def freeze_preregistration(spec_path: str, claim: str, cycle: Optional[int] = No
     with open(spec_path, 'r') as f:
         spec_content = f.read()
 
+    spec_sha256 = _sha256_text(spec_content)
+
     doc_content = f"""# Pre-registration: {family}
 Cycle: {cycle}
 Date: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+Spec-SHA256: {spec_sha256}
 
 ## Claim
 {claim}
@@ -56,9 +64,24 @@ Date: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
     return filepath
 
-def record_evaluation(spec_path: str, verdict: str, cycle: Optional[int] = None, eval_path: Optional[str] = None, registry_path: str = "strategies/registry.json", docs_dir: str = "docs/data") -> str:
-    spec = load_yaml_spec(spec_path)
-    family = spec.get('family')
+def verify_prereg_freeze(spec, claim=None, cycle: int | None = None, docs_dir: str = "docs/data") -> str:
+    """Fail-closed pre-registration gate (B3a/G9 hot-path hook).
+
+    Checks a freeze file exists for the spec (family + SHA-256 of the raw
+    spec file) with matching SHA-256 BEFORE any evaluation is recorded.
+    When ``claim`` is provided it must also equal the frozen claim.
+
+    Exposed as a callable hook so the evolve promotion loop can import it
+    later without this module calling into the loop. Raises
+    FileNotFoundError when no freeze exists and ValueError on any
+    integrity mismatch. Returns the freeze filepath on success.
+    """
+    if not isinstance(spec, (str, os.PathLike)):
+        raise TypeError(f"verify_prereg_freeze expects a spec file path, got {type(spec).__name__}")
+    spec_path = os.fspath(spec)
+
+    loaded = load_yaml_spec(spec_path)
+    family = loaded.get('family') if isinstance(loaded, dict) else None
     if not family:
         raise ValueError(f"Spec file {spec_path} is missing 'family' field.")
 
@@ -72,6 +95,47 @@ def record_evaluation(spec_path: str, verdict: str, cycle: Optional[int] = None,
 
     if not os.path.exists(prereg_filepath):
         raise FileNotFoundError(f"no claim registered for family {family} in cycle {cycle} — run preregister freeze first")
+
+    with open(prereg_filepath, 'r') as f:
+        prereg_content = f.read()
+
+    frozen_match = re.search(r'^Spec-SHA256:\s*([0-9a-f]{64})\s*$', prereg_content, re.MULTILINE)
+    if not frozen_match:
+        raise ValueError(
+            f"freeze doc at {prereg_filepath} has no Spec-SHA256 binding (legacy freeze) — "
+            f"re-freeze spec {spec_path} before recording an evaluation"
+        )
+
+    with open(spec_path, 'r') as f:
+        current_hash = _sha256_text(f.read())
+    if current_hash != frozen_match.group(1):
+        raise ValueError(
+            f"spec hash mismatch for family {family} in cycle {cycle}: "
+            f"current spec {spec_path} differs from frozen Spec-SHA256 — re-freeze before recording"
+        )
+
+    if claim is not None:
+        claim_match = re.search(r'## Claim\n(.*?)\n\n## Strategy Spec', prereg_content, re.DOTALL)
+        declared = claim_match.group(1).strip() if claim_match else ""
+        if declared != str(claim).strip():
+            raise ValueError(
+                f"claim mismatch for family {family} in cycle {cycle}: "
+                f"provided claim differs from the frozen claim"
+            )
+
+    return prereg_filepath
+
+def record_evaluation(spec_path: str, verdict: str, cycle: int | None = None, eval_path: str | None = None, registry_path: str = "strategies/registry.json", docs_dir: str = "docs/data") -> str:
+    spec = load_yaml_spec(spec_path)
+    family = spec.get('family')
+    if not family:
+        raise ValueError(f"Spec file {spec_path} is missing 'family' field.")
+
+    # B3a/G9: fail-closed prereg gate — a freeze file must exist for this
+    # spec with matching SHA-256 before any evaluation is recorded.
+    prereg_filepath = verify_prereg_freeze(spec_path, cycle=cycle, docs_dir=docs_dir)
+    if cycle is None:
+        cycle = _get_max_cycle(docs_dir)
 
     # Read claim from prereg doc
     with open(prereg_filepath, 'r') as f:

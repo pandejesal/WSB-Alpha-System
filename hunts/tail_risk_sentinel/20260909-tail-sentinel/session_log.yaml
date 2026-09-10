@@ -1,0 +1,7 @@
+cycle_id: tail_risk_sentinel-20260909-0109_tail-risk-sentinel
+family: tail_risk_sentinel
+prereg_cycle_id: tail_risk_sentinel-20260909-0109_tail-risk-sentinel
+prereg_frozen_at: '2026-09-09T01:09:55.423987+00:00'
+run_id: 20260909-0109 tail-risk-sentinel
+started_at: '2026-09-09T01:09:55.255972+00:00'
+status: initialized

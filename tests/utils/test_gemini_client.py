@@ -1,6 +1,13 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
-from src.utils.gemini_client import RateLimitedGeminiClient, RateLimiter, TokenBucketLimiter
+
+from src.utils.gemini_client import (
+    RateLimitedGeminiClient,
+    RateLimiter,
+    TokenBucketLimiter,
+)
+
 
 def test_token_bucket_wait():
     # Capacity 2, 2 tokens/sec

@@ -1,0 +1,39 @@
+{
+  "family": "factor_momentum",
+  "id": "factor_momentum_top3",
+  "w11_rehab": true,
+  "metrics": {
+    "sharpe": 1.2696,
+    "cagr": 0.25,
+    "max_dd": 0.3361,
+    "oos": 1.259,
+    "trips": 32,
+    "trades": 64,
+    "excess": 1859.61,
+    "tmin": 0.9785,
+    "n_bars": 1910,
+    "dsr": 0.9215,
+    "dsr_100": 0.77,
+    "dsr_200": 0.68,
+    "perm_p": 0.285,
+    "boot_p": 0.0,
+    "wf_status": "PASSED",
+    "wf_reason": "",
+    "check_tracks": [],
+    "required_sharpe_DSR95_N30": 1.353,
+    "required_sharpe_DSR92_N30": 1.265,
+    "panel": "30-stock rotation_universe forward-filled",
+    "cost_model": "tiered W5",
+    "note": "MOM 12-1 252d skip21 top3 forward-filled, quality filter D/E<2 OPM>0 FCF>0 proxied lenient (all pass), monthly rebalance T+1"
+  },
+  "wf": {
+    "status": "PASSED"
+  },
+  "spy_baseline_same_window": true,
+  "cost_model": "tiered W5",
+  "panel": "30-stock",
+  "evaluation_window": "1910 bars 2019-01-02 to 2026-08-07",
+  "universe": "30-stock rotation_universe",
+  "quality_filter": "D/E<2 OPM>0 FCF>0 lenient all-pass proxy",
+  "hunt_brief": "hunts/factor_rotation/brief.yaml"
+}

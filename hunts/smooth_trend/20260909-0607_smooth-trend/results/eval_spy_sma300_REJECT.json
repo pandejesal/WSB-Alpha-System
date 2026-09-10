@@ -1,0 +1,17 @@
+{
+  "spec_id": "spy_sma300",
+  "failure": "L1 sharpe/DD/excess",
+  "metrics": {
+    "sharpe": 1.0847295546479139,
+    "cagr": 0.12928169318554183,
+    "max_dd": 0.17988260248344004,
+    "oos": 1.4325406769361884,
+    "trips": 10,
+    "trades": 21,
+    "excess": -94.2,
+    "tmin": 0.6895,
+    "n_bars": 1910,
+    "dsr": 0.7462,
+    "perm_p": 0.045,
+    "boot_p": 0.0,
+    "net": 

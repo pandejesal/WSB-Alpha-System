@@ -2,7 +2,14 @@ import json
 import logging
 from typing import TypedDict
 
-from langgraph.graph import END, StateGraph
+try:
+    from langgraph.graph import END, StateGraph  # type: ignore
+
+    _LANGGRAPH_AVAILABLE = True
+except ModuleNotFoundError:
+    END = "end"  # type: ignore
+    StateGraph = None  # type: ignore
+    _LANGGRAPH_AVAILABLE = False
 
 from src.utils.config import config
 from src.utils.gemini_client import RateLimitedGeminiClient
@@ -24,10 +31,12 @@ class GraphState(TypedDict):
 
 class ResearchWorkflow:
     def __init__(self):
+        if not _LANGGRAPH_AVAILABLE or StateGraph is None:
+            raise ImportError("langgraph not installed — install 'langgraph' to use ResearchWorkflow")
         try:
             api_key = config.api_keys.gemini_api_key.get_secret_value()
         except AttributeError:
-            api_key = config.api_keys.gemini_api_key
+            api_key = config.api_keys.gemini_api_key  # type: ignore
 
         self.llm = RateLimitedGeminiClient(api_key=api_key)
         self.graph = self._build_graph()

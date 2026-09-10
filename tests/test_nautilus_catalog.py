@@ -1,13 +1,21 @@
-import pytest
-import pandas as pd
-from pathlib import Path
 import tempfile
+from pathlib import Path
 from unittest.mock import patch
 
+import pandas as pd
+import pytest
+
+pytest.importorskip("nautilus_trader", reason="nautilus_trader not installed")
+
+from nautilus_trader.model.data import BarType  # type: ignore
+from nautilus_trader.model.identifiers import (  # type: ignore
+    InstrumentId,
+    Symbol,
+    Venue,
+)
+from nautilus_trader.persistence.catalog import ParquetDataCatalog  # type: ignore
+
 from src.data.nautilus_catalog import NautilusCatalogBuilder
-from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
-from nautilus_trader.model.data import BarType
-from nautilus_trader.persistence.catalog import ParquetDataCatalog
 
 
 class _FakeProvider:

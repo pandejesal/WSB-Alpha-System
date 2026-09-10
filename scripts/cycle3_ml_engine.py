@@ -263,8 +263,8 @@ def main():
     results = {
         "signal": "GradientBoostingRegressor decile long-short (top decile long, bottom decile short)",
         "model_params": MODEL_PARAMS,
-        "n_train_rows": int(len(Xtr)),
-        "n_oos_rows": int(len(Xoos)),
+        "n_train_rows": len(Xtr),
+        "n_oos_rows": len(Xoos),
         "train_dates": [str(d.date()) for d in train_f.index],
         "oos_dates": [str(d.date()) for d in oos_f.index],
         "weekly_factor_returns_net": {str(k.date()): float(v) for k, v in fser.items()},

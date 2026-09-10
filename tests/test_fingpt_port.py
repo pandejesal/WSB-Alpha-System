@@ -5,14 +5,14 @@ bounds validation, and evaluation harness reproducibility.
 """
 
 from src.signals.fingpt_sentiment import (
-    POSITIVE_LEXICON,
     NEGATIVE_LEXICON,
-    score_sentiment,
-    score_batch,
-    map_sentiment_to_signal,
-    generate_synthetic_sentiment,
-    run_evaluation,
+    POSITIVE_LEXICON,
     SAMPLE_EVAL_SET,
+    generate_synthetic_sentiment,
+    map_sentiment_to_signal,
+    run_evaluation,
+    score_batch,
+    score_sentiment,
 )
 
 

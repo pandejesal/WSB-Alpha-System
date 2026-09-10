@@ -3,9 +3,11 @@ MIT License - Clean-room inspired by OpenBB-finance/OpenBB, not vendored
 — AGPL text not copied.
 """
 
-from typing import Any, Generic, TypeVar, Optional
-from pydantic import BaseModel, field_validator
 from datetime import date, datetime
+from typing import Any, Generic, Optional, TypeVar
+
+from pydantic import BaseModel, field_validator
+
 
 class EmptyDataError(Exception):
     pass
@@ -47,7 +49,7 @@ class ProviderAdapter(Generic[Q, R]):
     def to_query(self, params: dict) -> Q:
         raise NotImplementedError
 
-    def fetch(self, query: Q, creds: Optional[dict] = None) -> Any:
+    def fetch(self, query: Q, creds: dict | None = None) -> Any:
         raise NotImplementedError
 
     def to_records(self, query: Q, raw: Any) -> list[R] | AnnotatedResult[R]:

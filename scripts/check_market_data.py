@@ -1,5 +1,6 @@
-import yfinance as yf
 import logging
+
+import yfinance as yf
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

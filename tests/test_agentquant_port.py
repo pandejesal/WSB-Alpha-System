@@ -11,7 +11,6 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # Fixtures
 # ---------------------------------------------------------------------------
@@ -78,14 +77,17 @@ class TestRegimeDetection:
         assert len(features) == len(small_df)
 
     def test_detect_regime_returns_string(self, small_df: pd.DataFrame):
-        from src.signals.agentquant_regime import detect_regime, compute_regime_features
+        from src.signals.agentquant_regime import compute_regime_features, detect_regime
         features = compute_regime_features(small_df)
         regime = detect_regime(features)
         assert isinstance(regime, str)
         assert "-" in regime  # e.g. "LowVol-Bull"
 
     def test_detect_regime_full_returns_signals(self, small_df: pd.DataFrame):
-        from src.signals.agentquant_regime import detect_regime_full, compute_regime_features
+        from src.signals.agentquant_regime import (
+            compute_regime_features,
+            detect_regime_full,
+        )
         features = compute_regime_features(small_df)
         signals = detect_regime_full(features)
         assert hasattr(signals, "regime_label")
@@ -109,10 +111,10 @@ class TestHarnessEvolution:
 
     def test_import_harness(self):
         from src.evolution.agentquant_harness import (
-            HarnessGenome,
             HarnessEvolution,
-            sample_grid,
+            HarnessGenome,
             backtest_strategy,
+            sample_grid,
             walk_forward_eval,
         )
         assert HarnessGenome is not None
@@ -122,7 +124,7 @@ class TestHarnessEvolution:
         assert callable(walk_forward_eval)
 
     def test_sample_grid(self):
-        from src.evolution.agentquant_harness import sample_grid, DEFAULT_GRIDS
+        from src.evolution.agentquant_harness import DEFAULT_GRIDS, sample_grid
         for family in DEFAULT_GRIDS:
             params = sample_grid(family)
             assert isinstance(params, dict)
@@ -307,9 +309,12 @@ class TestIntegration:
 
     def test_full_pipeline(self, small_df: pd.DataFrame):
         """Test regime → evolution → critic pipeline on small data."""
-        from src.signals.agentquant_regime import compute_regime_features, detect_regime_full
-        from src.evolution.agentquant_harness import HarnessEvolution
         from src.evolution.agentquant_critic import CriticAgent
+        from src.evolution.agentquant_harness import HarnessEvolution
+        from src.signals.agentquant_regime import (
+            compute_regime_features,
+            detect_regime_full,
+        )
 
         # Regime
         features = compute_regime_features(small_df)

@@ -14,13 +14,14 @@ and can never place live orders. Weekends always map to `closed`.
 """
 from __future__ import annotations
 
+from collections.abc import Callable
 from datetime import datetime
-from typing import Callable, Dict, List, Optional
+from typing import Dict, List, Optional
 from zoneinfo import ZoneInfo
 
 ET = ZoneInfo("America/New_York")
 
-PHASES: Dict[str, Dict] = {
+PHASES: dict[str, dict] = {
     "pre_market": {"seconds": 900, "label": "Pre-Market", "range": (240, 570)},
     "market_open": {"seconds": 120, "label": "Market Open", "range": (570, 630)},
     "midday": {"seconds": 600, "label": "Midday", "range": (630, 900)},
@@ -30,7 +31,7 @@ PHASES: Dict[str, Dict] = {
 }
 
 
-def get_current_phase(now: Optional[datetime] = None) -> str:
+def get_current_phase(now: datetime | None = None) -> str:
     now = now or datetime.now(tz=ET)
     et = now.astimezone(ET)
     if et.weekday() >= 5:  # Sat/Sun
@@ -47,8 +48,8 @@ def beat_interval_seconds(phase: str) -> int:
     return int(PHASES[phase]["seconds"])
 
 
-def run_beats(beat_fn: Callable[[str, int], Dict], phases: Optional[List[str]] = None,
-              max_beats: int = 1) -> List[Dict]:
+def run_beats(beat_fn: Callable[[str, int], dict], phases: list[str] | None = None,
+              max_beats: int = 1) -> list[dict]:
     """Drive `max_beats` beats through `beat_fn(phase, beat_no)`.
 
     `phases` overrides the live clock (for backtest/replay); otherwise the

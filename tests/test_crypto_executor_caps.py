@@ -1,7 +1,7 @@
 import contextlib
 import os
 import sys
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
@@ -11,7 +11,6 @@ sys.modules['ccxt'] = MagicMock()
 from src.execution import live_crypto_executor  # noqa: E402
 from src.execution.live_crypto_executor import gates_allow_trading  # noqa: E402
 from src.risk import position_sizing as risk_config  # noqa: E402
-
 
 # ---------------------------------------------------------
 # Unit Tests for gates_allow_trading

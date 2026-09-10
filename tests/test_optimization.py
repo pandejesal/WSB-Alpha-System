@@ -1,9 +1,12 @@
 import unittest
-import pandas as pd
 from datetime import datetime
-from src.backtest.optimization.walk_forward import WalkForwardOptimizer
+
+import pandas as pd
+
 from src.backtest.optimization.optimizer import GridSearchOptimizer
+from src.backtest.optimization.walk_forward import WalkForwardOptimizer
 from src.evolution.strategy_selector import ThompsonSampler
+
 
 class TestOptimization(unittest.TestCase):
     def test_walk_forward_windows(self):

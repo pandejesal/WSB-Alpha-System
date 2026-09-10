@@ -14,15 +14,15 @@ import os
 import sys
 from datetime import datetime, timedelta
 
-logger = logging.getLogger(__name__)
-
 import pandas as pd
 import requests
 import yfinance as yf
 
-from src.risk import (
-    position_sizing as risk_config,
-)
+from src.risk import position_sizing as risk_config
+from src.utils.config import config
+from src.utils.config import get_secret_str as _get_secret_str
+
+logger = logging.getLogger(__name__)
 
 TECHNICAL_UNIVERSE = ['AAPL', 'MSFT', 'NVDA', 'TSLA', 'AMD', 'META', 'AMZN',
                       'GOOGL', 'JPM', 'V', 'UNH', 'JNJ', 'WMT', 'PG', 'MA',
@@ -66,24 +66,38 @@ def generate_technical_signals(stock_dfs: dict) -> pd.DataFrame:
 # ============================================================================
 # API CONFIGURATION
 # ============================================================================
-from src.utils.config import (
-    config,
-)
 
 ALPACA_API_KEY_ID = config.api_keys.alpaca_api_key
-try:
-    ALPACA_SECRET_KEY = config.api_keys.alpaca_secret_key.get_secret_value()
-except AttributeError:
-    ALPACA_SECRET_KEY = config.api_keys.alpaca_secret_key
+ALPACA_SECRET_KEY = _get_secret_str(config.api_keys.alpaca_secret_key)
 
 if not ALPACA_API_KEY_ID or not ALPACA_SECRET_KEY:
     raise ValueError("Valid Alpaca API credentials required. Please set them in configuration.")
 
+ALPACA_PAPER_URL = "https://paper-api.alpaca.markets"
+ALPACA_LIVE_URL = "https://api.alpaca.markets"
+ALLOWED_ALPACA_URLS = {ALPACA_PAPER_URL, ALPACA_LIVE_URL}
+
 if risk_config.LIVE_TRADING_ENABLED:
-    ALPACA_BASE_URL = os.getenv("ALPACA_BASE_URL", "https://api.alpaca.markets")
+    ALPACA_BASE_URL = os.getenv("ALPACA_BASE_URL", ALPACA_LIVE_URL)
 else:
-    # Force paper trading endpoint
-    ALPACA_BASE_URL = "https://paper-api.alpaca.markets"
+    # Force paper trading endpoint — ignore env override except via exact allowlist validation in main()
+    _env_url = os.getenv("ALPACA_BASE_URL")
+    if _env_url is not None and _env_url != ALPACA_PAPER_URL:
+        logger.critical(f"ALPACA_BASE_URL env override {_env_url!r} not allowed in paper mode — only {ALPACA_PAPER_URL!r} permitted. Aborting import.")
+        # Fail-closed: force paper URL and let main() abort with CRITICAL log
+        ALPACA_BASE_URL = _env_url  # keep invalid for main() to detect exact allowlist violation
+    else:
+        ALPACA_BASE_URL = ALPACA_PAPER_URL
+
+if ALPACA_BASE_URL not in ALLOWED_ALPACA_URLS:
+    logger.critical(f"ALPACA_BASE_URL {ALPACA_BASE_URL!r} outside allowlist {ALLOWED_ALPACA_URLS} — fail-closed.")
+
+
+def _is_alpaca_url_allowed(url: str, live_enabled: bool) -> bool:
+    """Exact allowlist check: paper mode requires PAPER_URL; live mode allows either live or paper (paper for safety tests)."""
+    if not live_enabled:
+        return url == ALPACA_PAPER_URL
+    return url in ALLOWED_ALPACA_URLS
 
 
 HEADERS = {
@@ -104,7 +118,7 @@ def get_account_data() -> dict:
         else:
             print(f"[!] Error fetching Alpaca account: {r.text}")
             return {}
-    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+    except Exception as e:
         print(f"[!] Exception calling Alpaca API: {e}")
         return {}
 
@@ -115,7 +129,7 @@ def get_open_positions() -> list:
         if r.status_code == 200:
             return r.json()
         return []
-    except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
+    except Exception:
         return []
 
 def place_fractional_market_order(symbol: str, notional: float, side: str):
@@ -146,7 +160,7 @@ def place_fractional_market_order(symbol: str, notional: float, side: str):
         else:
             print(f"[!] Order rejected for {symbol}: {r.text}")
             return None
-    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+    except Exception as e:
         print(f"[!] Exception placing order for {symbol}: {e}")
         return None
 
@@ -155,14 +169,28 @@ def main():
     print("ALPACA AUTOMATED LIVE/PAPER ORDER EXECUTOR")
     print("=" * 60)
 
+    # CS-01 dual-flag conjunctive gate: must have can_trade AND LIVE_TRADING_ENABLED
+    from src.ops.killswitch import dual_gate_allows_trading
+
+    allowed, reason = dual_gate_allows_trading(risk_config.LIVE_TRADING_ENABLED)
+    # Paper path: no live trading — still enforce paper-URL allowlist (CS-03) below
+    # Live path: require dual gate
+    if risk_config.LIVE_TRADING_ENABLED and not allowed:
+        print(f"[!] Dual-gate blocked: {reason}. Aborting for safety.")
+        logger.critical(f"Live Alpaca executor blocked by dual gate: {reason}")
+        return
+
+    # CS-03 exact allowlist guard (replaces substring check)
+    if not _is_alpaca_url_allowed(ALPACA_BASE_URL, risk_config.LIVE_TRADING_ENABLED):
+        print(f"[!] CRITICAL: ALPACA_BASE_URL {ALPACA_BASE_URL!r} violates allowlist {ALLOWED_ALPACA_URLS}. Aborting.")
+        logger.critical(f"ALPACA_BASE_URL {ALPACA_BASE_URL!r} violates allowlist — aborting (fail-closed).")
+        return
 
     if risk_config.LIVE_TRADING_ENABLED:
         print("[!] LIVE TRADING IS ENABLED. REAL CAPITAL IS AT RISK.")
     else:
         print("[*] Paper trading mode active. Live trading is disabled.")
-        if "paper" not in ALPACA_BASE_URL:
-            print("[!] ERROR: Live trading is disabled but ALPACA_BASE_URL is not pointing to paper. Aborting.")
-            return
+        return
 
 
     # 1. Fetch live account equity
@@ -201,7 +229,7 @@ def main():
                     if weekly_drawdown > risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT:
                         print(f"[!!!] WEEKLY CIRCUIT BREAKER TRIPPED. Drawdown ({weekly_drawdown*100:.2f}%) exceeds limit ({risk_config.WEEKLY_LOSS_CIRCUIT_BREAKER_PCT*100:.2f}%). Trading halted.")
                         sys.exit(1)
-    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+    except Exception as e:
         print(f"[!] Warning: Could not fetch portfolio history for weekly circuit breaker check: {e}")
 
     # Check current positions count
@@ -227,7 +255,7 @@ def main():
                 t_px = px_data.loc[:, (slice(None), ticker)].copy()
                 t_px.columns = t_px.columns.get_level_values(0)
                 stock_dfs[ticker] = compute_indicators(t_px)
-            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+            except Exception as e:
                 logger.warning(f"Error computing indicators for {ticker}: {e}")
                 continue
         today_signals = generate_technical_signals(stock_dfs)
@@ -307,7 +335,7 @@ def main():
                     "ticker": symbol,
                     "sentiment_score": sentiment
                 })
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             print(f"Error evaluating {symbol}: {e}")
             continue
 

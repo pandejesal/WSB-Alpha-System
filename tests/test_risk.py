@@ -1,10 +1,11 @@
-import unittest
-import sys
 import os
+import sys
+import unittest
 from unittest.mock import patch
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.risk import position_sizing as risk_config
+
 
 class TestRiskConfig(unittest.TestCase):
     def test_risk_values(self):

@@ -13,26 +13,26 @@ gracefully scaling down or adjusting sizes if the exchange rejects our orders.
 To run this in production, schedule this script to run daily at 00:01 UTC via cron:
 $ python live_crypto_executor.py
 """
-import json  # noqa: E402
-import logging  # noqa: E402
-import os  # noqa: E402
+import json
+import logging
+import os
 
 try:
     import ccxt
 except ImportError:
     ccxt = None
-import pandas as pd  # noqa: E402
-from dotenv import (  # noqa: E402
+import pandas as pd
+from dotenv import (
     load_dotenv,
 )
 
-from src.alpha.strategy_man_ahl import (  # noqa: E402
+from src.alpha.strategy_man_ahl import (
     calculate_momentum_score,
     calculate_target_position_sizes,
     calculate_volatility_and_atr,
     check_rebalance_required,
 )
-from src.risk import (  # noqa: E402
+from src.risk import (
     position_sizing as risk_config,
 )
 
@@ -42,22 +42,21 @@ load_dotenv()
 # ============================================================================
 # BYBIT CONFIGURATION
 # ============================================================================
-from src.utils.config import (  # noqa: E402 - config must load after dotenv
+from src.utils.config import (
     config,
+    get_secret_str,
 )
 
 logger = logging.getLogger(__name__)
 
-BYBIT_API_KEY = config.api_keys.binance_api_key  # Assume binance/ccxt key map for now, or fallback
-try:
-    BYBIT_API_SECRET = config.api_keys.binance_secret_key.get_secret_value()
-except AttributeError:
-    BYBIT_API_SECRET = config.api_keys.binance_secret_key
 
-if not BYBIT_API_KEY or not BYBIT_API_SECRET:
-    # Fallback to direct env since Bybit might have separate keys not in Settings yet
-    BYBIT_API_KEY = os.getenv("BYBIT_API_KEY")
-    BYBIT_API_SECRET = os.getenv("BYBIT_API_SECRET")
+BYBIT_API_KEY = config.api_keys.bybit_api_key or os.getenv("BYBIT_API_KEY", "")
+# get_secret_value via get_secret_str helper (CS-06 normalized)
+BYBIT_API_SECRET = get_secret_str(config.api_keys.bybit_api_secret) or os.getenv("BYBIT_API_SECRET", "")
+
+# Fail-closed per-exchange keys: do not silently reuse Binance keys for Bybit
+if risk_config.LIVE_TRADING_ENABLED and (not BYBIT_API_KEY or not BYBIT_API_SECRET):
+    raise RuntimeError("BYBIT_API_KEY not set")
 
 USE_SANDBOX = not risk_config.LIVE_TRADING_ENABLED
 
@@ -69,10 +68,16 @@ BYBIT_SYMBOLS = {
     "SOL-USD": "SOLUSDT"
 }
 
-# Target risk parameters matching backtest
+# Target risk parameters — single-source from config/risk_config.py (CS-04)
+from config.risk_config import BASE_RISK_PCT as _CFG_BASE_RISK_PCT
+from config.risk_config import HALF_KELLY as _CFG_HALF_KELLY
+from config.risk_config import MAX_NOTIONAL_LEV as _CFG_LEV
+
 TARGET_RISK = risk_config.MAX_RISK_PER_TRADE_PCT
-HALF_KELLY = 0.5
-LEVERAGE_CAP = 1.0 # Force leverage cap for safety
+HALF_KELLY = _CFG_HALF_KELLY  # 0.5 canonical
+LEVERAGE_CAP = _CFG_LEV  # 1.0 canonical
+# Drift guard: fail fast if local re-exports diverge from canonical
+assert HALF_KELLY == 0.5 and LEVERAGE_CAP == 1.0, "Risk cap drift detected"
 MIN_ORDER_SIZE = 10.0  # Bybit floor minimum position size $10
 
 def init_bybit_exchange():
@@ -106,11 +111,11 @@ def fetch_account_equity(exchange) -> float:
         usdt_info = balance.get('USDT', {})
         equity = float(usdt_info.get('equity', usdt_info.get('total', 0.0)))
         return equity
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         print(f"[!] Exception fetching account equity: {e}")
         return 0.0
 
-def fetch_historical_ohlcv(exchange: ccxt.bybit, symbol: str, limit: int = 100) -> pd.DataFrame:
+def fetch_historical_ohlcv(exchange, symbol: str, limit: int = 100) -> pd.DataFrame:
     """
     Fetches daily historical OHLCV data directly from Bybit exchange to calculate indicators.
     """
@@ -121,7 +126,7 @@ def fetch_historical_ohlcv(exchange: ccxt.bybit, symbol: str, limit: int = 100) 
         df['Date'] = pd.to_datetime(df['Timestamp'], unit='ms')
         df.set_index('Date', inplace=True)
         return df
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         print(f"[!] Exception fetching OHLCV for {symbol}: {e}")
         return pd.DataFrame()
 
@@ -155,7 +160,7 @@ def get_current_positions_and_scores(exchange) -> tuple[dict, dict, dict]:
                 if side == 'short':
                     position_val = -position_val
                 current_positions[ticker] = position_val
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         print(f"[!] Error fetching positions: {e}. Defaulting current positions to 0.")
 
     # 2. Fetch daily OHLCV and compute indicators
@@ -190,7 +195,7 @@ def execute_bybit_order(exchange, symbol: str, target_size: float, current_pos: 
         if last_price <= 0:
             print(f"  [!] Invalid market price for {symbol}: {last_price}. Skipping order.")
             return
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         print(f"  [!] Failed to download current price for {symbol}: {e}. Skipping.")
         return
 
@@ -233,7 +238,7 @@ def execute_bybit_order(exchange, symbol: str, target_size: float, current_pos: 
                 print(f"      [+] RECOVERY SUCCESSFUL! Halved Order ID: {order.get('id')}")
             else:
                 print("      [!] Recovered size falls below exchange minimum ($10). Aborting order.")
-        except Exception as err:  # noqa: BLE001
+        except Exception as err:
             print(f"      [!] Recovery attempt failed: {err}")
     except ccxt.InvalidOrder as e:
         print(f"  [!] ccxt.InvalidOrder caught: {e}")
@@ -242,9 +247,9 @@ def execute_bybit_order(exchange, symbol: str, target_size: float, current_pos: 
             min_floor_qty = MIN_ORDER_SIZE / last_price
             order = exchange.create_market_order(symbol, side, min_floor_qty)
             print(f"      [+] RECOVERY SUCCESSFUL! Normalized Order ID: {order.get('id')}")
-        except Exception as err:  # noqa: BLE001
+        except Exception as err:
             print(f"      [!] Recovery attempt failed: {err}")
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         print(f"  [!] Uncaught broker exception placing order: {e}")
 
 
@@ -266,6 +271,16 @@ def gates_allow_trading(equity: float, last_equity: float, high_water_mark: floa
 
 def main():
     STATE_FILE = 'crypto_state.json'
+    # CS-01 dual-flag conjunctive gate: KillSwitch AND LIVE_TRADING_ENABLED must both allow
+    from src.ops.killswitch import (
+        dual_gate_allows_trading,  # local import to avoid cycles
+    )
+
+    allowed, reason = dual_gate_allows_trading(risk_config.LIVE_TRADING_ENABLED)
+    if not allowed:
+        print(f"[!] Dual-gate blocked: {reason}. Aborting for safety.")
+        logger.critical(f"Live crypto executor blocked by dual gate: {reason}")
+        return
     if USE_SANDBOX is False and risk_config.LIVE_TRADING_ENABLED is False:
         print("[!] ERROR: LIVE_TRADING_ENABLED is False but sandbox is false. Aborting for safety.")
         return
@@ -307,7 +322,7 @@ def main():
                 state_data = json.load(f)
                 last_equity = state_data.get("last_equity", equity)
                 high_water_mark = state_data.get("high_water_mark", equity)
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.warning(f"Failed to load crypto state: {e}")
 
     # Update high water mark
@@ -361,7 +376,7 @@ def main():
                     prev_scores = loaded["scores"]
                 elif isinstance(loaded, dict):
                     prev_scores = loaded # fallback for old schema
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.warning(f"Failed to load fade state: {e}")
 
     rebalance_required = check_rebalance_required(
@@ -420,7 +435,7 @@ def main():
         }
         with open(STATE_FILE, "w") as f:
             json.dump(state_out, f)
-    except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+    except Exception as e:
         print(f"Error saving state: {e}")
 
     print("\n" + "=" * 60)

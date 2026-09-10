@@ -1,5 +1,7 @@
 import pytest
+
 from src.research.debate_engine import DebateEngine
+
 
 @pytest.fixture
 def debate_engine():

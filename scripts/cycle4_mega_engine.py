@@ -37,7 +37,8 @@ sys.path.insert(0, os.path.join(BASE, "scripts"))
 sys.path.insert(0, os.path.join(BASE, "src"))
 RNG = np.random.default_rng(7)
 
-from cycle3_13f_engine import parse_xmls, build_ticker_resolver, LAG_DAYS  # noqa: E402
+from cycle3_13f_engine import LAG_DAYS, build_ticker_resolver, parse_xmls  # noqa: E402
+
 from alpha.indicators import compute_indicators  # noqa: E402
 
 COST_BPS = 10  # L1 per side

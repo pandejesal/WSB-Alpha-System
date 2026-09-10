@@ -1,5 +1,5 @@
 import json
-from typing import Dict, List, Any
+from typing import Any, Dict, List
 
 # Target metrics per PLAN.md/ARCHITECTURE.md
 VOL_TARGET_ANNUALIZED = 0.10
@@ -36,7 +36,7 @@ class PortfolioManager:
         except Exception:
             pass
 
-    def get_sleeve_definitions(self) -> List[Dict[str, Any]]:
+    def get_sleeve_definitions(self) -> list[dict[str, Any]]:
         """
         Returns the definitions for all active sleeves.
         """
@@ -51,7 +51,7 @@ class PortfolioManager:
             })
         return definitions
 
-    def compute_merged_targets(self, per_sleeve_targets: Dict[str, List[Dict[str, Any]]], account_equity: float = 100.0) -> Dict[str, Any]:
+    def compute_merged_targets(self, per_sleeve_targets: dict[str, list[dict[str, Any]]], account_equity: float = 100.0) -> dict[str, Any]:
         """
         Merges targets across the 7 sleeves.
         Ensures total exposure <= 60% of account with 40% cash buffer.
@@ -145,7 +145,7 @@ class PortfolioManager:
             "correlation_flags": correlation_flags
         }
 
-    def _check_correlation_guard(self, per_sleeve_targets: Dict[str, List[Dict[str, Any]]]) -> List[str]:
+    def _check_correlation_guard(self, per_sleeve_targets: dict[str, list[dict[str, Any]]]) -> list[str]:
         """
         Checks if two sleeves are heavily correlated in their signals today.
         """
@@ -176,7 +176,7 @@ class PortfolioManager:
 
         return flags
 
-    def enforce_min_notional(self, result: Dict[str, Any], min_notional: float = 1.0) -> Dict[str, Any]:
+    def enforce_min_notional(self, result: dict[str, Any], min_notional: float = 1.0) -> dict[str, Any]:
         targets = result["targets"]
         valid_targets = []
         for t in targets:

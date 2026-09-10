@@ -1,8 +1,17 @@
+# CH-14 candidate: duplicate backtest engine — candidate for consolidation into src/backtest/engines/canonical.py (no merge in this phase; canonical is engines/canonical.py)
 import logging
 from typing import Any
 
 import pandas as pd
-import vectorbt as vbt
+
+try:
+    import vectorbt as vbt  # type: ignore
+
+    _VBT2_AVAILABLE = True
+except (ImportError, ValueError) as _e2:
+    vbt = None  # type: ignore
+    _VBT2_AVAILABLE = False
+    _VBT2_IMPORT_ERROR = str(_e2)
 
 from src.backtest.base_engine import BacktestEngine
 
@@ -16,6 +25,8 @@ class VectorBTEngine(BacktestEngine):
         Runs the generated strategy instance using vectorbt.
         Assumes 'strategy' has a 'generate_signals' method returning a DataFrame with a 'signal' column.
         """
+        if not _VBT2_AVAILABLE or vbt is None:
+            return {"status": "error", "message": f"vectorbt not available: {_VBT2_IMPORT_ERROR if '_VBT2_IMPORT_ERROR' in globals() else 'not installed'}", "metrics": {}}
         self.logger.info(f"Running VectorBT simulation for {strategy.__class__.__name__}")
 
         try:

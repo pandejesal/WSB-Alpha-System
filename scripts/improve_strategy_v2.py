@@ -202,9 +202,7 @@ def run_portfolio_sim(frames, spy_close, signals, holding_days, stop_loss_pct,
             move = (d["close"][i] / prev_close - 1.0) * p["direction"]
             stop_hit = False
             if p["stop_price"] is not None:
-                if p["direction"] == 1 and d["low"][i] <= p["stop_price"]:
-                    stop_hit = True
-                elif p["direction"] == -1 and d["high"][i] >= p["stop_price"]:
+                if p["direction"] == 1 and d["low"][i] <= p["stop_price"] or p["direction"] == -1 and d["high"][i] >= p["stop_price"]:
                     stop_hit = True
             exited = stop_hit or (i - p["entry_iloc"] >= holding_days)
             if exited:
@@ -298,7 +296,7 @@ def portfolio_metrics(port_rets, spy_close):
         "total_return": float(total), "annualized_return": float(ann),
         "sharpe": float(sharpe), "max_drawdown": float(dd),
         "years": float(years), "spy_total": float(spy_total), "spy_ann": float(spy_ann),
-        "excess_total": float(total - spy_total), "n_days": int(len(df)),
+        "excess_total": float(total - spy_total), "n_days": len(df),
     }
 
 
@@ -309,7 +307,7 @@ def trade_summary(trades):
     excess = np.array([t["excess_return"] for t in trades])
     wins = rets > 0
     return {
-        "trades": int(len(rets)),
+        "trades": len(rets),
         "win_rate": float(wins.mean()),
         "mean_return": float(rets.mean()),
         "mean_excess": float(excess.mean()),
