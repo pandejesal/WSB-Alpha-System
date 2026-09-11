@@ -123,7 +123,7 @@ def main_loop():
                     log(f"EDGE FOUND {fid} Sharpe {metrics['sharpe']:.2f} minerva {metrics['minerva']} PROMOTING")
                     try:
                         reg=json.loads(REGISTRY.read_text())
-                        reg["strategies"].append({"id":spec["id"],"name":spec.get("name",fid),"family":spec.get("family","evolved"),"venue":spec.get("venue","alpaca"),"spec_file":str(evolved_path.relative_to(ROOT)),"gates_passed":"5/5","rank":len(reg["strategies"])+1,"status":"paper","evolved_from":fid,"metrics":metrics})
+                        reg["strategies"].append({"id":spec["id"],"name":spec.get("name",fid),"family":spec.get("family","evolved"),"venue":spec.get("venue","alpaca"),"spec_file":str(evolved_path.relative_to(ROOT)),"gates_passed":"5/5","rank":len(reg["strategies"])+1,"status":"paper","evolved_from":fid,"metrics":{**metrics,"tracks_cleared":0}})
                         REGISTRY.write_text(json.dumps(reg, indent=2))
                         log(f"registry updated {spec['id']}")
                     except Exception as e:

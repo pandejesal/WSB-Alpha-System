@@ -91,10 +91,10 @@ def _registry_strategy_count() -> int:
 def _dsr_n_trials(family: str) -> int:
     """Cross-family trial count for DSR: never below the registry floor."""
     try:
-        n_fam = int(FAM_TRIALS.get(family, 1))
+        n_trials = int(TRIAL_COUNT[0])
     except Exception:  # noqa: BLE001  # fail-closed floor, intentional
-        n_fam = 1
-    return max(1, n_fam, _registry_strategy_count())
+        n_trials = 1
+    return max(1, n_trials, _registry_strategy_count())
 
 FAMILIES = ["spy_sma", "spy_rsi2", "btc_vol", "btc_donchian", "us_momentum", "us_lowvol",
             "spy_ltrend", "us_ltrend", "gap_mr", "btc_regime"]
@@ -1027,9 +1027,10 @@ def main():
                 "id": f"{family}_real_{ts}", "family": family, "method": "evolve_real",
                 "status": "paper", "gates_passed": f"GATESPEC38:{'+'.join(tracks)}",
                 "evolved_from": bred["bred_from"] if bred else family,
-                "metrics": {**rec, "proposed_by": src,
-                            "bench_sharpe": round(float(safe_sharpe(
-                                data["SPY"].pct_change().fillna(0.0))), 3)}})
+                    "metrics": {**rec, "proposed_by": src,
+                                "tracks_cleared": len(tracks),
+                                "bench_sharpe": round(float(safe_sharpe(
+                                    data["SPY"].pct_change().fillna(0.0))), 3)}})
             try:
                 with open(PROM, "a", encoding="utf-8") as f:
                     f.write(json.dumps(rec) + "\n")
