@@ -1,0 +1,27 @@
+regime:
+  n_states: 4
+  features:
+    - sma20_slope
+    - sma50_slope
+    - realized_vol_20d
+    - rsi_14d
+    - vix_level
+  normalization: zscore
+  regime_labels:
+    0: bull
+    1: bear
+    2: high_vol
+    3: range
+  regime_config:
+    bull:
+      position_multiplier: 1.2
+      allow_signals: [long, short, mean_reversion]
+    bear:
+      position_multiplier: 0.8
+      allow_signals: [short]
+    high_vol:
+      position_multiplier: 0.5
+      allow_signals: []
+    range:
+      position_multiplier: 1.0
+      allow_signals: [mean_reversion]
