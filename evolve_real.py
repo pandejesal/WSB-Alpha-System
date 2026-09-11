@@ -1017,14 +1017,48 @@ def main():
             except Exception as e:  # noqa: BLE001  # fail-closed abandon, intentional
                 wf_pass, wf_reason = False, f"error: {e}"
                 _wf_avg, _wf_windows = 0.0, 0
-        ok = bool(tracks) and overlays and wf_pass
+        # G2 (P1 2026-09-11): CPCV timing screens as MANDATORY conjunction — runs only
+        # if tracks+overlays+WF pass (cost contained to near-promotions). Uses the same
+        # net series: Sharpe per CPCV test block (n=5/2, purge+embargo 5); pass needs
+        # >=7/10 positive blocks AND mean test Sharpe >= 0.30 (below WF 0.40: CPCV
+        # blocks are smaller/noisier). Fail-closed on error.
+        cpcv_pass, cpcv_reason = False, "skipped (earlier gate failed)"
+        _cpcv_pos, _cpcv_mean = 0, 0.0
+        if bool(tracks) and overlays and wf_pass:
+            try:
+                from src.backtest.validators.statistical import StatisticalValidator
+                _rets = pd.Series(_wf_net).fillna(0.0).to_numpy()
+                _splits = StatisticalValidator.combinatorial_purged_cv(len(_rets))
+                if not _splits:
+                    raise ValueError("no CPCV splits")
+                import numpy as _np
+
+                _block_sharpes = []
+                for _, _test_idx in _splits:
+                    _b = _rets[_np.asarray(_test_idx, dtype=int)]
+                    _block_sharpes.append(float(safe_sharpe(pd.Series(_b))))
+                _cpcv_pos = sum(1 for s in _block_sharpes if s > 0)
+                _cpcv_mean = float(sum(_block_sharpes) / len(_block_sharpes))
+                cpcv_pass = _cpcv_pos >= 7 and _cpcv_mean >= 0.30
+                cpcv_reason = f"{_cpcv_pos}/10 positive, mean {_cpcv_mean:.2f}"
+            except Exception as e:  # noqa: BLE001  # fail-closed abandon, intentional
+                cpcv_pass, cpcv_reason = False, f"error: {e}"
+                _cpcv_pos, _cpcv_mean = 0, 0.0
+        # Persist gate diagnostics into the history record (observability).
+        rec["wf_reason"] = wf_reason
+        rec["cpcv_reason"] = cpcv_reason
+        rec["cpcv_pos"] = _cpcv_pos
+        rec["cpcv_mean"] = round(_cpcv_mean, 4)
+        ok = bool(tracks) and overlays and wf_pass and cpcv_pass
         verdict = f"PROMOTE:{'+'.join(tracks)}" if ok else "abandon"
         log(f"iter={it} {family} {params} src={src} sharpe={m['sharpe']:.2f} "
             f"dd={m['max_dd']:.3f} oos={m['oos']:.2f} trips={m['trips']} "
             f"excess={m.get('excess', 0.0):.1f} dsr={m.get('dsr', 0.0):.3f} "
             f"tmin={m.get('tmin', 0.0):.2f} dsr_fam={rec['dsr_fam']:.3f} "
             f"pp={m.get('perm_p', 1.0):.3f} bp={m.get('boot_p', 1.0):.3f} gate={gate_reason} "
-            f"wf={'PASS' if wf_pass else 'FAIL'} wf_avg={_wf_avg:.2f} wf_n={_wf_windows} wf_info={wf_reason} {verdict}")
+            f"wf={'PASS' if wf_pass else 'FAIL'} avg={_wf_avg:.2f} n={_wf_windows} "
+            f"cpcv={'PASS' if cpcv_pass else 'FAIL'} "
+            f"pos={_cpcv_pos}/10 mean={_cpcv_mean:.2f} {verdict}")
         if ok:
             ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
             # dedupe gap fix (2026-09-04): skip if identical family+params
