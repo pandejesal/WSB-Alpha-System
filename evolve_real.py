@@ -405,6 +405,10 @@ def stationary_bootstrap_p(values, block_mean: int = 21, boot_n: int = 200,
 _BTC_FAMILIES = ("btc_vol", "btc_donchian", "btc_regime")
 _EQUITY_FALLBACK_BPS = 7.5  # B4a retail: 5.0 slippage + 2.5 commission
 _BTC_FALLBACK_BPS = 17.5  # B4a retail: 15.0 slippage + 2.5 commission
+# E-darwin joint-experiment lever: retail commission shared by _tiered_cost_bps.
+# Experiments may override via setattr + restore (see joint_coevolution_experiment.py);
+# the live loop never changes it (default 2.5bp retail realistic).
+COST_COMMISSION_BPS = 2.5
 
 
 def _fallback_cost_bps(family: str) -> float:
@@ -438,7 +442,7 @@ def _tiered_cost_bps(close: pd.Series, family: str) -> pd.Series:
         vol_scalar = vol_scalar.fillna(1.0).clip(lower=0.5, upper=3.0)
         is_btc = family in _BTC_FAMILIES
         base = 15.0 if is_btc else 5.0
-        commission = 2.5  # B4a retail realistic (was 1bp flat)
+        commission = COST_COMMISSION_BPS  # B4a retail realistic (was 1bp flat)
         scale = 10.0 if is_btc else 2.0
         cap = 10.0 if is_btc else 2.0
         vol_term = (vol_scalar - 1.0).clip(lower=0) * scale
