@@ -1,0 +1,17 @@
+momentum_breakout_v2:
+  lookback: [20, 50, 100]
+  breakout_threshold: [0.02, 0.03, 0.05]
+
+mean_reversion_enhanced:
+  rsi_period: [14, 21]
+  rsi_oversold: [30, 35]
+  rsi_overbought: [65, 70]
+
+trend_following_v3:
+  ema_fast: [10, 20]
+  ema_slow: [50, 100]
+  atr_multiplier: [1.5, 2.0, 2.5]
+
+btc_vol_target_sma100:
+  vol_target: [0.15, 0.20]
+  sma_period: [50, 100, 200]

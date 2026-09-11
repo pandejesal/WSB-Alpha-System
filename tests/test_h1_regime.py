@@ -3,6 +3,11 @@ import numpy as np
 import pandas as pd
 import yaml
 
+try:
+    import hmmlearn  # noqa: F401
+except Exception as e:
+    pytest.skip(f"hmmlearn unavailable: {e}", allow_module_level=True)
+
 from src.alpha.h1_hmm import RegimeHMM
 from src.alpha.h1_features import compute_regime_features
 from src.alpha.h1_regime_filter import RegimeFilter
@@ -120,14 +125,13 @@ def test_regime_detector_and_meta_strategy(synthetic_data, config_yaml):
     assert isinstance(regimes, pd.Series)
     assert set(regimes.dropna().unique()).issubset({"bull", "bear", "high_vol", "range"})
 
-    # Test MetaStrategy integration
-    ms = MetaStrategy(config=config_yaml)
+    # Test MetaStrategy integration (H3 interface: label -> StrategyConfig)
+    from src.alpha.meta_strategy import StrategyConfig
+    ms = MetaStrategy()
 
-    signals = pd.DataFrame({"signal": ["long"] * len(synthetic_data)}, index=synthetic_data.index)
-    filtered = ms.select_strategy(synthetic_data, signals)
-
-    assert "regime_context" in filtered.columns
-    assert "position_multiplier" in filtered.columns
+    cfg = ms.select_strategy("trending_up")
+    assert isinstance(cfg, StrategyConfig)
+    assert cfg.name == "momentum_breakout_v2"
 
     # High_vol should block long signals
     if (filtered["regime_context"] == "high_vol").any():
