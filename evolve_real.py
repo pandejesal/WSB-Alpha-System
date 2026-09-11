@@ -409,6 +409,12 @@ _BTC_FALLBACK_BPS = 17.5  # B4a retail: 15.0 slippage + 2.5 commission
 # Experiments may override via setattr + restore (see joint_coevolution_experiment.py);
 # the live loop never changes it (default 2.5bp retail realistic).
 COST_COMMISSION_BPS = 2.5
+# R-C3 reference-only: canonical commission lives in config/risk_config.py.
+# Import-only (operational value above unchanged; quant reconciliation out of scope).
+try:
+    from config.risk_config import CANONICAL_COMMISSION_BPS as CANONICAL_COMMISSION_BPS_REF
+except Exception:
+    CANONICAL_COMMISSION_BPS_REF = None
 
 
 def _fallback_cost_bps(family: str) -> float:

@@ -18,6 +18,9 @@ def test_token_bucket_wait():
 
 def test_generate_content_flash_fallback_to_lite():
     client = RateLimitedGeminiClient(api_key="mock_key")
+    # google.genai is not installed here, so the constructor leaves
+    # client.client as None by design; inject a mock SDK client.
+    client.client = MagicMock()
 
     with patch.object(client, '_generate_lite', return_value="Lite Fallback") as mock_lite:
         with patch.object(client.client.models, 'generate_content', side_effect=Exception("429 Quota Exhausted")) as mock_flash:
@@ -30,6 +33,8 @@ def test_generate_content_flash_fallback_to_lite():
 
 def test_generate_content_lite_fallback_to_local():
     client = RateLimitedGeminiClient(api_key="mock_key")
+    # Same as above: constructor leaves client None without google.genai.
+    client.client = MagicMock()  # type: ignore[attr-defined]
 
     with patch.object(client.client.models, 'generate_content', side_effect=Exception("429 Quota Exhausted")):
         with patch.object(client, '_generate_lite', side_effect=Exception("Lite failed too")):

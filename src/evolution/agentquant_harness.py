@@ -23,6 +23,13 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+# R-C3 reference-only: canonical commission lives in config/risk_config.py
+# (single source; numeric value unchanged at 1.0bp).
+try:
+    from config.risk_config import CANONICAL_COMMISSION_BPS as _CANONICAL_COMMISSION_BPS
+except Exception:
+    _CANONICAL_COMMISSION_BPS = 1.0
+
 
 # ---------------------------------------------------------------------------
 # Strategy parameter grids (ported from AgentQuant parameter_grid.py)
@@ -197,7 +204,7 @@ def backtest_strategy(
     family: str,
     initial_cash: float = 100_000.0,
     slippage_bps: float = 5.0,
-    commission_bps: float = 1.0,
+    commission_bps: float = _CANONICAL_COMMISSION_BPS,
 ) -> dict[str, Any]:
     """
     Simple vectorized backtest for a given strategy family and parameters.

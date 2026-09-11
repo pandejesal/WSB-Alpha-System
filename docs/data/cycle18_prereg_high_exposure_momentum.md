@@ -1,0 +1,58 @@
+# Pre-registration: high_exposure_momentum
+Cycle: 18
+Date: 2026-09-11 14:17:49
+Spec-SHA256: 4cc6fd6687962a36b8b0f49c0ae1e67d2a4940b99a5a40f8ea837f4fdfe2dbb2
+
+## Claim
+H2v2: same untried combo (252/21/8/1.2) with empty-vol-filter fallback to unfiltered top-8 (params unchanged); fallback fail-safe matches v1-v3 lineage tmin 0.90+ and lets the combo genuinely engage GATESPEC38 Track 5 (sharpe>=0.75, maxDD<=0.35, oos>=0.50, excess>=+0.05pp, dsr>=0.90, tmin>=0.70, trips>=6, perm/boot p<=0.05); supersedes degenerate cycle17 cash run
+
+## Strategy Spec
+```yaml
+id: high_exposure_momentum_h2
+name: "High-Exposure Momentum H2 (252/21/8 slow diversified, fallback fail-safe)"
+family: high_exposure_momentum
+venue: alpaca
+universe: "10-symbol mega-cap panel (SPY/QQQ/AAPL/MSFT/NVDA/AMD/META/GOOGL/AMZN/TSLA, daily OHLCV 2019-2026)"
+pre_registration_ref: "docs/data/cycle17_prereg_high_exposure_momentum.md SUPERSEDED by fallback fail-safe revision (new freeze doc; cycle17 bytes untouched)"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/high_exposure_momentum/20260911-h2-momentum/results/eval_high_exposure_momentum_h2.json"
+status: "paper"
+version: 2
+signal:
+  entry: "Rank by 252d formation skip 21d (12-1 Jegadeesh-Titman); top 8 by cumulative return where 20d vol >1.2x median_60; FAIL-SAFE: if zero names pass the vol filter in a month, fall back to unfiltered top 8 by formation rank (matches v1-v3 lineage tmin 0.90+; never sit in cash on filter binding). Equal weight; monthly rebalance last trading day, forward-filled daily holding"
+  exit: "Re-rank monthly; exit when symbol drops out of top 8"
+  sizing: "Equal weight 1/N_active (max 8); fractional shares; T+1 execution"
+  caps:
+    max_concurrent_positions: 8
+  rebalance: "monthly, forward-filled daily"
+parameters:
+  lookback: 252
+  skip: 21
+  top_n: 8
+  vol_confirm: 1.2
+  vol_filter_empty_fallback: unfiltered_top_n
+  exec_delay: 1
+  drift_rebal: 0.05
+  fam_trials_N: 53
+indicators:
+  - "252d cumulative return formation"
+  - "21d skip (reversal avoidance)"
+  - "20d rolling std vs 60d median vol_scalar (W5 tiered cost vol_scalar)"
+position_sizing:
+  - "Equal weight up to 8 concurrent positions"
+  - "Fractional shares via Alpaca paper API"
+fee_model:
+  commission: "$0 (Alpaca) + 2.5bp W5"
+  slippage: "5-7bps slippage + vol_scalar scale 2 cap 2 (W5 tiered cost)"
+  settlement: "T+1"
+benchmark_result:
+  benchmark: "SPY identical-window twin (1910 bars)"
+feasibility_at_100:
+  - "8 positions x ~$12 fractional; ~2 rebalances/mo; T+1"
+risks:
+  - "High exposure tmin>=0.70 => DD risk vs 35% cap; priors failed DD 0.456-0.514"
+  - "Momentum crash / crowding reversal; survivorship bias in mega-cap panel"
+revision_note: "v2 changes ONLY the empty-filter fallback (cash -> unfiltered_top_n); params (252,21,8,1.2) UNCHANGED. Reason: v1 literal-filter run produced degenerate tmin=0.02 cash strategy that never engaged the Track 5 hypothesis; v1-v3 lineage (tmin 0.90-0.97) proves the family intent is fallback-invested. No grid search, no param tuning."
+
+```

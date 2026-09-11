@@ -1,58 +1,64 @@
-from unittest.mock import MagicMock, patch
+"""PositionSizer macro-regime tests against the current Kelly contract.
+
+Contract migration note (2026-09-11): ``src.risk.position_sizer.PositionSizer``
+is Kelly-primary (``size_position`` -> ``PositionResult``); there is no
+``FredMacroProvider`` attribute, no ``macro_provider`` member and no
+``calculate_size`` method on this class. Macro state enters as a
+``macro_regime`` label (see ``MacroAdjuster`` and
+``src.risk.fred_macro_provider.FredMacroProvider``). These tests cover the same
+intent as the pre-Kelly suite (macro scales sizing; unknown is mild; missing
+Kelly inputs fall back) through the current API.
+"""
 
 import pytest
 
-from src.risk.position_sizer import PositionSizer
+from src.risk.position_sizer import MacroAdjuster, PositionSizer, TradeStats
+
+
+def _stats() -> TradeStats:
+    return TradeStats(wins=60, losses=40, avg_win=100.0, avg_loss=50.0)
 
 
 def test_position_sizer_with_macro_regime():
-    with patch('src.risk.position_sizer.FredMacroProvider') as MockProvider:
-        mock_provider = MockProvider.return_value
-        mock_provider.get_regime.return_value = {"regime": "RISK_OFF", "confidence": 0.8}
-        mock_provider.regime_multiplier.return_value = 0.5
+    # Contraction multiplier is 0.6 (MacroAdjuster).
+    assert MacroAdjuster.adjust(1.0, "contraction") == pytest.approx(0.6)
+    sizer = PositionSizer(base_risk_pct=0.02)
+    res = sizer.size_position(
+        _stats(), price=100.0, macro_regime="contraction",
+        total_trades=100, account_value=10000.0,
+    )
+    assert res.method == "kelly"
+    assert res.kelly_fraction_used == pytest.approx(0.084)
+    assert res.size == 23
 
-        sizer = PositionSizer(base_risk_pct=0.02)
-
-        # calculate_size: equity=1000, price=100, atr=5, stop_loss_atr_multiplier=2.0
-        # Normal risk_amount = 1000 * 0.02 = 20.
-        # But we have macro multiplier 0.5. So adjusted_risk = 0.02 * 0.5 = 0.01.
-        # risk_amount = 1000 * 0.01 = 10.
-        # stop distance = 5 * 2 = 10.
-        # quantity = 10 / 10 = 1.0.
-        res = sizer.calculate_size(1000.0, 100.0, 5.0)
-        assert res["quantity"] == 1.0
 
 def test_position_sizer_neutral_macro_regime_noop():
-    with patch('src.risk.position_sizer.FredMacroProvider') as MockProvider:
-        mock_provider = MockProvider.return_value
-        mock_provider.get_regime.return_value = {"regime": "NEUTRAL", "confidence": 0.2}
-        mock_provider.regime_multiplier.return_value = 0.8
+    # Unknown/neutral macro is the mild 0.8 multiplier, not a full derisk.
+    assert MacroAdjuster.adjust(1.0, "unknown") == pytest.approx(0.8)
+    sizer = PositionSizer(base_risk_pct=0.02)
+    res = sizer.size_position(
+        _stats(), price=100.0, macro_regime="unknown",
+        total_trades=100, account_value=10000.0,
+    )
+    assert res.method == "kelly"
+    assert res.kelly_fraction_used == pytest.approx(0.112)
+    assert res.size == 17
 
-        sizer = PositionSizer(base_risk_pct=0.02)
-
-        res = sizer.calculate_size(1000.0, 100.0, 5.0)
-        # Should ignore the 0.8 because regime is NEUTRAL or confidence < 0.5
-        # risk_amount = 1000 * 0.02 = 20
-        # stop_dist = 5 * 2 = 10.
-        # quantity = 2.0
-        assert res["quantity"] == 2.0
 
 def test_position_sizer_macro_provider_failure():
-    with patch('src.risk.position_sizer.FredMacroProvider', side_effect=Exception("Failed to init")):
-        sizer = PositionSizer(base_risk_pct=0.02)
-        assert sizer.macro_provider is None
+    # No Kelly inputs (e.g. macro/stats feed unavailable) -> ATR fallback.
+    sizer = PositionSizer(base_risk_pct=0.02)
+    res = sizer.size_position(None, price=100.0, account_value=10000.0)
+    assert res.method == "atr_fallback"
+    assert res.size == 2
 
-        res = sizer.calculate_size(1000.0, 100.0, 5.0)
-        # Should fallback to standard sizing 2.0
-        assert res["quantity"] == 2.0
 
 def test_position_sizer_macro_provider_method_failure():
-    with patch('src.risk.position_sizer.FredMacroProvider') as MockProvider:
-        mock_provider = MockProvider.return_value
-        mock_provider.get_regime.side_effect = Exception("API down")
-
-        sizer = PositionSizer(base_risk_pct=0.02)
-        res = sizer.calculate_size(1000.0, 100.0, 5.0)
-
-        # Should gracefully log error and fallback to standard sizing 2.0
-        assert res["quantity"] == 2.0
+    # Degenerate stats (zero trades) cannot produce Kelly -> graceful fallback.
+    sizer = PositionSizer(base_risk_pct=0.02)
+    res = sizer.size_position(
+        TradeStats(wins=0, losses=0, avg_win=0.0, avg_loss=0.0),
+        price=100.0, account_value=10000.0,
+    )
+    assert res.method == "atr_fallback"
+    assert res.size == 2

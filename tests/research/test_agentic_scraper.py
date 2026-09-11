@@ -6,6 +6,7 @@ from src.research.agentic_scraper import fetch_agentic_headlines
 
 class TestAgenticScraper(unittest.TestCase):
     @patch("src.research.agentic_scraper.sync_playwright")
+    @patch("src.research.agentic_scraper._PLAYWRIGHT_AVAILABLE", True)
     def test_fetch_agentic_headlines_success(self, mock_playwright):
         # Setup mock playwright
         mock_p = MagicMock()

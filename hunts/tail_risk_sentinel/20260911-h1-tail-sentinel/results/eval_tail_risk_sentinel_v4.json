@@ -1,0 +1,77 @@
+{
+  "id": "tail_risk_sentinel_v4",
+  "family": "tail_risk_sentinel",
+  "params": {
+    "vix_window": 30,
+    "vix_entry": 24,
+    "atr_stop": 2.5,
+    "vol_regime_cap": 0.2
+  },
+  "metrics": {
+    "sharpe": 0.7394068369710672,
+    "cagr": 0.0795888924210002,
+    "max_dd": 0.19090745283750318,
+    "oos_sharpe": 0.8492601947193734,
+    "excess": -166.82,
+    "tmin": 0.7,
+    "dsr": 0.4013,
+    "trips": 44,
+    "perm_p": 0.41,
+    "boot_p": 0.025,
+    "n_bars": 1910,
+    "fam_trials": 51
+  },
+  "tracks_cleared": [],
+  "tracks": {
+    "tail_risk_sentinel": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": true,
+        "max_dd_max": true,
+        "oos_min": true,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Asymmetric downside hedge / crisis alpha overlay"
+    },
+    "drawdown_warrior": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": true,
+        "max_dd_max": true,
+        "oos_min": true,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Low-exposure drawdown-avoidance timing"
+    }
+  },
+  "overlays": {
+    "wf_3fold_oos": [
+      1.0519,
+      0.3591,
+      0.88
+    ],
+    "wf_mean_oos": 0.7637,
+    "wf_ok": true,
+    "cpcv_proxy_paths": [
+      0.3875,
+      1.071,
+      0.7823,
+      0.7012,
+      0.452,
+      1.0315
+    ],
+    "cpcv_mean": 0.7376,
+    "cpcv_min": 0.3875,
+    "cpcv_frac_pos": 1.0,
+    "cpcv_disclosure": "returns-level proxy, 4 blocks/6 paths, no embargo/purge"
+  },
+  "L1_pass": false,
+  "L2_Track4_pass": false,
+  "fallback_Track2_pass": false,
+  "verdict": "HONEST_ABANDON",
+  "paper_only": true
+}

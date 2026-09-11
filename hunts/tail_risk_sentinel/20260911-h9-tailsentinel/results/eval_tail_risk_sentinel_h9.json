@@ -1,0 +1,90 @@
+{
+  "id": "tail_risk_sentinel_h9",
+  "family": "tail_risk_sentinel",
+  "params": {
+    "sma_slow": 200,
+    "drawdown_trigger_60d": -0.08,
+    "beta_lookback": 252,
+    "defensive_k": 4,
+    "selection": "monthly_month_end",
+    "dd_cap_trigger_60d": -0.1,
+    "dd_cap_scale": 0.5,
+    "exec_delay": 1,
+    "defensive_sleeve": [
+      "TLT",
+      "GLD",
+      "SLV",
+      "HYG",
+      "UUP"
+    ],
+    "dd_cap_choice": "(c) looser -8% single-trigger + 0.5x INTO-leg cap on sleeve 60d DD>10%"
+  },
+  "metrics": {
+    "sharpe": 1.0043984081033293,
+    "cagr": 0.13754020269111056,
+    "max_dd": 0.3050065745887335,
+    "oos_sharpe": 1.419562418190139,
+    "excess": -79.93,
+    "tmin": 0.9995,
+    "dsr": 0.6733,
+    "trips": 23,
+    "trades": 47,
+    "perm_p": 0.185,
+    "boot_p": 0.005,
+    "n_bars": 1910,
+    "fam_trials": 55
+  },
+  "tracks_cleared": [],
+  "tracks": {
+    "tail_risk_sentinel": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": true,
+        "max_dd_max": false,
+        "oos_min": true,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Asymmetric downside hedge / crisis alpha overlay"
+    },
+    "drawdown_warrior": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": true,
+        "max_dd_max": true,
+        "oos_min": true,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Low-exposure drawdown-avoidance timing"
+    }
+  },
+  "overlays": {
+    "wf_3fold_oos": [
+      1.5626,
+      -0.0699,
+      1.4324
+    ],
+    "wf_mean_oos": 0.975,
+    "wf_ok": true,
+    "cpcv_proxy_paths": [
+      0.681,
+      1.3454,
+      1.3002,
+      0.6734,
+      0.6137,
+      1.4047
+    ],
+    "cpcv_mean": 1.0031,
+    "cpcv_min": 0.6137,
+    "cpcv_frac_pos": 1.0,
+    "cpcv_disclosure": "returns-level proxy, 4 blocks/6 paths, no embargo/purge"
+  },
+  "L1_pass": false,
+  "L2_Track4_pass": false,
+  "fallback_Track2_pass": false,
+  "verdict": "HONEST_ABANDON",
+  "paper_only": true
+}

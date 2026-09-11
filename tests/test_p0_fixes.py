@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from src.backtest.permutation_tester import PermutationValidator
 from src.backtest.validators.statistical import StatisticalValidator
@@ -20,6 +21,7 @@ def test_fred_fails_closed():
     assert res is None
 
 def test_spa_test_returns_correct_keys():
+    pytest.importorskip("arch", reason="optional dep 'arch' not installed")
     np.random.seed(42)
     bench = np.random.randn(100)
     models = np.random.randn(100)

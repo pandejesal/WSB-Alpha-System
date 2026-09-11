@@ -1,0 +1,45 @@
+family: high_exposure_momentum
+run_id: 20260911-h6-momentum
+variant: high_exposure_momentum_h6
+universe: "31-symbol rotation_universe panel (config/universe.json rotation_universe; daily OHLCV 2019-2026, dropna-aligned, T~1910 bars) via evolve_real.load_csv lineage (W13 universe-filter max breadth; 100-stock panel unavailable offline — universe.json caps at 31, so 28-of-31 is the broadest feasible; SPY excluded from panel, used only as identical-window twin)"
+hypothesis: "9-1 formation (189d lookback, 21d skip) holding 28-of-31 names (~90% breadth vs H4 12-of-31=39% vs H2 8-of-10=80%) with QUARTERLY reselection (vs H2/H4 monthly) + equal-weight + deleverage-only vol-targeting (12% ann, scale clipped [0.7,1.0], never cash-flat so tmin>=0.70 by construction) fixes the H2/H4 perm+DSR death: (i) broader, slower-turnover bets cut churn costs and crash concentration (H2 dd 0.794, H4 dd 0.3887) toward the <=0.35 cap; (ii) lower realized vol + preserved equity drift lifts Sharpe toward the DSR>=0.90 bar (fam N=55); (iii) persistent quarterly rotation (not monthly churn noise) gives the rotation-timing perm test a detectable signal (H2 perm 0.82 / H4 perm 0.665 = pure beta, no timing edge). Shape rule choice (a). Priors TABOO: (126,21,5) dd 0.456, (189,5,10) dd 0.488, (63,42,3) dd 0.514, registry (95,42,7) retired, H2 (252,21,8) dd 0.794/dsr 0.457/perm 0.82 HONEST_ABANDON cycle18, H4 (126,10,12)+inv-vol+voltarget15+dd-deleverage dd 0.3887/dsr 0.607/perm 0.665 HONEST_ABANDON cycle19. H6 combo (189,21,28)+quarterly+voltarget12 is untried on top_n, rebalance, and scale axes."
+acceptance: "Edge claim pre-registered via preregister freeze BEFORE backtest and verified; YAML validates via strategy_registry.validate_spec; WF OOS>=0.50, Sharpe>=0.75, maxDD<=0.35, excess>=0.05pp, DSR>=0.90 (min of fam-N=55 and lineage cross-family N, fail-closed), tmin>=0.70, trips>=6, perm_p<=0.05, boot_p<=0.05 (GATESPEC38 Track 5 high_exposure_momentum); L1 Sharpe>=0.50 DD<=0.35 excess>0; WF 3-fold overlay mean fold OOS>=0.50; CPCV-proxy overlay (4 blocks/6 paths, returns-level, no embargo, disclosed); verdict recorded via preregister record (HONEST_ABANDON allowed)."
+kill_criteria: "Falsified in-sample (any Track 5 term fails incl. DD>35% or DSR<0.90 on either N); fails WF OOS or perm/boot (p>0.05); 0 tracks cleared -> HONEST_ABANDON, combo (189,21,28)+quarterly+voltarget12 retired to TABOO ledger, no silent overwrite."
+edge_gate_params:
+  track: high_exposure_momentum
+  primary_track: high_exposure_momentum
+  sharpe_min: 0.75
+  max_dd_max: 0.35
+  oos_min: 0.50
+  excess_min: 0.05
+  dsr_min: 0.90
+  tmin_min: 0.70
+  trips_min: 6
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  param_grid:
+    lookback: [189]
+    skip: [21]
+    top_n: [28]
+    rebalance: [quarterly]
+    vol_target_ann: [0.12]
+    scale_clip: [[0.7, 1.0]]
+  tried_combos_taboo:
+    - {lookback: 126, skip: 21, top_n: 5, verdict: HONEST_ABANDON, dd: 0.456, dsr: 0.845}
+    - {lookback: 189, skip: 5, top_n: 10, verdict: HONEST_ABANDON, dd: 0.488, dsr: 0.834}
+    - {lookback: 63, skip: 42, top_n: 3, verdict: HONEST_ABANDON, dd: 0.514, dsr: 0.862}
+    - {lookback: 95, skip: 42, top_n: 7, verdict: retired, source: registry_us_momentum}
+    - {lookback: 252, skip: 21, top_n: 8, verdict: HONEST_ABANDON, source: cycle18_H2, dd: 0.794, dsr: 0.457, perm: 0.82}
+    - {lookback: 126, skip: 10, top_n: 12, verdict: HONEST_ABANDON, source: cycle19_H4, dd: 0.3887, dsr: 0.607, perm: 0.665}
+  h6_params:
+    lookback: 189
+    skip: 21
+    top_n: 28
+    rebalance: quarterly
+    vol_target_ann: 0.12
+    scale_min: 0.7
+    scale_max: 1.0
+    exec_delay: 1
+    fam_trials_N: 55
+  cost_model: "tiered W5 (equities 5-7bps slippage + 2.5bp commission, vol_scalar=rolling_std(20)/median_60 scale 2 cap 2, fallback 7.5bps) via evolve_real._rotation_result lineage, T+1 via shift(1)+ffill, quarterly scale recompute (ffill daily) — slower turnover than H2/H4 monthly"
+  benchmarks: ["SPY identical window", "WF 3-fold (frozen params)", "CPCV-proxy 4 blocks/6 paths returns-level", "rotation-timing perm K=200 (lineage)", "stationary bootstrap block21 (lineage)"]

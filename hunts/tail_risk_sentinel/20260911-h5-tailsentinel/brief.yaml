@@ -1,0 +1,38 @@
+family: tail_risk_sentinel
+run_id: 20260911-h5-tailsentinel
+variant: tail_risk_sentinel_h5
+universe: "SPY + broad local panel (market_data_2019_2026/ohlcv/*.csv, 441 full-history names, T=1910 bars 2019-01-02..2026-08-07); identical-window SPY twin for excess; local CSVs ONLY, no network; NO VIX input, NO ATR stop, NO realized-vol cap"
+hypothesis: "An ALWAYS-INVESTED stress-rotation on SPY (tmin=1.00 by construction: 100% SPY in calm; 100% equal-weight defensive-8 under stress, NEVER cash) cuts SPY buy-hold maxDD to <=25% while holding identical-window excess >= +0.03pp: stress = (SPY close < SMA200) OR (SPY trailing-60d return < -10%), all past-only shift1, T+1; defensive-8 = 8 lowest trailing-252d-beta names vs SPY among panel symbols with >=252 bars trailing history (excl SPY/^VIX/BTC/ETH), selected month-end, equal-weight, T+1. Unlike H1 VIX-grid (cash-parked through the +245% bull run, excess -0.47/-0.76/-0.14/-166.8pp) and H3 SMA-ladder (graduated 1.00/0.65/0.30/0.00 bled upside even in shallow pullbacks, excess -127.96pp), H5 keeps FULL equity beta in calm (100% SPY, zero calm-drag) and only diverges during ~17% stress occupancy where defensives fall less than SPY; costs are switch + monthly-reselect turnover only (tiered W5). Single frozen combo; differs from retired (VIX-window,VIX-entry,ATR-stop,vol-cap) grid (uses NONE of the three) and from H3 (no graduated levels, no 0.00 cash leg; single SMA200 binary trigger + mechanical defensive INTO-leg)."
+acceptance: "Edge claim pre-registered via preregister freeze BEFORE backtest and verified; YAML validates via strategy_registry.validate_spec; Walk-Forward OOS>=0.35, Sharpe>=0.55, maxDD<=25%, excess>=0.03pp, DSR>=0.75 (per-family N=53), trips>=6, perm_p<=0.05, boot_p<=0.05 (GATESPEC38 Track 4 tail_risk_sentinel); fallback Track 2 drawdown_warrior (DD<=35%, excess>=0.10); L1 Sharpe>=0.50 DD<15% excess>0; WF 3-fold overlay mean fold OOS>=0.35; CPCV-proxy overlay (4 blocks/6 paths, no embargo, disclosed); verdict recorded via preregister record (HONEST_ABANDON allowed)."
+kill_criteria: "Falsified in-sample (excess<0.03pp or DD>25%); fails WF OOS or perm/boot (p>0.05); 0 tracks cleared -> HONEST_ABANDON, combo retired to TABOO ledger, no silent overwrite."
+edge_gate_params:
+  track: tail_risk_sentinel
+  primary_track: tail_risk_sentinel
+  fallback_track: drawdown_warrior
+  sharpe_min: 0.55
+  max_dd_max: 0.25
+  oos_min: 0.35
+  excess_min: 0.03
+  dsr_min: 0.75
+  trips_min: 6
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  fallback_thresholds:
+    sharpe_min: 0.55
+    max_dd_max: 0.35
+    oos_min: 0.35
+    excess_min: 0.10
+    dsr_min: 0.75
+    trips_min: 6
+  h5_params:
+    sma_slow: 200
+    drawdown_trigger_60d: -0.10
+    beta_lookback: 252
+    defensive_k: 8
+    selection: monthly_month_end
+    calm_leg: SPY_100pct
+    stress_leg: defensive8_equal_weight
+    exec_delay: 1
+  banned_triple: "VIX-level gate + ATR stop + vol-cap together (H1 v1..v4 grid retired family-TABOO); H5 uses NONE of the three. H3 SMA(50,100,200) graduated levels 1.00/0.65/0.30/0.00 retired (cash leg bled excess -127.96pp); H5 has no cash leg."
+  cost_model: "tiered W5 (2.5bp base + vol term) on both legs, T+1 via weight shift(1)"
+  benchmarks: ["SPY identical window", "WF 3-fold", "CPCV-proxy 4 blocks/6 paths", "circular-shift perm K=200", "stationary bootstrap block21"]

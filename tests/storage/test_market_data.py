@@ -1,6 +1,4 @@
 import os
-import shutil
-import unittest
 
 import numpy as np
 import pandas as pd
@@ -21,16 +19,15 @@ class MockProvider(MarketDataProvider):
         }, index=dates)
         return df
 
-class TestMarketData(unittest.TestCase):
-    def setUp(self):
-        self.manager = MarketDataManager(provider=MockProvider())
-        if os.path.exists("database/cache"):
-            shutil.rmtree("database/cache")
 
-    def test_fetch_and_cache(self):
-        df = self.manager.fetch_data("AAPL", "2023-01-01", "2023-01-10", use_cache=True)
-        self.assertFalse(df.empty)
-        self.assertIn("Close", df.columns)
-        self.assertTrue(os.path.exists("database/cache"))
-        files = os.listdir("database/cache")
-        self.assertGreater(len(files), 0)
+def test_fetch_and_cache(tmp_path):
+    # Isolated cache dir: never touch the real database/cache (Windows
+    # PermissionError WinError 5 on rmtree of the real dir).
+    cache_dir = str(tmp_path / "cache")
+    manager = MarketDataManager(provider=MockProvider(), cache_dir=cache_dir)
+    df = manager.fetch_data("AAPL", "2023-01-01", "2023-01-10", use_cache=True)
+    assert not df.empty
+    assert "Close" in df.columns
+    assert os.path.exists(cache_dir)
+    files = os.listdir(cache_dir)
+    assert len(files) > 0

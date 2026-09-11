@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 import tempfile
@@ -6,6 +7,7 @@ import pytest
 import yaml
 
 from src.ops.preregistration import (
+    check_recorded_report_hash,
     freeze_preregistration,
     record_evaluation,
     verify_prereg_freeze,
@@ -150,3 +152,132 @@ def test_freeze_then_record_passes(temp_env):
     assert eval_data["verdict"] == "PASS"
     assert eval_data["declared_claim"] == claim
     assert eval_data["spec_fingerprint"] in frozen_content
+
+def test_rb1_record_pins_report_hash(temp_env):
+    # R-B1: record_evaluation hashes the report bytes it consumed and stores
+    # report_sha256 in the eval JSON next to spec_fingerprint.
+    _temp_dir, docs_dir, registry_path, spec_path = temp_env
+    freeze_preregistration(spec_path, "R-B1 claim", cycle=1, docs_dir=docs_dir)
+
+    report_data = {"portfolio_summary": {"sharpe": 2.0}, "all_strategies": []}
+    report_path = os.path.join(docs_dir, "backtest_report.json")
+    with open(report_path, "w") as f:
+        json.dump(report_data, f)
+    with open(report_path, "rb") as f:
+        expected_hash = hashlib.sha256(f.read()).hexdigest()
+
+    eval_filepath = record_evaluation(spec_path, "FAIL", cycle=1, registry_path=registry_path, docs_dir=docs_dir)
+    with open(eval_filepath, "r") as f:
+        eval_data = json.load(f)
+
+    assert eval_data["report_sha256"] == expected_hash
+    assert "spec_fingerprint" in eval_data
+
+def test_rb1_verify_warns_on_tampered_report(temp_env):
+    # R-B1: tampering backtest_report.json after record -> verify check warns
+    # loudly, naming BOTH the recorded and the current hash.
+    _temp_dir, docs_dir, registry_path, spec_path = temp_env
+    freeze_preregistration(spec_path, "R-B1 claim", cycle=1, docs_dir=docs_dir)
+
+    report_path = os.path.join(docs_dir, "backtest_report.json")
+    with open(report_path, "w") as f:
+        json.dump({"portfolio_summary": {"sharpe": 1.0}}, f)
+
+    eval_filepath = record_evaluation(spec_path, "FAIL", cycle=1, registry_path=registry_path, docs_dir=docs_dir)
+    with open(eval_filepath, "r") as f:
+        recorded_hash = json.load(f)["report_sha256"]
+
+    # Tamper the shared report after record time.
+    with open(report_path, "w") as f:
+        json.dump({"portfolio_summary": {"sharpe": 9.9}, "tampered": True}, f)
+    with open(report_path, "rb") as f:
+        current_hash = hashlib.sha256(f.read()).hexdigest()
+    assert current_hash != recorded_hash
+
+    msg = check_recorded_report_hash(spec_path, cycle=1, docs_dir=docs_dir)
+    assert msg is not None
+    assert msg.startswith("WARNING")
+    assert recorded_hash in msg
+    assert current_hash in msg
+
+def test_wh1_record_refuses_missing_eval_path(temp_env):
+    # WH-1: eval_path given but missing on disk -> FileNotFoundError BEFORE
+    # any eval write; docs dir holds only the freeze file.
+    _temp_dir, docs_dir, registry_path, spec_path = temp_env
+    freeze_preregistration(spec_path, "WH-1 claim", cycle=1, docs_dir=docs_dir)
+
+    missing = os.path.join(docs_dir, "no_such_raw_eval.txt")
+    assert not os.path.exists(missing)
+    with pytest.raises(FileNotFoundError, match="does not exist"):
+        record_evaluation(
+            spec_path, "FAIL", cycle=1, eval_path=missing,
+            registry_path=registry_path, docs_dir=docs_dir,
+        )
+
+    assert os.listdir(docs_dir) == ["cycle1_prereg_test_family.md"]
+    assert not os.path.exists(registry_path)
+
+def test_wh1_record_missing_eval_path_writes_no_registry_row(temp_env):
+    # WH-1: fixture-copy registry stays byte-identical on refusal.
+    _temp_dir, docs_dir, registry_path, spec_path = temp_env
+    freeze_preregistration(spec_path, "WH-1 claim", cycle=1, docs_dir=docs_dir)
+
+    with open(registry_path, "w") as f:
+        json.dump({"strategies": [{"id": "kept_01", "family": "other_family"}]}, f)
+    with open(registry_path, "rb") as f:
+        before = f.read()
+
+    missing = os.path.join(docs_dir, "also_missing_raw.txt")
+    with pytest.raises(FileNotFoundError, match="does not exist"):
+        record_evaluation(
+            spec_path, "FAIL", cycle=1, eval_path=missing,
+            registry_path=registry_path, docs_dir=docs_dir,
+        )
+
+    with open(registry_path, "rb") as f:
+        assert f.read() == before
+
+def test_wh2_verify_unverified_on_missing_eval_source(temp_env):
+    # WH-2: hand-planted weak-pin eval (report_sha256 = sha of the path
+    # string, report_source = nonexistent path) -> UNVERIFIED naming path.
+    _temp_dir, docs_dir, registry_path, spec_path = temp_env
+    freeze_preregistration(spec_path, "WH-2 claim", cycle=1, docs_dir=docs_dir)
+    assert not os.path.exists(os.path.join(docs_dir, "backtest_report.json"))
+
+    missing_source = os.path.join(docs_dir, "vanished_raw_eval.txt")
+    weak_pin = hashlib.sha256(missing_source.encode("utf-8")).hexdigest()
+    planted = os.path.join(docs_dir, "cycle1_eval_test_family.json")
+    with open(planted, "w") as f:
+        json.dump(
+            {"report_sha256": weak_pin, "report_source": missing_source,
+             "verdict": "FAIL"},
+            f,
+        )
+
+    msg = check_recorded_report_hash(spec_path, cycle=1, docs_dir=docs_dir)
+    assert msg is not None
+    assert msg.startswith("UNVERIFIED")
+    assert missing_source in msg
+
+def test_rb1_eval_path_branch_also_hashed(temp_env):
+    # R-B1: when no backtest_report.json exists, the eval-path branch is
+    # hashed too (raw eval file bytes pinned as report_sha256).
+    _temp_dir, docs_dir, registry_path, spec_path = temp_env
+    freeze_preregistration(spec_path, "R-B1 claim", cycle=1, docs_dir=docs_dir)
+    assert not os.path.exists(os.path.join(docs_dir, "backtest_report.json"))
+
+    raw_eval_path = os.path.join(docs_dir, "raw_eval.txt")
+    with open(raw_eval_path, "w") as f:
+        f.write("raw gate output v1")
+    with open(raw_eval_path, "rb") as f:
+        expected_hash = hashlib.sha256(f.read()).hexdigest()
+
+    eval_filepath = record_evaluation(
+        spec_path, "FAIL", cycle=1, eval_path=raw_eval_path,
+        registry_path=registry_path, docs_dir=docs_dir,
+    )
+    with open(eval_filepath, "r") as f:
+        eval_data = json.load(f)
+
+    assert eval_data["report_sha256"] == expected_hash
+    assert eval_data["gate_script"] == "raw_output"

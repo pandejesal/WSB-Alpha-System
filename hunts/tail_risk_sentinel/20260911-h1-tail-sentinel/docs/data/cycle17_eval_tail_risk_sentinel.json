@@ -1,0 +1,9 @@
+{
+  "spec_fingerprint": "ad61fd1ff5fe8abe69927904cee4051bbdd1ba0f1a9fcfb03f14008c3d73fefa",
+  "declared_claim": "VIX30<=24 + ATR2.5x stop + vol cap 0.20 as SPY long/flat tail hedge cuts SPY maxDD to <=25% while preserving identical-window excess >= +0.03pp; interior grid point (30,24,2.5,0.20); priors v1-v3 failed excess gate",
+  "verdict": "HONEST_ABANDON",
+  "evaluated_at": "2026-09-11T13:48:03.038543",
+  "gate_script": "raw_output",
+  "walk_forward": "hunts/tail_risk_sentinel/20260911-h1-tail-sentinel/results/eval_tail_risk_sentinel_v4.json",
+  "permutation": "hunts/tail_risk_sentinel/20260911-h1-tail-sentinel/results/eval_tail_risk_sentinel_v4.json"
+}

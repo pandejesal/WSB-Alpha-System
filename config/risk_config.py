@@ -29,6 +29,10 @@ EQUITY_COMMISSION_BPS = 1.0
 BTC_SLIPPAGE_BPS = 15.0
 BTC_SLIPPAGE_MAX_BPS = 25.0
 BTC_COMMISSION_BPS = 1.0
+# R-C3 reference-only canonical commission (single source of truth pointer).
+# No value change: aliases the equity commission (1.0bp). Quant reconciliation
+# of evolve_real's operational 2.5bp retail value is explicitly out of scope.
+CANONICAL_COMMISSION_BPS = EQUITY_COMMISSION_BPS
 BORROW_COST_BPS = 10.0  # 0.1% borrow guard if short (not used now, fail-closed guard)
 COST_FALLBACK_BPS = 5.0
 VOL_WINDOW = 20

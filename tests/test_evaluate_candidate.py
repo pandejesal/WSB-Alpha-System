@@ -100,6 +100,9 @@ def test_evaluate_candidate_ta_rules(mock_get_provider, mock_wf, mock_is, tmp_pa
         "family": "ta_rules",
         "universe": "SPY",
         "parameters": {},
+        # Leakage-guard compliance: ta_rules is a guarded family, so the
+        # fixture must declare its LLM data boundary (guard itself untouched).
+        "llm": {"data_boundary": "train"},
         "signal": {
             "entry": "ema_cross",
             "fast_ma": 10,
@@ -400,6 +403,8 @@ def test_main_permutations_and_signal_post_count():
             "id": "t_perm", "name": "Test Perm", "family": "ta_rules", "universe": "panel",
             "signal": {"entry": "rsi2"},
             "parameters": {"entry": 10},
+            # Leakage-guard compliance (see above); guard itself untouched.
+            "llm": {"data_boundary": "train"},
             "pre_registration_ref": prereg_path,
             "eval_records": eval_path,
         }
@@ -462,6 +467,7 @@ def test_build_signal_posts_sentiment_overlay():
     combined.loc[50:, 'Close'] = 110.0
     spec = {
         "family": "sentiment_overlay",
+        "signal": {"entry": "sma_entry"},
         "parameters": {"window": 20}
     }
     posts_df = build_signal_posts(spec, combined, ["T1"])
@@ -475,6 +481,7 @@ def test_build_signal_posts_xgboost_exits():
     combined.loc[combined['Ticker'] == 'T2', 'Close'] = np.linspace(200, 100, len(combined[combined['Ticker'] == 'T2']))
     spec = {
         "family": "xgboost_exits",
+        "signal": {"entry": "momentum"},
         "parameters": {"lookback_days": 20, "skip_days": 5, "top_n": 1}
     }
     posts_df = build_signal_posts(spec, combined, ["T1", "T2"])

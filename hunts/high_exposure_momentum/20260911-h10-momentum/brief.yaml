@@ -1,0 +1,44 @@
+family: high_exposure_momentum
+run_id: 20260911-h10-momentum
+variant: high_exposure_momentum_h10
+universe: "31-symbol rotation_universe panel (config/universe.json rotation_universe; daily OHLCV 2019-2026, dropna-aligned, T~1910 bars) via evolve_real.load_csv lineage (W13 universe-filter max breadth; SPY excluded from panel, used only as identical-window twin + SPY-fill sleeve)"
+hypothesis: "Breakout-PERSISTENCE set-membership (252d high with 63d confirmation, NO cross-sectional ranking, NO SMA anywhere) with equal-weight qualifiers + SPY-fill for empty slots (slot i holds name i at 1/31 if qualified else SPY at 1/31; gross=1.0, tmin=1.0 by construction; monthly signal refresh) breaks BOTH perm-deaths: (i) rotation perm-death (H2 0.82/H4 0.665/H6 0.645) came from quasi-index top-N weights with no time-specific content under circular shift; breakout membership changes discretely and rarely (only fresh 252d-high printers, e.g. post-COVID rebound leaders, 2021 mega-cap breakouts), so time-shift destroys alignment with leadership episodes. (ii) own-trend perm-death (H8 0.695) came from smooth SMA50/200 half-exposure gradients across many names (beta-like schedule); breakout-persistence is a sparse event-driven active sleeve (few names at full 1/31 vs SPY-fill), giving the perm test sharp timing content. The 63d confirmation (63d return>0 AND close within 2% of 252d high) kills one-day-spike whipsaw that would churn turnover/costs toward Sharpe>=0.75 / DSR>=0.90 (fam N=57). Shape rule choice (c) breakout-persistence."
+acceptance: "Edge claim pre-registered via preregister freeze BEFORE backtest and verified; YAML validates via strategy_registry.validate_spec; WF OOS>=0.50, Sharpe>=0.75, maxDD<=0.35, excess>=0.05pp, DSR>=0.90 (min of fam-N=57 and lineage cross-family N, fail-closed), tmin>=0.70, trips>=6, perm_p<=0.05, boot_p<=0.05 (GATESPEC38 Track 5 high_exposure_momentum); L1 Sharpe>=0.50 DD<=0.35 excess>0; WF 3-fold overlay mean fold OOS>=0.50; CPCV-proxy overlay (4 blocks/6 paths, returns-level, no embargo, disclosed); verdict recorded via preregister record (HONEST_ABANDON allowed)."
+kill_criteria: "Falsified in-sample (any Track 5 term fails incl. DD>35% or DSR<0.90 on either N); fails WF OOS or perm/boot (p>0.05); 0 tracks cleared -> HONEST_ABANDON, combo (breakout252, confirm63, band0.98, monthly, SPY-fill) retired to TABOO ledger, no silent overwrite."
+edge_gate_params:
+  track: high_exposure_momentum
+  primary_track: high_exposure_momentum
+  sharpe_min: 0.75
+  max_dd_max: 0.35
+  oos_min: 0.50
+  excess_min: 0.05
+  dsr_min: 0.90
+  tmin_min: 0.70
+  trips_min: 6
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  param_grid:
+    breakout_lookback: [252]
+    confirm_lookback: [63]
+    proximity_band: [0.98]
+    signal_refresh: [monthly]
+    fill: [SPY]
+  tried_combos_taboo:
+    - {lookback: 126, skip: 21, top_n: 5, verdict: HONEST_ABANDON, dd: 0.456, dsr: 0.845}
+    - {lookback: 189, skip: 5, top_n: 10, verdict: HONEST_ABANDON, dd: 0.488, dsr: 0.834}
+    - {lookback: 63, skip: 42, top_n: 3, verdict: HONEST_ABANDON, dd: 0.514, dsr: 0.862}
+    - {lookback: 95, skip: 42, top_n: 7, verdict: retired, source: registry_us_momentum}
+    - {lookback: 252, skip: 21, top_n: 8, verdict: HONEST_ABANDON, source: cycle18_H2, dd: 0.794, dsr: 0.457, perm: 0.82}
+    - {lookback: 126, skip: 10, top_n: 12, verdict: HONEST_ABANDON, source: cycle19_H4, dd: 0.3887, dsr: 0.607, perm: 0.665}
+    - {lookback: 189, skip: 21, top_n: 28, verdict: HONEST_ABANDON, source: cycle21_H6, sharpe: 1.15, dd: 0.2285, dsr: 0.6456, perm: 0.645}
+    - {sma_fast: 50, sma_slow: 200, weak_weight: 0.5, signal_refresh: monthly, verdict: HONEST_ABANDON, source: cycle23_H8, perm: 0.695, excess: -14.70}
+  h10_params:
+    breakout_lookback: 252
+    confirm_lookback: 63
+    proximity_band: 0.98
+    signal_refresh: monthly
+    fill: SPY
+    exec_delay: 1
+    fam_trials_N: 57
+  cost_model: "tiered W5 (equities 5-7bps slippage + 2.5bp commission, vol_scalar=rolling_std(20)/median_60 scale 2 cap 2, fallback 7.5bps) via evolve_real._rotation_result lineage, T+1 via shift(1)+ffill, monthly signal refresh ffill daily"
+  benchmarks: ["SPY identical window", "WF 3-fold (frozen params)", "CPCV-proxy 4 blocks/6 paths returns-level", "rotation-timing perm K=200 (lineage)", "stationary bootstrap block21 (lineage)"]

@@ -247,3 +247,19 @@ def test_generate_signals_parameter_mapping_and_filtering(mock_sma200):
     assert kwargs.get("sma_window") == 200
     assert "exec_delay" not in kwargs
     assert "drift_rebal" not in kwargs
+
+def test_rb2_validate_spec_one_arg_raises_guided_typeerror():
+    # R-B2: a stale one-arg call raises a guided TypeError naming the two-arg
+    # contract and the canonical call site — not a bare missing-arg message.
+    with pytest.raises(TypeError) as excinfo:
+        validate_spec({"id": "x"})
+    msg = str(excinfo.value)
+    assert "two arguments" in msg
+    assert "validate_spec(spec, filepath)" in msg
+    assert "scripts/hunt_runner.py:293" in msg
+
+def test_rb2_validate_spec_error_text_names_unknown_default():
+    # R-B2: the guided error renders the filepath placeholder default.
+    with pytest.raises(TypeError) as excinfo:
+        validate_spec({"id": "x"})
+    assert "<unknown>" in str(excinfo.value)

@@ -14,11 +14,28 @@ def load_yaml(filepath: str) -> dict[str, Any]:
     with open(filepath, 'r') as f:
         return yaml.safe_load(f)
 
-def validate_spec(spec: dict[str, Any], filepath: str) -> bool:
+_VALIDATE_SPEC_MISSING = object()  # one-arg-call sentinel (R-B2)
+
+
+def validate_spec(spec: dict[str, Any], filepath: Any = _VALIDATE_SPEC_MISSING) -> bool:
     """
     Validates the structure of a loaded strategy YAML spec.
     Raises MalformedSpecError with a clear error message if validation fails.
+
+    Two-arg contract: always call as ``validate_spec(spec, filepath)`` (see the
+    canonical call at ``scripts/hunt_runner.py:293``). A one-arg call raises a
+    guided TypeError. The ``<unknown>`` filepath placeholder appears only in
+    rendered error text, never as a real call pattern.
     """
+    if filepath is _VALIDATE_SPEC_MISSING:
+        raise TypeError(
+            "validate_spec() requires two arguments: validate_spec(spec, filepath) "
+            "(see the canonical call at scripts/hunt_runner.py:293). "
+            "Pass the spec's file path explicitly as the second argument; "
+            "filepath renders as '<unknown>' in error text when not provided."
+        )
+    if filepath is None:
+        filepath = "<unknown>"
     required_fields = ["id", "name", "family", "universe"]
 
     spec_id = spec.get("id", "UNKNOWN_ID")

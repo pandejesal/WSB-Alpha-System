@@ -1,0 +1,65 @@
+# Pre-registration: high_exposure_momentum
+Cycle: 21
+Date: 2026-09-11 15:55:58
+Spec-SHA256: 370f8abd70075ae8b939e7d0cb826faea83559967ba18b522163ca5fb043edfe
+
+## Claim
+H6: 9-1 formation (189/21) holding 28-of-31 (~90pct breadth) with QUARTERLY reselection + equal-weight + deleverage-only 12pct vol-target (scale [.7,1], never flat) compresses H2/H4 crash DD toward <=.35 while preserving Sharpe>=.75, excess>=+.05pp, DSR>=.90 (fam N=55), tmin>=.70, trips>=6, perm/boot<=.05 (Track 5); breadth + slower turnover attacks monthly-churn perm death (H2 perm 0.82, H4 perm 0.665)
+
+## Strategy Spec
+```yaml
+id: high_exposure_momentum_h6
+name: "High-Exposure Momentum H6 (189/21/28 broad-panel quarterly, deleverage-only vol-target)"
+family: high_exposure_momentum
+venue: alpaca
+universe: "31-symbol rotation_universe panel (config/universe.json; SPY excluded, twin benchmark only), daily OHLCV 2019-2026"
+pre_registration_ref: "docs/data/cycle21_prereg_high_exposure_momentum.md (freeze BEFORE backtest; bytes frozen)"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/high_exposure_momentum/20260911-h6-momentum/results/eval_high_exposure_momentum_h6.json"
+status: "paper"
+version: 1
+signal:
+  entry: "Rank by 189d formation skip 21d (9-1 Jegadeesh-Titman); top 28 by cumulative return; equal weight; QUARTERLY reselection on first trading day of Jan/Apr/Jul/Oct, forward-filled daily holding"
+  exit: "Re-rank quarterly; exit when symbol drops out of top 28"
+  sizing: "Equal weight 1/28 x quarterly gross scale = clip(0.12 / trailing-60d sleeve ann vol, 0.7, 1.0); deleverage-only, never levered, never cash-flat (floor 0.7x keeps tmin>=0.70); fractional shares; T+1 execution"
+  caps:
+    max_concurrent_positions: 28
+  rebalance: "quarterly (Jan/Apr/Jul/Oct first trading day), forward-filled daily; scale recomputed quarterly (past-only), ffill daily"
+parameters:
+  lookback: 189
+  skip: 21
+  top_n: 28
+  rebalance: quarterly
+  vol_target_ann: 0.12
+  scale_min: 0.7
+  scale_max: 1.0
+  exec_delay: 1
+  fam_trials_N: 55
+indicators:
+  - "189d cumulative return formation"
+  - "21d skip (reversal avoidance)"
+  - "60d trailing sleeve vol target 12% ann (past-only, quarterly)"
+position_sizing:
+  - "Equal weight across 28 concurrent positions"
+  - "Deleverage-only gross scale [0.7, 1.0]; floor 0.7x keeps tmin high"
+  - "Fractional shares via Alpaca paper API"
+fee_model:
+  commission: "$0 (Alpaca) + 2.5bp W5"
+  slippage: "5-7bps slippage + vol_scalar scale 2 cap 2 (W5 tiered cost)"
+  settlement: "T+1"
+benchmark_result:
+  benchmark: "SPY identical-window twin (~1910 bars)"
+feasibility_at_100:
+  - "28 positions x ~$3 fractional; ~1 rebalance/quarter; T+1"
+risks:
+  - "High exposure tmin>=0.70 => DD risk vs 35% cap; 28-of-31 is quasi-index so DD tracks panel DD"
+  - "Momentum crash / crowding reversal; quarterly hold lags gap risk; survivorship bias in large-cap panel (acknowledged)"
+  - "DSR>=0.90 at fam N=55 needs Sharpe ~=1.3+; breadth dilutes signal so Sharpe may fall short"
+dedup:
+  - "us_momentum_top5 / dual_momentum / momentum_breakout_v2 / candidate_momentum_v4_prime / factor_momentum_top3: distinct specs, untouched"
+  - "TABOO combos avoided: (126,21,5) (189,5,10) (63,42,3) (95,42,7) (252,21,8) (126,10,12)+inv-vol+voltarget15+dd-deleverage(H4)"
+  - "Differs from H2: 28-of-31 breadth (vs 8-of-10), quarterly (vs monthly), 189d formation (vs 252d), equal-weight vol-targeted (vs vol-confirm)"
+  - "Differs from H4: 28 holdings (vs 12), quarterly (vs monthly), equal-weight (vs inv-vol), no DD-trigger (vs DD-deleverage), 189/21 formation (vs 126/10)"
+
+```
