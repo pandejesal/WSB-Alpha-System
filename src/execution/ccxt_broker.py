@@ -1,7 +1,7 @@
 import logging
 
 from src.execution.base_broker import BaseBroker
-from src.utils.config import config
+from src.utils.config import config, get_secret_str
 
 logger = logging.getLogger(__name__)
 
@@ -19,10 +19,7 @@ class CCXTBroker(BaseBroker):
         self.exchange_id = exchange_id
 
         self.api_key = config.api_keys.binance_api_key
-        try:
-            self.secret_key = config.api_keys.binance_secret_key.get_secret_value()
-        except AttributeError:
-            self.secret_key = config.api_keys.binance_secret_key
+        self.secret_key = get_secret_str(config.api_keys.binance_secret_key)
 
         if not self.api_key or not self.secret_key:
             raise ConfigurationError("CCXTBroker requires valid exchange API credentials (e.g., BINANCE_API_KEY).")
@@ -114,7 +111,7 @@ class CCXTBroker(BaseBroker):
         try:
             self.exchange.cancel_all_orders(symbol)
             return True
-        except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception:
             return False
 
     def get_capabilities(self) -> dict[str, bool]:

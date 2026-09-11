@@ -98,9 +98,7 @@ def sim_macd_exit(frames, spy_close, signals, holding_days, stop_loss_pct=0.0,
             move = (d["close"][i] / prev_close - 1.0) * p["direction"]
             stop_hit = False
             if p["stop_price"] is not None:
-                if p["direction"] == 1 and d["low"][i] <= p["stop_price"]:
-                    stop_hit = True
-                elif p["direction"] == -1 and d["high"][i] >= p["stop_price"]:
+                if p["direction"] == 1 and d["low"][i] <= p["stop_price"] or p["direction"] == -1 and d["high"][i] >= p["stop_price"]:
                     stop_hit = True
             macd_exit = (i - p["entry_iloc"] >= min_hold) and (d["macd"][i] < 0)
             exited = stop_hit or macd_exit or (i - p["entry_iloc"] >= holding_days)

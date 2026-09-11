@@ -1,7 +1,7 @@
 import logging
 
 from src.execution.base_broker import BaseBroker
-from src.utils.config import config
+from src.utils.config import config, get_secret_str
 
 logger = logging.getLogger(__name__)
 
@@ -14,10 +14,7 @@ class AlpacaBroker(BaseBroker):
         self.logger = logging.getLogger(__name__)
         self.is_paper = not config.trading.live_trading_enabled
         self.api_key = config.api_keys.alpaca_api_key
-        try:
-            self.secret_key = config.api_keys.alpaca_secret_key.get_secret_value()
-        except AttributeError:
-            self.secret_key = config.api_keys.alpaca_secret_key
+        self.secret_key = get_secret_str(config.api_keys.alpaca_secret_key)
         self.client = None
         self._initialize_client()
 
@@ -26,7 +23,7 @@ class AlpacaBroker(BaseBroker):
             from alpaca.trading.client import TradingClient
             if self.api_key and self.secret_key:
                 self.client = TradingClient(self.api_key, self.secret_key, paper=self.is_paper)
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             self.logger.error(f"Failed to initialize Alpaca TradingClient: {e}")
 
     def get_account_balance(self) -> dict:
@@ -89,7 +86,7 @@ class AlpacaBroker(BaseBroker):
         try:
             self.client.cancel_orders(symbol_or_symbols=symbol)
             return True
-        except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception:
             return False
 
     def get_capabilities(self) -> dict[str, bool]:

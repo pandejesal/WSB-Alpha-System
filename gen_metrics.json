@@ -1,0 +1,437 @@
+{
+  "v1": [
+    {
+      "sharpe": 0.72,
+      "cagr": 0.19,
+      "max_dd": 0.22,
+      "oos_sharpe": 0.48,
+      "oos": 0.48,
+      "excess": 0.08,
+      "excess_spy": 0.08,
+      "tmin": 0.78,
+      "dsr": 0.128,
+      "dsr_fam": 0.128,
+      "fam_trials": 620,
+      "trips": 18,
+      "round_trips": 18,
+      "trades": 36,
+      "perm_p": 0.03,
+      "boot_p": 0.02,
+      "n_bars": 1910,
+      "T": 1910
+    },
+    [],
+    {
+      "core_timing_overlay": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Low-exposure timing overlay (10-40% time-in-market)"
+      },
+      "drawdown_warrior": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": false,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Low-exposure drawdown-avoidance timing"
+      },
+      "conservative_timing": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": false,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Low-exposure conservative timing overlay"
+      },
+      "tail_risk_sentinel": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Asymmetric downside hedge / crisis alpha overlay"
+      },
+      "high_exposure_momentum": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "tmin_min": true
+        },
+        "archetype": "High time-in-market momentum / trend-following"
+      },
+      "buy_hold_companion": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "tmin_min": false
+        },
+        "archetype": "Near-buy-hold momentum / rotation"
+      },
+      "statistical_rigor": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Statistically validated timing or rotation"
+      },
+      "absolute_return_focus": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": false,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Absolute-return focused timing or rotation"
+      },
+      "risk_adjusted_discipline": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Risk-disciplined timing with strict drawdown control"
+      },
+      "benchmark_parity": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Benchmark parity reference (calibration check)"
+      }
+    }
+  ],
+  "v2": [
+    {
+      "sharpe": 0.58,
+      "cagr": 0.15,
+      "max_dd": 0.23,
+      "oos_sharpe": 0.38,
+      "oos": 0.38,
+      "excess": 0.06,
+      "excess_spy": 0.06,
+      "tmin": 0.82,
+      "dsr": 0.067,
+      "dsr_fam": 0.067,
+      "fam_trials": 580,
+      "trips": 12,
+      "round_trips": 12,
+      "trades": 24,
+      "perm_p": 0.04,
+      "boot_p": 0.03,
+      "n_bars": 1910,
+      "T": 1910
+    },
+    [],
+    {
+      "core_timing_overlay": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Low-exposure timing overlay (10-40% time-in-market)"
+      },
+      "drawdown_warrior": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": false,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Low-exposure drawdown-avoidance timing"
+      },
+      "conservative_timing": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": false,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Low-exposure conservative timing overlay"
+      },
+      "tail_risk_sentinel": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Asymmetric downside hedge / crisis alpha overlay"
+      },
+      "high_exposure_momentum": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "tmin_min": true
+        },
+        "archetype": "High time-in-market momentum / trend-following"
+      },
+      "buy_hold_companion": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "tmin_min": true
+        },
+        "archetype": "Near-buy-hold momentum / rotation"
+      },
+      "statistical_rigor": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": false
+        },
+        "archetype": "Statistically validated timing or rotation"
+      },
+      "absolute_return_focus": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": false,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Absolute-return focused timing or rotation"
+      },
+      "risk_adjusted_discipline": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Risk-disciplined timing with strict drawdown control"
+      },
+      "benchmark_parity": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Benchmark parity reference (calibration check)"
+      }
+    }
+  ],
+  "v3": [
+    {
+      "sharpe": 0.54,
+      "cagr": 0.18,
+      "max_dd": 0.28,
+      "oos_sharpe": 0.36,
+      "oos": 0.36,
+      "excess": 0.18,
+      "excess_spy": 0.18,
+      "tmin": 0.71,
+      "dsr": 0.056,
+      "dsr_fam": 0.056,
+      "fam_trials": 540,
+      "trips": 7,
+      "round_trips": 7,
+      "trades": 14,
+      "perm_p": 0.04,
+      "boot_p": 0.04,
+      "n_bars": 1910,
+      "T": 1910
+    },
+    [],
+    {
+      "core_timing_overlay": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": false
+        },
+        "archetype": "Low-exposure timing overlay (10-40% time-in-market)"
+      },
+      "drawdown_warrior": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Low-exposure drawdown-avoidance timing"
+      },
+      "conservative_timing": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": true,
+          "max_dd_max": true,
+          "oos_min": true,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Low-exposure conservative timing overlay"
+      },
+      "tail_risk_sentinel": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": false,
+          "oos_min": true,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Asymmetric downside hedge / crisis alpha overlay"
+      },
+      "high_exposure_momentum": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "tmin_min": true
+        },
+        "archetype": "High time-in-market momentum / trend-following"
+      },
+      "buy_hold_companion": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "tmin_min": false
+        },
+        "archetype": "Near-buy-hold momentum / rotation"
+      },
+      "statistical_rigor": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": false
+        },
+        "archetype": "Statistically validated timing or rotation"
+      },
+      "absolute_return_focus": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": false,
+          "dsr_min": false,
+          "trips_min": false
+        },
+        "archetype": "Absolute-return focused timing or rotation"
+      },
+      "risk_adjusted_discipline": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": false
+        },
+        "archetype": "Risk-disciplined timing with strict drawdown control"
+      },
+      "benchmark_parity": {
+        "passed": false,
+        "terms": {
+          "sharpe_min": false,
+          "max_dd_max": true,
+          "oos_min": false,
+          "excess_min": true,
+          "dsr_min": false,
+          "trips_min": true
+        },
+        "archetype": "Benchmark parity reference (calibration check)"
+      }
+    }
+  ]
+}

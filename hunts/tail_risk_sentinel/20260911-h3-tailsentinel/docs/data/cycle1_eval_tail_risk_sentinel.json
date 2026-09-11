@@ -1,0 +1,9 @@
+{
+  "spec_fingerprint": "60ae312f0177dfe06a25a3169405273362a6e4b8931f76f16dabd93bfbccf114",
+  "declared_claim": "Pure SMA-trend graduated de-risk ladder on SPY (50/100/200, levels 1.00/0.65/0.30/0.00, no VIX/ATR/volcap) cuts SPY maxDD<=25% with identical-window excess>=+0.03pp (Track 4 tail_risk_sentinel; fallback Track 2 drawdown_warrior)",
+  "verdict": "HONEST_ABANDON",
+  "evaluated_at": "2026-09-11T14:39:14.367895",
+  "gate_script": "raw_output",
+  "walk_forward": "hunts/tail_risk_sentinel/20260911-h3-tailsentinel/results/eval_tail_risk_sentinel_h3.json",
+  "permutation": "hunts/tail_risk_sentinel/20260911-h3-tailsentinel/results/eval_tail_risk_sentinel_h3.json"
+}

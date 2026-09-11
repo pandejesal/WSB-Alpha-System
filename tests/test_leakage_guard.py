@@ -4,7 +4,6 @@ future-data blocking, and LLM-augmented strategy data boundary validation."""
 import pandas as pd
 import pytest
 
-
 # ---------------------------------------------------------------------------
 # LeakageReport
 # ---------------------------------------------------------------------------

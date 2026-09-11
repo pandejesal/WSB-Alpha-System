@@ -1,22 +1,41 @@
 import json
 import os
+from typing import Any, Dict, List, Tuple
+
 import yaml
-from typing import List, Dict, Any, Tuple
 
 from src.utils.config import config
+
 
 class MalformedSpecError(Exception):
     pass
 
-def load_yaml(filepath: str) -> Dict[str, Any]:
+def load_yaml(filepath: str) -> dict[str, Any]:
     with open(filepath, 'r') as f:
         return yaml.safe_load(f)
 
-def validate_spec(spec: Dict[str, Any], filepath: str) -> bool:
+_VALIDATE_SPEC_MISSING = object()  # one-arg-call sentinel (R-B2)
+
+
+def validate_spec(spec: dict[str, Any], filepath: Any = _VALIDATE_SPEC_MISSING) -> bool:
     """
     Validates the structure of a loaded strategy YAML spec.
     Raises MalformedSpecError with a clear error message if validation fails.
+
+    Two-arg contract: always call as ``validate_spec(spec, filepath)`` (see the
+    canonical call at ``scripts/hunt_runner.py:293``). A one-arg call raises a
+    guided TypeError. The ``<unknown>`` filepath placeholder appears only in
+    rendered error text, never as a real call pattern.
     """
+    if filepath is _VALIDATE_SPEC_MISSING:
+        raise TypeError(
+            "validate_spec() requires two arguments: validate_spec(spec, filepath) "
+            "(see the canonical call at scripts/hunt_runner.py:293). "
+            "Pass the spec's file path explicitly as the second argument; "
+            "filepath renders as '<unknown>' in error text when not provided."
+        )
+    if filepath is None:
+        filepath = "<unknown>"
     required_fields = ["id", "name", "family", "universe"]
 
     spec_id = spec.get("id", "UNKNOWN_ID")
@@ -70,9 +89,7 @@ def validate_spec(spec: Dict[str, Any], filepath: str) -> bool:
     # For crypto universes, enforce 24/7 session handling and data freshness checks
     universe = spec.get("universe", "")
     is_crypto = False
-    if isinstance(universe, str) and any(c in universe.upper() for c in ["BTC", "ETH", "CRYPTO"]):
-        is_crypto = True
-    elif isinstance(universe, list) and any(any(c in str(u).upper() for c in ["BTC", "ETH", "CRYPTO"]) for u in universe):
+    if isinstance(universe, str) and any(c in universe.upper() for c in ["BTC", "ETH", "CRYPTO"]) or isinstance(universe, list) and any(any(c in str(u).upper() for c in ["BTC", "ETH", "CRYPTO"]) for u in universe):
         is_crypto = True
     if is_crypto:
         # Crypto: require timeframe to be explicit for intraday handling
@@ -97,7 +114,7 @@ def validate_crypto_data_freshness(last_update_ts: float, max_age_seconds: int =
         raise MalformedSpecError(f"Crypto data stale: age {age:.0f}s > {max_age_seconds}s")
     return True
 
-def load_registry(registry_path: str = "strategies/registry.json") -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+def load_registry(registry_path: str = "strategies/registry.json") -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """
     Loads the registry.json, resolves each spec_file, validates it, and returns the list of active registry entries
     along with their loaded specs.
@@ -163,11 +180,7 @@ def load_registry(registry_path: str = "strategies/registry.json") -> Tuple[List
             
             # Check if strategy is SPY-based (universe or id contains SPY)
             is_spy_based = False
-            if isinstance(universe, str) and "SPY" in universe.upper():
-                is_spy_based = True
-            elif isinstance(universe, list) and any("SPY" in str(u).upper() for u in universe):
-                is_spy_based = True
-            elif "SPY" in strategy_id.upper():
+            if isinstance(universe, str) and "SPY" in universe.upper() or isinstance(universe, list) and any("SPY" in str(u).upper() for u in universe) or "SPY" in strategy_id.upper():
                 is_spy_based = True
             
             # Add benchmark baseline for SPY-based strategies

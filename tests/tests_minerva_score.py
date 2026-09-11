@@ -1,6 +1,7 @@
 """Edge-case tests for minerva_score (paper 2608.23808)."""
 
 import pytest
+
 from src.backtest.defend.minerva_score import minerva_score
 
 

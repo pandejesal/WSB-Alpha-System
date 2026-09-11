@@ -1,0 +1,35 @@
+{
+  "evaluation": "W13 survivorship guard — regime coverage tagging (guard only, no gate change)",
+  "generated": "2026-09-09T00:00:00Z",
+  "ticker": "SPY_sma_50_example",
+  "window": "2019-01-02 to 2026-08-07 (1910 bars)",
+  "sharpe": 0.52,
+  "cagr": 0.112,
+  "max_dd": 0.29,
+  "oos": 0.44,
+  "trips": 14,
+  "excess": 3.2,
+  "tmin": 0.22,
+  "n_bars": 1910,
+  "dsr": 0.81,
+  "perm_p": 0.03,
+  "boot_p": 0.04,
+  "regime_coverage": {
+    "bull_sharpe": 0.58,
+    "bear_sharpe": -0.12,
+    "sideways_sharpe": -0.12,
+    "covid_sharpe": -0.45,
+    "bull_2023_2024_sharpe": 0.82
+  },
+  "regime_warn": false,
+  "regime_windows": {
+    "bull_2019": ["2019-01-02", "2019-12-31"],
+    "covid_crash": ["2020-02-19", "2020-04-30"],
+    "bear_2022": ["2022-01-03", "2022-12-31"],
+    "bull_2023_2024": ["2023-01-03", "2024-12-31"]
+  },
+  "survivorship_checked": true,
+  "manifest": "docs/data/registry_survivorship_manifest.json",
+  "load_csv_guard": "evolve_real.py:load_csv respects config/universe.json filter",
+  "notes": "W13 guard: regime tags present; no gate threshold change; WARN threshold -0.5 not breached."
+}

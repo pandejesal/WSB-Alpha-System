@@ -1,5 +1,7 @@
 import unittest
+
 from src.execution.alpaca_broker import AlpacaBroker
+
 
 class TestBrokers(unittest.TestCase):
     def test_alpaca_mock_mode(self):

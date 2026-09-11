@@ -58,14 +58,14 @@ class TradeIntent:
     action: str  # BUY | HOLD | SELL (stocks-only port: no SHORT opens)
     symbol: str
     notional: float = 0.0
-    stop_loss_price: Optional[float] = None
-    take_profit_price: Optional[float] = None
+    stop_loss_price: float | None = None
+    take_profit_price: float | None = None
     sizing_reason: str = ""
-    safety_checks: Dict[str, dict] = field(default_factory=dict)
-    reasons: List[str] = field(default_factory=list)
+    safety_checks: dict[str, dict] = field(default_factory=dict)
+    reasons: list[str] = field(default_factory=list)
     paper: bool = True
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         return {"action": self.action, "symbol": self.symbol, "notional": self.notional,
                 "stop_loss_price": self.stop_loss_price, "take_profit_price": self.take_profit_price,
                 "sizing_reason": self.sizing_reason, "safety_checks": self.safety_checks,
@@ -85,7 +85,7 @@ def extract_signal(text: str) -> str:
     return "HOLD"
 
 
-def extract_protective_price(guidance: Optional[str]) -> Optional[float]:
+def extract_protective_price(guidance: str | None) -> float | None:
     """Port of schemas.extract_protective_price: absolute level or None."""
     if not guidance:
         return None
@@ -102,7 +102,7 @@ def extract_protective_price(guidance: Optional[str]) -> Optional[float]:
     return price if price > 0 else None
 
 
-def run_investment_debate(reports: List[AnalystReport], max_rounds: int = 1,
+def run_investment_debate(reports: list[AnalystReport], max_rounds: int = 1,
                           judge_margin: float = 0.15) -> DebateResult:
     """Bull/bear debate: alternating speakers, judge at count >= 2N."""
     bull_ev = [r.score for r in reports if r.score > 0]
@@ -110,7 +110,7 @@ def run_investment_debate(reports: List[AnalystReport], max_rounds: int = 1,
     bull_case = sum(bull_ev) / len(bull_ev) if bull_ev else 0.0
     bear_case = sum(bear_ev) / len(bear_ev) if bear_ev else 0.0
     rounds = 0
-    transcript: List[str] = []
+    transcript: list[str] = []
     speaker = "bull"
     while rounds < 2 * max(1, max_rounds):
         transcript.append(speaker)
@@ -121,8 +121,8 @@ def run_investment_debate(reports: List[AnalystReport], max_rounds: int = 1,
     return DebateResult(bull_case, bear_case, rounds, judge, margin)
 
 
-def run_risk_debate(action: str, risk_flags: List[str],
-                    max_rounds: int = 1) -> Dict[str, Any]:
+def run_risk_debate(action: str, risk_flags: list[str],
+                    max_rounds: int = 1) -> dict[str, Any]:
     """Risky/safe/neutral rotation, judge at count >= 3N.
 
     Any safe objection (risk flag present) downgrades BUY->HOLD; with no
@@ -138,10 +138,10 @@ def run_risk_debate(action: str, risk_flags: List[str],
             "transcript": transcript}
 
 
-def build_intent(symbol: str, reports: List[AnalystReport], price: float,
+def build_intent(symbol: str, reports: list[AnalystReport], price: float,
                  sizer, equity: float, requested_notional: float,
                  guard=None, risk_guidance: str = "",
-                 risk_flags: Optional[List[str]] = None,
+                 risk_flags: list[str] | None = None,
                  bars=None) -> TradeIntent:
     """Full pipeline: debate -> trader direction -> risk debate -> size -> guard."""
     debate = run_investment_debate(reports)
@@ -158,7 +158,7 @@ def build_intent(symbol: str, reports: List[AnalystReport], price: float,
 
     conf = "high" if abs(debate.margin) > 0.5 else ("medium" if abs(debate.margin) > 0.25 else "low")
     notional, stop, sizing_reason = 0.0, None, "HOLD requires no size"
-    checks: Dict[str, dict] = {}
+    checks: dict[str, dict] = {}
     if action in ("BUY", "SELL"):
         from src.risk.alptrading_sizing import compute_atr
         atr = compute_atr(bars) if bars is not None else None

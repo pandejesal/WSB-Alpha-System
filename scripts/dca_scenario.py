@@ -19,7 +19,10 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from scripts.improve_strategy_v2 import (
-    gen_signals, load_local_data, prepare_frames, run_portfolio_sim,
+    gen_signals,
+    load_local_data,
+    prepare_frames,
+    run_portfolio_sim,
 )
 
 UNIVERSE = ["AAPL", "MSFT", "GOOGL", "AMZN", "NVDA", "META", "TSLA", "JPM", "V", "JNJ", "WMT", "MA", "UNH", "XOM", "DIS"]

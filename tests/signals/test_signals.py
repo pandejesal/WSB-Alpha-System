@@ -1,14 +1,16 @@
-import pytest
-import pandas as pd
-import numpy as np
-import os
 import json
-import tempfile
+import os
 import shutil
+import tempfile
 
-from src.signals.engine import SignalEngine
+import numpy as np
+import pandas as pd
+import pytest
+
 from src.signals.api import generate_signals
+from src.signals.engine import SignalEngine
 from src.signals.schemas import SignalsReport
+
 
 @pytest.fixture
 def dummy_spy_data():
@@ -73,6 +75,7 @@ def mock_ops_dir(monkeypatch):
 
 def test_signal_engine_full_run(dummy_spy_data, dummy_btc_data, dummy_momentum_data, monkeypatch):
     import pandas as pd
+
     import src.ops.signals as signals_mod
 
     class FakeTickerEmpty:

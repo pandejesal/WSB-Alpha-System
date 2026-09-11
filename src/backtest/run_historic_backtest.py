@@ -4,8 +4,8 @@ import pandas as pd
 from src.backtest.adaptive_tp import AdaptiveTPSelector
 from src.backtest.choppiness_filter import ChoppinessFilter
 from src.gs_compat.calendar import business_day_offset
-from src.risk.fred_macro_provider import FredMacroProvider
 from src.research.strategy_decision_trace import DecisionTrace
+from src.risk.fred_macro_provider import FredMacroProvider
 
 
 def run_backtest_with_params(posts_df, stock_dfs, holding_days, rsi_low, rsi_high, gk_vol_limit, min_confluence_score, spy_close_preloaded=None, stop_loss_pct=0.0, choppiness_filter=False, adaptive_tp=False, decision_trace=False):

@@ -286,7 +286,7 @@ def time_shuffle_null(series, n=1000, seed=0):
 def summary_stats(series):
     s = pd.Series(series, dtype=float).dropna()
     if len(s) < 2:
-        return {"n": int(len(s)), "mean": float("nan"), "median": float("nan"),
+        return {"n": len(s), "mean": float("nan"), "median": float("nan"),
                 "sharpe_ann": float("nan"), "pf": float("nan"),
                 "maxdd": float("nan")}
     ann = np.sqrt(52.0)
@@ -296,7 +296,7 @@ def summary_stats(series):
     pf = gains / losses if losses > 0 else float("inf")
     eq = (1 + s).cumprod()
     dd = eq / eq.cummax() - 1.0
-    return {"n": int(len(s)), "mean": float(s.mean()), "median": float(s.median()),
+    return {"n": len(s), "mean": float(s.mean()), "median": float(s.median()),
             "sharpe_ann": float(sharpe), "pf": float(pf), "maxdd": float(dd.min())}
 
 

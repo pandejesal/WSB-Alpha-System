@@ -2,7 +2,9 @@
 """WORKER A - GDELT tolerance probe. Sends 6 TimelineVol requests with the
 FIXED parenthesized query format at a given spacing and reports each status.
 Usage: python tolerance.py [spacing_seconds]"""
-import time, urllib.parse, urllib.request
+import time
+import urllib.parse
+import urllib.request
 
 UA = {"User-Agent": "Mozilla/5.0 (research harvest; keyless) GDELT"}
 API = "https://api.gdeltproject.org/api/v2/doc/doc"

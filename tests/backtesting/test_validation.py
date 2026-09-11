@@ -1,8 +1,11 @@
 import unittest
-from unittest.mock import patch, MagicMock
-import pandas as pd
+from unittest.mock import MagicMock, patch
+
 import numpy as np
+import pandas as pd
+
 from src.backtest import validation
+
 
 class TestValidation(unittest.TestCase):
     @patch("src.backtest.validation.load_base_data")

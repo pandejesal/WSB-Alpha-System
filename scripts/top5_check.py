@@ -7,16 +7,19 @@ strategy run 3 checks:
   1. RECOMPUTE: Sharpe within 0.05 and exact trip count vs stored metrics.
   2. ROBUSTNESS: params +/-10%, first/second-half OOS, 10bps slippage —
      excess-vs-SPY sign must survive and Sharpe > 0.5 throughout.
-  3. INTEGRITY: honest gate on recomputed numbers + identical-window SPY
-     baseline + T+1 execution (positions shifted before returns).
+   3. INTEGRITY: gatespec38-aligned gate on recomputed numbers (live import
+      of src.backtest.gatespec38_tracks: excess + recomputed DSR + track
+      union via check_track/apply_union_gate) + identical-window SPY
+      baseline + T+1 execution. perm/boot overlays are read from stored
+      registry metrics (NOT re-verified here) and block PASS when unknown.
 
 Read-only vs strategies/registry.json. Paper only. No orders.
 Usage: PYTHONPATH=. python scripts/top5_check.py [--top 5]
 """
 import argparse
 import json
-import sys
 import pathlib
+import sys
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
@@ -25,7 +28,24 @@ import pandas as pd  # noqa: E402
 
 from src.backtest.metrics import safe_sharpe  # noqa: E402
 
+try:  # live gatespec38 import: C3 verifies against the real promotion gate
+    from src.backtest.gatespec38_tracks import (
+        CROSS_FAMILY_N_FLOOR,
+        apply_union_gate,
+        check_track,
+        recompute_dsr,
+    )
+    _GATESPEC = True
+except Exception:  # noqa: BLE001  # fail-closed: C3 skips verdict, see below
+    _GATESPEC = False
+
 REG = ROOT / "strategies/registry.json"
+# VESTIGIAL (P1 B3c): GATE mirrors the dead evolve_real.REAL_GATE single-bar
+# dict (sharpe>=0.8/oos>=0.5/trips>=10). The real promotion path is
+# src/backtest/gatespec38_tracks.py (10-track union via check_track_gated) +
+# perm/boot overlays + mandatory WF gate — see evolve_real.py MAIN GATE
+# (~line 949). Kept (not deleted) for backward-compat; C3 below verifies
+# against live gatespec38, NOT this dict. Do NOT retune here.
 GATE = dict(sharpe_min=0.8, max_dd=0.35, oos_min=0.5, trips_min=10)
 
 
@@ -79,9 +99,11 @@ def run_backtest(pos: pd.Series, close: pd.Series,
     trips = int((to > 0).sum() // 2)
     spy = spy_baseline().reindex(net.index).fillna(0.0)
     excess = float((1 + net).prod() - (1 + spy).prod()) * 100
+    tmin = round(float(ex.fillna(0.0).mean()), 4)
     return {"sharpe": round(float(safe_sharpe(net)), 3), "max_dd": round(dd, 4),
             "oos": round(oos, 3), "trips": trips,
-            "trades": int((to > 0).sum()), "excess_spy": round(excess, 2)}
+            "trades": int((to > 0).sum()), "excess_spy": round(excess, 2),
+            "tmin": tmin, "n_bars": n}
 
 
 def build_signal(family: str, params: dict, data: dict) -> pd.Series:
@@ -132,7 +154,7 @@ def perturb(params: dict, direction: int) -> dict:
     return out
 
 
-def check_strategy(entry: dict, data: dict) -> dict:
+def check_strategy(entry: dict, data: dict, n_strats: int = 0) -> dict:
     m = entry.get("metrics", {}) or {}
     params = m.get("params", {})
     family = entry.get("family")
@@ -168,11 +190,46 @@ def check_strategy(entry: dict, data: dict) -> dict:
         notes.append("cost10bps_fail")
     res["check2_robust"] = ok
     res["robust_notes"] = notes
-    # CHECK 3: gate on recomputed numbers
-    res["check3_gate"] = (rec["sharpe"] >= GATE["sharpe_min"]
+    # CHECK 3: gatespec38-aligned gate on recomputed numbers (NOT the dead
+    # GATE dict above). DSR recomputed with cross-family N =
+    # max(registry strategies, 215); tracks via check_track + union gate.
+    # perm/boot overlays come from STORED metrics (not re-verified here) and
+    # block PASS when missing — fail-closed.
+    res["legacy_gate"] = (rec["sharpe"] >= GATE["sharpe_min"]
                           and rec["max_dd"] <= GATE["max_dd"]
                           and rec["oos"] >= GATE["oos_min"]
                           and rec["trips"] >= GATE["trips_min"])
+    if not _GATESPEC:
+        print("STALE-GATE WARNING: src.backtest.gatespec38_tracks unimportable; "
+              "C3 verdict SKIPPED (thresholds cannot be trusted).")
+        res["check3_gate"] = False
+        res["tracks_cleared"] = []
+        res["gate_reason"] = "stale-gate-skip"
+        res["verdict"] = "SKIP-STALE-GATE"
+        return res
+    dsr_n = max(int(n_strats), CROSS_FAMILY_N_FLOOR)
+    dsr = recompute_dsr(int(rec.get("n_bars", 0)), float(rec["sharpe"]), dsr_n)
+    gm = {"sharpe": rec["sharpe"], "max_dd": rec["max_dd"], "oos": rec["oos"],
+          "excess": rec["excess_spy"], "dsr": dsr, "trips": rec["trips"],
+          "tmin": rec.get("tmin", 0.0)}
+    raw_tracks = check_track(gm)
+    gated, reason = apply_union_gate(raw_tracks)
+    res["dsr"] = round(dsr, 4)
+    res["dsr_n"] = dsr_n
+    res["tracks_cleared"] = gated
+    res["gate_reason"] = reason
+    perm_p = m.get("perm_p")
+    boot_p = m.get("boot_p")
+    overlays_known = isinstance(perm_p, (int, float)) and isinstance(boot_p, (int, float))
+    res["overlays"] = ("stored-unverified" if overlays_known else "unknown")
+    overlays_pass = bool(overlays_known and perm_p <= 0.05 and boot_p <= 0.05)
+    res["check3_gate"] = bool(gated) and overlays_pass
+    if res["legacy_gate"] != res["check3_gate"]:
+        print(f"STALE-GATE WARNING: {entry.get('id')}: legacy GATE dict says "
+              f"{'PASS' if res['legacy_gate'] else 'FAIL'} but gatespec38 says "
+              f"{'PASS' if res['check3_gate'] else 'FAIL'} "
+              f"(tracks={gated or 'none'}/{reason} dsr={res['dsr']} "
+              f"overlays={res['overlays']}); trusting gatespec38.")
     res["verdict"] = ("PASS" if all([res["check1_recompute"], res["check2_robust"],
                                      res["check3_gate"]]) else "FAIL")
     return res
@@ -183,11 +240,14 @@ def main() -> int:
     ap.add_argument("--top", type=int, default=5)
     args = ap.parse_args()
     reg = json.loads(REG.read_text(encoding="utf-8"))
-    top5, dupes = dedupe_top5(reg.get("strategies", []), args.top)
+    strats = reg.get("strategies", [])
+    top5, dupes = dedupe_top5(strats, args.top)
     print(f"deduped {dupes} repeat promotions; checking {len(top5)} unique")
+    print(f"C3 gate: live gatespec38_tracks (union gate + DSR N=max(registry={len(strats)},215)); "
+          f"perm/boot overlays stored-not-reverified; legacy GATE dict vestigial")
     data = {"SPY": load_close("SPY")}
     for i, entry in enumerate(top5):
-        r = check_strategy(entry, data)
+        r = check_strategy(entry, data, n_strats=len(strats))
         print(f"[{i + 1}] {r['id']} {r['params']}")
         print(f"    stored sharpe={r['stored']['sharpe']} oos={r['stored']['oos_sharpe']} "
               f"trips={r['stored'].get('round_trips', r['stored'].get('trips'))}")
@@ -195,6 +255,10 @@ def main() -> int:
               f"trips={r['recomputed']['trips']} excessSPY={r['recomputed']['excess_spy']}%")
         print(f"    C1-recompute={r['check1_recompute']} C2-robust={r['check2_robust']} "
               f"{r['robust_notes']} C3-gate={r['check3_gate']} => {r['verdict']}")
+        if r.get("gate_reason") not in (None, "stale-gate-skip"):
+            print(f"    gatespec38 tracks={r.get('tracks_cleared') or 'none'}/{r.get('gate_reason')} "
+                  f"dsr={r.get('dsr')} N={r.get('dsr_n')} overlays={r.get('overlays')} "
+                  f"legacy_GATE={r.get('legacy_gate')}")
     return 0
 
 

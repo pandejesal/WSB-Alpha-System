@@ -1,5 +1,13 @@
 import numpy as np
-from arch.bootstrap import SPA, StationaryBootstrap
+
+try:
+    from arch.bootstrap import SPA, StationaryBootstrap
+
+    _ARCH_AVAILABLE = True
+except ModuleNotFoundError:
+    SPA = None  # type: ignore
+    StationaryBootstrap = None  # type: ignore
+    _ARCH_AVAILABLE = False
 
 
 class StatisticalValidator:
@@ -38,6 +46,8 @@ class StatisticalValidator:
         centered_excess_returns = excess_returns - mean_excess_returns
 
         # Bootstrap
+        if not _ARCH_AVAILABLE or StationaryBootstrap is None:
+            raise ImportError("arch package not installed — install 'arch' to use whites_reality_check")
         bs = StationaryBootstrap(block_size, centered_excess_returns)
 
 
@@ -70,6 +80,8 @@ class StatisticalValidator:
             strategy_losses = strategy_losses.reshape(-1, 1)
         benchmark_losses = -np.asarray(benchmark_returns)
 
+        if not _ARCH_AVAILABLE or SPA is None:
+            raise ImportError("arch package not installed — install 'arch' to use spa_test")
         spa = SPA(benchmark_losses, strategy_losses, seed=42)
         spa.compute()
         p_val = float(spa.pvalues['consistent'])

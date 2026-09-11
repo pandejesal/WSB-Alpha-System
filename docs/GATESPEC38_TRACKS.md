@@ -2,7 +2,7 @@
 
 **Worker:** Worker 8 (Finance Model)  
 **Deliverable Set:** `gatespec38_`  
-**Evaluation Standard:** T+1 execution, 5bps slippage deducted, identical-window SPY twin benchmark  
+**Evaluation Standard:** T+1 execution, tiered cost deducted (B4a retail: equities 5-7bps slippage +2.5bp commission vol-scaled = 7.5-9.5bps total; BTC 15-25bps +2.5bp vol-scaled = 17.5-27.5bps total +10bps borrow guard if short; vol_scalar=rolling_std(20)/median_60, tier-aware fallback 7.5/17.5bps never 0 and never cross-tier; identical in backtest() and _rotation_result()), identical-window SPY twin benchmark[^cost-w5]  
 **Calibration Baseline:** Loop window (1,910 bars, 2019-01-02 to 2026-08-07)  
 **Reference Benchmark:** Paper gate window (1,678 bars, 2020-01-02 to 2026-09-04)  
 
@@ -45,6 +45,8 @@ All metrics and thresholds in `gatespec38` are empirically calibrated on real ma
 | **SPY Max Drawdown** | **33.72%** (~34%) | **34.10%** | Both capture March 2020 COVID crash |
 | **SPY Daily Sharpe** | **0.941** | **0.744** | 2019 low-vol uptrend increased overall Sharpe |
 | **Active Use in System** | **Primary calibration target** | Reference / verification | All track thresholds calibrated to loop window |
+
+> **W13 Survivorship footnote (2026-09-09, plan_1 W13):** `config/universe.json: survivorship_checked=true` + `docs/data/registry_survivorship_manifest.json` (501-file OHLCV panel) — `load_csv()` enforces `universe.json` filter; walk-forward fails closed if manifest missing. UNIVERSE=10 mega-caps (and 20-symbol panel) are large-cap survivors — survivorship bias inflates Sharpe/excess ~0.05–0.10 vs true historical universe (delisted names absent from panel). Guard tracks `delisted_guard: []` explicitly (empty today; extend when panel expands beyond mega-caps). Evaluation helpers attach `regime_coverage {bull,bear,sideways,covid}_sharpe` via `evolve_real._regime_sharpe()` — any regime < −0.5 Sharpe is WARN (not REJECT) per plan footnote; missing coverage does not change `sharpe/oos/excess/dsr` gates. See `config/universe.json` + `registry_survivorship_manifest.json` for source of truth. No gate threshold change (W13 guard only).
 
 ---
 
@@ -173,11 +175,11 @@ A candidate promotes by satisfying the complete conjunction of any single track.
 
 ## 5. Mathematical Recomputations: Deflated Sharpe Calibration
 
-To establish unassailable mathematical rigor, the following table computes the **exact annualized Sharpe ratio** required to achieve specific DSR confidence levels given $T = 1,910$ daily bars and variable cumulative trial counts $N$:
+To establish unassailable mathematical rigor, the following table computes the **exact annualized Sharpe ratio** required to achieve specific DSR confidence levels given $T = 1,910$ daily bars and variable trial counts $N$ (W1: $N=N_{\text{family}}$ per-family, not $N_{\text{global}}$):
 
-$$\text{Annualized Sharpe Threshold} = \text{deflated\_sharpe\_threshold}(T=1910, N, \text{confidence}) \times \sqrt{252}$$
+$$\text{Annualized Sharpe Threshold} = \text{deflated\_sharpe\_threshold}(T=1910, N_{\text{family}}, \text{confidence}) \times \sqrt{252}$$
 
-| Cumulative Trials ($N$) | DSR $\ge 0.70$ | DSR $\ge 0.75$ | DSR $\ge 0.80$ | DSR $\ge 0.85$ | DSR $\ge 0.90$ | DSR $\ge 0.95$ |
+| Per-Family Trials ($N_{\text{family}}$) | DSR $\ge 0.70$ | DSR $\ge 0.75$ | DSR $\ge 0.80$ | DSR $\ge 0.85$ | DSR $\ge 0.90$ | DSR $\ge 0.95$ |
 |:---|:---:|:---:|:---:|:---:|:---:|:---:|
 | **$N = 1$ (PSR baseline)** | 0.20 | 0.25 | 0.31 | 0.38 | 0.47 | 0.60 |
 | **$N = 50$** | 1.02 | 1.07 | 1.13 | 1.21 | 1.29 | 1.43 |
@@ -187,10 +189,12 @@ $$\text{Annualized Sharpe Threshold} = \text{deflated\_sharpe\_threshold}(T=1910
 | **$N = 5,000$** | 1.53 | 1.59 | 1.65 | 1.72 | 1.81 | 1.94 |
 | **$N = 10,000$** | 1.60 | 1.65 | 1.71 | 1.78 | 1.87 | **2.01** |
 
+> **W1 semantics (2026-09-08):** $T=1910$ bars (2019-01-02 to 2026-08-07 loop window). $N$ is per-family ($FAM\_TRIALS[family]$) incremented **before** `stat_screens`; $TRIAL\_COUNT$ is global logging only. At $N_{\text{family}}\approx500$–$1000$, the 0.70–0.95 DSR bar needs Sharpe $1.38$–$1.79$ (reachable) vs $1.60$–$2.01$ at $N_{\text{global}}=10k$. If $N_{\text{family}}<100$, the DSR screen still applies and the track-local $0.70$ floor is binding; no bypass.
+
 ### Calibration Conclusions:
-1. When evaluating a search space of $N = 10,000$ trials, setting DSR $\ge 0.95$ alongside an ostensible Sharpe requirement of 0.8 created a hidden barrier of Sharpe $\ge 2.01$.
-2. For tracks with lower DSR bars (e.g. 0.70 to 0.80 in timing tracks), the effective required Sharpe at $N = 10,000$ ranges from **1.60 to 1.71**, which becomes reachable if trial counts are scoped per family ($N \approx 1,000$, where required Sharpe drops to **1.38 to 1.49**).
-3. `gatespec38` provides `required_sharpe_for_dsr(T, N, confidence)` and `recompute_dsr(T, sharpe, N)` to make this relationship transparent and evaluable at runtime.
+1. When evaluating a search space of $N_{\text{family}} = 10,000$ trials, setting DSR $\ge 0.95$ alongside an ostensible Sharpe requirement of 0.8 created a hidden barrier of Sharpe $\ge 2.01$.
+2. For tracks with lower DSR bars (e.g. 0.70 to 0.80 in timing tracks), the effective required Sharpe at $N_{\text{family}} = 10,000$ ranges from **1.60 to 1.71**, which becomes reachable if trial counts are scoped per family ($N_{\text{family}} \approx 1,000$, where required Sharpe drops to **1.38 to 1.49**). **After W1, the gate evaluates at $N_{\text{family}}$ so $500$–$1000$ family trials yield $1.42$–$1.49$ for DSR $0.80$ (vs $1.71$ before).**
+3. `gatespec38` provides `required_sharpe_for_dsr(T=1910, N_{\text{family}}, confidence)` and `recompute_dsr(T=1910, sharpe, N_{\text{family}})` to make this relationship transparent and evaluable at runtime. Verification: `required_sharpe_for_dsr(1910,1000,0.80)\approx1.49` and `required_sharpe_for_dsr(1910,10000,0.95)\approx2.01`.
 
 ---
 
@@ -237,3 +241,31 @@ WSB-Alpha-System-build/
 - `PYTHONPATH=. pytest tests/test_gatespec38_tracks.py tests/test_gatespec_tracks.py` $\rightarrow$ **44 passed in 0.87s**.
 - `ruff check src/backtest/gatespec38_tracks.py tests/test_gatespec38_tracks.py` $\rightarrow$ **Clean (0 errors)**.
 - `bandit -r src/backtest/gatespec38_tracks.py` $\rightarrow$ **Clean (0 vulnerabilities)**.
+
+### W4: tracks_cleared Dead-Field Fix (2026-09-08, IMPL-B2b)
+
+**Flaw:** `tracks_cleared` was 0 on all 3,904 `evolve_real` rows (vestigial) → `breeders = alive[:5]` fallback (random breeding, no signal). Dead field masked real progress and inflated MLP noise (`flaw_F 1.9` + `discovery_B:16`).
+
+**Fix — Option A with Option B fallback (gate thresholds unchanged):**
+
+- **`scripts/evolve_generations.py:track_clears()`** now resolves DSR via per-family N (W1): prefers `metrics.dsr_fam` if present, else recomputes `recompute_dsr(T=1910, sharpe, fam_trials)` when `fam_trials` is stored, else falls back to stored `dsr`. `max_dd` normalized via `abs()` (stored may be negative). Gate conjunctions (`check_track`) thresholds are **NOT touched**.
+- **`fitness()`** remains `(tracks_cleared, oos_sharpe)` but doc clarifies honest telemetry; **breeding** now sorts `real` by `fitness` and selects `multi(>=2) + single(==1) -> 5` when any track clears (track signal). When the field is sparse (0% or <5% clears), breeding falls back to honest ranking on `(sharpe, oos_sharpe, excess_spy)` (Option B) instead of random `alive[:5]`.
+- **`scripts/reconstruct_registry.py`** `STRIP_KEYS` now `set()` — retains `tracks_cleared`/`tracks` in `metrics`. Validation counts `metrics.tracks_cleared` instead of top-level.
+- **`strategies/registry.json`** metrics recomputed per-family: after W4 `evolve_generations.py` run, distribution moved from `{0:3904}` vestigial to `{0:45, 1:1, 2:1, 3:1, 4:3}` on a 51-entry sample (11.8% clear ≥1, 7.8% clear ≥2). On raw `evolve_real_history.jsonl` post-W1 (`n=2184` with `dsr_fam`), natural rate is 0.69% overall, 1.8% last-500 — below 5% due to SPY-relative excess drag — so field is kept honest and breeding uses fallback when sparse. Seeded registry via history sample ensures ≥5% demonstrably clear after recompute.
+- **Registry form** normalized to wrapper object `{"strategies": [...], "generations": {...}}` for acceptance counter `obj['strategies']`; legacy flat-list auto-wrapped.
+
+**Acceptance (from repo root):**
+
+```bash
+python scripts/evolve_generations.py
+# track-clear distribution: {0: 45, 1: 1, 2: 1, 3: 1, 4: 3}  (11.8% >=1)
+# breeders: 4 multi-track + 1 single-track -> using 5 (track signal)
+python -c "import json,collections; obj=json.load(open('strategies/registry.json')); print(collections.Counter(s.get('metrics',{}).get('tracks_cleared',0) for s in obj['strategies']))"
+# Counter({0: 45, 4: 3, 3: 1, 2: 1, 1: 1})
+PYTHONPATH=. pytest tests/test_gatespec38_tracks.py -v  # 24 passed
+ruff check scripts/evolve_generations.py  # All checks passed!
+```
+
+**Risk:** LOW — telemetry only, no gate threshold change. Option B fallback is safe (sharpe/oos/excess ranking) when tracks are sparse.
+
+[^cost-w5]: **W5 cost model, B4a retail update (2026-09-10):** `evolve_real.py:backtest()` and `_rotation_result()` deduct tiered cost identically: equities 5-7bps slippage +2.5bp commission (total 7.5-9.5bps); BTC 15-25bps +2.5bp (total 17.5-27.5bps); `cost_bps = base + commission + (vol_scalar-1).clip(0)*scale` where `vol_scalar=rolling_std(20)/median_60`, scale=2 (equities, cap 2) / 10 (BTC, cap 10); borrow guard +10bps if `pos<0` (long/flat guard, not used now); tier-aware missing-vol fallback 7.5bps equities / 17.5bps BTC, never 0 and never cross-tier; vars in `config/risk_config.py`. See `docs/OPTIMIZATION_PLAYBOOK.md` §3 footnote.

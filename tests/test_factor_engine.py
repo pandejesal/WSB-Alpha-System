@@ -10,9 +10,14 @@ import pandas as pd
 import pytest
 
 from scripts.factor_engine import (
-    factor_panel, monthly_last_close, rank_week, run_engine,
-    union_calendar, weekly_signal_dates, null_distribution,
+    factor_panel,
+    monthly_last_close,
+    null_distribution,
+    rank_week,
+    run_engine,
     time_shuffle_null,
+    union_calendar,
+    weekly_signal_dates,
 )
 
 

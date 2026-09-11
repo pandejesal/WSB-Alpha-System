@@ -7,9 +7,57 @@ from datetime import datetime, timezone
 
 import yaml
 
+from src.backtest.defend.trial_ledger import TrialLedger
 from src.ops import preregistration, strategy_registry
 
 KNOWN_FAMILIES = ["momentum", "mean_reversion", "carry", "volatility", "sentiment", "arbitrage"]
+
+# B5a (P2-S9 / F3-H1): hunt→evolve taxonomy alignment.
+# The hunt factory briefs use 6 conceptual families (KNOWN_FAMILIES above),
+# while the evolve loop (evolve_real.py FAMILIES, READ-ONLY — do not edit)
+# searches 10 concrete families:
+#   ["spy_sma", "spy_rsi2", "btc_vol", "btc_donchian", "us_momentum",
+#    "us_lowvol", "spy_ltrend", "us_ltrend", "gap_mr", "btc_regime"]
+# This alias map translates each hunt family to the evolve families that can
+# consume its briefs, so hunt output feeds the loop without manual rewrites.
+# KNOWN_FAMILIES is intentionally left unchanged for backward compat.
+FAMILY_EVOLVE_ALIASES = {
+    # Trend/momentum briefs feed the momentum + long-trend evolve families.
+    "momentum": ["us_momentum", "spy_sma", "spy_ltrend", "us_ltrend"],
+    # Mean-reversion briefs feed the RSI and overnight-gap MR evolve families.
+    "mean_reversion": ["spy_rsi2", "gap_mr"],
+    # No dedicated carry family exists in the evolve loop; us_lowvol is the
+    # nearest proxy (low-vol selection). Documented caveat, not a claim of fit.
+    "carry": ["us_lowvol"],
+    # Volatility briefs feed the three BTC volatility/regime evolve families
+    # (evolve_real._BTC_FAMILIES = btc_vol, btc_donchian, btc_regime).
+    "volatility": ["btc_vol", "btc_donchian", "btc_regime"],
+    # Sentiment acts as an entry filter / risk modifier; its briefs feed the
+    # gap-MR loop where the sentiment overlay is evaluated.
+    "sentiment": ["gap_mr"],
+    # No arbitrage family exists in the evolve loop: empty list on purpose,
+    # so validation emits the no-evolve-target warning below.
+    "arbitrage": [],
+}
+
+
+def resolve_evolve_families(family):
+    """Return evolve-loop families consuming hunt briefs of `family`.
+
+    Prints a validation warning and returns [] when the brief family has no
+    evolve target (unknown family, or a known family with no loop coverage
+    such as arbitrage). Never raises: hunt discovery stays fail-open here;
+    the edge gate remains the fail-closed enforcement point.
+    """
+    targets = FAMILY_EVOLVE_ALIASES.get(family, [])
+    if not targets:
+        print(
+            f"WARNING: Hunt family '{family}' has no evolve-loop target. "
+            "Brief cannot feed evolve_real.py FAMILIES; add loop coverage or "
+            "keep the hunt as registry-only."
+        )
+    return list(targets)
+
 
 def load_brief(brief_path):
     with open(brief_path, 'r') as f:
@@ -30,6 +78,9 @@ def load_brief(brief_path):
 
     if family not in KNOWN_FAMILIES:
         print(f"WARNING: Unknown family '{family}'. Discovery is encouraged, but ensure it does not overlap with existing families.")
+
+    # B5a: validate hunt→evolve taxonomy coverage (warns when no loop target).
+    resolve_evolve_families(family)
 
     return brief
 
@@ -65,6 +116,7 @@ def do_run(args):
         yaml.safe_dump({
             "run_id": run_id,
             "family": family,
+            "evolve_targets": resolve_evolve_families(family),
             "started_at": now.isoformat(),
             "status": "initialized",
             "cycle_id": f"{family}-{run_id_slug}"
@@ -148,6 +200,71 @@ def do_run(args):
     print("```")
     print("=========================================")
 
+def _append_hunt_trial_to_ledger(target_dir, results_dir, cand_file, spec):
+    """Best-effort ledger wiring for the non-loop hunt collect path.
+
+    Appends one TrialLedger row per validated candidate (default
+    run-logs/trials.jsonl, overridable via TRIAL_LEDGER_PATH). The
+    data_range is stable per (run, candidate file) so re-collecting an
+    unchanged candidate dedups instead of double-counting. Never raises:
+    ledger failure must not fail the collect command.
+    """
+    try:
+        if not isinstance(spec, dict):
+            print(f"WARNING: ledger skipped for {cand_file} (spec is not a YAML mapping)", file=sys.stderr)
+            return None
+        family = str(spec.get("family", "unknown"))
+        run = os.path.basename(os.path.normpath(target_dir))
+        strategy_id = str(spec.get("id") or spec.get("name") or family)
+        params = spec.get("parameters")
+        if params is None:
+            params = spec.get("params", {})
+        if not isinstance(params, dict):
+            params = {}
+        metrics = {}
+        try:
+            eval_ref = spec.get("eval_records")
+            eval_candidates = []
+            if isinstance(eval_ref, str) and eval_ref:
+                eval_candidates.append(eval_ref)
+                eval_candidates.append(os.path.join(results_dir, os.path.basename(eval_ref)))
+            eval_data = {}
+            for eval_path in eval_candidates:
+                if os.path.exists(eval_path):
+                    with open(eval_path, "r") as fh:
+                        eval_data = json.load(fh)
+                    break
+            if isinstance(eval_data, dict):
+                wf = eval_data.get("walk_forward")
+                if isinstance(wf, dict):
+                    for key in ("sharpe", "profit_factor", "max_dd", "max_drawdown_pct",
+                                "max_drawdown", "total_trades"):
+                        if key in wf:
+                            metrics[key] = wf[key]
+                dsr = eval_data.get("dsr")
+                if isinstance(dsr, (int, float)) and "sharpe" not in metrics:
+                    metrics["sharpe"] = dsr
+        except Exception:  # noqa: BLE001, S110 - metrics are best-effort
+            pass
+        data_range = f"hunt:{family}:{run}:{cand_file}"
+        ledger_path = os.environ.get("TRIAL_LEDGER_PATH", "run-logs/trials.jsonl")
+        sha = TrialLedger(path=ledger_path).append_experiment(
+            strategy_id=strategy_id,
+            params=params,
+            data_range=data_range,
+            metrics=metrics,
+            provider="hunt:collect",
+        )
+        if sha is None:
+            print(f"WARNING: ledger skipped duplicate trial for {cand_file} (already logged)", file=sys.stderr)
+        else:
+            print(f"Ledger appended trial {sha} to {ledger_path}")
+        return sha
+    except Exception as exc:  # noqa: BLE001 - ledger is best-effort
+        print(f"WARNING: ledger append failed for {cand_file} ({exc}); collect kept", file=sys.stderr)
+        return None
+
+
 def do_collect(args):
     target_dir = args.dir
     candidates_dir = os.path.join(target_dir, "candidates")
@@ -174,6 +291,13 @@ def do_collect(args):
             if not isinstance(spec, dict):
                 raise strategy_registry.MalformedSpecError(f"Spec {cand_file} is not a YAML mapping")
             strategy_registry.validate_spec(spec, cand_path)
+
+            _append_hunt_trial_to_ledger(
+                target_dir=target_dir,
+                results_dir=results_dir,
+                cand_file=cand_file,
+                spec=spec,
+            )
 
             # Spec is valid. Check missing requirements for registry entry.
             missing_items = []

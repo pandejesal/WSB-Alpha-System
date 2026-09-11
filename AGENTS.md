@@ -10,6 +10,8 @@ Agents should use the following verified commands for development, testing, and 
 * **Linting:** `ruff check .` (Run linting using latest defaults; do not add ruff configuration files)
 * **Security:** `bandit -r src/` (Scan source code for security vulnerabilities)
 
+**Preflight (INF-08, before any hunt/evolve session):** `ruff check .` must pass (0 errors except intentional `noqa: E402` in `src/config/risk_config.py`). Pin: `ruff==0.16.1` in `requirements.txt` (reconciled per W14; runner `ruff --version` must match pin; line ~121 in original file, now 126 after deps). No `ruff.toml`/`pyproject.toml` per repo rule (never create). JS lint (`biome`/`eslint`) is N/A — pure Python repo, missing binaries are acceptable. CI emits `ruff_errors.json` artifact on failure. **W14 SCOPED per `_deliverables/impl_B4d_ruff.md`:** full `ruff check .` green is infeasible without a config change the repo rule forbids — baseline `~1000+ repo-wide` (E402 384, BLE001 171, F401 145, RUF100 106, etc., pre-existing style) is **referenced not enforced**; CI gates only scoped surface `ruff check . --statistics || true` + `ruff check evolve_real.py` + `bandit -r src/` + `PYTHONPATH=. pytest tests/test_gatespec38_tracks.py tests/test_gatespec_tracks.py`. Acceptance = CI yml contains ruff+bandit+pytest steps + pin matches + baseline referenced (NOT full-green).
+
 ### Key Scripts
 
 * `python scripts/run_full_backtest.py` - Runs historical backtests.

@@ -1,0 +1,28 @@
+# Hunt Session Brief: Tail-Hedge Sentinel via crash_risk.py + VIX (B4c)
+# P2 item U4 (tail-hedge hunt spec via crash_risk.py + VIX); F3-system-gaps U4.
+# Protocol: docs/HUNT_PROTOCOL.md session brief template. Status: INACTIVE hunt brief (not active/ready).
+# NOTE: spec asked for filename BRIEF.yaml, but this filesystem is
+# case-insensitive and hunts/tail_risk_sentinel/brief.yaml (W8) already exists,
+# so the B4c brief lives here as BRIEF-B4c.yaml to avoid clobbering it.
+family: tail_risk_sentinel
+universe: "SPY + VIX proxy via ETF (VIXY/VIXM) or synthetic VIX from market_data_2019_2026/ohlcv/^VIX.csv; 2019-2026 Daily OHLCV; 5d-20d holding period"
+hypothesis: "When the option-implied crash_risk score (src/risk/crash_risk.py composite of IV skew + put-call skew + term-structure slope) exceeds threshold (score > 60), holding a VIX tail hedge (long VIX proxy / short index vol overlay on SPY sleeve) over a 5d-20d holding period cuts left-tail drawdown versus unhedged SPY without destroying risk-adjusted return; falsified if hedged sleeve maxDD >= unhedged maxDD or hedged Sharpe <= unhedged Sharpe net of tiered costs in walk-forward OOS."
+acceptance: "Edge claim pre-registered in docs/data/ via prereg freeze before backtests; strategies/<family>.yaml spec complete and parses without errors; registry.json entry wired for autonomous consumption via src/ops/signals.py with no manual Python changes; passes Walk-Forward OOS, Permutation tests, and positive Deflated Sharpe Ratio (DSR) ledger entry; honest ABANDON if kill criteria met (hypothesis falsified in-sample p>0.05, OOS failure, or over-parameterization)."
+lookback_constraints: "Daily OHLCV only, no intraday vol surface; T+1 execution; tiered cost model; VIX CSV read as regime/hedge tag only (no new live feed); no lookahead; crash_risk.py compute-only (callers source IV inputs)."
+edge_gate_params:
+  track: tail_risk_sentinel
+  crash_risk_threshold: 60.0
+  hedge_vehicle: "VIX proxy ETF (VIXY/VIXM) or synthetic VIX CSV"
+  holding_days_min: 5
+  holding_days_max: 20
+  hedge_trigger: "crash_risk_score > 60 (ELEVATED/HIGH)"
+  hedge_action: "LONG VIX tail hedge / reduce index exposure; else FLAT"
+  sleeve_status: "INACTIVE"
+  deliverables:
+    - "strategies/tail_risk_sentinel.yaml (entry, exit, sizing, max_k, params)"
+    - "strategies/registry.json entry (autonomous consumption, INACTIVE until gate pass)"
+    - "docs/data/ evaluation record (prereg freeze + evaluation JSON + verdict)"
+  prereg_claims:
+    - "crash_risk score > 60 predicts 5d-20d left-tail drawdown exceeding unhedged baseline"
+    - "VIX-proxy hedge leg is net positive in crash windows after tiered costs"
+    - "Hedged sleeve maxDD < unhedged SPY maxDD with Sharpe not worse"

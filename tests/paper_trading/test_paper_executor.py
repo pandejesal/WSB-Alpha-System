@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 
 import pytest
 
@@ -11,10 +12,13 @@ class FakeBroker:
         self.positions = []
         self.cash = 1000.0
         self.equity = 1000.0
+
     def get_positions(self):
         return self.positions
+
     def get_account_balance(self):
         return {"cash": self.cash, "equity": self.equity}
+
     def place_order(self, symbol, qty, side, order_type="market", stop_loss_price=None, reduce_only=False):
         order_id = f"fake_{len(self.orders)}"
         self.orders.append({"symbol": symbol, "qty": qty, "side": side})
@@ -26,8 +30,6 @@ class FakeBroker:
             "avg_price": 150.0,
             "fee": 0.0
         }
-
-from unittest.mock import patch
 
 
 @pytest.fixture
@@ -59,11 +61,16 @@ def test_paper_executor_idempotency(setup_ops_dirs, tmp_path):
             "targets": [{"symbol": "AAPL", "qty": 1.0, "side": "buy"}]
         }]
     }
+
     def mock_load_json(path):
-        if "plan.json" in path: return plan
-        if "fills.json" in path: return {}
-        if "orders.json" in path: return {}
-        if "heartbeat.json" in path: return {}
+        if "plan.json" in path:
+            return plan
+        if "fills.json" in path:
+            return {}
+        if "orders.json" in path:
+            return {}
+        if "heartbeat.json" in path:
+            return {}
         return {}
 
     broker = FakeBroker()
@@ -74,10 +81,14 @@ def test_paper_executor_idempotency(setup_ops_dirs, tmp_path):
         assert len(broker.orders) == 1
 
     def mock_load_json_second(path):
-        if "plan.json" in path: return plan
-        if "fills.json" in path: return {}
-        if "orders.json" in path: return {"run_id": "test_run_1", "orders": [{"client_order_id": "test_run_1-sleeve_1-AAPL-0"}]}
-        if "heartbeat.json" in path: return {}
+        if "plan.json" in path:
+            return plan
+        if "fills.json" in path:
+            return {}
+        if "orders.json" in path:
+            return {"run_id": "test_run_1", "orders": [{"client_order_id": "test_run_1-sleeve_1-AAPL-0"}]}
+        if "heartbeat.json" in path:
+            return {}
         return {}
 
     executor = PaperExecutor(broker=broker)
@@ -94,8 +105,10 @@ def test_paper_executor_global_killswitch(setup_ops_dirs):
             "targets": [{"symbol": "AAPL", "qty": 1.0, "side": "buy"}]
         }]
     }
+
     def mock_load_json(path):
-        if "plan.json" in path: return plan
+        if "plan.json" in path:
+            return plan
         return {}
 
     broker = FakeBroker()
@@ -113,8 +126,10 @@ def test_paper_executor_per_sleeve_breaker(setup_ops_dirs):
             {"id": "sleeve_active", "targets": [{"symbol": "MSFT", "qty": 1.0, "side": "buy"}]}
         ]
     }
+
     def mock_load_json(path):
-        if "plan.json" in path: return plan
+        if "plan.json" in path:
+            return plan
         return {}
 
     def mock_get_sleeve_state(sleeve_id):
@@ -138,11 +153,13 @@ def test_paper_executor_missing_qty(setup_ops_dirs):
         "run_id": "test_run_qty",
         "sleeves": [{
             "id": "sleeve_1",
-            "targets": [{"symbol": "AAPL", "side": "buy"}] # No qty
+            "targets": [{"symbol": "AAPL", "side": "buy"}]  # No qty
         }]
     }
+
     def mock_load_json(path):
-        if "plan.json" in path: return plan
+        if "plan.json" in path:
+            return plan
         return {}
 
     broker = FakeBroker()
@@ -161,8 +178,10 @@ def test_paper_executor_real_fills(setup_ops_dirs):
             "targets": [{"symbol": "AAPL", "qty": 1.0, "side": "buy"}]
         }]
     }
+
     def mock_load_json(path):
-        if "plan.json" in path: return plan
+        if "plan.json" in path:
+            return plan
         return {}
 
     broker = FakeBroker()

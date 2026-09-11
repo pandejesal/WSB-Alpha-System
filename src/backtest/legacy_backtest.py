@@ -1,3 +1,4 @@
+# CH-14 candidate: duplicate backtest engine — candidate for consolidation into src/backtest/engines/canonical.py (no merge in this phase; canonical is engines/canonical.py)
 from datetime import timedelta
 
 import matplotlib.pyplot as plt

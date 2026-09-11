@@ -1,8 +1,11 @@
-import os
 import json
+import os
 from unittest.mock import patch
+
 import pytest
+
 from scripts.run_research import main
+
 
 def test_run_research_end_to_end(tmp_path):
     # Setup mock universe

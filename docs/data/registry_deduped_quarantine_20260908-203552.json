@@ -1,0 +1,38 @@
+[
+  {
+    "id": "spy_sma_real_29012_24",
+    "family": "spy_sma",
+    "method": "evolve_real",
+    "status": "paper",
+    "gates_passed": "0/10",
+    "evolved_from": "spy_sma",
+    "venue": "alpaca",
+    "metrics": {
+      "sharpe": 0.874,
+      "cagr": 0.1034,
+      "max_dd": 0.1847,
+      "oos_sharpe": 1.401,
+      "oos": 1.401,
+      "round_trips": 25,
+      "trips": 25,
+      "trades": 51,
+      "excess_spy": -134.68,
+      "excess": -134.68,
+      "tmin": 0.7455,
+      "dsr": 0.0441,
+      "dsr_fam": 0.4316,
+      "fam_trials": 114,
+      "perm_p": 0.285,
+      "boot_p": 0.005,
+      "n_bars": 1910,
+      "sharpe_raw": 0.874,
+      "params": {
+        "window": 140
+      },
+      "tracks_cleared": 0,
+      "tracks": [],
+      "proposed_by": "bred",
+      "iter": 29012
+    }
+  }
+]

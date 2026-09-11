@@ -16,13 +16,13 @@ import pandas as pd
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from src.signals.qlib_alpha158 import compute_alpha158, get_feature_names
 from src.backtest.qlib_topk import (
     compute_metrics,
     load_universe,
     spy_buyhold,
     topk_rotation,
 )
+from src.signals.qlib_alpha158 import compute_alpha158, get_feature_names
 
 
 def parse_args():

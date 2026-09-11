@@ -1,0 +1,46 @@
+family: high_exposure_momentum
+run_id: 20260911-h12-momentum
+variant: high_exposure_momentum_h12
+universe: "31-symbol rotation_universe panel (config/universe.json rotation_universe; daily OHLCV 2019-2026, dropna-aligned, T~1910 bars) via evolve_real.load_csv lineage (W13 universe-filter max breadth; SPY excluded from panel, used only as identical-window twin benchmark, NO SPY-fill sleeve)"
+hypothesis: "SLOW DUAL-TREND REGIME BASKET (SMA200 price-level + SMA200 63d-slope confirmation, weak 0.5, quarterly refresh, ALL 31 names held every bar, zero fast SMA, zero ranking cutoff, zero breakout, zero vol-tilt) breaks the 6/6 perm wall where H2 (0.82) / H4 (0.665) / H6 (0.645) rotation, H8 (0.695) dual-SMA-stack own-trend halves, H10 (0.535) breakout-membership, and H11 (0.295) continuous inv-vol tilt all died: priors were either quasi-static equal-weight schedules (rotation top-N churn nets to index-like weights; SMA-half gradients move glacially; tilt gradients hug the index) or fast-whip overlays, so circular time-shift of the weight matrix barely changes Sharpe. A slow dual-trend regime (price-vs-SMA200 LEVEL confirmed by SMA200 63d SLOPE) flips weights only on multi-year bull/bear state changes — rare, persistent, time-specific events — so shifting the weight schedule misaligns full/half funding with actual regime episodes and degrades Sharpe below observed, giving perm_p<=0.05 detectable timing content. Quarterly refresh + half-never-zero funding keeps turnover/costs low toward Sharpe>=0.75 / DSR>=0.90 (fam N=59). Always fully invested (gross 1.0) so tmin=1.0 by construction."
+acceptance: "Edge claim pre-registered via preregister freeze BEFORE backtest and verified; YAML validates via strategy_registry.validate_spec; WF OOS>=0.50, Sharpe>=0.75, maxDD<=0.35, excess>=0.05pp (canonical Track 5; implies task +0.03pp), DSR>=0.90 (min of fam-N=59 and lineage cross-family N, fail-closed), tmin>=0.70, trips>=6, perm_p<=0.05, boot_p<=0.05 (GATESPEC38 Track 5 high_exposure_momentum); L1 Sharpe>=0.50 DD<=0.35 excess>0; WF 3-fold overlay mean fold OOS>=0.50; CPCV-proxy overlay (4 blocks/6 paths, returns-level, no embargo, disclosed); verdict recorded via preregister record (HONEST_ABANDON allowed)."
+kill_criteria: "Falsified in-sample (any Track 5 term fails incl. DD>35% or DSR<0.90 on either N); fails WF OOS or perm/boot (p>0.05); 0 tracks cleared -> HONEST_ABANDON, combo (slow200, confirm63, weak0.5, quarterly, all-31) retired to TABOO ledger, no silent overwrite."
+edge_gate_params:
+  track: high_exposure_momentum
+  primary_track: high_exposure_momentum
+  sharpe_min: 0.75
+  max_dd_max: 0.35
+  oos_min: 0.50
+  excess_min: 0.05
+  dsr_min: 0.90
+  tmin_min: 0.70
+  trips_min: 6
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  param_grid:
+    slow_lookback: [200]
+    confirm_lookback: [63]
+    weak_weight: [0.5]
+    signal_refresh: [quarterly]
+    names_held: [31]
+  tried_combos_taboo:
+    - {lookback: 126, skip: 21, top_n: 5, verdict: HONEST_ABANDON, dd: 0.456, dsr: 0.845}
+    - {lookback: 189, skip: 5, top_n: 10, verdict: HONEST_ABANDON, dd: 0.488, dsr: 0.834}
+    - {lookback: 63, skip: 42, top_n: 3, verdict: HONEST_ABANDON, dd: 0.514, dsr: 0.862}
+    - {lookback: 95, skip: 42, top_n: 7, verdict: retired, source: registry_us_momentum}
+    - {lookback: 252, skip: 21, top_n: 8, verdict: HONEST_ABANDON, source: cycle18_H2, dd: 0.794, dsr: 0.457, perm: 0.82}
+    - {lookback: 126, skip: 10, top_n: 12, verdict: HONEST_ABANDON, source: cycle19_H4, dd: 0.3887, dsr: 0.607, perm: 0.665}
+    - {lookback: 189, skip: 21, top_n: 28, verdict: HONEST_ABANDON, source: cycle21_H6, sharpe: 1.15, dd: 0.2285, dsr: 0.6456, perm: 0.645}
+    - {sma_fast: 50, sma_slow: 200, weak_weight: 0.5, signal_refresh: monthly, verdict: HONEST_ABANDON, source: cycle23_H8, perm: 0.695, excess: -14.70}
+    - {breakout_lookback: 252, confirm_lookback: 63, proximity_band: 0.98, signal_refresh: monthly, fill: SPY, verdict: HONEST_ABANDON, source: cycle26_H10, sharpe: 0.972, dd: 0.3372, dsr: 0.4537, perm: 0.535}
+    - {vol_lookback: 63, mom_lookback: 252, mom_skip: 21, tilt_gain: 0.5, tilt_clip: [0.25, 2.0], signal_refresh: monthly, names_held: 31, verdict: HONEST_ABANDON, source: cycle27_H11, sharpe: 1.242, dd: 0.3104, dsr: 0.7339, perm: 0.295}
+  h12_params:
+    slow_lookback: 200
+    confirm_lookback: 63
+    weak_weight: 0.5
+    signal_refresh: quarterly
+    names_held: 31
+    exec_delay: 1
+    fam_trials_N: 59
+  cost_model: "tiered W5 (equities 5-7bps slippage + 2.5bp commission, vol_scalar=rolling_std(20)/median_60 scale 2 cap 2, fallback 7.5bps) via evolve_real._rotation_result lineage, T+1 via shift(1)+ffill, quarterly signal refresh ffill daily"
+  benchmarks: ["SPY identical window", "WF 3-fold (frozen params)", "CPCV-proxy 4 blocks/6 paths returns-level", "rotation-timing perm K=200 (lineage)", "stationary bootstrap block21 (lineage)"]

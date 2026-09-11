@@ -1,8 +1,12 @@
 import unittest
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+import pytest
+
 from src.backtest.walk_forward_engine import WalkForwardValidator
 from src.backtest.whites_reality_check import WhitesRealityCheck
+
 
 class TestAdvancedValidation(unittest.TestCase):
     def test_walk_forward(self):
@@ -13,6 +17,7 @@ class TestAdvancedValidation(unittest.TestCase):
         self.assertGreater(res.get("windows_tested", 0), 0)
 
     def test_whites_reality_check(self):
+        pytest.importorskip("arch", reason="optional dep 'arch' not installed")
         np.random.seed(42)
         benchmark = pd.Series(np.random.normal(0.0001, 0.01, 100))
         strategies = pd.DataFrame({

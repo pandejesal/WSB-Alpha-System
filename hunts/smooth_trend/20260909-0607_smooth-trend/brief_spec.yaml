@@ -1,0 +1,62 @@
+acceptance: Edge claim pre-registered via prereg freeze BEFORE any backtest; YAML
+  validates via strategy_registry.validate_spec; registry via hunt_runner collect
+  only (never hand-edit); L1 screen sharpe>=0.50 DD<=35% excess>0 then L2 perm<=0.05
+  boot<=0.05 DSR>=0.75 at per-family N (T=1910) + excess>0 + full Track2/Track4 conjunction;
+  paper-only, no live flags; honest ABANDON if 0 survive with binding-gate analysis.
+edge_gate_params:
+  benchmarks:
+  - SPY identical window
+  - permutation 200
+  - stationary bootstrap 200
+  boot_p_max: 0.05
+  cost_model: tiered W5
+  dsr_min: 0.75
+  excess_min: 0.1
+  fallback_thresholds:
+    dsr_min: 0.75
+    excess_min: 0.03
+    max_dd_max: 0.25
+    oos_min: 0.35
+    sharpe_min: 0.55
+    trips_min: 6
+  fallback_track: tail_risk_sentinel
+  max_dd_max: 0.35
+  oos_min: 0.35
+  param_grid:
+    spy_sma_windows:
+    - 120
+    - 150
+    - 170
+    - 200
+    - 220
+    - 250
+    - 270
+    - 300
+    vol_cap:
+    - 0.18
+    - 0.22
+    - 0.25
+    vol_scaled:
+    - true
+    - false
+    vol_window:
+    - 20
+    - 40
+  perm_p_max: 0.05
+  primary_track: drawdown_warrior
+  sharpe_min: 0.55
+  track: drawdown_warrior
+  trips_min: 6
+family: smooth_trend
+hypothesis: 'Slow SMA (150-300d) + vol-scaled long/flat conservative timing is SMOOTH
+  not hot: low-DD (DD<=25-35%) + moderate Sharpe(>=0.55) + OOS>=0.35 beats high-Sharpe
+  hot candidates that die on DSR~0.2 + DD>35%; audit of 5000 trials shows winners
+  must be smooth. Tests slow windows 150-300, ATR/vol caps, exposure 30-70% tmin,
+  targeting drawdown_warrior (sharpe>=0.55 DD<=35% oos>=0.35 excess>=0.10) and tail_risk_sentinel
+  (sharpe>=0.55 DD<=25% excess>=0.03) with DSR per-family N, perm/boot<=0.05, excess>0
+  binding.'
+lookback_constraints: Daily OHLCV only, no intraday; T+1 execution, tiered cost W5
+  (equities 5-7bps slippage +1bp commission vol-scaled, fallback 5bps never 0); no
+  lookahead (shift-1 SMA); T=1910 bars for DSR; per-family N not global N=10k.
+universe: SPY single-index long/flat overlays (daily OHLCV 2019-2026, identical-window
+  SPY twin for excess; T=1910 bars loop window, T+1 tiered cost W5, 5bps floor)

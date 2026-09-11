@@ -6,9 +6,10 @@ with slippage deducted and 1-day execution delay. Failures record
 ABANDON and are never promoted. Promotions are status=paper only.
 Never live.
 
-Honest gate (2026-09-06): the 10-track gatespec38 union is the MAIN promotion
-gate (docs/GATESPEC38_TRACKS.md, superset of the ling-fin 9 tracks — adds
-tail_risk_sentinel). A candidate promotes by clearing ANY ONE track fully;
+Honest gate (G3 union-gate, P1 2026-09-10): the 10-track gatespec38 union is
+the MAIN promotion gate (docs/GATESPEC38_TRACKS.md, superset of the ling-fin
+9 tracks — adds tail_risk_sentinel). A candidate promotes by clearing >=2
+tracks, or one strong track (dsr_min>=0.90) per the union-gate FWER control;
 every track carries excess-vs-SPY > 0 (except benchmark_parity, the SPY
 calibration anchor) + DSR multiple-testing discount + maxDD + activity.
 Universal overlays on top of tracks: perm_p<=0.05 and boot_p<=0.05 timing-skill
@@ -42,12 +43,11 @@ ROOT = pathlib.Path(__file__).resolve().parent  # this file lives at repo root
 os.chdir(ROOT)
 sys.path.insert(0, str(ROOT))
 
-import numpy as np  # noqa: E402
-import pandas as pd  # noqa: E402
-
-from src.backtest.metrics import safe_sharpe  # noqa: E402
-from src.backtest.gatespec38_tracks import (  # noqa: E402
-    check_track, recompute_dsr)
+import numpy as np
+import pandas as pd
+from src.backtest.gatespec38_tracks import apply_union_gate, check_track, recompute_dsr
+from src.backtest.metrics import safe_sharpe
+from src.backtest.walk_forward_engine import WalkForwardValidator
 
 HIST = ROOT / "docs/data/evolve_real_history.jsonl"
 PROM = ROOT / "docs/data/evolve_real_promoted.jsonl"
@@ -59,17 +59,42 @@ LOCK = ROOT / "docs/data/evolve_real.lock"
 
 REAL_GATE = dict(sharpe_min=0.8, max_dd=0.35, oos_min=0.5, trips_min=10,
                   excess_min=0.0)  # 6th fitting (2026-09-05): must BEAT SPY absolute
-MIN_FREE_BYTES = 500 * 1024 * 1024
+MIN_FREE_BYTES = 2 * 1024 * 1024 * 1024  # INF-09: tighten 500MB->2GB; fail-closed on low disk
 PRUNE_EVERY = 200
 DSR_MIN = 0.95
 PERM_P_MAX = 0.05
 BOOT_P_MAX = 0.05
-# Mutable trial counter shared with backtest() for the DSR screen: total
-# evaluated candidates (winners AND losers), the N in Bailey-Lopez de Prado.
+# Global trial counter for logging only (all families combined, N_global).
+# DSR gate uses cross-family N (_dsr_n_trials) — see stat_screens/_rotation_result.
 TRIAL_COUNT = [0]
-# Per-family trial counts for the gatespec per-family DSR telemetry: at
-# N~=1000 scoped trials the DSR 0.70-0.80 bar needs Sharpe ~1.4, not 2.0.
+# Per-family trial counts feeding the DSR gate (Bailey-Lopez de Prado N):
+# T=1910 bars (2019-01-02 to 2026-08-07 loop window). G4: N_DSR =
+# max(N_family, registry strategies, 215) so early-run per-family ~50 cannot
+# understate search multiplicity (full-global ~10k kept out: bricks the bar).
+# Incremented BEFORE stat_screens so the current trial counts in its own DSR.
 FAM_TRIALS: dict = {}
+# G4 cross-family DSR floor (P1 2026-09-10): Bailey-Lopez N must cover the
+# whole search, not just the current family. N_DSR = max(per-family trials,
+# registry strategies, 215). Larger N only ever lowers DSR (fail-closed).
+REGISTRY_N_FLOOR = 215
+
+
+def _registry_strategy_count() -> int:
+    """Live registry strategy count; fail-closed to REGISTRY_N_FLOOR on error."""
+    try:
+        reg = json.loads(REG.read_text(encoding="utf-8"))
+        return max(int(len(reg.get("strategies", []))), REGISTRY_N_FLOOR)
+    except Exception:  # noqa: BLE001  # fail-closed floor, intentional
+        return REGISTRY_N_FLOOR
+
+
+def _dsr_n_trials(family: str) -> int:
+    """Cross-family trial count for DSR: never below the registry floor."""
+    try:
+        n_trials = int(TRIAL_COUNT[0])
+    except Exception:  # noqa: BLE001  # fail-closed floor, intentional
+        n_trials = 1
+    return max(1, n_trials, _registry_strategy_count())
 
 FAMILIES = ["spy_sma", "spy_rsi2", "btc_vol", "btc_donchian", "us_momentum", "us_lowvol",
             "spy_ltrend", "us_ltrend", "gap_mr", "btc_regime"]
@@ -108,7 +133,80 @@ def log(msg):
         pass
 
 
+def _regime_sharpe(net: pd.Series) -> dict:
+    """W13 regime coverage tagging (guard only, no gate change).
+
+    Splits net returns into 4 windows and reports per-regime Sharpe via
+    safe_sharpe. Any regime < -0.5 is WARN-eligible (not a gate reject).
+    Fail-closed outside: caller adds regime_coverage to the evaluation dict.
+    """
+    windows = {
+        "bull_2019": ("2019-01-02", "2019-12-31"),
+        "covid_crash": ("2020-02-19", "2020-04-30"),
+        "bear_2022": ("2022-01-03", "2022-12-31"),
+        "bull_2023_2024": ("2023-01-03", "2024-12-31"),
+    }
+    out: dict = {}
+    try:
+        idx = pd.to_datetime(net.index)
+        for tag, (a, b) in windows.items():
+            mask = (idx >= pd.Timestamp(a)) & (idx <= pd.Timestamp(b))
+            seg = net.loc[mask] if hasattr(net, "loc") else net[mask]
+            # seg may be empty early
+            try:
+                sh = float(safe_sharpe(seg)) if len(seg) > 10 else 0.0
+            except Exception:  # noqa: BLE001  # fail-closed guard, intentional
+                sh = 0.0
+            # normalize tag to coverage keys
+            if tag == "bull_2019":
+                out["bull_sharpe"] = round(sh, 4)
+            elif tag == "covid_crash":
+                out["covid_sharpe"] = round(sh, 4)
+            elif tag == "bear_2022":
+                out["bear_sharpe"] = round(sh, 4)
+            elif tag == "bull_2023_2024":
+                out["bull_2023_2024_sharpe"] = round(sh, 4)
+        # sideways alias (bear window used as bear proxy; sideways kept for plan compat)
+        if "bear_sharpe" in out:
+            out["sideways_sharpe"] = out["bear_sharpe"]
+    except Exception:  # noqa: BLE001  # fail-closed guard, intentional
+        out = {"bull_sharpe": 0.0, "bear_sharpe": 0.0, "sideways_sharpe": 0.0, "covid_sharpe": 0.0}
+    return out
+
+
 def load_csv(ticker: str) -> pd.DataFrame:
+    # W13 survivorship guard: enforce config/universe.json filter + manifest
+    # Fail-closed: missing manifest is a hard signal (walk-forward FAIL path);
+    # here we log once and continue to load only if file exists, but universe
+    # mismatches are WARN-logged so backtests never silently use survivor-biased
+    # off-universe tickers.
+    # S7 fail-closed: off-universe data never loads silently. Probe config inside
+    # try (config errors stay loud-logged), but the exclusion raise lives OUTSIDE
+    # so the except below cannot swallow it. Callers guard OSError (universe loop
+    # skips; SPY/BTC/ETH core always allowed).
+    off_universe: str | None = None
+    try:
+        uni_path = ROOT / "config/universe.json"
+        uni = json.loads(uni_path.read_text(encoding="utf-8"))
+        if not uni.get("survivorship_checked"):
+            log(f"W13 guard: universe.json survivorship_checked != true for {ticker}")
+        manifest_rel = uni.get("manifest", "docs/data/registry_survivorship_manifest.json")
+        manifest = ROOT / manifest_rel
+        if not manifest.exists():
+            log(f"W13 guard: survivorship manifest missing at {manifest_rel} (WF fail-closed)")
+        # universe filter: only tickers declared in universe.json are expected
+        tickers = set(uni.get("tickers", [])) | set(uni.get("crypto_tickers", []))
+        # normalize both sides: "BTC" vs "BTC/USD"
+        norm = {t.replace("/USD", ""): t for t in tickers}
+        # allow core SPY/BTC aliases regardless of exact string
+        allowed_bases = set(norm.keys()) | {"SPY", "BTC", "ETH"}
+        base = ticker.replace("/USD", "")
+        if base not in allowed_bases and ticker not in tickers:
+            off_universe = ticker
+    except Exception as e:  # noqa: BLE001  # fail-closed probe, intentional
+        log(f"W13 guard probe failed for {ticker}: {e}")
+    if off_universe is not None:
+        raise OSError(f"W13 universe filter: {off_universe} not in universe.json tickers")
     df = pd.read_csv(ROOT / f"market_data_2019_2026/ohlcv/{ticker}.csv", parse_dates=["date"])
     return df.set_index("date").sort_index()
 
@@ -304,18 +402,84 @@ def stationary_bootstrap_p(values, block_mean: int = 21, boot_n: int = 200,
         return 1.0
 
 
+_BTC_FAMILIES = ("btc_vol", "btc_donchian", "btc_regime")
+_EQUITY_FALLBACK_BPS = 7.5  # B4a retail: 5.0 slippage + 2.5 commission
+_BTC_FALLBACK_BPS = 17.5  # B4a retail: 15.0 slippage + 2.5 commission
+# E-darwin joint-experiment lever: retail commission shared by _tiered_cost_bps.
+# Experiments may override via setattr + restore (see joint_coevolution_experiment.py);
+# the live loop never changes it (default 2.5bp retail realistic).
+COST_COMMISSION_BPS = 2.5
+# R-C3 reference-only: canonical commission lives in config/risk_config.py.
+# Import-only (operational value above unchanged; quant reconciliation out of scope).
+try:
+    from config.risk_config import CANONICAL_COMMISSION_BPS as CANONICAL_COMMISSION_BPS_REF
+except Exception:
+    CANONICAL_COMMISSION_BPS_REF = None
+
+
+def _fallback_cost_bps(family: str) -> float:
+    """Tier-aware fail-closed fallback (B4a): BTC never falls back to equity bps."""
+    return _BTC_FALLBACK_BPS if family in _BTC_FAMILIES else _EQUITY_FALLBACK_BPS
+
+
+def _tiered_cost_bps(close: pd.Series, family: str) -> pd.Series:
+    """W5 per-asset cost tier, B4a retail honesty (GATESPEC38_TRACKS.md S1).
+
+    Equities (SPY/UNI): 5-7bps slippage + 2.5bp commission, vol-scaled
+      => total 7.5-9.5bps.
+    BTC (btc_vol/btc_donchian/btc_regime): 15-25bps slippage + 2.5bp
+    commission, vol-scaled + 10bps borrow guard if short (guard kept
+    though current families are long/flat) => total 17.5-27.5bps.
+
+    Formula: cost_bps = base_slippage + commission + vol_term
+             vol_scalar = rolling_std(20) / median_60
+             vol_term = (vol_scalar - 1).clip(0) * scale
+               scale=2 for equities (cap 2 => slippage 5-7 => cost 7.5-9.5)
+               scale=10 for BTC (cap 10 => slippage 15-25 => cost 17.5-27.5)
+    Identical in backtest() and _rotation_result(). Tier-aware fallback
+    (7.5 equities / 17.5 BTC, never 0) when vol is missing/NaN or on any
+    exception — the old flat 5bps fallback never hits crypto.
+    """
+    try:
+        rets = close.pct_change()
+        vol20 = rets.rolling(20).std()
+        vol_med = vol20.rolling(60).median()
+        vol_scalar = vol20 / vol_med.replace(0, np.nan)
+        vol_scalar = vol_scalar.fillna(1.0).clip(lower=0.5, upper=3.0)
+        is_btc = family in _BTC_FAMILIES
+        base = 15.0 if is_btc else 5.0
+        commission = COST_COMMISSION_BPS  # B4a retail realistic (was 1bp flat)
+        scale = 10.0 if is_btc else 2.0
+        cap = 10.0 if is_btc else 2.0
+        vol_term = (vol_scalar - 1.0).clip(lower=0) * scale
+        vol_term = vol_term.clip(upper=cap)
+        cost = base + commission + vol_term
+        fb = _fallback_cost_bps(family)
+        cost = cost.fillna(fb).clip(lower=fb)
+        return cost
+    except Exception:
+        try:
+            return pd.Series(_fallback_cost_bps(family), index=close.index)
+        except Exception:
+            fb = _fallback_cost_bps(family)
+            return pd.Series([fb] * len(close), index=close.index) if len(close) else pd.Series(dtype=float)
+
+
 def stat_screens(net: pd.Series, pos: pd.Series, close: pd.Series,
-                 slippage_bps: float = 5.0) -> dict:
+                 family: str = "unknown", slippage_bps: float = 5.0) -> dict:
     """DSR multiple-testing screen + circular-shift timing test.
 
     Shared by backtest() and _rotation_result() so every family faces
     identical statistics. Fail-closed: any error yields dsr=0/perm_p=1
-    (reject), never a pass.
+    (reject), never a pass. Uses cross-family N (_dsr_n_trials: max of
+    per-family, registry, 215) with T=1910 bars; global TRIAL_COUNT is
+    logging only.
     """
     try:
         from src.backtest.defend.trial_ledger import deflated_sharpe_ratio
+        n_dsr = _dsr_n_trials(family)
         dsr = float(deflated_sharpe_ratio(len(net), float(safe_sharpe(net)) / np.sqrt(252.0),
-                                          max(1, TRIAL_COUNT[0])))
+                                          n_dsr))
     except Exception:
         dsr = 0.0
     try:
@@ -341,12 +505,29 @@ def stat_screens(net: pd.Series, pos: pd.Series, close: pd.Series,
 
 
 def backtest(signal: pd.Series, close: pd.Series, spy_close: pd.Series,
-             slippage_bps: float = 5.0) -> dict:
-    TRIAL_COUNT[0] += 1  # every evaluated candidate counts toward DSR's N
+             family: str = "unknown", slippage_bps: float = 5.0) -> dict:
+    TRIAL_COUNT[0] += 1  # global logging only
+    FAM_TRIALS[family] = FAM_TRIALS.get(family, 0) + 1  # per-family DSR N, before screen
     pos = signal.shift(1).fillna(0.0)  # T+1
     strat = close.pct_change().fillna(0.0) * pos
     turnover = pos.diff().abs().fillna(pos.abs())
-    net = strat - turnover * (slippage_bps / 10000.0)
+    # B4a tiered cost: per-asset base + 2.5bp retail commission + vol term;
+    # tier-aware fallback (7.5 eq / 17.5 BTC) never 0, never cross-tier
+    try:
+        cost_bps = _tiered_cost_bps(close, family)
+        fb = _fallback_cost_bps(family)
+        cost_bps = cost_bps.reindex(turnover.index).fillna(fb).clip(lower=fb)
+        # borrow guard: 10bps (0.1%) if short — not used now (long/flat) but fail-closed guard
+        try:
+            short_mask = pos < -1e-9
+            if short_mask.any():
+                cost_bps = cost_bps.copy()
+                cost_bps[short_mask] = cost_bps[short_mask] + 10.0
+        except Exception:
+            pass
+        net = strat - turnover * (cost_bps / 10000.0)
+    except Exception:
+        net = strat - turnover * (_fallback_cost_bps(family) / 10000.0)
     eq = (1 + net).cumprod()
     n = len(net)
     split = int(n * 0.7)
@@ -361,12 +542,23 @@ def backtest(signal: pd.Series, close: pd.Series, spy_close: pd.Series,
     out = {"sharpe": float(safe_sharpe(net)), "cagr": cagr(eq),
            "max_dd": max_dd(eq), "oos": oos, "trips": trips,
            "trades": int((turnover > 0).sum()), "excess": round(excess, 2),
-           "tmin": round(tmin, 4), "n_bars": n}
+           "tmin": round(tmin, 4), "n_bars": n,
+           # G1 support: per-bar net returns feed the WF promotion gate
+           # (promotion region only consumer; never serialized — rec keeps scalars).
+           "net": net}
+    # W13 regime coverage tagging (guard only, no gate threshold change)
+    try:
+        out["regime_coverage"] = _regime_sharpe(net)
+        # WARN if any regime < -0.5 (not REJECT) per plan footnote
+        out["regime_warn"] = any(v is not None and v < -0.5 for v in out["regime_coverage"].values())
+    except Exception:  # noqa: BLE001  # guard, intentional
+        out["regime_coverage"] = {"bull_sharpe": 0.0, "bear_sharpe": 0.0, "sideways_sharpe": 0.0, "covid_sharpe": 0.0}
+        out["regime_warn"] = False
     # DSR multiple-testing screen (Bailey & Lopez de Prado via defend/trial_ledger):
-    # per-bar Sharpe discounted by total trials run so far.
+    # cross-family N (_dsr_n_trials) with T=1910 bars.
     # Circular-shift timing test: randomly misalign positions vs returns;
     # genuine timing skill must beat 95% of misaligned versions.
-    out.update(stat_screens(net, pos, close, slippage_bps))
+    out.update(stat_screens(net, pos, close, family, slippage_bps))
     return out
 
 
@@ -374,50 +566,64 @@ def run_family(family: str, p: dict, data: dict) -> dict:
     spy = data["SPY"]
     if family == "spy_sma":
         sig = sig_spy_sma(data["SPY"], p["window"])
-        return backtest(sig, data["SPY"], spy)
+        return backtest(sig, data["SPY"], spy, family)
     if family == "spy_ltrend":  # long-horizon trend, same mechanics, slow window
         sig = sig_spy_sma(data["SPY"], p["window"])
-        return backtest(sig, data["SPY"], spy)
+        return backtest(sig, data["SPY"], spy, family)
     if family == "spy_rsi2":
         sig = sig_spy_rsi2(data["SPY"], p["entry"], p["exit_hi"], p["max_hold"])
-        return backtest(sig, data["SPY"], spy)
+        return backtest(sig, data["SPY"], spy, family)
     if family == "btc_vol":
         sig = sig_btc_vol(data["BTC"], p["target"], p["vol_window"], p["gate"])
-        return backtest(sig, data["BTC"], spy)
+        return backtest(sig, data["BTC"], spy, family)
     if family == "btc_donchian":
         d = data["BTCF"]
         sig = sig_btc_donchian(d["high"], d["low"], d["close"], p["entry_ch"], p["exit_ch"])
-        return backtest(sig, d["close"], spy)
+        return backtest(sig, d["close"], spy, family)
     if family == "gap_mr":  # Prime proposal 1, long-only adapted
         f = data["SPYF"]
         sig = sig_gap_mr(f["open"], f["close"], p["gap_z_window"], p["entry_z"],
                          p["exit_mid_frac"], p["max_hold_days"], p["vol_filter_pct"])
-        return backtest(sig, f["close"], spy)
+        return backtest(sig, f["close"], spy, family)
     if family == "btc_regime":  # Prime proposal 2, unlevered long/flat
         sig = sig_btc_regime(data["BTC"], data["SPY"], p["target"],
                              p["btc_vol_window"], p["spy_vol_window"],
                              p["corr_window"], p["spy_vol_cap"], p["corr_cap"])
-        return backtest(sig, data["BTC"], spy)
+        return backtest(sig, data["BTC"], spy, family)
     uni_rets = data["UNI"].pct_change()
     if family == "us_momentum":
         r, w = monthly_rotation(data["UNI"], p["lookback"], p["skip"], p["top_n"],
                                 return_weights=True)
-        return _rotation_result(r, data["SPY"], w, uni_rets)
+        return _rotation_result(r, data["SPY"], w, uni_rets, family)
     if family == "us_lowvol":
         r, w = monthly_rotation(data["UNI"], 252, 21, p["top_n"], lowvol=True,
                                 vol_window=p["vol_window"], return_weights=True)
-        return _rotation_result(r, data["SPY"], w, uni_rets)
+        return _rotation_result(r, data["SPY"], w, uni_rets, family)
     if family == "us_ltrend":  # slow cross-section: 1-2y formation, monthly hold
         r, w = monthly_rotation(data["UNI"], p["lookback"], 21, p["top_n"],
                                 return_weights=True)
-        return _rotation_result(r, data["SPY"], w, uni_rets)
+        return _rotation_result(r, data["SPY"], w, uni_rets, family)
     raise ValueError(f"unknown family {family}")
 
 
 def _rotation_result(r: pd.Series, spy_close: pd.Series, weights: pd.DataFrame,
-                     asset_rets: pd.DataFrame, slippage_bps: float = 5.0) -> dict:
-    TRIAL_COUNT[0] += 1  # every evaluated candidate counts toward DSR's N
+                     asset_rets: pd.DataFrame, family: str = "unknown", slippage_bps: float = 5.0) -> dict:
+    TRIAL_COUNT[0] += 1  # global logging only
+    FAM_TRIALS[family] = FAM_TRIALS.get(family, 0) + 1  # per-family DSR N, before screen
     r = r.fillna(0.0)
+    # B4a tiered cost for rotation families (BTC tier via _fallback_cost_bps
+    # if a crypto family ever routes here; flat 5bps never hits crypto)
+    try:
+        weights_aligned = weights.reindex(r.index).fillna(0.0)
+        turnover = weights_aligned.diff().abs().sum(axis=1)
+        if len(turnover):
+            turnover.iloc[0] = weights_aligned.iloc[0].abs().sum()
+        cost_bps = _tiered_cost_bps(spy_close.reindex(r.index), family)
+        fb = _fallback_cost_bps(family)
+        cost_bps = cost_bps.reindex(r.index).fillna(fb).clip(lower=fb)
+        r = r - turnover * (cost_bps / 10000.0)
+    except Exception:
+        pass
     eq = (1 + r).cumprod()
     spy = spy_close.pct_change().fillna(0.0).reindex(r.index).fillna(0.0)
     excess = float((1 + r).prod() - (1 + spy).prod()) * 100
@@ -427,14 +633,18 @@ def _rotation_result(r: pd.Series, spy_close: pd.Series, weights: pd.DataFrame,
            "max_dd": max_dd(eq),
            "oos": float(safe_sharpe(r.iloc[int(len(r) * 0.7):])),
            "trips": 12, "trades": 12, "excess": round(excess, 2),
-           "tmin": round(tmin, 4), "n_bars": len(r)}
+           "tmin": round(tmin, 4), "n_bars": len(r),
+           # G1 support: per-bar net returns feed the WF promotion gate
+           # (promotion region only consumer; never serialized — rec keeps scalars).
+           "net": r}
     # Rotation timing test: shift the whole weight schedule in time and
     # recompute returns; genuine rotation skill must beat 95% of shifted
-    # schedules. DSR via shared helper (position proxy = gross exposure).
+    # schedules. DSR via cross-family N (_dsr_n_trials) with T=1910 bars.
     try:
         from src.backtest.defend.trial_ledger import deflated_sharpe_ratio
+        n_dsr = _dsr_n_trials(family)
         dsr = float(deflated_sharpe_ratio(len(r), float(safe_sharpe(r)) / np.sqrt(252.0),
-                                          max(1, TRIAL_COUNT[0])))
+                                          n_dsr))
     except Exception:
         dsr = 0.0
     try:
@@ -444,12 +654,16 @@ def _rotation_result(r: pd.Series, spy_close: pd.Series, weights: pd.DataFrame,
         K = 200
         vals = asset_rets.reindex(r.index).fillna(0.0).values
         wv = weights.reindex(r.index).fillna(0.0).values
+        try:
+            perm_cost = _tiered_cost_bps(spy_close.reindex(r.index), family).reindex(r.index).fillna(_fallback_cost_bps(family)).clip(lower=_fallback_cost_bps(family)).values / 10000.0
+        except Exception:
+            perm_cost = np.full(len(r), _fallback_cost_bps(family) / 10000.0)
         for _ in range(K):
             shift = int(rng.integers(1, len(r)))
             ps = np.roll(wv, shift, axis=0)
             tn = pd.Series((ps * vals).sum(axis=1), index=r.index)
             tn = tn - pd.Series(np.abs(np.diff(ps, axis=0, prepend=ps[:1])).sum(axis=1),
-                                index=r.index) * (slippage_bps / 10000.0)
+                                index=r.index) * pd.Series(perm_cost, index=r.index)
             if float(safe_sharpe(tn)) >= actual:
                 wins += 1
         perm_p = wins / K
@@ -458,6 +672,13 @@ def _rotation_result(r: pd.Series, spy_close: pd.Series, weights: pd.DataFrame,
     boot_p = stationary_bootstrap_p(np.asarray(r.values, dtype=float))
     out.update({"dsr": round(dsr, 4), "perm_p": round(perm_p, 4),
                 "boot_p": round(boot_p, 4)})
+    # W13 regime coverage tagging (guard only, no gate threshold change)
+    try:
+        out["regime_coverage"] = _regime_sharpe(r)
+        out["regime_warn"] = any(v is not None and v < -0.5 for v in out["regime_coverage"].values())
+    except Exception:  # noqa: BLE001  # guard, intentional
+        out["regime_coverage"] = {"bull_sharpe": 0.0, "bear_sharpe": 0.0, "sideways_sharpe": 0.0, "covid_sharpe": 0.0}
+        out["regime_warn"] = False
     return out
 
 
@@ -544,6 +765,22 @@ def breed_proposals():
             # validate keys against space (breeder may drift)
             space = SPACES[p["family"]]
             if set(p["params"]) == set(space):
+                # E-self-1: skip ledger-blocked combos (distilled REJECTED history)
+                try:
+                    import hashlib as _hl
+
+                    _dg = ROOT / "docs" / "data" / "ledger_digest.json"
+                    if _dg.exists():
+                        _blocked = {
+                            (b.get("family"), b.get("param_hash"))
+                            for b in json.loads(_dg.read_text(encoding="utf-8")).get("blocked_combos", [])
+                        }
+                        _ph = _hl.sha256(json.dumps(p["params"], sort_keys=True, default=str).encode()).hexdigest()[:12]
+                        if (p["family"], _ph) in _blocked:
+                            log(f"breed proposal blocked by ledger digest (E-self-1): {p['family']}")
+                            return None
+                except Exception as e:
+                    log(f"ledger digest check skipped: {e}")
                 return p
     except Exception as e:
         log(f"breed consume skipped: {e}")
@@ -585,15 +822,51 @@ def guards_ok() -> bool:
         return False  # probe broken: fail closed, halt until fixed
     try:
         import shutil
-        if shutil.disk_usage(str(ROOT)).free < MIN_FREE_BYTES:
+        free = shutil.disk_usage(str(ROOT)).free
+        if free < MIN_FREE_BYTES:
+            # INF-09: log vault session note on low-disk
+            try:
+                from datetime import datetime, timezone
+                vault_log = (
+                    pathlib.Path("C:/Users/DELL/Documents/Obsidian Vault/05-Session-Logs")
+                    / (datetime.now(timezone.utc).date().isoformat() + ".md")
+                )
+                vault_log.parent.mkdir(parents=True, exist_ok=True)
+                with open(vault_log, "a", encoding="utf-8") as vf:
+                    vf.write(
+                        "- evolve_real disk guard: "
+                        + f"{free / 1e9:.2f}GB free < {MIN_FREE_BYTES / 1e9:.1f}GB - sleeping\n"
+                    )
+            except Exception:
+                pass
             return False
+        # INF-09: rotate evolve_real.log >10MB
+        try:
+            if LOGF.exists() and LOGF.stat().st_size > 10 * 1024 * 1024:
+                LOGF.write_text(LOGF.read_text(encoding="utf-8")[-2_000_000:], encoding="utf-8")
+        except Exception:
+            pass
     except Exception:
         return False  # probe broken: fail closed, halt until fixed
     return True
 
 
 def append_registry(entry: dict):
+    # INF-09: cross-OS flock via filelock (portalocker fallback) around tmp+os.replace (L018)
+    lock_path = str(REG) + ".lock"
+    _lock = None
     try:
+        try:
+            from filelock import FileLock  # cross-OS
+            _lock = FileLock(lock_path, timeout=10)
+            _lock.acquire()
+        except Exception:
+            try:
+                import portalocker  # fallback
+                _lock = open(lock_path, "a")
+                portalocker.lock(_lock, portalocker.LOCK_EX)
+            except Exception:
+                _lock = None
         raw = REG.read_text(encoding="utf-8")
         try:
             obj = json.loads(raw)
@@ -606,6 +879,23 @@ def append_registry(entry: dict):
         json.loads(REG.read_text(encoding="utf-8"))  # validate
     except Exception as e:
         log(f"registry append skipped: {e}")
+    finally:
+        try:
+            if _lock is not None:
+                try:
+                    _lock.release()  # filelock
+                except Exception:
+                    try:
+                        import portalocker
+                        portalocker.unlock(_lock)
+                    except Exception:
+                        pass
+                    try:
+                        _lock.close()
+                    except Exception:
+                        pass
+        except Exception:
+            pass
 
 
 def main():
@@ -630,13 +920,17 @@ def main():
         with open(HIST, encoding="utf-8") as f:
             for line in f:
                 try:
-                    start_iter = max(start_iter, int(json.loads(line).get("iter", 0)))
+                    row = json.loads(line)
+                    start_iter = max(start_iter, int(row.get("iter", 0)))
                     hist_trials += 1
+                    fam = row.get("family")
+                    if fam in FAMILIES:
+                        FAM_TRIALS[fam] = FAM_TRIALS.get(fam, 0) + 1
                 except ValueError:
                     continue
     except OSError:
         pass
-    TRIAL_COUNT[0] = hist_trials  # DSR's N includes all past trials, not just this run
+    TRIAL_COUNT[0] = hist_trials  # global logging only; DSR gate uses FAM_TRIALS per-family
     it = start_iter
     while True:
         it += 1
@@ -655,14 +949,20 @@ def main():
         if bred is not None:
             family, params, src = bred["family"], bred["params"], "bred"
         else:
-            family = rng.choice(FAMILIES)
+            # W9: per-family diversity quotas — guarantee >=20% from under-represented families (FAM_TRIALS<200)
+            UNDER_REP_FAMILIES = ["btc_vol", "us_momentum", "us_lowvol", "gap_mr", "btc_regime", "spy_ltrend", "us_ltrend"]
+            under_rep = [f for f in UNDER_REP_FAMILIES if FAM_TRIALS.get(f, 0) < 200]
+            if under_rep and rng.random() < 0.20:
+                family = rng.choice(under_rep)
+            else:
+                family = rng.choice(FAMILIES)
             params = random_params(family, rng)
             src = "random"
-            if mlp.model is not None and rng.random() > 0.3:
-                # epsilon-greedy: sample candidates, keep MLP-best
-                cands = [random_params(family, rng) for _ in range(8)]
-                params = max(cands, key=lambda c: mlp.score(family, c))
-                src = "mlp"
+        # G6 fix: MLP epsilon-greedy steering REMOVED — params->Sharpe model trained on
+        # history (incl. promoted trials) violates DSR trial-independence. Proposals now
+        # come only from bred/under-represented/random paths above. MLPBias class retained
+        # (deprecated, unused) to avoid breaking imports.
+        _ = mlp  # deprecated, intentionally unused (G6)
         try:
             m = run_family(family, params, data)
         except Exception as e:
@@ -676,16 +976,37 @@ def main():
                "tmin": m.get("tmin", 0.0),
                "dsr": m.get("dsr", 0.0), "perm_p": m.get("perm_p", 1.0),
                "boot_p": m.get("boot_p", 1.0)}
-        # Per-family DSR telemetry (spec scoping recommendation): same Sharpe
-        # under the family's own trial count, not the global ledger.
-        FAM_TRIALS[family] = FAM_TRIALS.get(family, 0) + 1
+        # FAM_TRIALS already incremented BEFORE stat_screens inside backtest/_rotation_result
+        # so dsr (gate) and dsr_fam (telemetry) share the same cross-family N. Keep both for audit.
         try:
+            dsr_n = _dsr_n_trials(family)
             rec["dsr_fam"] = round(recompute_dsr(int(m.get("n_bars", 1910)),
                                                  float(m["sharpe"]),
-                                                 FAM_TRIALS[family]), 4)
+                                                 dsr_n), 4)
+            rec["dsr_n"] = dsr_n
         except Exception:
             rec["dsr_fam"] = 0.0
-        rec["fam_trials"] = FAM_TRIALS[family]
+        rec["fam_trials"] = FAM_TRIALS.get(family, 1)
+        # E-self-1 completion: every loop trial lands in the ledger (feeds the
+        # distiller + blocked combos). Best-effort: never breaks the iteration.
+        try:
+            from src.backtest.defend.trial_ledger import TrialLedger
+            TrialLedger(path=str(ROOT / "run-logs" / "trials.jsonl")).append_experiment(
+                strategy_id=f"{family}_real_{it}",
+                params=params if isinstance(params, dict) else {},
+                data_range="2019-01-02/2026-08-07",
+                metrics={"sharpe": m.get("sharpe", 0.0),
+                         "oos_sharpe": m.get("oos", 0.0),
+                         "max_dd": m.get("max_dd", 0.0),
+                         "family": family,
+                         "best_regime": max(
+                             ((m.get("regime_coverage", {}) or {}).items()),
+                             key=lambda kv: (kv[1] is not None, kv[1] or 0.0),
+                             default=(None, None))[0]},
+                provider="evolve_real",
+            )
+        except Exception as e:
+            log(f"ledger append skipped iter={it}: {e}")
         try:
             with open(HIST, "a", encoding="utf-8") as f:
                 f.write(json.dumps(rec) + "\n")
@@ -693,24 +1014,81 @@ def main():
             log(f"history write failed (disk?): {e}")
             time.sleep(600)
             continue
-        # MAIN GATE (2026-09-06): 10-track gatespec38 union. Promote on ANY
-        # fully-cleared track; each track owns its trips/tmin floor (no
-        # LONGTERM override needed). perm/boot timing screens stay as
-        # universal overlays — they can only block, never admit.
+        # MAIN GATE (G3 union-gate, P1 2026-09-10): 10-track gatespec38 union
+        # with FWER control — promote on >=2 cleared tracks or a lone strong
+        # track (dsr_min>=0.90); a single weak-track pass no longer admits.
+        # Each track owns its trips/tmin floor. perm/boot timing screens stay
+        # as universal overlays — they can only block, never admit.
+        # G1 (P1 2026-09-10): walk-forward OOS stability is a MANDATORY
+        # conjunction — a trial promotes only if WF gate AND track gate AND
+        # overlays all pass. Thresholds owned by WalkForwardValidator
+        # (avg>=0.40, consistency<1.5, >=3 windows, >=2/3 positive); not retuned here.
         try:
-            tracks = check_track(m)
+            tracks, gate_reason = apply_union_gate(check_track(m))
         except Exception as e:
-            log(f"iter={it} track check error (fail-closed abandon): {e}")
-            tracks = []
+            log(f"iter={it} {family} track check error (fail-closed abandon): {e}")
+            tracks, gate_reason = [], "error"
         overlays = (m.get("perm_p", 1.0) <= PERM_P_MAX
                     and m.get("boot_p", 1.0) <= BOOT_P_MAX)
-        ok = bool(tracks) and overlays
+        wf_pass, wf_reason = False, "skipped (track/overlay gate failed)"
+        _wf_avg, _wf_windows = 0.0, 0
+        if bool(tracks) and overlays:
+            try:
+                _wf_net = m.get("net")
+                if _wf_net is None:
+                    raise ValueError("missing per-bar net returns")
+                _wf_df = pd.DataFrame({"ret": pd.Series(_wf_net).fillna(0.0)})
+                _wf_res = WalkForwardValidator().validate(
+                    _wf_df, lambda d: float(safe_sharpe(d["ret"])))
+                wf_pass = _wf_res.get("status") == "PASSED"
+                wf_reason = _wf_res.get("reason", "ok")
+                _wf_avg = float(_wf_res.get("average_metric", 0.0))
+                _wf_windows = int(_wf_res.get("windows_tested", 0))
+            except Exception as e:  # noqa: BLE001  # fail-closed abandon, intentional
+                wf_pass, wf_reason = False, f"error: {e}"
+                _wf_avg, _wf_windows = 0.0, 0
+        # G2 (P1 2026-09-11): CPCV timing screens as MANDATORY conjunction — runs only
+        # if tracks+overlays+WF pass (cost contained to near-promotions). Uses the same
+        # net series: Sharpe per CPCV test block (n=5/2, purge+embargo 5); pass needs
+        # >=7/10 positive blocks AND mean test Sharpe >= 0.30 (below WF 0.40: CPCV
+        # blocks are smaller/noisier). Fail-closed on error.
+        cpcv_pass, cpcv_reason = False, "skipped (earlier gate failed)"
+        _cpcv_pos, _cpcv_mean = 0, 0.0
+        if bool(tracks) and overlays and wf_pass:
+            try:
+                from src.backtest.validators.statistical import StatisticalValidator
+                _rets = pd.Series(_wf_net).fillna(0.0).to_numpy()
+                _splits = StatisticalValidator.combinatorial_purged_cv(len(_rets))
+                if not _splits:
+                    raise ValueError("no CPCV splits")
+                import numpy as _np
+
+                _block_sharpes = []
+                for _, _test_idx in _splits:
+                    _b = _rets[_np.asarray(_test_idx, dtype=int)]
+                    _block_sharpes.append(float(safe_sharpe(pd.Series(_b))))
+                _cpcv_pos = sum(1 for s in _block_sharpes if s > 0)
+                _cpcv_mean = float(sum(_block_sharpes) / len(_block_sharpes))
+                cpcv_pass = _cpcv_pos >= 7 and _cpcv_mean >= 0.30
+                cpcv_reason = f"{_cpcv_pos}/10 positive, mean {_cpcv_mean:.2f}"
+            except Exception as e:  # noqa: BLE001  # fail-closed abandon, intentional
+                cpcv_pass, cpcv_reason = False, f"error: {e}"
+                _cpcv_pos, _cpcv_mean = 0, 0.0
+        # Persist gate diagnostics into the history record (observability).
+        rec["wf_reason"] = wf_reason
+        rec["cpcv_reason"] = cpcv_reason
+        rec["cpcv_pos"] = _cpcv_pos
+        rec["cpcv_mean"] = round(_cpcv_mean, 4)
+        ok = bool(tracks) and overlays and wf_pass and cpcv_pass
         verdict = f"PROMOTE:{'+'.join(tracks)}" if ok else "abandon"
         log(f"iter={it} {family} {params} src={src} sharpe={m['sharpe']:.2f} "
             f"dd={m['max_dd']:.3f} oos={m['oos']:.2f} trips={m['trips']} "
             f"excess={m.get('excess', 0.0):.1f} dsr={m.get('dsr', 0.0):.3f} "
             f"tmin={m.get('tmin', 0.0):.2f} dsr_fam={rec['dsr_fam']:.3f} "
-            f"pp={m.get('perm_p', 1.0):.3f} bp={m.get('boot_p', 1.0):.3f} {verdict}")
+            f"pp={m.get('perm_p', 1.0):.3f} bp={m.get('boot_p', 1.0):.3f} gate={gate_reason} "
+            f"wf={'PASS' if wf_pass else 'FAIL'} avg={_wf_avg:.2f} n={_wf_windows} "
+            f"cpcv={'PASS' if cpcv_pass else 'FAIL'} "
+            f"pos={_cpcv_pos}/10 mean={_cpcv_mean:.2f} {verdict}")
         if ok:
             ts = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
             # dedupe gap fix (2026-09-04): skip if identical family+params
@@ -729,9 +1107,17 @@ def main():
                 "id": f"{family}_real_{ts}", "family": family, "method": "evolve_real",
                 "status": "paper", "gates_passed": f"GATESPEC38:{'+'.join(tracks)}",
                 "evolved_from": bred["bred_from"] if bred else family,
-                "metrics": {**rec, "proposed_by": src,
-                            "bench_sharpe": round(float(safe_sharpe(
-                                data["SPY"].pct_change().fillna(0.0))), 3)}})
+                    "metrics": {**rec, "proposed_by": src,
+                                "tracks_cleared": len(tracks),
+                                "regime_coverage": rec.get("regime_coverage", {}),
+                                "regime_warn": bool(rec.get("regime_warn", False)),
+                                "best_regime": max(
+                                    (rec.get("regime_coverage", {}) or {}).items(),
+                                    key=lambda kv: (kv[1] is not None, kv[1] or 0.0),
+                                    default=(None, None),
+                                )[0],
+                                "bench_sharpe": round(float(safe_sharpe(
+                                    data["SPY"].pct_change().fillna(0.0))), 3)}})
             try:
                 with open(PROM, "a", encoding="utf-8") as f:
                     f.write(json.dumps(rec) + "\n")

@@ -1,6 +1,21 @@
+import json
 import logging
+import os
+import re
+import time
+from collections import defaultdict
+from datetime import datetime, timedelta
 
-from src.research.ticker_extractor import extract_tickers
+import defusedxml.ElementTree as ET
+import matplotlib.pyplot as plt
+import nltk
+import numpy as np
+import pandas as pd
+import requests
+import yfinance as yf
+from tqdm import tqdm
+
+from src.alpha.indicators import compute_indicators, compute_regime_returns
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
@@ -9,7 +24,6 @@ logger = logging.getLogger(__name__)
 # ============================================================================
 # WSB DD SENTIMENT ANALYTICS & PLOTTER - UNIFIED INCREMENTAL SYSTEM
 # ============================================================================
-import nltk
 
 try:
     nltk.data.find('tokenizers/punkt_tab')
@@ -17,23 +31,6 @@ try:
 except LookupError:
     nltk.download('punkt_tab')
     nltk.download('averaged_perceptron_tagger_eng')
-
-
-import json
-import os
-import re
-import defusedxml.ElementTree as ET
-from collections import defaultdict
-from datetime import datetime, timedelta
-
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import requests
-import yfinance as yf
-from tqdm import tqdm
-
-from src.alpha.indicators import compute_indicators, compute_regime_returns
 
 # ============================================================================
 # DYNAMIC SYSTEM PATH CONFIGURATION
@@ -113,8 +110,6 @@ def finbert_sentiment(text: str, tokenizer, model, device) -> dict:
     logger.warning("finbert_sentiment called but finbert is removed, returning neutral")
     return {"bullish": 0.0, "bearish": 0.0, "neutral": 1.0}
 
-import time
-
 
 def safe_write_csv(df, path):
     for i in range(3):
@@ -129,12 +124,14 @@ def safe_write_csv(df, path):
 def safe_write_json(data, path):
     for i in range(3):
         try:
-            with open(path, "w") as f: json.dump(data, f)
+            with open(path, "w") as f:
+                json.dump(data, f)
             return
         except PermissionError:
             logger.info(f"Permission Denied {path}")
             time.sleep(2**i)
-    with open(f"{path}.tmp", "w") as f: json.dump(data, f)
+    with open(f"{path}.tmp", "w") as f:
+        json.dump(data, f)
 
 
 def fetch_rss_feed() -> list[dict]:

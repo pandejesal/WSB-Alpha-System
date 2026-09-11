@@ -330,7 +330,7 @@ class TestNoExecutionSurface:
         "yfinance",
         "pandas",
     }
-    ALLOWED_ROOTS = {"numpy", "dataclasses", "typing", "__future__"}
+    ALLOWED_ROOTS = {"numpy", "dataclasses", "typing", "__future__", "collections"}  # collections.abc.Sequence is stdlib, no execution surface
 
     @staticmethod
     def _module_source() -> str:
@@ -345,9 +345,7 @@ class TestNoExecutionSurface:
         roots: set[str] = set()
         for line in source.splitlines():
             stripped = line.strip()
-            if stripped.startswith("import "):
-                roots.add(stripped.split()[1].split(".")[0])
-            elif stripped.startswith("from "):
+            if stripped.startswith("import ") or stripped.startswith("from "):
                 roots.add(stripped.split()[1].split(".")[0])
         return roots
 

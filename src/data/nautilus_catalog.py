@@ -2,11 +2,23 @@ import logging
 from pathlib import Path
 
 import pandas as pd
-from nautilus_trader.core.datetime import dt_to_unix_nanos
-from nautilus_trader.model.data import Bar, BarType
-from nautilus_trader.model.identifiers import InstrumentId, Symbol, Venue
-from nautilus_trader.model.objects import Price, Quantity
-from nautilus_trader.persistence.catalog import ParquetDataCatalog
+
+try:
+    from nautilus_trader.core.datetime import dt_to_unix_nanos  # type: ignore
+    from nautilus_trader.model.data import Bar, BarType  # type: ignore
+    from nautilus_trader.model.identifiers import (  # type: ignore
+        InstrumentId,
+        Symbol,
+        Venue,
+    )
+    from nautilus_trader.model.objects import Price, Quantity  # type: ignore
+    from nautilus_trader.persistence.catalog import ParquetDataCatalog  # type: ignore
+
+    _NAUTILUS_AVAILABLE = True
+except ModuleNotFoundError:
+    dt_to_unix_nanos = None  # type: ignore
+    Bar = BarType = InstrumentId = Symbol = Venue = Price = Quantity = ParquetDataCatalog = None  # type: ignore
+    _NAUTILUS_AVAILABLE = False
 
 from src.data.providers.chain import get_provider
 
@@ -14,8 +26,10 @@ logger = logging.getLogger(__name__)
 
 class NautilusCatalogBuilder:
     def __init__(self, catalog_path: str = "nautilus_data_catalog"):
+        if not _NAUTILUS_AVAILABLE or ParquetDataCatalog is None:
+            raise ImportError("nautilus_trader not installed — install 'nautilus_trader' to use NautilusCatalogBuilder")
         self.catalog_path = Path(catalog_path)
-        self.catalog = ParquetDataCatalog(self.catalog_path.as_posix())
+        self.catalog = ParquetDataCatalog(self.catalog_path.as_posix())  # type: ignore
 
     def build_catalog(self, tickers: list[str], start_date: str = "2018-01-01", end_date: str | None = None):
         if end_date is None:
@@ -27,7 +41,7 @@ class NautilusCatalogBuilder:
             try:
                 df = provider.fetch_ohlcv([ticker], start_date, end_date)
                 if df.empty:
-                    raise Exception(f"No data returned for {ticker}")  # noqa: TRY002 - Standard exception is sufficient here
+                    raise Exception(f"No data returned for {ticker}")
 
                 if 'Ticker' in df.columns:
                     df = df[df['Ticker'] == ticker]
@@ -36,7 +50,7 @@ class NautilusCatalogBuilder:
 
                 logger.info(f"Successfully downloaded {len(df)} rows for {ticker}")
                 self._process_and_write(ticker, df)
-            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+            except Exception as e:
                 logger.warning(f"Download failed for {ticker}: {e!s}. Skipping ticker.")
                 continue
 

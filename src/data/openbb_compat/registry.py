@@ -3,13 +3,15 @@ MIT License - Clean-room inspired by OpenBB-finance/OpenBB, not vendored
 — AGPL text not copied.
 """
 
-from typing import Dict
-from .base import ProviderAdapter
 from importlib.metadata import entry_points
+from typing import Dict
+
+from .base import ProviderAdapter
+
 
 class Registry:
     def __init__(self):
-        self.providers: Dict[str, ProviderAdapter] = {}
+        self.providers: dict[str, ProviderAdapter] = {}
 
     def include(self, name: str, adapter: ProviderAdapter) -> None:
         self.providers[name] = adapter

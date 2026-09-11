@@ -1,19 +1,18 @@
 """Tests for multi-agent role templates and role-based routing."""
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 from src.alpha.multi_agent_roles import (
+    DEFAULT_PIPELINE,
+    EXECUTION,
     RESEARCHER,
     RISK,
-    EXECUTION,
-    DEFAULT_PIPELINE,
     AgentRole,
     get_pipeline_for_family,
     route_signal_through_agents,
 )
 from src.ops.signals import UnsupportedRuleShape
-
 
 # ---------------------------------------------------------------------------
 # Fixtures

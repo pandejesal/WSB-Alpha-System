@@ -13,12 +13,12 @@ import pytest
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
-from src.signals.qlib_alpha158 import compute_alpha158, get_feature_names
 from src.backtest.qlib_topk import (
     compute_metrics,
     spy_buyhold,
     topk_rotation,
 )
+from src.signals.qlib_alpha158 import compute_alpha158, get_feature_names
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "market_data_2019_2026", "ohlcv")
 SPY_CSV = os.path.join(os.path.dirname(__file__), "..", "data", "spy_ohlcv_2019_2026.csv")

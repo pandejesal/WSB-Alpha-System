@@ -1,0 +1,52 @@
+# Hunt Session Brief: Factor Rotation Rehab (W11)
+# Plan: plan_1_gates_strategies.md W11 lines 253-273, Batch-C Breadth + Safety Hardening
+family: factor_rotation
+universe: "30-stock liquid large-cap panel (rotation_universe 30 names: AAPL/MSFT/GOOGL/AMZN/NVDA/META/TSLA/JPM/V/JNJ/WMT/MA/PG/UNH/XOM/HD/DIS/BAC/CVX/KO/PEP/COST/AVGO/LLY/ABBV/NKE/CRM/ORCL/NFLX/AMD; excludes SPY/QQQ/AGG/BND/SHY/GLD/VTI/IWM; daily OHLCV 2019-2026, 1910 bars loop window, SPY identical-window twin for excess, T+1 tiered cost W5)"
+hypothesis: "Cross-sectional factor rotation beyond pure momentum/lowvol: MOM 12-1 (126d skip 21d) + VAL inverse P/E (price/200SMA proxy) + QUA ROE/stability (rv20/Sharpe proxy) composite (avg z-score) filtered by quality D/E<2 OPM>0 FCF>0, with 30-stock large-cap panel and forward-filled monthly holding (tmin>=0.80), beats SPY buy-hold net of tiered cost (5-7bps +1bp vol-scaled) with Sharpe>=0.85, OOS>=0.55, excess>=0.02pp, DSR>=0.95 (Track6 buy_hold_companion) or Sharpe>=0.70 trips>=15 DSR>=0.92 (Track7 statistical_rigor), perm_p<=0.05 boot_p<=0.05. Exploits 80% of factor zoo (value 3-5%, quality 2-4%, multi-factor 5-8% Fama-French/Novy-Marx) with realistic cost and W2 strict WF gate."
+acceptance: "Edge claim pre-registered via hunt_runner run freeze (docs/data prereg); YAML specs (factor_momentum_top3.yaml + quality_lowvol_top10.yaml rehab) parse via strategy_registry.validate_spec; registry wired via hunt_runner collect without code patch (specs via hunt_runner only, never hand-edit registry); Walk-Forward OOS per W2 strict gate (avg>=0.40 consistency<1.5 windows>=3 >=2/3 positive); L2 target Track6 buy_hold_companion (sharpe>=0.85 maxDD<=0.35 oos>=0.55 excess>=0.02 tmin>=0.80 DSR>=0.95) OR Track7 statistical_rigor (sharpe>=0.70 maxDD<=0.35 oos>=0.45 excess>=0.02 DSR>=0.92 trips>=15) with 30-stock panel excess>0 on 1910-bar window perm/boot<=0.05; honest ABANDON if 0 survivors after 3 candidates; paper-only fail-closed."
+lookback_constraints: "Daily OHLCV only (market_data_2019_2026/ohlcv/*.csv), 30-stock panel, no intraday, no lookahead (signal.shift(1) T+1), vol-scaled tiered cost W5 applied identically in backtest() and _rotation_result() (equities 5-7bps +1bp, vol_scalar=rolling_std(20)/median_60 scale2 cap2 fallback 5bps never 0), identical-window SPY twin for excess (SPY 1910 bars +245.5% loop window, 1678 bars +137.1% paper window), T=1910 bars for DSR N_family per-family, forward-filled monthly weights for tmin>=0.80 (not 1-day)."
+edge_gate_params:
+  primary_track: buy_hold_companion
+  fallback_track: statistical_rigor
+  track6_buy_hold_companion:
+    sharpe_min: 0.85
+    max_dd_max: 0.35
+    oos_min: 0.55
+    excess_min: 0.02
+    dsr_min: 0.95
+    tmin_min: 0.80
+    trips_min: 0
+  track7_statistical_rigor:
+    sharpe_min: 0.70
+    max_dd_max: 0.35
+    oos_min: 0.45
+    excess_min: 0.02
+    dsr_min: 0.92
+    trips_min: 15
+  universal_overlays:
+    perm_p_max: 0.05
+    boot_p_max: 0.05
+  sharpe_min: 0.85
+  max_dd_max: 0.35
+  oos_min: 0.55
+  excess_min: 0.02
+  dsr_min: 0.95
+  tmin_min: 0.80
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  param_grid:
+    factor_mom_lookback: [12]
+    factor_mom_skip: [1]
+    mom_lookback_days: [126, 252]
+    mom_skip_days: [21]
+    val_metric: ["inverse_pe_proxy"]
+    quality_metric: ["roe_stability_proxy"]
+    top_n: [3, 10]
+    vol_lookback_days: [20]
+    quality_filter: ["D/E<2 OPM>0 FCF>0"]
+  cost_model: "tiered W5 equities 5-7bps +1bp vol_scalar rolling_std(20)/median_60 scale2 cap2 fallback 5bps never 0 identical-window SPY twin"
+  wf_gate: "W2 strict: avg OOS >=0.40 and consistency<1.5 and windows>=3 and >=2/3 positive (src/backtest/walk_forward_engine.py)"
+  universe_size: 30
+  benchmarks: ["SPY identical-window buy-hold", "stationary bootstrap K=200 block21", "circular permutation 200", "DSR per-family N (T=1910)"]
+  paper_only: true
+  fail_closed: true

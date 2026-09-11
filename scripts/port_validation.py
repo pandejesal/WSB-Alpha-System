@@ -1,10 +1,20 @@
+import datetime
 import json
 import sys
-import yaml
-import datetime
-import yfinance as yf
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+import yaml
+import yfinance as yf
+
+from src.ops.signals import (
+    get_btc_vol_target_sma100_signal,
+    get_dual_momentum_signal,
+    get_spy_rsi2_signal,
+    get_spy_sma200_signal,
+    get_us_momentum_top5_signal,
+)
+
 
 def load_yaml(filepath):
     try:
@@ -20,21 +30,16 @@ def check_schema(spec, required_keys):
         return False, f"Missing keys: {missing}"
     return True, "OK"
 
-from src.ops.signals import (
-    get_us_momentum_top5_signal,
-    get_spy_sma200_signal,
-    get_spy_rsi2_signal,
-    get_btc_vol_target_sma100_signal,
-    get_dual_momentum_signal
-)
 
 def validate_us_momentum_top5():
     spec = load_yaml("strategies/us_momentum_top5.yaml")
-    if not spec: return False, {"error": "Failed to load"}
+    if not spec:
+        return False, {"error": "Failed to load"}
 
     req_keys = ["id", "name", "family", "venue", "universe", "indicators", "parameters", "entry_rules", "exit_rules", "position_sizing", "fee_model", "benchmark_result", "robustness_notes", "feasibility_at_100", "risks"]
     passed, msg = check_schema(spec, req_keys)
-    if not passed: return False, {"schema_check": msg}
+    if not passed:
+        return False, {"schema_check": msg}
 
     params = spec.get("parameters", {})
     if params.get("top_n") != 5 or params.get("lookback_days") != 126 or params.get("skip_days") != 21:
@@ -58,11 +63,13 @@ def validate_us_momentum_top5():
 
 def validate_spy_sma200():
     spec = load_yaml("strategies/spy_sma200.yaml")
-    if not spec: return False, {"error": "Failed to load"}
+    if not spec:
+        return False, {"error": "Failed to load"}
 
     req_keys = ["id", "name", "family", "venue", "universe", "indicators", "parameters", "entry_rules", "exit_rules", "position_sizing", "fee_model", "benchmark_result", "robustness_notes", "feasibility_at_100", "risks"]
     passed, msg = check_schema(spec, req_keys)
-    if not passed: return False, {"schema_check": msg}
+    if not passed:
+        return False, {"schema_check": msg}
 
     params = spec.get("parameters", {})
     if params.get("window") != 200:
@@ -83,11 +90,13 @@ def validate_spy_sma200():
 
 def validate_spy_rsi2():
     spec = load_yaml("strategies/spy_rsi2.yaml")
-    if not spec: return False, {"error": "Failed to load"}
+    if not spec:
+        return False, {"error": "Failed to load"}
 
     req_keys = ["id", "name", "family", "venue", "universe", "indicators", "parameters", "entry_rules", "exit_rules", "position_sizing", "fee_model", "benchmark_result", "robustness_notes", "feasibility_at_100", "risks"]
     passed, msg = check_schema(spec, req_keys)
-    if not passed: return False, {"schema_check": msg}
+    if not passed:
+        return False, {"schema_check": msg}
 
     params = spec.get("parameters", {})
     if params.get("entry") != 10 or params.get("exit_rsi") != 70 or params.get("hold_days") != 5:
@@ -108,11 +117,13 @@ def validate_spy_rsi2():
 
 def validate_btc_vol_target_sma100():
     spec = load_yaml("strategies/btc_vol_target_sma100.yaml")
-    if not spec: return False, {"error": "Failed to load"}
+    if not spec:
+        return False, {"error": "Failed to load"}
 
     req_keys = ["id", "name", "family", "venue", "universe", "indicators", "parameters", "entry_rules", "exit_rules", "position_sizing", "fee_model", "benchmark_result", "robustness_notes", "feasibility_at_100", "risks"]
     passed, msg = check_schema(spec, req_keys)
-    if not passed: return False, {"schema_check": msg}
+    if not passed:
+        return False, {"schema_check": msg}
 
     params = spec.get("parameters", {})
     if params.get("target_vol") != 0.30 or params.get("vol_window") != 30 or params.get("gate_window") != 100:
@@ -133,11 +144,13 @@ def validate_btc_vol_target_sma100():
 
 def validate_dual_momentum():
     spec = load_yaml("strategies/dual_momentum.yaml")
-    if not spec: return False, {"error": "Failed to load"}
+    if not spec:
+        return False, {"error": "Failed to load"}
 
     req_keys = ["id", "name", "family", "venue", "universe", "indicators", "parameters", "entry_rules", "exit_rules", "position_sizing", "fee_model", "benchmark_result", "robustness_notes", "feasibility_at_100", "risks"]
     passed, msg = check_schema(spec, req_keys)
-    if not passed: return False, {"schema_check": msg}
+    if not passed:
+        return False, {"schema_check": msg}
 
     params = spec.get("parameters", {})
     if params.get("lookback_days") != 21 or params.get("skip_days") != 21:
@@ -159,11 +172,13 @@ def validate_dual_momentum():
 
 def validate_portfolio():
     spec = load_yaml("strategies/flagship_portfolio_v1.yaml")
-    if not spec: return False, {"error": "Failed to load"}
+    if not spec:
+        return False, {"error": "Failed to load"}
 
     req_keys = ["id", "name", "type", "created", "source", "members", "allocation", "fees", "constraints", "expected_metrics", "gates"]
     passed, msg = check_schema(spec, req_keys)
-    if not passed: return False, {"schema_check": msg}
+    if not passed:
+        return False, {"schema_check": msg}
 
     # check btc floor and vol window
     alloc = spec.get("allocation", {})

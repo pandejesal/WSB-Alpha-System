@@ -146,8 +146,8 @@ def main():
     res = {
         "claim": "multiasset",
         "weekly_net_returns": {str(k): round(v, 6) for k, v in net.items()},
-        "train_weeks": int(len(train)),
-        "oos_weeks": int(len(oos)),
+        "train_weeks": len(train),
+        "oos_weeks": len(oos),
         "instruments": INSTRUMENTS,
     }
 

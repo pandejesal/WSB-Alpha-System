@@ -1,12 +1,14 @@
-import pytest
-import tempfile
-import json
-import sqlite3
-import os
 import gc
+import json
+import os
+import sqlite3
+import tempfile
 import time
 
+import pytest
+
 from src.research.memory_engine import MemoryEngine
+
 
 @pytest.fixture
 def memory_engine(tmp_path):

@@ -28,7 +28,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-DEFAULT_SAFETY_CONFIG: Dict[str, Any] = {
+DEFAULT_SAFETY_CONFIG: dict[str, Any] = {
     "safety_enabled": True,
     "max_trade_notional_usd": 10_000.0,  # 0 = uncapped
     "max_symbol_concentration_pct": 20.0,  # of account equity; 0 = uncapped
@@ -41,11 +41,11 @@ DEFAULT_SAFETY_CONFIG: Dict[str, Any] = {
 @dataclass
 class SafetyVerdict:
     allowed: bool
-    reasons: List[str] = field(default_factory=list)
-    checks: Dict[str, dict] = field(default_factory=dict)
+    reasons: list[str] = field(default_factory=list)
+    checks: dict[str, dict] = field(default_factory=dict)
 
 
-def _finite_float(value: Any) -> Optional[float]:
+def _finite_float(value: Any) -> float | None:
     """NaN/inf/garbage -> None (unavailable), never a silent pass."""
     try:
         parsed = float(value)
@@ -55,9 +55,9 @@ def _finite_float(value: Any) -> Optional[float]:
 
 
 class SafetyGuard:
-    def __init__(self, config: Optional[Dict[str, Any]] = None,
-                 state_path: Optional[Path] = None,
-                 kill_switch_path: Optional[Path] = None):
+    def __init__(self, config: dict[str, Any] | None = None,
+                 state_path: Path | None = None,
+                 kill_switch_path: Path | None = None):
         merged = dict(DEFAULT_SAFETY_CONFIG)
         if config:
             for key in merged:
@@ -68,7 +68,7 @@ class SafetyGuard:
         self.kill_switch_path = Path(kill_switch_path or Path.home() / ".wsb-alpha" / "KILL_SWITCH")
         self._state = self._load_state()
 
-    def _load_state(self) -> Dict[str, Any]:
+    def _load_state(self) -> dict[str, Any]:
         try:
             raw = json.loads(self.state_path.read_text(encoding="utf-8"))
             if isinstance(raw, dict):
@@ -127,13 +127,13 @@ class SafetyGuard:
             self._save_state()
 
     def check_order(self, symbol: str, notional: float,
-                    account: Optional[Dict[str, float]] = None,
-                    position_value: Optional[float] = None,
+                    account: dict[str, float] | None = None,
+                    position_value: float | None = None,
                     risk_reducing: bool = False) -> SafetyVerdict:
         if not self.enabled:
             return SafetyVerdict(True, checks={"safety": {"status": "skipped", "detail": "disabled"}})
-        reasons: List[str] = []
-        checks: Dict[str, dict] = {}
+        reasons: list[str] = []
+        checks: dict[str, dict] = {}
 
         if self.kill_switch_active():
             return SafetyVerdict(False, [f"kill switch active: {self.kill_switch_reason()}"],
@@ -232,7 +232,7 @@ class IntradayMarginState:
     cash: float = 100000.0
     gross_exposure: float = 0.0
     intraday_pnl: float = 0.0  # realized + unrealized, may be negative
-    open_calls: List[Dict[str, Any]] = field(default_factory=list)
+    open_calls: list[dict[str, Any]] = field(default_factory=list)
     restricted_until: str = ""  # ISO date; empty = unrestricted
 
 
@@ -286,7 +286,7 @@ def check_intraday_order(state: IntradayMarginState, notional: float,
 
 
 def record_margin_call(state: IntradayMarginState, deficit: float,
-                       today: str) -> Dict[str, Any]:
+                       today: str) -> dict[str, Any]:
     """Log an intraday margin call; escalate to restriction after 5 days unmet."""
     call = {"date": today, "deficit": deficit, "met": False}
     state.open_calls.append(call)

@@ -20,7 +20,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-
 SCHEMA = """
 CREATE TABLE IF NOT EXISTS signals(
   id INTEGER PRIMARY KEY AUTOINCREMENT, ts TEXT, symbol TEXT, signal TEXT,
@@ -59,7 +58,7 @@ class Journal:
 
     def log_trade(self, symbol: str, entry_price: float, exit_price: float,
                   qty: float, side: str, strategy: str,
-                  metadata: Optional[Dict[str, Any]] = None) -> Dict[str, float]:
+                  metadata: dict[str, Any] | None = None) -> dict[str, float]:
         pnl = (exit_price - entry_price) * qty * (1 if side == "buy" else -1)
         pnl_pct = (exit_price / entry_price - 1) * 100 * (1 if side == "buy" else -1) \
             if entry_price else 0.0
@@ -87,14 +86,14 @@ class Journal:
                          (_now(), phase, summary, detail))
         self.con.commit()
 
-    def find_similar_setups(self, symbol: Optional[str] = None,
-                            strategy: Optional[str] = None,
-                            signal: Optional[str] = None,
-                            strength: Optional[float] = None,
-                            limit: int = 5) -> List[Dict[str, Any]]:
+    def find_similar_setups(self, symbol: str | None = None,
+                            strategy: str | None = None,
+                            signal: str | None = None,
+                            strength: float | None = None,
+                            limit: int = 5) -> list[dict[str, Any]]:
         """Deterministic stand-in for vector similarity search."""
         q = "SELECT symbol,signal,strength,strategy,reason FROM signals WHERE 1=1"
-        args: List[Any] = []
+        args: list[Any] = []
         if symbol:
             q += " AND symbol=?"
             args.append(symbol)
@@ -113,10 +112,10 @@ class Journal:
         scored.sort(key=lambda x: x[0])
         return [r for _, r in scored[:limit]]
 
-    def trade_stats(self, symbol: Optional[str] = None,
-                    strategy: Optional[str] = None) -> Dict[str, float]:
+    def trade_stats(self, symbol: str | None = None,
+                    strategy: str | None = None) -> dict[str, float]:
         q = "SELECT pnl,pnl_pct FROM trades WHERE 1=1"
-        args: List[Any] = []
+        args: list[Any] = []
         if symbol:
             q += " AND symbol=?"
             args.append(symbol)

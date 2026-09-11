@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """WORKER A - GDELT connectivity probe. Prints HTTP status + sample payload preview.
 Probes mode=TimelineVol (counts) and mode=artlist (top docs) for a tiny quarter."""
-import json, sys, urllib.parse, urllib.request
+import json
+import sys
+import urllib.parse
+import urllib.request
 
 UA = {"User-Agent": "Mozilla/5.0 (research harvest; keyless) GDELT"}
 API = "https://api.gdeltproject.org/api/v2/doc/doc"

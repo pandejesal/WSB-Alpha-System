@@ -1,12 +1,13 @@
-import pytest
-import pandas as pd
 import numpy as np
+import pandas as pd
+import pytest
 
 from src.ops.signals import (
+    get_breakout_burst_signal,
     get_us_lowvol_top30_signal,
     get_us_pead_top5_signal,
-    get_breakout_burst_signal
 )
+
 
 def test_lowvol_top30_fails_closed():
     res = get_us_lowvol_top30_signal(pd.DataFrame(), [])

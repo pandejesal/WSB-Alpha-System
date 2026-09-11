@@ -1,8 +1,10 @@
 import unittest
-from src.execution.execution_bridge import ExecutionBridge
+
 from src.execution.alpaca_broker import AlpacaBroker
-from src.risk.position_sizer import PositionSizer
+from src.execution.execution_bridge import ExecutionBridge
 from src.risk.circuit_breakers import CircuitBreaker
+from src.risk.position_sizer import PositionSizer
+
 
 class TestExecutionBridge(unittest.TestCase):
     def test_bridge_execution_flow(self):

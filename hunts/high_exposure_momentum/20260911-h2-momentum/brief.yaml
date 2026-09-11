@@ -1,0 +1,39 @@
+family: high_exposure_momentum
+run_id: 20260911-h2-momentum
+variant: high_exposure_momentum_h2
+universe: "10-symbol mega-cap panel (SPY/QQQ/AAPL/MSFT/NVDA/AMD/META/GOOGL/AMZN/TSLA, daily OHLCV 2019-2026, dropna-aligned, T=1910 bars) via evolve_real.load_csv/UNIVERSE lineage; identical-window SPY twin for excess"
+hypothesis: "12-1 slow-formation (252d lookback, 21d skip) diversified rotation (top 8 equal-weight, monthly rebalance, forward-filled daily holding, 20d vol-confirm 1.2x median_60) cuts concentrated-momentum crash DD to <=35% while preserving Sharpe>=0.75, identical-window excess>=+0.05pp, DSR>=0.90 (fam N=53), tmin>=0.70. Priors v1=(126,21,5) v2=(189,5,10) v3=(63,42,3) all failed Track 5 on maxDD (0.456/0.488/0.514) + DSR (0.845/0.834/0.862); registry us_momentum=(95,42,7) retired. H2 probes untried combo (252,21,8): slowest formation + widest diversification in grid, directly aimed at the DD blocker."
+acceptance: "Edge claim pre-registered via preregister freeze BEFORE backtest and verified; YAML validates via strategy_registry.validate_spec; Walk-Forward OOS>=0.50, Sharpe>=0.75, maxDD<=0.35, excess>=0.05pp, DSR>=0.90 (min of fam-N=53 and lineage cross-family N, fail-closed), tmin>=0.70, trips>=6, perm_p<=0.05, boot_p<=0.05 (GATESPEC38 Track 5 high_exposure_momentum); L1 Sharpe>=0.50 DD<=0.35 excess>0; WF 3-fold overlay mean fold OOS>=0.50; CPCV-proxy overlay (4 blocks/6 paths, returns-level, no embargo, disclosed); verdict recorded via preregister record (HONEST_ABANDON allowed)."
+kill_criteria: "Falsified in-sample (any Track 5 term fails incl. DD>35% or DSR<0.90 on either N); fails WF OOS or perm/boot (p>0.05); 0 tracks cleared -> HONEST_ABANDON, combo (252,21,8) retired to TABOO ledger, no silent overwrite."
+edge_gate_params:
+  track: high_exposure_momentum
+  primary_track: high_exposure_momentum
+  sharpe_min: 0.75
+  max_dd_max: 0.35
+  oos_min: 0.50
+  excess_min: 0.05
+  dsr_min: 0.90
+  tmin_min: 0.70
+  trips_min: 6
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  param_grid:
+    lookback: [63, 126, 189, 252]
+    skip: [5, 21, 42]
+    top_n: [3, 5, 8, 10]
+    vol_confirm: [1.2]
+  tried_combos_taboo:
+    - {lookback: 126, skip: 21, top_n: 5, verdict: HONEST_ABANDON, dd: 0.456, dsr: 0.845}
+    - {lookback: 189, skip: 5, top_n: 10, verdict: HONEST_ABANDON, dd: 0.488, dsr: 0.834}
+    - {lookback: 63, skip: 42, top_n: 3, verdict: HONEST_ABANDON, dd: 0.514, dsr: 0.862}
+    - {lookback: 95, skip: 42, top_n: 7, verdict: retired, source: registry_us_momentum}
+  h2_params:
+    lookback: 252
+    skip: 21
+    top_n: 8
+    vol_confirm: 1.2
+    exec_delay: 1
+    drift_rebal: 0.05
+    fam_trials_N: 53
+  cost_model: "tiered W5 (equities 5-7bps slippage + 2.5bp commission, vol_scalar=rolling_std(20)/median_60 scale 2 cap 2, fallback 7.5bps) via evolve_real._rotation_result lineage, T+1 via shift(1)+ffill"
+  benchmarks: ["SPY identical window", "WF 3-fold (frozen params)", "CPCV-proxy 4 blocks/6 paths returns-level", "rotation-timing perm K=200 (lineage)", "stationary bootstrap block21 (lineage)"]

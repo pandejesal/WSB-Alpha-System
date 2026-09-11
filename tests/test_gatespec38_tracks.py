@@ -14,8 +14,8 @@ Coverage:
 import pytest
 
 from src.backtest.gatespec38_tracks import (
-    TRACKS,
     SPY_BASELINE,
+    TRACKS,
     check_track,
     check_track_detailed,
     get_track,
@@ -23,7 +23,6 @@ from src.backtest.gatespec38_tracks import (
     recompute_dsr,
     required_sharpe_for_dsr,
 )
-
 
 # --- Fixtures ---
 

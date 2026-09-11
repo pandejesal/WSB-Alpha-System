@@ -56,6 +56,8 @@ Vault = human-readable repo-truth, Mnemosyne = vector recall. Both required.
 4. `validation.py:286` permutation, CPCV, walk-forward OOS, `trial_ledger.py:545` DSR, min 50 trades, Sharpe/DD thresholds
 5. `preregister.py record` — honest ABANDON if `p>0.05` or OOS fail.
 
+> **Cost model footnote (W5 2026-09-08):** `evolve_real.py:backtest()` and `_rotation_result()` use identical tiered cost: equities 5-7bps slippage +1bp commission vol-scaled, BTC 15-25bps +1bp vol-scaled +10bps borrow guard if short; `cost_bps = base + commission + (vol_scalar-1).clip(0)*scale` where `vol_scalar=rolling_std(20)/median_60`, scale 2 (equities) /10 (BTC), fallback 5bps never 0; vars in `config/risk_config.py`.[^cost-w5]
+
 ### Param discipline
 - Pre-register search space, Bayesian opt, not naive grid. Current 0/16 PASS + `fb3b07f` honest-signal fix shows need for indicator normalization — re-run `test_evaluate_candidate.py:369` after any signal change.
 - One family per session, `hunt_runner.py run/collect/status` enforces isolation.
@@ -92,4 +94,6 @@ See `HUNT_PROTOCOL.md:103` — canonical. Summary: brief template (falsifiable h
 Order per Q16=A: (1) Mnemosyne fix+crons ✓ (2) this playbook (3) shard hotspots <400 lines (4) `trial_ledger.py:545` DSR gate. Do not act past frontier without gate evidence.
 
 ---
-*Last updated: 2026-08-21 — grilling rounds Q1-Q17 CONFIRMED, frontier empty.*
+[^cost-w5]: **W5 cost model (2026-09-08):** `evolve_real.py:backtest()` and `_rotation_result()` deduct tiered cost identically: equities 5-7bps slippage +1bp commission; BTC 15-25bps +1bp; `cost_bps = base + commission + (vol_scalar-1).clip(0)*scale` where `vol_scalar=rolling_std(20)/median_60`, scale=2 (equities, cap 2) /10 (BTC, cap 10); borrow guard +10bps if `pos<0` (long/flat guard, not used now); missing vol fallback 5bps never 0; vars in `config/risk_config.py`. See `docs/GATESPEC38_TRACKS.md` §1.
+
+*Last updated: 2026-08-21 — grilling rounds Q1-Q17 CONFIRMED, frontier empty. W5 2026-09-08 cost tiers added (equities 5-7+1 BTC 15-25+1 vol-scaled fallback 5bps).*

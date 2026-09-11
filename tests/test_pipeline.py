@@ -1,7 +1,9 @@
-import pandas as pd
 import numpy as np
-from src.backtest.permutation_tester import PermutationValidator
+import pandas as pd
+
 from src.backtest.incubation_manager import StrategyStateManager
+from src.backtest.permutation_tester import PermutationValidator
+
 
 # Mock Strategy for testing
 def mock_strategy_evaluator(df: pd.DataFrame) -> float:

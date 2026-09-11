@@ -3,10 +3,16 @@ import os
 import sys
 from unittest.mock import patch
 
+import numpy as np
 import pandas as pd
+from yfinance.exceptions import YFRateLimitError
 
-from src.ops.daily import run_check_mode
-from src.ops.signals import _fetch_single_yahoo_v8
+from src.ops.daily import MOMENTUM_UNIVERSE, run_check_mode
+from src.ops.signals import (
+    _fetch_single_yahoo_v8,
+    get_dual_momentum_signal,
+    get_us_momentum_top5_signal,
+)
 
 # Tests for the daily check mode script
 
@@ -134,8 +140,6 @@ def test_btc_floor_logic(tmp_path, monkeypatch):
     assert abs(weights["btc_vol_target_sma100"] - 0.05) < 1e-6
     # Check sum is 1.0
     assert abs(sum(weights.values()) - 1.0) < 1e-6
-
-from yfinance.exceptions import YFRateLimitError
 
 
 @patch("src.ops.signals.fetch_daily_yahoo_v8")
@@ -468,11 +472,6 @@ def test_v8_json_parse(monkeypatch):
     assert df.index[0] == pd.to_datetime(1660743000, unit='s')
     assert df.iloc[0]['Close'] == 426.65
     assert df.iloc[1]['Close'] == 422.14
-
-import numpy as np
-
-from src.ops.daily import MOMENTUM_UNIVERSE
-from src.ops.signals import get_dual_momentum_signal, get_us_momentum_top5_signal
 
 
 def _make_padded_mock_df(tickers, n_weekdays=200):

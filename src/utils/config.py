@@ -28,6 +28,8 @@ class Settings(BaseSettings):
     reddit_client_secret: SecretStr = Field(default=SecretStr(""), validation_alias="REDDIT_CLIENT_SECRET")
     binance_api_key: str = Field(default="", validation_alias="BINANCE_API_KEY")
     binance_secret_key: SecretStr = Field(default=SecretStr(""), validation_alias="BINANCE_SECRET_KEY")
+    bybit_api_key: str = Field(default="", validation_alias="BYBIT_API_KEY")
+    bybit_api_secret: SecretStr = Field(default=SecretStr(""), validation_alias="BYBIT_API_SECRET")
     telegram_bot_token: SecretStr = Field(default=SecretStr(""), validation_alias="TELEGRAM_BOT_TOKEN")
 
     live_trading_enabled: bool = False
@@ -67,6 +69,8 @@ class APIKeysStub:
         self.reddit_client_secret = s.reddit_client_secret
         self.binance_api_key = s.binance_api_key
         self.binance_secret_key = s.binance_secret_key
+        self.bybit_api_key = s.bybit_api_key
+        self.bybit_api_secret = s.bybit_api_secret
         self.telegram_bot_token = s.telegram_bot_token
 
 class TradingStub:
@@ -83,6 +87,15 @@ class BenchmarkSpiderStub:
         self.lookback_days = bs.lookback_days
         self.min_sharpe_ratio = bs.min_sharpe_ratio
         self.max_drawdown_pct = bs.max_drawdown_pct
+
+def get_secret_str(v) -> str:
+    """Normalize SecretStr handling with explicit isinstance check; no try/except AttributeError fallback."""
+    if isinstance(v, SecretStr):
+        return v.get_secret_value()
+    if isinstance(v, str):
+        return v
+    return "" if v is None else str(v)
+
 
 class ConfigWrapper:
     def __init__(self, settings: Settings):

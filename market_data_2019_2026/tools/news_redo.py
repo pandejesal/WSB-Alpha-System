@@ -29,10 +29,11 @@ run exits gracefully -- it NEVER fabricates article/tone data.
 import csv
 import json
 import os
+import random
 import sys
 import time
-import random
-from datetime import date as dt_date, timedelta as dt_timedelta
+from datetime import date as dt_date
+from datetime import timedelta as dt_timedelta
 
 ROOT = r"C:\Users\DELL\Documents\Default Project\WSB-Alpha-System-build"
 NEWS = os.path.join(ROOT, "market_data_2019_2026", "news")

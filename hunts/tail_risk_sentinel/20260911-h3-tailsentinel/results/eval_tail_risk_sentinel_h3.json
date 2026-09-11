@@ -1,0 +1,80 @@
+{
+  "id": "tail_risk_sentinel_h3",
+  "family": "tail_risk_sentinel",
+  "params": {
+    "sma_fast": 50,
+    "sma_mid": 100,
+    "sma_slow": 200,
+    "level_all_above": 1.0,
+    "level_below_fast": 0.65,
+    "level_below_mid": 0.3,
+    "level_below_slow": 0.0
+  },
+  "metrics": {
+    "sharpe": 1.0271494608275757,
+    "cagr": 0.10798583442667464,
+    "max_dd": 0.2031408044769956,
+    "oos_sharpe": 1.3405015496397186,
+    "excess": -127.96,
+    "tmin": 0.7204,
+    "dsr": 0.7029,
+    "trips": 73,
+    "perm_p": 0.075,
+    "boot_p": 0.005,
+    "n_bars": 1910,
+    "fam_trials": 52
+  },
+  "tracks_cleared": [],
+  "tracks": {
+    "tail_risk_sentinel": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": true,
+        "max_dd_max": true,
+        "oos_min": true,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Asymmetric downside hedge / crisis alpha overlay"
+    },
+    "drawdown_warrior": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": true,
+        "max_dd_max": true,
+        "oos_min": true,
+        "excess_min": false,
+        "dsr_min": false,
+        "trips_min": true
+      },
+      "archetype": "Low-exposure drawdown-avoidance timing"
+    }
+  },
+  "overlays": {
+    "wf_3fold_oos": [
+      1.4157,
+      0.1629,
+      1.3618
+    ],
+    "wf_mean_oos": 0.9801,
+    "wf_ok": true,
+    "cpcv_proxy_paths": [
+      0.9576,
+      0.8706,
+      1.1742,
+      0.8746,
+      1.1901,
+      1.0951
+    ],
+    "cpcv_mean": 1.027,
+    "cpcv_min": 0.8706,
+    "cpcv_frac_pos": 1.0,
+    "cpcv_disclosure": "returns-level proxy, 4 blocks/6 paths, no embargo/purge"
+  },
+  "L1_pass": false,
+  "L2_Track4_pass": false,
+  "fallback_Track2_pass": false,
+  "verdict": "HONEST_ABANDON",
+  "paper_only": true
+}

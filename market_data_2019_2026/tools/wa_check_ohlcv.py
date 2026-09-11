@@ -1,4 +1,5 @@
-import csv, os
+import csv
+import os
 
 ROOT = r"C:\Users\DELL\Documents\Default Project\WSB-Alpha-System-latest"
 OHLCV = os.path.join(ROOT, "market_data_2019_2026", "ohlcv")
@@ -38,7 +39,9 @@ for s in symbols:
             if last and d <= last:
                 incr = False
             try:
-                lo = float(row[3]); hi = float(row[2]); cl = float(row[4])
+                lo = float(row[3])
+                hi = float(row[2])
+                cl = float(row[4])
                 if hi < lo or lo < 0:
                     bad.append((s, f"H/L violation row {n}"))
                     break

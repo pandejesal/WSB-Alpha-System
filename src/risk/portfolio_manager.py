@@ -56,7 +56,7 @@ class KellySizer:
         self,
         edge_estimate: float,
         variance: float,
-        kelly_fraction: Optional[float] = None,
+        kelly_fraction: float | None = None,
     ) -> float:
         """
         Compute optimal position size using the Kelly criterion.
@@ -165,7 +165,7 @@ class PortfolioManager:
         self,
         strategy_id: str,
         account_equity: float,
-        trade_features: Optional[dict[str, Any]] = None,
+        trade_features: dict[str, Any] | None = None,
     ) -> float:
         """
         Compute target allocation using Kelly sizing when available.

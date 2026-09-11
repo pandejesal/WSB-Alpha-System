@@ -70,8 +70,8 @@ class ConditionContext:
     buying_power: float = 100000.0
     portfolio_value: float = 100000.0
     initial_value: float = 100000.0
-    positions: Dict[str, float] = field(default_factory=dict)  # sym -> qty
-    avg_cost: Dict[str, float] = field(default_factory=dict)  # sym -> avg price
+    positions: dict[str, float] = field(default_factory=dict)  # sym -> qty
+    avg_cost: dict[str, float] = field(default_factory=dict)  # sym -> avg price
     last_trade_idx: int = -10**9
     current_idx: int = 0
 
@@ -87,7 +87,7 @@ class AbstractCondition:
     ) -> pd.Series:
         return pd.Series(False, index=prices.index)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         raise NotImplementedError
 
 
@@ -109,7 +109,7 @@ class SimplePriceCondition(AbstractCondition):
     type = "SimplePriceCondition"
 
     def __init__(self, target_price: float, comparator: str = "LT",
-                 symbol: Optional[str] = None):
+                 symbol: str | None = None):
         _require_comparator(comparator)
         self.target_price = float(target_price)
         self.comparator = comparator
@@ -140,7 +140,7 @@ class MovingAverageCondition(AbstractCondition):
 
     def __init__(self, window: int = 5, standard_deviation: float = -1.0,
                  ohlc: str = "close", statistic: str = "mean",
-                 comparator: str = "LTE", symbol: Optional[str] = None):
+                 comparator: str = "LTE", symbol: str | None = None):
         if statistic not in ("mean", "high", "low"):
             raise ValueError(f"unknown statistic {statistic}")
         _require_comparator(comparator)
@@ -202,7 +202,7 @@ class BuyingPowerIs(AbstractCondition):
 class HavePosition(AbstractCondition):
     type = "HavePositionCondition"
 
-    def __init__(self, symbol: Optional[str] = None, negate: bool = False):
+    def __init__(self, symbol: str | None = None, negate: bool = False):
         self.symbol = symbol
         self.negate = negate
 
@@ -241,7 +241,7 @@ class PositionPercentChange(AbstractCondition):
     type = "PositionPercentChangeCondition"
 
     def __init__(self, threshold_pct: float, comparator: str = "GTE",
-                 symbol: Optional[str] = None):
+                 symbol: str | None = None):
         _require_comparator(comparator)
         self.threshold_pct = float(threshold_pct)
         self.comparator = comparator
@@ -301,7 +301,7 @@ class EnoughTimePassed(AbstractCondition):
 class AndCondition(AbstractCondition):
     type = "AndCondition"
 
-    def __init__(self, conditions: List[AbstractCondition]):
+    def __init__(self, conditions: list[AbstractCondition]):
         self.conditions = conditions
 
     def is_true(self, ctx: ConditionContext) -> bool:
@@ -321,7 +321,7 @@ class AndCondition(AbstractCondition):
 class OrCondition(AbstractCondition):
     type = "OrCondition"
 
-    def __init__(self, conditions: List[AbstractCondition]):
+    def __init__(self, conditions: list[AbstractCondition]):
         self.conditions = conditions
 
     def is_true(self, ctx: ConditionContext) -> bool:
@@ -369,7 +369,7 @@ class ThenCondition(AbstractCondition):
                 "second": self.second.to_dict(), "max_bars": self.max_bars}
 
 
-def create(spec: Dict[str, Any]) -> AbstractCondition:
+def create(spec: dict[str, Any]) -> AbstractCondition:
     """ConditionFactory.create — build a condition tree from a plain dict."""
     t = spec.get("type", "")
     if t == "SimplePriceCondition":

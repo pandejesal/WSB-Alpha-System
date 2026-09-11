@@ -1,7 +1,10 @@
+from unittest.mock import Mock, patch
+
 import pytest
-from unittest.mock import patch, Mock
 import requests
+
 from src.research.browser_scraper import fetch_headlines, score_text
+
 
 @patch("src.research.browser_scraper.requests.get")
 def test_fetch_headlines_success(mock_get):

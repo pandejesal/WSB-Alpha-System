@@ -4,6 +4,28 @@ import unittest
 
 import numpy as np
 import pandas as pd
+import pytest
+
+try:
+    import vectorbt  # type: ignore
+
+    _VBT_AVAILABLE_FOR_TEST = True
+except (ImportError, ValueError):
+    _VBT_AVAILABLE_FOR_TEST = False
+
+try:
+    import riskfolio  # type: ignore
+
+    _RISK_AVAILABLE_FOR_TEST = True
+except ModuleNotFoundError:
+    _RISK_AVAILABLE_FOR_TEST = False
+
+try:
+    import arch  # type: ignore
+
+    _ARCH_AVAILABLE_FOR_TEST = True
+except ModuleNotFoundError:
+    _ARCH_AVAILABLE_FOR_TEST = False
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from src.backtest.engines.vectorbt_engine import VectorBTEngine
@@ -13,6 +35,7 @@ from src.risk.portfolio_optimization import PortfolioOptimizer
 
 class TestQuantPhase3(unittest.TestCase):
 
+    @pytest.mark.skipif(not _VBT_AVAILABLE_FOR_TEST, reason="vectorbt not installed — plotly>=6 incompatible or missing")
     def test_t1_execution_rule(self):
         engine = VectorBTEngine()
 
@@ -31,6 +54,7 @@ class TestQuantPhase3(unittest.TestCase):
             self.assertEqual(processed.iloc[i]['execution_date'], expected_exec_dates[i])
             self.assertTrue(processed.iloc[i]['execution_date'] > processed.iloc[i]['timestamp'])
 
+    @pytest.mark.skipif(not _ARCH_AVAILABLE_FOR_TEST, reason="arch not installed")
     def test_whites_reality_check(self):
         np.random.seed(42)
         # Mock random strategy returns (mean 0)
@@ -54,6 +78,7 @@ class TestQuantPhase3(unittest.TestCase):
         p_val_good = StatisticalValidator.whites_reality_check(good_strat, benchmark, replications=100)
         self.assertLess(p_val_good, 0.05) # Should be significant
 
+    @pytest.mark.skipif(not _RISK_AVAILABLE_FOR_TEST, reason="riskfolio not installed")
     def test_portfolio_cvar_allocator(self):
         np.random.seed(42)
         returns = pd.DataFrame({
@@ -76,6 +101,7 @@ class TestQuantPhase3(unittest.TestCase):
         max_alloc = weights.max()
         self.assertLessEqual(max_alloc, 0.2501)
 
+    @pytest.mark.skipif(not _RISK_AVAILABLE_FOR_TEST, reason="riskfolio not installed")
     def test_portfolio_erc_allocator(self):
         np.random.seed(42)
         returns = pd.DataFrame({

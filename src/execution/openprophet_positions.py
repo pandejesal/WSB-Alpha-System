@@ -78,7 +78,7 @@ class ManagedPosition:
 
 def check_pre_trade(symbol: str, allocation: float, portfolio_value: float,
                     cash: float, open_positions: int, trades_today: int,
-                    day_pnl_pct: float, cfg: RiskConfig) -> List[str]:
+                    day_pnl_pct: float, cfg: RiskConfig) -> list[str]:
     """Return list of violations; empty list = pass. Fail-closed."""
     v = []
     if allocation / max(portfolio_value, 1e-9) * 100 > cfg.max_allocation_pct:
@@ -94,9 +94,9 @@ def check_pre_trade(symbol: str, allocation: float, portfolio_value: float,
     return v
 
 
-def update_position(pos: ManagedPosition, price: float, bar_idx: int) -> List[Dict[str, Any]]:
+def update_position(pos: ManagedPosition, price: float, bar_idx: int) -> list[dict[str, Any]]:
     """Evaluate one price tick. Returns intended orders (dicts, paper-only)."""
-    orders: List[Dict[str, Any]] = []
+    orders: list[dict[str, Any]] = []
     if pos.status not in ("ACTIVE", "PARTIAL"):
         return orders
     pos.current_price = price
@@ -150,7 +150,7 @@ def open_position(position_id: str, symbol: str, allocation: float, price: float
                   trades_today: int, day_pnl_pct: float,
                   cfg: RiskConfig, stop_loss_pct: float = 15.0,
                   take_profit_pct: float = 50.0,
-                  partial: Optional[Dict[str, float]] = None) -> ManagedPosition:
+                  partial: dict[str, float] | None = None) -> ManagedPosition:
     """Validate checklist then construct a PENDING managed position.
 
     Raises ValueError on any violation (fail-closed). Caller activates on fill.

@@ -17452,3 +17452,1127 @@ Fin)
 - 2026-09-04T16:50:09.010743+00:00 evolve gold_trend_kelly EDGE_FOUND (Ling Flash Fin)
 
 - 2026-09-04T16:51:22.726719+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:11:41.990498+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:11:58.259932+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:12:11.356958+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:12:58.746165+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:13:40.500531+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:14:40.871177+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:15:25.542391+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:15:32.785889+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:15:45.357993+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:16:21.393621+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:16:27.087350+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:16:32.080935+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:17:10.472144+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:17:16.986204+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:17:23.741256+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:18:02.790427+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:18:10.504148+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:18:27.789328+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:19:03.527535+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:19:12.213249+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:19:18.789290+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:19:56.831170+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:20:03.155080+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:20:08.946269+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:20:45.649998+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:20:52.883533+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:20:59.770589+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:21:38.608320+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:21:59.918054+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:22:42.157147+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:23:25.336181+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:23:38.508370+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:23:56.782316+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:24:49.625413+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:25:08.168160+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:25:54.051424+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:27:48.873204+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:29:01.035502+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:29:44.332436+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:30:26.966425+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:30:38.622628+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:30:50.561230+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:31:31.066163+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:31:40.610299+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:31:49.977360+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:32:28.097538+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:32:35.395115+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:32:43.175642+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:33:22.408192+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:33:29.936870+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:33:36.782977+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:34:21.197274+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:34:32.673420+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:34:41.683527+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:35:23.414224+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:35:31.552198+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:35:39.633176+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:36:17.507244+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:36:28.107344+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:36:37.975498+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:37:16.472063+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:37:25.048585+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:37:33.174155+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:38:11.108533+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:38:20.503673+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:38:32.713351+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:39:23.644178+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:39:42.792347+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:40:09.793164+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:41:22.833411+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:42:11.611944+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:43:03.312436+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:45:33.248915+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:47:38.215732+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:48:43.014784+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:49:51.633970+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:50:06.755649+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:50:18.838447+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:50:58.413797+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:51:07.060827+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:51:15.437314+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:51:52.259729+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:51:58.890254+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:52:05.661305+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:52:42.571343+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:52:48.812913+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:52:54.766956+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:53:39.874147+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:53:45.886206+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:53:51.647205+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:54:26.915920+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:54:32.033960+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:54:36.789711+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:55:21.811458+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:55:28.257509+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:55:34.201712+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:56:10.778225+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T15:56:16.694756+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:56:22.601279+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:56:57.728795+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T15:57:02.504320+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:57:07.740883+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:57:42.789973+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T15:57:47.450019+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:57:52.131537+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:58:28.102764+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:58:33.139814+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:58:38.507855+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:59:17.679931+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:59:24.554985+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T15:59:30.420740+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:00:07.246189+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:00:14.676840+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:00:28.687016+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:01:06.274863+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:01:14.914467+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:01:26.420536+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:02:19.864190+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:02:51.795933+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:04:02.846688+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:06:37.001170+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:08:08.657841+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:09:03.227270+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:09:52.326982+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:10:05.438510+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:10:17.796212+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:11:20.459728+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:11:52.814738+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:12:14.854640+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:13:13.260455+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:13:40.170346+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:14:05.476550+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:14:58.258197+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:15:26.703881+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:16:10.316787+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:17:05.448023+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:17:26.779225+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:17:44.466910+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:18:36.298423+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:19:17.482924+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:20:34.858332+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:22:58.937358+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:24:20.978022+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:25:50.780035+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:27:30.892889+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:28:15.529750+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:28:55.215464+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:29:56.397199+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:30:26.944343+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:30:58.145499+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:31:44.992006+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:32:05.112366+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:32:23.875901+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:33:08.859787+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:33:21.970279+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:33:34.450907+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:34:22.043857+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:34:35.289958+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:34:49.588115+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:35:32.992977+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:35:43.877552+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:35:55.198188+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:36:36.405537+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:36:44.805124+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:36:54.496222+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:37:35.609292+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:37:54.030011+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:38:08.276235+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:38:50.661644+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:39:03.405837+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:39:16.301368+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:40:09.401921+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:40:28.846712+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:40:53.639423+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:42:19.783162+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:42:52.925840+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:43:27.768651+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:44:16.506204+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:44:30.100971+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:45:00.491995+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:45:41.540936+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:45:54.539842+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:46:05.574423+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:46:41.961871+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:46:48.042728+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:46:54.248830+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:47:29.466997+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:47:34.433116+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:47:39.203157+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:48:14.235520+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:48:19.139140+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:48:24.185266+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:48:58.561857+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:49:02.985391+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:49:07.310892+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:49:41.594786+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:49:45.846157+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:49:50.231273+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:50:25.427463+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:50:31.668015+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:50:40.771562+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:51:15.583249+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:51:20.000264+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:51:24.491263+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:51:59.338442+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:52:04.037463+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:52:08.904996+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:52:43.453764+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:52:48.240913+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:52:52.935068+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:53:27.636017+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:53:32.275697+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:53:37.066263+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:54:12.176677+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:54:16.830191+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:54:21.831742+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:54:56.588723+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:55:01.448443+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:55:06.254539+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:55:41.331766+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:55:46.159603+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:55:51.195967+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:56:26.033820+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T16:56:30.704825+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:56:35.556818+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:57:11.614811+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T16:57:17.474894+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:57:22.591843+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:57:57.190470+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T16:58:02.109238+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:58:07.193081+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:58:41.897838+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:58:46.846888+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:58:51.577515+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:59:26.336533+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:59:31.180582+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T16:59:36.141724+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:00:10.969641+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:00:15.829773+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:00:20.719396+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:00:55.606907+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:01:00.565417+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:01:05.545172+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:01:40.517463+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:01:45.420606+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:01:50.897129+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:02:25.731395+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:02:30.728031+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:02:36.428200+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:03:20.403621+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:03:29.154025+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:03:37.878505+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:04:14.806462+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:04:21.516031+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:04:28.678139+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:05:06.021904+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:05:13.172535+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:05:20.169586+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:05:56.599663+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:06:03.451247+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:06:10.041829+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:06:46.082277+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:06:52.140802+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:06:58.129328+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:07:34.318138+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:07:40.375363+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:07:46.414460+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:08:22.618455+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:08:28.855605+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:08:35.047174+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:09:10.831742+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:09:17.025309+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:09:23.402836+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:10:01.159398+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:10:08.282921+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:10:14.898614+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:10:51.159852+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:10:57.217852+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:11:03.547431+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:11:39.394673+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:11:45.177196+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:11:51.165260+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:12:27.353654+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:12:33.302713+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:12:39.943243+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:13:15.899741+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:13:21.963518+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:13:28.012628+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:14:04.137387+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:14:10.622497+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:14:16.559128+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:14:52.186818+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:14:58.170343+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:15:05.272873+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:15:41.386210+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:15:49.293787+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:15:56.690900+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:16:34.485457+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:16:41.768026+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:16:48.396027+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:17:25.076955+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:17:32.357005+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:17:37.296554+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:18:11.857159+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:18:16.807859+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:18:21.661902+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:18:56.321609+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:19:02.150823+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:19:07.216343+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:19:41.893894+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:19:46.619546+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:19:51.408769+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:20:26.438433+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:20:31.138622+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:20:35.840156+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:21:10.419187+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:21:15.312705+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:21:20.241792+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:21:54.881120+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:21:59.620810+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:22:04.307862+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:22:40.564812+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:22:46.518948+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:22:52.135085+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:23:26.776953+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:23:31.542078+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:23:36.296324+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:24:11.076368+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:24:15.784936+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:24:20.575323+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:24:55.457659+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:25:00.624248+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:25:05.356338+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:25:39.890090+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:25:44.607756+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:25:49.449924+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:26:23.999294+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:26:28.876812+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:26:33.757850+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:27:08.462184+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:27:13.249240+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:27:18.033766+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:27:52.656897+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:27:57.454471+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:28:02.333730+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:28:37.021429+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:28:43.076538+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:28:51.664169+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:29:26.242704+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:29:31.054950+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:29:36.333794+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:30:13.173416+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:30:20.227101+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:30:26.151350+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:31:01.736003+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:31:10.736562+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:31:18.849715+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:31:53.882327+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:31:58.812470+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:32:04.000994+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:32:38.591500+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:32:43.375759+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:32:48.130478+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:33:22.858557+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:33:27.806215+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:33:32.716264+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:34:08.847149+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:34:15.396740+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:34:21.219447+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:34:56.930660+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:35:04.973184+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:35:14.300760+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:35:51.231394+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:35:58.014421+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:36:05.060539+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:36:41.239832+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:36:47.525891+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:36:53.743889+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:37:29.496728+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:37:35.276367+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:37:40.958891+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:38:17.203180+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:38:23.091177+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:38:28.943403+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:39:04.699591+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:39:10.485645+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:39:16.351174+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:39:52.209773+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:39:58.240299+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:40:04.384882+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:40:40.531402+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:40:46.702975+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:40:52.624508+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:41:28.830548+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:41:35.302192+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:41:42.158241+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:42:18.659880+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:42:24.765468+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:42:31.461802+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:43:07.403857+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:43:13.704383+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:43:20.548915+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:43:56.327721+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:44:02.318289+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:44:08.514296+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:44:44.240993+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:44:50.228677+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:44:56.183454+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:45:31.966881+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:45:37.783932+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:45:43.720628+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:46:19.853321+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:46:25.854895+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:46:32.808534+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:47:08.851913+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:47:14.832545+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:47:20.724217+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:47:57.924693+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:48:03.514274+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:48:15.983852+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:48:51.403903+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:48:56.214662+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:49:01.152760+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:49:35.796949+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:49:40.612475+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:49:45.246629+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:50:19.949637+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:50:24.648658+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:50:29.411641+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:51:04.070373+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:51:08.741374+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:51:13.475596+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:51:48.180223+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:51:52.925409+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:51:57.695089+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:52:32.339626+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:52:37.194754+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:52:41.983330+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:53:16.764721+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:53:21.485817+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:53:26.223862+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:54:01.047451+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:54:05.740312+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:54:10.491526+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:54:46.541096+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:54:52.651769+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:54:58.494861+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:55:33.227397+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:55:37.869966+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:55:42.681180+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:56:17.257513+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:56:22.115551+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:56:26.808391+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:57:01.469436+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T17:57:06.185212+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:57:10.860331+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:57:45.585685+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T17:57:50.204808+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:57:55.182698+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:58:29.914018+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T17:58:34.586923+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:58:39.172345+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:59:13.671841+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:59:18.533149+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:59:23.237292+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T17:59:57.798850+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:00:02.943084+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:00:07.851740+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:00:42.589026+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:00:48.331100+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:00:52.448663+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:01:27.239777+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:01:32.040337+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:01:36.763345+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:02:11.436411+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:02:16.104946+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:02:21.082467+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:02:55.784212+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:03:00.515147+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:03:05.231673+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:03:40.893805+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:03:46.784922+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:03:52.665445+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:04:29.173587+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:04:35.675690+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:04:41.478681+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:05:17.161890+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:05:23.100506+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:05:28.917040+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:06:04.989318+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:06:10.725386+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:06:16.531418+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:06:52.349881+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:06:58.603677+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:07:04.639262+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:07:42.150456+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:07:49.892505+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:07:57.032675+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:08:32.772938+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:08:39.455513+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:08:45.258081+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:09:20.934958+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:09:27.051534+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:09:33.011120+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:10:09.154156+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:10:15.313203+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:10:21.334728+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:10:57.081738+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:11:03.346369+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:11:09.205991+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:11:45.122293+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:11:51.316469+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:11:57.414523+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:12:33.178681+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:12:39.491259+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:12:45.829255+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:13:21.402817+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:13:27.663392+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:13:34.772434+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:14:12.465872+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:14:19.839928+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:14:27.088412+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:15:04.208415+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:15:10.220632+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:15:16.063718+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:15:52.318695+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:15:58.577830+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:16:04.608449+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:16:40.921688+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:16:47.021688+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:16:52.732279+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:17:28.610638+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:17:34.404164+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:17:40.323686+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:18:16.385411+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:18:22.249506+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:18:27.964603+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:19:02.617202+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:19:07.475320+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:19:12.329907+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:19:46.924302+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:19:52.296749+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:19:59.201271+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:20:33.980089+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:20:38.989171+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:20:43.798356+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:21:18.515758+00:00 evolve us_momentum_top5 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:21:23.309783+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:21:28.391088+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:22:03.139775+00:00 evolve spy_sma200 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:22:08.011304+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:22:12.837105+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:22:47.526444+00:00 evolve btc_vol_target_sma100 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:22:52.416489+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:22:57.140325+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:23:31.658788+00:00 evolve us_lowvol_top30 no edge (Ling Flash Fin)
+
+- 2026-09-09T18:23:36.486941+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:23:41.282237+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:24:15.972589+00:00 evolve cta_tick_filtered no edge (Ling Flash Fin)
+
+- 2026-09-09T18:24:20.686691+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)
+
+- 2026-09-09T18:24:25.573418+00:00 evolve gold_trend_kelly no edge (Ling Flash Fin)
+
+- 2026-09-09T18:25:00.313446+00:00 evolve continuous_growth_defensive no edge (Ling Flash Fin)

@@ -1,10 +1,100 @@
 #!/usr/bin/env python3
 import argparse
+import json
+import os
 import sys
-from src.ops.preregistration import freeze_preregistration, record_evaluation
+
+import yaml
+
+from src.backtest.defend.trial_ledger import TrialLedger
+from src.ops.preregistration import (
+    check_recorded_report_hash,
+    freeze_preregistration,
+    record_evaluation,
+    verify_prereg_freeze,
+)
+
+
+def _append_prereg_trial_to_ledger(spec_path: str, eval_filepath: str) -> tuple[str | None, str]:
+    """Best-effort ledger wiring for the non-loop preregister record path.
+
+    Appends one TrialLedger row per record_evaluation call (default
+    run-logs/trials.jsonl, overridable via TRIAL_LEDGER_PATH). The data_range
+    embeds the evaluation timestamp so repeated records grow the ledger
+    instead of colliding on the content hash. Never raises: ledger failure
+    must not fail the record command.
+
+    Ledger-truth ownership: the hunt loop owns ledger truth; this record
+    path is a best-effort mirror only, so a ``duplicate`` outcome here is
+    informational (the loop row stands) rather than an error.
+
+    Returns ``(sha, outcome)`` where outcome is one of
+    ``appended`` | ``duplicate`` | ``failed``.
+    """
+    try:
+        with open(spec_path, "r") as fh:
+            spec = yaml.safe_load(fh)
+        if not isinstance(spec, dict):
+            print("WARNING: ledger skipped (spec is not a YAML mapping)", file=sys.stderr)
+            return None, "failed"
+        with open(eval_filepath, "r") as fh:
+            eval_data = json.load(fh)
+        if not isinstance(eval_data, dict):
+            eval_data = {}
+    except Exception as exc:  # noqa: BLE001 - ledger is best-effort
+        print(f"WARNING: ledger skipped (could not read spec/eval: {exc})", file=sys.stderr)
+        return None, "failed"
+
+    try:
+        family = str(spec.get("family", "unknown"))
+        strategy_id = str(spec.get("id") or spec.get("name") or family)
+        params = spec.get("parameters")
+        if params is None:
+            params = spec.get("params", {})
+        if not isinstance(params, dict):
+            params = {}
+        metrics: dict = {}
+        try:
+            wf = eval_data.get("walk_forward")
+            if isinstance(wf, dict):
+                for key in ("sharpe", "profit_factor", "max_dd", "max_drawdown_pct",
+                            "max_drawdown", "total_trades"):
+                    if key in wf:
+                        metrics[key] = wf[key]
+            dsr = eval_data.get("dsr")
+            if isinstance(dsr, (int, float)) and "sharpe" not in metrics:
+                metrics["sharpe"] = dsr
+        except Exception:  # noqa: BLE001, S110 - metrics are best-effort
+            pass
+        evaluated_at = str(eval_data.get("evaluated_at", "unknown"))
+        data_range = f"prereg:{family}:{evaluated_at}"
+        ledger_path = os.environ.get("TRIAL_LEDGER_PATH", "run-logs/trials.jsonl")
+        sha = TrialLedger(path=ledger_path).append_experiment(
+            strategy_id=strategy_id,
+            params=params,
+            data_range=data_range,
+            metrics=metrics,
+            provider="preregister:record",
+        )
+        if sha is None:
+            print("WARNING: ledger skipped duplicate trial (already logged)", file=sys.stderr)
+            print("ledger=duplicate")
+            return None, "duplicate"
+        else:
+            print(f"Ledger appended trial {sha} to {ledger_path}")
+            print(f"ledger=appended")
+            return sha, "appended"
+    except Exception as exc:  # noqa: BLE001 - ledger is best-effort
+        print(f"WARNING: ledger append failed ({exc}); record kept", file=sys.stderr)
+        print("ledger=failed")
+        return None, "failed"
+
 
 def main():
-    parser = argparse.ArgumentParser(description="Pre-registration and evaluation tool for OpenCode/Jules hunt sessions.")
+    parser = argparse.ArgumentParser(
+        description="Pre-registration and evaluation tool for OpenCode/Jules hunt sessions.",
+        epilog="Run freeze/record as separate commands; do not chain with &&.",
+    )
     subparsers = parser.add_subparsers(dest="command", required=True)
 
     # Freeze command
@@ -28,6 +118,13 @@ def main():
     status_parser.add_argument("family", help="The family name to check")
     status_parser.add_argument("--docs-dir", default="docs/data", help="Directory containing pre-registration docs")
 
+    # Verify command (B3a/G9 fail-closed freeze gate)
+    verify_parser = subparsers.add_parser("verify", help="Verify a freeze exists with matching spec SHA-256 (fails closed)")
+    verify_parser.add_argument("spec_path", help="Path to the strategy spec YAML")
+    verify_parser.add_argument("--claim", help="Expected frozen claim (checked when provided)")
+    verify_parser.add_argument("--cycle", type=int, help="Hunt cycle number (defaults to latest)")
+    verify_parser.add_argument("--docs-dir", default="docs/data", help="Directory containing pre-registration docs")
+
     args = parser.parse_args()
 
     if args.command == "freeze":
@@ -42,12 +139,28 @@ def main():
         try:
             filepath = record_evaluation(args.spec_path, args.verdict, args.cycle, args.eval_path, args.registry, args.docs_dir)
             print(f"Successfully recorded evaluation at {filepath}")
+            _append_prereg_trial_to_ledger(args.spec_path, filepath)
         except Exception as e:
             print(f"Error recording evaluation: {e}", file=sys.stderr)
             sys.exit(1)
 
     elif args.command == "status":
         print(f"Status check for {args.family} not fully implemented yet.")
+
+    elif args.command == "verify":
+        try:
+            filepath = verify_prereg_freeze(args.spec_path, args.claim, args.cycle, args.docs_dir)
+            print(f"Pre-registration freeze verified at {filepath}")
+            # R-B1: report-hash drift check — loud warning naming both hashes,
+            # informational only (exit stays 0).
+            hash_msg = check_recorded_report_hash(args.spec_path, args.cycle, args.docs_dir)
+            if hash_msg is not None:
+                if hash_msg.startswith(("WARNING", "UNVERIFIED")):
+                    print(hash_msg, file=sys.stderr)
+                print(hash_msg)
+        except Exception as e:
+            print(f"Pre-registration freeze verification failed: {e}", file=sys.stderr)
+            sys.exit(1)
 
 if __name__ == "__main__":
     main()

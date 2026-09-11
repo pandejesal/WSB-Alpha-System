@@ -1,0 +1,79 @@
+# Pre-registration: quality_low_vol
+Cycle: 16
+Date: 2026-09-09 08:38:57
+
+## Claim
+W11 rehab quality_lowvol_top10: 30-stock panel quality D/E<2 OPM>0 FCF>0 then rv20 bottom-10 lowvol equal-weight monthly forward-filled tmin>=0.80, realistic tiered cost W5, W2 strict WF avg>=0.40 consistency<1.5 windows>=3, targets Track6 sharpe>=0.85 oos>=0.55 excess>=0.02 tmin>=0.80 DSR>=0.95 or Track7 sharpe>=0.70 trips>=15 DSR>=0.92, perm/boot<=0.05, SPY identical-window 1910 bars, paper-only
+
+## Strategy Spec
+```yaml
+id: quality_lowvol_top10
+name: US Quality + Low-Volatility Hybrid Top-10 (W11 rehab)
+family: quality_low_vol
+venue: alpaca
+universe: "30-stock liquid large-cap panel (rotation_universe 30 names: AAPL/MSFT/GOOGL/AMZN/NVDA/META/TSLA/JPM/V/JNJ/WMT/MA/PG/UNH/XOM/HD/DIS/BAC/CVX/KO/PEP/COST/AVGO/LLY/ABBV/NKE/CRM/ORCL/NFLX/AMD; excludes SPY/QQQ/AGG/BND/SHY/GLD/VTI/IWM; SPY baseline identical-window 1910 bars T+1 tiered cost)"
+pre_registration_ref: "docs/data/cycle9_prereg_quality_low_vol.md"
+gates_passed: "0/5"
+verdict: "PENDING_W11_REHAB"
+eval_records: "docs/data/cycle9_eval_quality_low_vol.json"
+signal:
+  entry: >
+    Two-step pipeline with realistic cost and W2 WF gate. (1) Symbolic safety pre-filter: Debt/Equity <2.0, Operating Margin >0, FCF >0 (trailing 4Q, fail-closed skip if data missing). (2) Rank survivors by 20-day realized vol (std log-returns * sqrt252); hold bottom 10 lowest-vol names. Equal weight 1/10, forward-filled until next monthly rebalance (tmin>=0.80). T+1 execution, tiered cost W5.
+  exit: >
+    At each month-end: drop names falling out of bottom-10 vol rank or failing quality re-screen. No intra-month exits except drift-band (>5%). Forward-filled holding.
+  sizing: "Equal weight 1/10, full investment, fractional shares, forward-filled"
+  caps:
+    max_concurrent_positions: 10
+parameters:
+  quality_filter:
+    debt_equity_max: 2.0
+    operating_margin_min: 0.0
+    fcf_positive: true
+  vol_lookback_days: 20
+  top_n: 10
+  rebalance: "monthly (last trading bar of month, forward-filled)"
+  exec_delay: 1
+  drift_rebal: 0.05
+  warmup_days: 340
+  universe_size: 30
+  cost_model: "tiered W5: equities 5-7bps slippage +1bp commission vol_scalar=rolling_std(20)/median_60 scale 2 cap 2, fallback 5bps never 0; identical in _rotation_result()"
+  walk_forward_gate: "W2 strict: avg OOS >=0.40 and consistency <1.5 and windows>=3 and >=2/3 positive (src/backtest/walk_forward_engine.py)"
+indicators:
+  - "rv20: 20-day realized vol (std log-returns * sqrt252)"
+  - "debt_equity: Total Debt / Total Equity (latest quarterly)"
+  - "operating_margin: Operating Income / Revenue (trailing 4Q)"
+  - "fcf: Free Cash Flow = Operating CF - CapEx (trailing 4Q)"
+  - "quality_filter: D/E<2 OPM>0 FCF>0 symbolic safety pre-filter"
+  - "cost_tiered: 5-7bps vol-scaled +1bp commission (W5)"
+  - "wf_gate: W2 strict conjunction (OOS_MIN 0.40, CONSISTENCY_MAX 1.5, MIN_WINDOWS 3)"
+entry_rules:
+  - "At each month-end: apply quality filter to 30-stock panel (D/E<2 OPM>0 FCF>0, fail-closed skip if missing)"
+  - "Reject any name where D/E >=2.0, OPM <=0, or FCF <=0"
+  - "From survivors, rank by trailing 20-day realized vol ascending"
+  - "Hold bottom 10 lowest-vol names; equal weight 1/10, forward-filled until next month (tmin>=0.80)"
+exit_rules:
+  - "Drop at next month-end if falls below bottom-10 vol rank"
+  - "Drop immediately if fails D/E, OPM, or FCF re-screen"
+  - "Drift-based rebalance only (>5%); forward-filled"
+position_sizing:
+  - "$100 account: 10 x ~$10 equal-weight; fractional shares on Alpaca, forward-filled"
+  - "min order notional $1 enforced; no margin, no PDT; T+1"
+fee_model:
+  commission: "$0 (Alpaca) + 1bp tiered commission per W5"
+  slippage: "5-7bps slippage vol-scaled (equities) +1bp commission; cost_bps = base5 +1 + (vol_scalar-1).clip(0)*2 cap2; fallback 5bps never 0; identical-window SPY twin for excess"
+  settlement: "T+1 cash; min $1"
+benchmark_result:
+  benchmark: "SPY buy-and-hold, identical 1910-bar window, T+1 tiered cost"
+  full: "PENDING_W11_REHAB"
+  oos_2023plus: "PENDING"
+  expected_oos_sharpe: "0.55+ for Track6 buy_hold_companion; WF OOS>=0.40 required"
+feasibility_at_100:
+  - "10 x ~$10 fully invested; fractional shares; forward-filled tmin>=0.80"
+  - "Monthly rebalance ~10 orders; tiered cost realistic ~6-8bps"
+risks:
+  - "Quality trap, low-vol reversal gap, factor crowding, data staleness, survivorship bias (30 survivors bias), 10-name concentration"
+version: 2
+status: "hunting_w11"
+w11_rehab: "2026-09-09: 30-stock panel (rotation_universe), realistic tiered cost W5, W2 strict WF gate, forward-filled tmin>=0.80, SPY baseline identical-window kept"
+
+```

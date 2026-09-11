@@ -31,7 +31,7 @@ DEFAULT_CONFIDENCE_EDGE = {
 FALLBACK_STOP_PCT = 0.05
 
 
-def compute_atr(bars, period: int = 14) -> Optional[float]:
+def compute_atr(bars, period: int = 14) -> float | None:
     try:
         if bars is None or len(bars) < period + 1:
             return None
@@ -81,7 +81,7 @@ class RiskParameters:
     confidence_edge: dict = field(default_factory=lambda: dict(DEFAULT_CONFIDENCE_EDGE))
 
     @classmethod
-    def from_dict(cls, overrides: Optional[dict]) -> "RiskParameters":
+    def from_dict(cls, overrides: dict | None) -> "RiskParameters":
         if not overrides:
             return cls()
         known = {f.name for f in dataclasses.fields(cls)}
@@ -92,7 +92,7 @@ class RiskParameters:
 class SizingDecision:
     approved: bool
     notional: float
-    stop_loss_price: Optional[float]
+    stop_loss_price: float | None
     risk_amount: float
     caps_applied: list
     reason: str
@@ -108,10 +108,10 @@ def _rejection(reason: str, notes=None) -> SizingDecision:
 
 
 class PositionSizer:
-    def __init__(self, params: Optional[RiskParameters] = None):
+    def __init__(self, params: RiskParameters | None = None):
         self.params = params or RiskParameters()
 
-    def size_position(self, *, equity: float, price: float, atr: Optional[float],
+    def size_position(self, *, equity: float, price: float, atr: float | None,
                       confidence: str, requested_notional: float,
                       current_gross_exposure: float = 0.0,
                       side: str = "buy") -> SizingDecision:

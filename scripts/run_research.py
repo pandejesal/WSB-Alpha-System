@@ -3,8 +3,8 @@ import logging
 import os
 from datetime import datetime, timezone
 
-from src.research.browser_scraper import score_text
 from src.research.agentic_scraper import fetch_agentic_headlines
+from src.research.browser_scraper import score_text
 from src.research.debate_engine import DebateEngine
 from src.risk.fred_macro_provider import FredMacroProvider
 

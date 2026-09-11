@@ -1,9 +1,9 @@
 from .base import (
-    StandardQuery,
-    StandardData,
-    ProviderAdapter,
-    EmptyDataError,
     AnnotatedResult,
+    EmptyDataError,
+    ProviderAdapter,
+    StandardData,
+    StandardQuery,
 )
 from .registry import Registry, RegistryLoader
 

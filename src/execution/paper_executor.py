@@ -6,7 +6,8 @@ import pandas as pd
 
 from src.execution.alpaca_broker import AlpacaBroker
 from src.ops.audit import AuditLogger, generate_client_order_id, write_artifact
-from src.ops.risk import DDTracker, KillSwitch, update_ops_state
+from src.ops.killswitch import KillSwitch
+from src.ops.risk import DDTracker, update_ops_state
 from src.risk.position_sizing import MAX_DRAWDOWN_CIRCUIT_BREAKER_PCT
 
 

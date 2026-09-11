@@ -1,20 +1,200 @@
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-205625", "params": {"entry": 10, "exit_hi": 60, "max_hold": 7}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-205625", "params": {"entry": 8, "exit_hi": 77, "max_hold": 6}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-205625", "params": {"entry": 8, "exit_hi": 76, "max_hold": 5}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-205625", "params": {"entry": 11, "exit_hi": 56, "max_hold": 5}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-211444", "params": {"entry": 11, "exit_hi": 90, "max_hold": 5}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-211444", "params": {"entry": 10, "exit_hi": 81, "max_hold": 8}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-211444", "params": {"entry": 12, "exit_hi": 71, "max_hold": 9}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-211444", "params": {"entry": 8, "exit_hi": 92, "max_hold": 6}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-223348", "params": {"entry": 8, "exit_hi": 58, "max_hold": 6}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-223348", "params": {"entry": 13, "exit_hi": 61, "max_hold": 7}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-223348", "params": {"entry": 11, "exit_hi": 70, "max_hold": 7}, "parent_oos": 1.633}
-{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-223348", "params": {"entry": 8, "exit_hi": 55, "max_hold": 5}, "parent_oos": 1.633}
-{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-200531", "params": {"window": 140}, "parent_oos": 1.624}
-{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-200531", "params": {"window": 121}, "parent_oos": 1.624}
-{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-200531", "params": {"window": 112}, "parent_oos": 1.624}
-{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-200531", "params": {"window": 133}, "parent_oos": 1.624}
-{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-200633", "params": {"window": 123}, "parent_oos": 1.624}
-{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-200633", "params": {"window": 111}, "parent_oos": 1.624}
-{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-200633", "params": {"window": 149}, "parent_oos": 1.624}
-{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-200633", "params": {"window": 142}, "parent_oos": 1.624}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 56, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 73, "max_hold": 7}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 4, "exit_hi": 72, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-155358", "params": {"entry": 5, "exit_hi": 53, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 74, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 5, "exit_hi": 66, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 6, "exit_hi": 58, "max_hold": 10}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-085818", "params": {"entry": 4, "exit_hi": 75, "max_hold": 6}, "parent_oos": 1.51}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 50, "max_hold": 5}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 7, "exit_hi": 52, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 6, "exit_hi": 60, "max_hold": 6}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-144857", "params": {"entry": 4, "exit_hi": 47, "max_hold": 4}, "parent_oos": 1.48}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 72, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 73, "max_hold": 6}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 7, "exit_hi": 85, "max_hold": 5}, "parent_oos": 1.53}
+{"family": "spy_rsi2", "bred_from": "spy_rsi2_real_20260904-160540", "params": {"entry": 6, "exit_hi": 77, "max_hold": 8}, "parent_oos": 1.53}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 341}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 261}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 386}, "parent_oos": 1.47}
+{"family": "spy_sma", "bred_from": "spy_sma_real_20260904-143520", "params": {"window": 231}, "parent_oos": 1.47}

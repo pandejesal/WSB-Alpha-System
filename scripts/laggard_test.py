@@ -17,7 +17,9 @@ import pandas as pd
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from scripts.improve_strategy_v2 import (
-    gen_signals, prepare_frames, run_portfolio_sim,
+    gen_signals,
+    prepare_frames,
+    run_portfolio_sim,
 )
 
 LAGGARDS = ["INTC", "PFE", "KO", "BA", "T", "CSCO", "VZ", "MRK", "GE", "IBM"]
@@ -91,7 +93,7 @@ if __name__ == "__main__":
     with open("docs/data/laggard_test.json", "w") as f:
         json.dump({
             "config": CFG, "universe": LAGGARDS,
-            "n_trades": int(len(df)), "n_oos": int(len(oos)),
+            "n_trades": len(df), "n_oos": len(oos),
             "median_excess_full": float(df["excess_return"].median()),
             "median_excess_oos": float(oos["excess_return"].median()),
             "mean_excess_oos": float(oos["excess_return"].mean()),

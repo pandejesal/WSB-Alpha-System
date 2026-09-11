@@ -1,0 +1,35 @@
+id: high_exposure_momentum_v2
+name: "High-Exposure Momentum v2 (189/5/10)"
+family: high_exposure_momentum
+venue: alpaca
+universe: "100-stock liquid large-cap panel (excluding SPY/QQQ/AGG/BND/SHY/GLD/VTI/IWM)"
+pre_registration_ref: "hunts/high_exposure_momentum/20260909-high-exposure/docs/data/cyclehigh_exposure_momentum-20260909-0109_high-exposure-momentum_prereg_high_exposure_momentum.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/high_exposure_momentum/20260909-high-exposure/results/eval_high_exposure_momentum_v2.json"
+status: "paper"
+version: 1
+signal:
+  entry: "Rank by 189d formation skip 5d; top 10 where vol_confirm 1.2x; equal weight"
+  exit: "Daily re-rank exit"
+  sizing: "Equal weight 1/N_active max 10; fractional; drift 5%"
+  caps:
+    max_concurrent_positions: 10
+  rebalance: "daily"
+parameters:
+  lookback: 189
+  skip: 5
+  top_n: 10
+  vol_confirm: 1.2
+  exec_delay: 1
+  drift_rebal: 0.05
+indicators:
+  - "189d formation"
+  - "5d skip"
+  - "vol_scalar 20/60"
+position_sizing:
+  - "Equal weight up to 10"
+fee_model:
+  commission: "$0 +1bp"
+  slippage: "5-7bps + vol term"
+  settlement: "T+1"

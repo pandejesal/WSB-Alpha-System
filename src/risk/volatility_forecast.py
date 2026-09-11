@@ -166,7 +166,7 @@ def propagate_volatility(
 
 def classify_regime(
     forecasted_vol: np.ndarray,
-    thresholds: Optional[dict] = None,
+    thresholds: dict | None = None,
 ) -> str:
     """
     Classify the market regime from the cross-asset volatility level.

@@ -1,0 +1,34 @@
+{
+  "N": 5000,
+  "single": {
+    "L1_pass": 580,
+    "L1_rate": 0.116,
+    "any_L2_pass": 10,
+    "any_L2_rate": 0.002,
+    "conservative": 10,
+    "tail": 2,
+    "stat": 1,
+    "sharpe_mean": 0.6436757239978157,
+    "sharpe_std": 0.34438446754592633,
+    "dd_mean": 0.32071113511423877,
+    "dd_std": 0.08944129979790766,
+    "dsr_mean": 0.1635685756132736
+  },
+  "ensemble": {
+    "L1_pass": 2854,
+    "L1_rate": 0.5708,
+    "any_L2_pass": 14,
+    "any_L2_rate": 0.0028,
+    "conservative": 10,
+    "tail": 7,
+    "stat": 0,
+    "sharpe_mean": 0.7840253571686878,
+    "sharpe_std": 0.2196359488373924,
+    "dd_mean": 0.21985811294466492,
+    "dd_std": 0.06033030384398278,
+    "dsr_mean": 0.20445905347056595
+  },
+  "variance_reduction_sharpe": 0.3622361937444166,
+  "dd_compression": 0.10085302216957384,
+  "dsr_uplift": 0.04089047785729236
+}

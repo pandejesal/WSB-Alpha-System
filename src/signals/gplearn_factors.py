@@ -200,15 +200,15 @@ class EvolveConfig:
     population_size: int = 100
     generations: int = 5
     parsimony_coefficient: float = 0.01
-    init_depth: Tuple[int, int] = (2, 4)
-    function_set: Tuple[str, ...] = ("add", "sub", "mul", "div", "sqrt", "log",
+    init_depth: tuple[int, int] = (2, 4)
+    function_set: tuple[str, ...] = ("add", "sub", "mul", "div", "sqrt", "log",
                                      "abs", "max", "min")
     random_state: int = 7
     train_ratio: float = 0.7
     min_trades: int = 10
 
 
-def evolve(bars: pd.DataFrame, cfg: EvolveConfig = EvolveConfig()) -> Dict:
+def evolve(bars: pd.DataFrame, cfg: EvolveConfig = EvolveConfig()) -> dict:
     """Evolve symbolic factor; fitness = OOS Sharpe of sign() long/flat."""
     from gplearn.genetic import SymbolicRegressor
 

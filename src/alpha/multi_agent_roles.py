@@ -11,13 +11,13 @@ Fail-closed: unknown families raise ``UnsupportedRuleShape`` — never silent.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Any, Callable
+from typing import Any
 
 import pandas as pd
 
 from src.ops.signals import UnsupportedRuleShape
-
 
 # ---------------------------------------------------------------------------
 # Role definitions

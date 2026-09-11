@@ -130,7 +130,7 @@ def load_data():
             raise SystemExit(f"FAIL-CLOSED: empty OHLCV file for {t}")
         s = df.set_index("date")["close"].astype(float).sort_index()
         frames[t] = s
-        integrity[t] = {"rows": int(len(s)),
+        integrity[t] = {"rows": len(s),
                         "first": str(s.index[0].date()),
                         "last": str(s.index[-1].date())}
     cal = pd.DatetimeIndex(sorted(set().union(*[s.index for s in frames.values()])))
@@ -352,7 +352,7 @@ def g2_stationary_bootstrap(is_excess):
                        "(Hall-Wilson): p = 2*min(P(T*-Tbar >= Tbar), "
                        "P(T*-Tbar <= Tbar)), T* = bootstrap means"),
             "mean_block_days": G2_MEAN_BLOCK, "draws": G2_DRAWS, "seed": G2_SEED,
-            "series_len": int(len(x)),
+            "series_len": len(x),
             "boot_mean_dist": {"mean": float(np.mean(boot_means)),
                                "std": float(np.std(boot_means, ddof=1))},
         },
@@ -402,7 +402,7 @@ def g5_permutation_null(oos_excess, observed_ann_sharpe):
             "method": "circular block shuffle (multiset-preserving permutation), "
                       "observed annualized net-excess Sharpe vs null p95",
             "block_days": G5_BLOCK, "draws": G5_DRAWS, "seed": G5_SEED,
-            "series_len": int(len(x)),
+            "series_len": len(x),
             "null_mean": float(np.mean(null_sharpes)),
             "null_std": float(np.std(null_sharpes, ddof=1)),
         },
@@ -522,11 +522,11 @@ def g4_walk_forward(oos_excess):
         table.append({
             "fold": k + 1,
             "expanding_span": [str(cum.index[0].date()), str(cum.index[-1].date())],
-            "cum_n_days": int(len(cum)),
+            "cum_n_days": len(cum),
             "cum_net_excess_sharpe": cum_sh,
             "incremental_segment": [str(incr.index[0].date()),
                                     str(incr.index[-1].date())],
-            "incremental_n_days": int(len(incr)),
+            "incremental_n_days": len(incr),
             "incremental_sum_net_excess": incr_sum,
             "incremental_sharpe_descriptive": sharpe(incr),
             "share_of_cumulative_oos_net_excess": float(share),
@@ -560,14 +560,14 @@ def arm_metrics(eq_full, returns_full, label):
 
     def pack(eq, r):
         return {"cagr": cagr(eq), "sharpe": sharpe(r), "maxdd": max_dd(eq),
-                "n_days": int(len(r)), "yearly": yearly_returns(eq)}
+                "n_days": len(r), "yearly": yearly_returns(eq)}
     return {label: {"is": pack(is_eq, is_r), "oos": pack(oos_eq, oos_r)}}
 
 
 def excess_summary(seg):
     x = seg.to_numpy(dtype=float)
     sd = float(np.std(x, ddof=1)) if len(x) > 1 else float("nan")
-    return {"n_days": int(len(x)), "mean_daily": float(np.mean(x)),
+    return {"n_days": len(x), "mean_daily": float(np.mean(x)),
             "std_daily": sd,
             "annualized_sharpe": (float(np.mean(x)) / sd * np.sqrt(ANN))
                                  if sd and sd > 0 and not np.isnan(sd) else 0.0,

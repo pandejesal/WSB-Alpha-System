@@ -1,10 +1,13 @@
-import os
 import json
-import yaml
+import os
+from unittest.mock import MagicMock, patch
+
 import numpy as np
 import pandas as pd
-from unittest.mock import patch, MagicMock
+import yaml
+
 import scripts
+
 
 # Synthetic data generator
 def create_synthetic_data(tickers=["T1", "T2", "T3"], rows=400):
@@ -97,6 +100,9 @@ def test_evaluate_candidate_ta_rules(mock_get_provider, mock_wf, mock_is, tmp_pa
         "family": "ta_rules",
         "universe": "SPY",
         "parameters": {},
+        # Leakage-guard compliance: ta_rules is a guarded family, so the
+        # fixture must declare its LLM data boundary (guard itself untouched).
+        "llm": {"data_boundary": "train"},
         "signal": {
             "entry": "ema_cross",
             "fast_ma": 10,
@@ -110,6 +116,7 @@ def test_evaluate_candidate_ta_rules(mock_get_provider, mock_wf, mock_is, tmp_pa
         yaml.dump(spec, f)
 
     import sys
+
     from scripts.evaluate_candidate import main
 
     test_args = ["evaluate_candidate.py", str(spec_path), "--tickers", "T1,T2", "--days", "100"]
@@ -147,6 +154,7 @@ def test_evaluate_candidate_multi_factor(tmp_path):
         yaml.dump(spec, f)
 
     import sys
+
     from scripts.evaluate_candidate import main
 
     test_args = ["evaluate_candidate.py", str(spec_path), "--tickers", "T1,T2", "--days", "100"]
@@ -186,6 +194,7 @@ def test_evaluate_candidate_xgboost_exits_honest_abandon(tmp_path):
         yaml.dump(spec, f)
 
     import sys
+
     from scripts.evaluate_candidate import main
 
     test_args = ["evaluate_candidate.py", str(spec_path), "--tickers", "SPY", "--days", "100"]
@@ -250,7 +259,7 @@ def test_build_signal_posts_ta_rules_ema_cross_only_on_cross_days():
         assert cross.loc[d], f"post date {d} is not a cross-up day"
 
 def test_build_signal_posts_ta_rules_rsi2_only_when_oversold():
-    from scripts.evaluate_candidate import build_signal_posts, _rsi2_series
+    from scripts.evaluate_candidate import _rsi2_series, build_signal_posts
     n = 260
     prices = np.full(n, 100.0) + np.linspace(0, 30, n)
     prices[150:155] = [100.0, 90.0, 82.0, 78.0, 80.0]  # sharp 2-day drawdown -> RSI2 < 10
@@ -329,7 +338,7 @@ def test_entry_rule_normalizes_prose_specs():
 
 
 def test_clamp_to_cache_uses_cached_coverage():
-    from scripts.evaluate_candidate import _clamp_to_cache, _cached_coverage
+    from scripts.evaluate_candidate import _cached_coverage, _clamp_to_cache
 
     class FakeConn:
         def execute(self, _q):
@@ -378,11 +387,13 @@ def test_clamp_to_cache_noop_when_cache_empty():
 
 
 def test_main_permutations_and_signal_post_count():
-    from scripts.evaluate_candidate import main
+    import os
     import sys
     import tempfile
-    import os
+
     import yaml
+
+    from scripts.evaluate_candidate import main
 
     with tempfile.TemporaryDirectory() as td:
         spec_path = os.path.join(td, "spec.yaml")
@@ -392,6 +403,8 @@ def test_main_permutations_and_signal_post_count():
             "id": "t_perm", "name": "Test Perm", "family": "ta_rules", "universe": "panel",
             "signal": {"entry": "rsi2"},
             "parameters": {"entry": 10},
+            # Leakage-guard compliance (see above); guard itself untouched.
+            "llm": {"data_boundary": "train"},
             "pre_registration_ref": prereg_path,
             "eval_records": eval_path,
         }
@@ -460,6 +473,7 @@ def test_build_signal_posts_sentiment_overlay():
 
     spec = {
         "family": "sentiment_overlay",
+        "signal": {"entry": "sma_entry"},
         "parameters": {"window": 20}
     }
     posts_df = build_signal_posts(spec, combined, ["T1"])
@@ -477,6 +491,7 @@ def test_build_signal_posts_xgboost_exits():
 
     spec = {
         "family": "xgboost_exits",
+        "signal": {"entry": "momentum"},
         "parameters": {"lookback_days": 20, "skip_days": 5, "top_n": 1}
     }
     posts_df = build_signal_posts(spec, combined, ["T1", "T2"])

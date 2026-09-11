@@ -1,0 +1,76 @@
+{
+  "id": "high_exposure_momentum_h10",
+  "family": "high_exposure_momentum",
+  "params": {
+    "breakout_lookback": 252,
+    "confirm_lookback": 63,
+    "proximity_band": 0.98,
+    "signal_refresh": "monthly",
+    "fill": "SPY"
+  },
+  "metrics": {
+    "sharpe": 0.9719878995525555,
+    "cagr": 0.18235577820589066,
+    "max_dd": 0.33717261131099135,
+    "oos_sharpe": 1.3297582031021842,
+    "excess": 10.44,
+    "tmin": 0.9885,
+    "dsr": 0.4537,
+    "dsr_fam_N57": 0.6356,
+    "dsr_lineage": 0.4537,
+    "trips": 12,
+    "trades": 12,
+    "perm_p": 0.535,
+    "boot_p": 0.0,
+    "n_bars": 1910,
+    "fam_trials": 57,
+    "regime_coverage": {
+      "bull_sharpe": 1.7642,
+      "covid_sharpe": -0.745,
+      "bear_sharpe": -0.7014,
+      "bull_2023_2024_sharpe": 1.8498,
+      "sideways_sharpe": -0.7014
+    },
+    "regime_warn": true
+  },
+  "tracks_cleared": [],
+  "tracks": {
+    "high_exposure_momentum": {
+      "passed": false,
+      "terms": {
+        "sharpe_min": true,
+        "max_dd_max": true,
+        "oos_min": true,
+        "excess_min": true,
+        "dsr_min": false,
+        "tmin_min": true
+      },
+      "archetype": "High time-in-market momentum / trend-following"
+    }
+  },
+  "overlays": {
+    "wf_3fold_oos": [
+      1.115,
+      0.466,
+      1.3871
+    ],
+    "wf_mean_oos": 0.9894,
+    "wf_ok": true,
+    "cpcv_proxy_paths": [
+      0.6327,
+      1.145,
+      1.0088,
+      0.9448,
+      0.772,
+      1.5018
+    ],
+    "cpcv_mean": 1.0009,
+    "cpcv_min": 0.6327,
+    "cpcv_frac_pos": 1.0,
+    "cpcv_disclosure": "returns-level proxy, 4 blocks/6 paths, no embargo/purge"
+  },
+  "L1_pass": true,
+  "L2_Track5_pass": false,
+  "verdict": "HONEST_ABANDON",
+  "paper_only": true
+}

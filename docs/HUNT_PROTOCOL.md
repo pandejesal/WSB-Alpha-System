@@ -101,3 +101,11 @@ Strict division of labor exists between parallel hunt sessions and the weekly se
 - **Self-Improvement Agent OWNS Tuning:** The self-improvement agent strictly optimizes and iterates on the parameters of **ACTIVE** strategies already present in the `registry.json`. It **never** introduces a new strategy family or creates new YAML specifications.
 
 **Coordination Point:** Both systems observe `strategies/registry.json` and `docs/data/` records as the source of truth. The self-improvement agent queries the registry to find active strategies to tune, while hunt sessions append to the registry once a new family survives the Edge Gate. They operate orthogonally and do not step on each other's domain.
+
+## 8. SINGLE-COMMAND RECORD DISCIPLINE (R-C2)
+
+- Run `freeze` and `record` as SEPARATE commands, one invocation each.
+- Do NOT chain them with `&&` (this host rejects chained shells).
+- Passing pattern: run `freeze ...`, wait for exit 0, then run `record ...`.
+- Zero/flat price frames are rejected by `price_guards` — fix data first.
+- Commission reference: `config/risk_config.py` (reference only; values unchanged).

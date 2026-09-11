@@ -3,6 +3,7 @@ from typing import Any
 
 import pandas as pd
 
+# CH-14 candidate: duplicate backtest engine — candidate for consolidation into src/backtest/engines/canonical.py (no merge in this phase; canonical is engines/canonical.py)
 from src.backtest.base_engine import BacktestEngine
 
 

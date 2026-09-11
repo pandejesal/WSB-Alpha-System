@@ -1,11 +1,13 @@
 import logging
+
 import numpy as np
+
 from src.backtest.validation import (
+    NUM_PERMUTATIONS,
+    TEARSHEET_ENGINE,
     load_base_data,
     run_in_sample_test,
     run_walk_forward_test,
-    NUM_PERMUTATIONS,
-    TEARSHEET_ENGINE,
 )
 from src.ops.audit import write_artifact
 

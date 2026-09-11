@@ -2,16 +2,17 @@
 import pandas as pd
 
 from src.ops.signals import (
+    get_breakout_burst_signal,
     get_btc_vol_target_sma100_signal,
     get_spy_rsi2_signal,
     get_spy_sma200_signal,
-    get_us_momentum_top5_signal,
     get_us_lowvol_top30_signal,
+    get_us_momentum_top5_signal,
     get_us_pead_top5_signal,
-    get_breakout_burst_signal,
 )
 
 from .schemas import SignalsReport, SleeveSignal
+from .tail_hedge_signal import tail_hedge_signal  # INACTIVE (B4c): not in active_sleeves
 
 
 class SignalEngine:

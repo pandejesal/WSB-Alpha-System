@@ -1,0 +1,38 @@
+family: tail_risk_sentinel
+run_id: 20260911-h3-tailsentinel
+variant: tail_risk_sentinel_h3
+universe: "SPY daily OHLCV 2019-2026 (market_data_2019_2026/ohlcv/SPY.csv, T=1910 bars); identical-window SPY twin for excess; NO VIX input, NO ATR stop, NO realized-vol cap"
+hypothesis: "A pure price-trend de-risk ladder on SPY (close vs SMA50/100/200, graduated exposure 1.00/0.65/0.30/0.00, past-only shift1, T+1) cuts SPY buy-hold maxDD to <=25% while preserving identical-window excess >= +0.03pp: graduated levels stay invested through shallow pullbacks (unlike binary VIX gates that over-park in cash and failed excess at -0.14 to -0.76pp in v1..v4) yet go fully flat only when price breaks the slow SMA200 in a crisis. Single frozen combo (50,100,200 | 1.00,0.65,0.30,0.00); differs from retired grid by construction (zero of the three banned elements combined; in fact zero VIX/ATR/volcap inputs at all) and from smooth single-threshold SMAs by graduated 4-level sizing."
+acceptance: "Edge claim pre-registered via preregister freeze BEFORE backtest and verified; YAML validates via strategy_registry.validate_spec; Walk-Forward OOS>=0.35, Sharpe>=0.55, maxDD<=25%, excess>=0.03pp, DSR>=0.75 (per-family N=52), trips>=6, perm_p<=0.05, boot_p<=0.05 (GATESPEC38 Track 4 tail_risk_sentinel); fallback Track 2 drawdown_warrior (DD<=35%, excess>=0.10); L1 Sharpe>=0.50 DD<15% excess>0; WF 3-fold overlay mean fold OOS>=0.35; CPCV-proxy overlay (4 blocks/6 paths, no embargo, disclosed); verdict recorded via preregister record (HONEST_ABANDON allowed)."
+kill_criteria: "Falsified in-sample (excess<0.03pp or DD>25%); fails WF OOS or perm/boot (p>0.05); 0 tracks cleared -> HONEST_ABANDON, combo retired to TABOO ledger, no silent overwrite."
+edge_gate_params:
+  track: tail_risk_sentinel
+  primary_track: tail_risk_sentinel
+  fallback_track: drawdown_warrior
+  sharpe_min: 0.55
+  max_dd_max: 0.25
+  oos_min: 0.35
+  excess_min: 0.03
+  dsr_min: 0.75
+  trips_min: 6
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  fallback_thresholds:
+    sharpe_min: 0.55
+    max_dd_max: 0.35
+    oos_min: 0.35
+    excess_min: 0.10
+    dsr_min: 0.75
+    trips_min: 6
+  h3_params:
+    sma_fast: 50
+    sma_mid: 100
+    sma_slow: 200
+    level_all_above: 1.0
+    level_below_fast: 0.65
+    level_below_mid: 0.30
+    level_below_slow: 0.0
+    exec_delay: 1
+  banned_triple: "VIX-level gate + ATR stop + vol-cap together (H1 v1..v4 grid retired family-TABOO); H3 uses NONE of the three"
+  cost_model: "tiered W5 (2.5bp base + vol term), T+1 via position shift(1)"
+  benchmarks: ["SPY identical window", "WF 3-fold", "CPCV-proxy 4 blocks/6 paths", "circular-shift perm K=200", "stationary bootstrap block21"]

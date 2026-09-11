@@ -3,7 +3,13 @@ import time
 from collections import deque
 from datetime import datetime
 
-from google import genai
+try:
+    from google import genai  # type: ignore
+except ImportError:
+    try:
+        import google.genai as genai  # type: ignore
+    except ImportError:
+        genai = None  # type: ignore
 
 logger = logging.getLogger(__name__)
 
@@ -44,14 +50,14 @@ class RateLimiter:
         self.last_call_time = None
 
     def wait_if_needed(self):
-        now = datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
+        now = datetime.now()
 
         # Enforce min delay
         if self.last_call_time:
             elapsed = (now - self.last_call_time).total_seconds()
             if elapsed < self.min_delay_sec:
                 time.sleep(self.min_delay_sec - elapsed)
-                now = datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
+                now = datetime.now()
 
         # Token bucket for burst limit
         self.bucket.wait_if_needed(1)
@@ -64,7 +70,7 @@ class RateLimiter:
             sleep_time = 60 - (now - self.minute_calls[0]).total_seconds()
             if sleep_time > 0:
                 time.sleep(sleep_time)
-                now = datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
+                now = datetime.now()
 
         # Enforce RPD
         while self.day_calls and (now - self.day_calls[0]).total_seconds() > 86400:
@@ -75,7 +81,7 @@ class RateLimiter:
             pass
 
     def record_call(self):
-        now = datetime.now()  # noqa: DTZ005 - Timezone not critical for this usage
+        now = datetime.now()
         self.last_call_time = now
         self.minute_calls.append(now)
         self.day_calls.append(now)
@@ -89,8 +95,11 @@ class RateLimitedGeminiClient:
     """
     def __init__(self, api_key: str):
         self.api_key = api_key
-        if api_key:
-            self.client = genai.Client(api_key=api_key)
+        if api_key and genai is not None:
+            try:
+                self.client = genai.Client(api_key=api_key)  # type: ignore
+            except Exception:
+                self.client = None
         else:
             self.client = None
 
@@ -105,19 +114,21 @@ class RateLimitedGeminiClient:
         # Try Gemini Flash
         if use_flash:
             try:
+                if self.client is None:
+                    raise RuntimeError("genai client not available")
                 self.flash_limiter.wait_if_needed()
                 self.flash_limiter.record_call()
                 logger.info("Executing Gemini Flash request...")
-                response = self.client.models.generate_content(model='gemini-3.5-flash', contents=prompt)
-                return response.text
-            except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+                response = self.client.models.generate_content(model='gemini-3.5-flash', contents=prompt)  # type: ignore
+                return response.text  # type: ignore
+            except Exception as e:
                 logger.warning(f"Flash failed: {e}. Attempting fallback chain...")
                 time.sleep(2.0)
 
         # Try Gemini Flash Lite
         try:
             return self._generate_lite(prompt, search_grounding)
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.warning(f"Flash Lite failed: {e}. Falling back to local model...")
             time.sleep(2.0)
 
@@ -136,8 +147,10 @@ class RateLimitedGeminiClient:
         if tools:
             config_kwargs['tools'] = tools
 
-        response = self.client.models.generate_content(model='gemini-3.5-flash-lite', contents=prompt, config=config_kwargs if config_kwargs else None)
-        return response.text
+        if self.client is None:
+            raise RuntimeError("genai client not available")
+        response = self.client.models.generate_content(model='gemini-3.5-flash-lite', contents=prompt, config=config_kwargs if config_kwargs else None)  # type: ignore
+        return response.text  # type: ignore
 
     def _fallback_local_llm(self, prompt: str) -> str | None:
         logger.info("Executing Local/Fallback LLM request...")
@@ -153,7 +166,7 @@ class RateLimitedGeminiClient:
             }, timeout=2.0)
             if response.status_code == 200:
                 return response.json().get("response", "")
-        except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
+        except Exception as e:
             logger.error(f"Local LLM fallback also failed: {e}")
 
         # Graceful total failure

@@ -1,0 +1,67 @@
+# Pre-registration: high_exposure_momentum
+Cycle: 27
+Date: 2026-09-11 17:31:23
+Spec-SHA256: f980b62da795d61ba08d53f43081e539832a34e6f909010c42a134aa524089e1
+
+## Claim
+H11 inverse-volatility TILT (63d vol base + 252-21 momentum z-tilt gain 0.5 clipped [0.25,2.0], monthly, all 31 names always held, zero SMA/ranking/breakout) breaks the 5/5 perm wall via continuous dual-gradient timing content toward Track 5 high_exposure_momentum (sharpe>=0.75 dd<=0.35 oos>=0.50 excess>=0.05pp dsr>=0.90 tmin>=0.70 trips>=6 perm/boot<=0.05)
+
+## Strategy Spec
+```yaml
+id: high_exposure_momentum_h11
+name: "High-Exposure Momentum H11 (inverse-vol 63d base + 252-21 momentum z-tilt gain 0.5, monthly, all-31 always held)"
+family: high_exposure_momentum
+venue: alpaca
+universe: "31-symbol rotation_universe panel (config/universe.json; SPY excluded from panel, identical-window twin benchmark only), daily OHLCV 2019-2026"
+pre_registration_ref: "docs/data/cycle27_prereg_high_exposure_momentum.md (freeze BEFORE backtest; bytes frozen)"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/high_exposure_momentum/20260911-h11-momentum/results/eval_high_exposure_momentum_h11.json"
+status: "paper"
+version: 1
+signal:
+  entry: "NO entry/exit to cash and NO selection cutoff: every bar holds ALL 31 names. At each monthly signal date m (past-only closes.loc[:m]): base = 1/vol63 (std of past-63 daily returns, floor 1e-6); tilt signal = 252-21 momentum return (close[m-skip]/close[m-mom]-1, skip=21); z = cross-sectional z-score of tilt; mult = clip(1 + 0.5*z, 0.25, 2.0); w = base*mult / sum(base*mult). Warmup (<316 bars history) holds equal-weight panel (1/31 each, still fully invested, tmin=1.0)."
+  exit: "No exit; weights only re-tilt at next monthly refresh; gross stays 1.0 so tmin=1.0 by construction; never fewer than 20 names (always 31), never cash"
+  sizing: "Full panel inverse-vol-weighted with momentum tilt; renormalized to gross 1.0; never levered, never flat; fractional shares; T+1 execution"
+  caps:
+    max_concurrent_positions: 31
+  rebalance: "monthly signal refresh (first trading day), forward-filled daily"
+parameters:
+  vol_lookback: 63
+  mom_lookback: 252
+  mom_skip: 21
+  tilt_gain: 0.5
+  tilt_clip: [0.25, 2.0]
+  signal_refresh: monthly
+  names_held: 31
+  exec_delay: 1
+  fam_trials_N: 58
+indicators:
+  - "63d realized-vol inverse base (past-only, no SMA)"
+  - "252-21 momentum z-score tilt gain 0.5 clipped [0.25,2.0] (past-only, continuous, no cutoff)"
+  - "always-invested panel aggregation (gross 1.0, 31 names)"
+position_sizing:
+  - "w = (1/vol63)*clip(1+0.5*z,0.25,2.0), renormalized to 1.0"
+  - "Gross 1.0 always; fractional shares via Alpaca paper API"
+fee_model:
+  commission: "$0 (Alpaca) + 2.5bp W5"
+  slippage: "5-7bps slippage + vol_scalar scale 2 cap 2 (W5 tiered cost)"
+  settlement: "T+1"
+benchmark_result:
+  benchmark: "SPY identical-window twin (~1910 bars)"
+feasibility_at_100:
+  - "31 positions x fractional; ~1 tilt refresh/month; T+1"
+risks:
+  - "High exposure tmin=1.0 => DD tracks panel DD vs 35% cap; tilt may hug index (low active share) toward weak excess"
+  - "Inverse-vol concentrates defensives; momentum tilt lags sharp reversals; survivorship bias in large-cap panel (acknowledged)"
+  - "DSR>=0.90 at fam N=58 needs Sharpe ~=1.3+; perm<=0.05 requires genuine time-specific tilt content"
+dedup:
+  - "us_momentum_top5 / dual_momentum (SPY/QQQ/AGG GEM) / momentum_breakout_v2/v4 / candidate_momentum_v4_prime / factor_momentum_top3 / breakout_burst (20d-high/20d-hold event-driven, max 10): distinct specs, untouched"
+  - "TABOO formation-rank combos avoided: (126,21,5) (189,5,10) (63,42,3) (95,42,7) (252,21,8) (126,10,12)+inv-vol+voltarget15+dd-deleverage(H4) (189,21,28)+quarterly+voltarget12(H6)"
+  - "TABOO own-trend avoided: H8 (SMA50/200, weak 0.5, monthly) perm 0.695 HONEST_ABANDON cycle23"
+  - "TABOO breakout avoided: H10 (breakout252, confirm63, band0.98, monthly, SPY-fill) sharpe 0.972/dd 0.3372/dsr 0.4537/perm 0.535 HONEST_ABANDON cycle26"
+  - "Differs from H2/H4/H6: zero cross-sectional ranking cutoff, zero formation lookback/skip/top_n selection; all 31 names held, momentum only re-weights continuously"
+  - "Differs from H8: zero SMA anywhere (no SMA50/200, no price-vs-SMA level); vol + raw-return inputs only"
+  - "Differs from H10: zero breakout entry, zero 252d-high proximity, zero confirm gate, no SPY-fill sleeve; smooth tilt, never binary qualify/disqualify"
+
+```

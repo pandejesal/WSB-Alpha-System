@@ -1,11 +1,13 @@
 import json
-import yaml
-import pytest
-import pandas as pd
 from unittest import mock
 
-from src.ops.strategy_registry import load_registry, validate_spec, MalformedSpecError
-from src.ops.signals import generate_signals_from_registry, UnsupportedRuleShape
+import pandas as pd
+import pytest
+import yaml
+
+from src.ops.signals import UnsupportedRuleShape, generate_signals_from_registry
+from src.ops.strategy_registry import MalformedSpecError, load_registry, validate_spec
+
 
 @pytest.fixture
 def mock_registry_dir(tmp_path):
@@ -245,3 +247,19 @@ def test_generate_signals_parameter_mapping_and_filtering(mock_sma200):
     assert kwargs.get("sma_window") == 200
     assert "exec_delay" not in kwargs
     assert "drift_rebal" not in kwargs
+
+def test_rb2_validate_spec_one_arg_raises_guided_typeerror():
+    # R-B2: a stale one-arg call raises a guided TypeError naming the two-arg
+    # contract and the canonical call site — not a bare missing-arg message.
+    with pytest.raises(TypeError) as excinfo:
+        validate_spec({"id": "x"})
+    msg = str(excinfo.value)
+    assert "two arguments" in msg
+    assert "validate_spec(spec, filepath)" in msg
+    assert "scripts/hunt_runner.py:293" in msg
+
+def test_rb2_validate_spec_error_text_names_unknown_default():
+    # R-B2: the guided error renders the filepath placeholder default.
+    with pytest.raises(TypeError) as excinfo:
+        validate_spec({"id": "x"})
+    assert "<unknown>" in str(excinfo.value)

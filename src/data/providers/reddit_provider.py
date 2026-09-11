@@ -1,8 +1,19 @@
 import logging
 
 import pandas as pd
-import pandera as pa
-import praw
+
+try:
+    import pandera as pa  # type: ignore
+
+    _PANDERA_AVAILABLE_REDDIT = True
+except ModuleNotFoundError:
+    pa = None  # type: ignore
+    _PANDERA_AVAILABLE_REDDIT = False
+
+try:
+    import praw  # type: ignore
+except ModuleNotFoundError:
+    praw = None  # type: ignore
 
 from src.data.cache_engine import CacheEngine
 from src.data.schemas import SentimentPostSchema
@@ -30,8 +41,7 @@ class RedditProvider(BaseDataProvider):
         raise NotImplementedError("Reddit does not provide OHLCV data.")
 
 
-    @pa.check_types
-    def fetch_sentiment_feed(self, limit: int) -> pa.typing.DataFrame[SentimentPostSchema]:
+    def fetch_sentiment_feed(self, limit: int):  # type: ignore
         cached = self.cache.get_sentiment(limit)
         if not cached.empty and len(cached) >= limit:
             # Type casting to match schema exactly

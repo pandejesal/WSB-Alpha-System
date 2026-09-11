@@ -61,15 +61,19 @@ class DarwinEngine:
         for strategy in population:
             metrics = strategy.get('metrics', {})
 
-            # 6c: Add CPCV Integration (computing real split if data provided)
+            # 6c (E-darwin-1): real CPCV structure signal — was hardcoded 0.95 with
+            # results discarded. Full 10-split (n=5/2) structure -> 1.0; fewer ->
+            # proportional; errors -> 0.0 fail-closed.
             cpcv_conf = 0.0
             if historical_data is not None:
                 try:
                     from src.backtest.validators.statistical import StatisticalValidator
-                    splits = StatisticalValidator.combinatorial_purged_cv(len(historical_data))  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
-                    cpcv_conf = 0.95  # noqa: F841 - variable intentionally unused (kept for readability/debugging or unpacked values)
+                    splits = StatisticalValidator.combinatorial_purged_cv(len(historical_data))
+                    cpcv_conf = min(1.0, len(splits) / 10.0) if splits else 0.0
                 except Exception as e:  # noqa: BLE001 - Catching Exception to fail gracefully
-                    logger.debug(f"Failed to calculate CPCV split sizes gracefully: {e}")
+                    logger.debug(f"Failed to calculate CPCV splits gracefully: {e}")
+                    cpcv_conf = 0.0
+            strategy.setdefault("metrics", {})["cpcv_conf"] = cpcv_conf
 
             is_sharpe = metrics.get('train_sharpe', metrics.get('sharpe', 0.0))
 
@@ -144,19 +148,24 @@ class DarwinEngine:
     def mutate_parameters(self, spec: dict) -> dict:
         import copy
         mutated_spec = copy.deepcopy(spec)
-        params = mutated_spec.get('parameters', {})
+        # E-darwin-1 (MadEvolve joint co-evolution): drift signal params AND
+        # execution params together when the spec carries both, so execution
+        # (holding, cost tiers) co-evolves with the signal instead of lagging it.
+        for section in ("parameters", "execution"):
+            params = mutated_spec.get(section, {})
+            if not isinstance(params, dict):
+                continue
+            for key, value in params.items():
+                if isinstance(value, (int, float)):
+                    drift_pct = random.uniform(0.10, 0.20)
+                    direction = random.choice([1, -1])
+                    multiplier = 1.0 + (direction * drift_pct)
 
-        for key, value in params.items():
-            if isinstance(value, (int, float)):
-                drift_pct = random.uniform(0.10, 0.20)
-                direction = random.choice([1, -1])
-                multiplier = 1.0 + (direction * drift_pct)
-
-                new_value = value * multiplier
-                if isinstance(value, int):
-                    mutated_spec['parameters'][key] = round(new_value)
-                else:
-                    mutated_spec['parameters'][key] = new_value
+                    new_value = value * multiplier
+                    if isinstance(value, int):
+                        mutated_spec[section][key] = round(new_value)
+                    else:
+                        mutated_spec[section][key] = new_value
 
         return mutated_spec
 

@@ -1,12 +1,13 @@
-import unittest
-import time
 import os
 import sys
+import time
+import unittest
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from src.utils.gemini_client import RateLimiter
-from src.research.agents.workflow import ResearchWorkflow
 from src.evolution.darwin_engine import DarwinEngine
+from src.research.agents.workflow import ResearchWorkflow
+from src.utils.gemini_client import RateLimiter
+
 
 class TestPhase4(unittest.TestCase):
 
@@ -28,7 +29,10 @@ class TestPhase4(unittest.TestCase):
     def test_langgraph_reflection_loop(self):
         # We can't easily mock the entire LLM for the full graph without extensive setup,
         # but we can test the reflection router logic
-        workflow = ResearchWorkflow()
+        try:
+            workflow = ResearchWorkflow()
+        except ImportError as e:
+            self.skipTest(f"langgraph not installed: {e}")
 
         state_fail = {
             "validation_passed": False,

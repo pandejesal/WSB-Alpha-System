@@ -1,0 +1,21 @@
+{
+  "sharpe": 0.9224749016515573,
+  "cagr": 0.1450060007289935,
+  "max_dd": 0.2819477860012104,
+  "oos": 1.0887207337500802,
+  "trips": 59,
+  "trades": 118,
+  "excess": -66.43,
+  "tmin": 0.9885,
+  "n_bars": 1910,
+  "dsr": 0.6785,
+  "dsr_100": 0.5025,
+  "dsr_200": 0.4096,
+  "perm_p": 0.715,
+  "boot_p": 0.0,
+  "wf_status": "PASSED",
+  "wf_reason": "",
+  "check_tracks": [],
+  "required_sharpe_DSR95_N30": 1.353390601683965,
+  "required_sharpe_DSR92_N30": 1.2658261458150835
+}

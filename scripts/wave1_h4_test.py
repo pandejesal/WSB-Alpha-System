@@ -104,7 +104,7 @@ def build_arm_p_events(cal, local_tickers):
                        "member": r["member_name"], "filing": r["filing_date_iso"]})
     counts = {"raw_purchase_rows_confident": int(raw_n),
               "unmapped_tickers": int(n_unmapped),
-              "deduped_events": int(len(events)),
+              "deduped_events": len(events),
               "dropped_incomplete_hold": int(dropped_incomplete)}
     return events, counts
 
@@ -136,7 +136,7 @@ def build_arm_c_events(cal, local_tickers):
         events.append({"ticker": r["ticker"], "entry_i": j})
     counts = {"raw_start_long_signals_in_window": int(raw_n),
               "unmapped_tickers": int(n_unmapped),
-              "deduped_events": int(len(events)),
+              "deduped_events": len(events),
               "dropped_incomplete_hold": int(dropped_incomplete)}
     return events, counts
 
@@ -226,8 +226,8 @@ def evaluate_arm(name, strat_eq, spy_eq, active_end_i, extra=None):
         "arm": name,
         "span": [str(span[0].date()), str(span[-1].date())],
         "a5_span_truncated": bool(a5_truncated),
-        "n_eval_days": int(len(ex)),
-        "n_is_days": int(len(is_ex)), "n_oos_days": int(len(oos_ex)),
+        "n_eval_days": len(ex),
+        "n_is_days": len(is_ex), "n_oos_days": len(oos_ex),
         "observed": {
             "is_mean_daily_net_excess": float(is_ex.mean()) if len(is_ex) else None,
             "oos_ann_sharpe_net_excess": W1.sharpe(oos_ex) if len(oos_ex) else None,
@@ -313,7 +313,7 @@ def main():
     needed = {BENCHMARK} | {e["ticker"] for e in p_events} | {e["ticker"] for e in c_events}
     close_ffill = load_panel(needed, cal)
     integrity = {"canonical_calendar": "SPY trading days <= 2026-08-07",
-                 "n_bars": int(len(cal)),
+                 "n_bars": len(cal),
                  "first": str(cal[0].date()), "last": str(cal[-1].date())}
     results["integrity"] = integrity
 

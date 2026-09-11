@@ -119,6 +119,24 @@ class UniversalBroker:
     async def place_order(self, asset_class: str, strategy_id: str, ticker: str, direction: str, quantity: float, risk_amount: float):
         """Intercepts, validates risk, and executes an order."""
 
+        # S3/F2-R03 live-route gate (fail CLOSED): live-broker routes require
+        # BOTH KillSwitch.can_trade() AND LIVE_TRADING_ENABLED. Paper/sandbox
+        # paths (paper_executor.py) do not route through here and are unchanged.
+        from src.ops.killswitch import dual_gate_allows_trading
+        from src.risk import position_sizing as risk_config
+
+        allowed, reason = dual_gate_allows_trading(risk_config.LIVE_TRADING_ENABLED)
+        if not allowed:
+            logger.critical(
+                f"Live order BLOCKED by dual gate: KillSwitch.can_trade vs "
+                f"LIVE_TRADING_ENABLED={risk_config.LIVE_TRADING_ENABLED} — {reason}. "
+                f"Failing closed; no broker call made."
+            )
+            raise RuntimeError(
+                f"Live order blocked: dual gate denied (KillSwitch.can_trade vs "
+                f"LIVE_TRADING_ENABLED={risk_config.LIVE_TRADING_ENABLED}): {reason}"
+            )
+
         executor = self.get_executor(asset_class)
         equity = executor.get_account_equity()
 

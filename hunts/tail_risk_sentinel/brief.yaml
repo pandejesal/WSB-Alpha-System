@@ -1,0 +1,34 @@
+# Hunt Session Brief: Tail Risk Sentinel (W8)
+# Plan: plan_1_gates_strategies.md W8 lines 189-209, Batch-B Hunt Factory Reactivation
+family: tail_risk_sentinel
+universe: "SPY + 100-stock liquid large-cap panel (daily OHLCV 2019-2026) with VIX proxy (market_data_2019_2026/ohlcv/^VIX.csv, existing unused) for regime gate; identical-window SPY twin for excess"
+hypothesis: "VIX level (20-60d window, entry 22-30) + ATR trailing stop (1.5-3.0x) + vol regime cap (realized vol 0.18-0.25) as tail hedge cuts SPY maxDD 33.7% to <=25% while preserving excess>=0.03pp via selective cash rotation; strictest DD gate (Track 4) blocks high-beta bull-run passengers, perm/boot blocks crash-fit, fallback to drawdown_warrior (maxDD<=35% excess>=0.10) if pure hedge cannot clear excess."
+acceptance: "Edge claim pre-registered via prereg freeze; YAML validates via strategy_registry.validate_spec; registry via hunt_runner collect; Walk-Forward OOS>=0.35, Sharpe>=0.55, maxDD<=25%, excess>=0.03, DSR>=0.75, trips>=6, perm_p<=0.05 boot_p<=0.05 (GATESPEC38 Track 4 tail_risk_sentinel); fallback Track 2 drawdown_warrior thresholds if hedge excess too low; L1 Sharpe>=0.50 DD<15% excess>0; honest ABANDON if 0/3 survive excess gate."
+lookback_constraints: "Daily OHLCV only, no intraday vol surface (daily vol-of-vol proxy for intraday 40-60% variance concentration per W12 proxy); T+1, tiered cost W5, VIX CSV read as regime tag only (no new feed), no lookahead; T=1910 bars for DSR."
+edge_gate_params:
+  track: tail_risk_sentinel
+  primary_track: tail_risk_sentinel
+  fallback_track: drawdown_warrior
+  sharpe_min: 0.55
+  max_dd_max: 0.25
+  oos_min: 0.35
+  excess_min: 0.03
+  dsr_min: 0.75
+  trips_min: 6
+  perm_p_max: 0.05
+  boot_p_max: 0.05
+  fallback_thresholds:
+    sharpe_min: 0.55
+    max_dd_max: 0.35
+    oos_min: 0.35
+    excess_min: 0.10
+    dsr_min: 0.75
+    trips_min: 6
+  param_grid:
+    vix_window: [20, 40, 60]
+    vix_entry: [22, 26, 30]
+    atr_stop: [1.5, 2.0, 3.0]
+    vol_regime_cap: [0.18, 0.22, 0.25]
+  vix_source: "market_data_2019_2026/ohlcv/^VIX.csv (existing, wire via local CSV read)"
+  cost_model: "tiered W5"
+  benchmarks: ["SPY identical window", "bootstrap K=200 block21", "permutation 200"]
