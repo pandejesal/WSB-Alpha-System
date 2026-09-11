@@ -30,7 +30,11 @@ def test_cache_hit_no_network(tmp_path):
     assert p.fetch_content(url) == "cached earnings text"
 
 
-def test_missing_lib_fail_closed(tmp_path):
+def test_missing_lib_fail_closed(tmp_path, monkeypatch):
+    # Simulate scrapling absent: poison the lazy import target.
+    import sys
+
+    monkeypatch.setitem(sys.modules, "scrapling.parser", None)
     p = ScraplingProvider(cache_dir=tmp_path)
     with pytest.raises(ImportError, match="pip install scrapling"):
         p.fetch_content("https://example.com/unseen")

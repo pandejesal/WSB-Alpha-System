@@ -5,8 +5,10 @@ Plain-tier fetcher only (no Playwright/stealth — browser overhead breaks CI).
 
 - File cache first: ``docs/data/scrape_cache/<sha256(url)>.md``. No network
   when cached. Never called from the hot evolve loop — research queue only.
-- ``scrapling`` is an OPTIONAL dependency (``pip install scrapling`` to enable).
-  Missing library -> informative ImportError (arch-pattern fail-closed).
+- Plain HTTP via stdlib ``urllib`` + ``scrapling.parser.Adaptor`` for parsing
+  (no Playwright/browser needed — the ``Fetcher`` chain hard-requires it).
+  ``scrapling`` is still an optional dep: missing library -> informative
+  ImportError (arch-pattern fail-closed).
 - Any fetch/parse failure -> RuntimeError with URL + cause (fail-closed loudly,
   never silent empty content that poisons downstream debate).
 """
@@ -26,7 +28,7 @@ CACHE_DIR = Path(__file__).resolve().parent.parent.parent / "docs" / "data" / "s
 
 def _extract_text(page: object) -> str:
     """Best-effort text out of a scrapling page object across API shapes."""
-    for attr in ("text", "body", "content", "markdown"):
+    for attr in ("get_all_text", "text", "body", "content", "markdown"):
         try:
             val = getattr(page, attr, None)
             text = val() if callable(val) else val
@@ -55,7 +57,7 @@ class ScraplingProvider(SearchProvider):
         )
 
     def fetch_content(self, url: str) -> str:
-        """Fetch URL text via cache-first Scrapling plain tier."""
+        """Fetch URL text via cache-first plain HTTP + scrapling Adaptor parse."""
         if not url or not url.startswith(("http://", "https://")):
             raise ValueError(f"refusing non-http(s) url: {url!r}")
         digest = hashlib.sha256(url.encode("utf-8")).hexdigest()[:16]
@@ -63,18 +65,23 @@ class ScraplingProvider(SearchProvider):
         if cached.exists():
             return cached.read_text(encoding="utf-8")
         try:
-            import scrapling
-        except ModuleNotFoundError as exc:
+            from scrapling.parser import Adaptor  # optional dep, lazy import
+        except ImportError as exc:
             raise ImportError(
                 "scrapling not installed — run `pip install scrapling` to enable "
                 "ScraplingProvider (plain tier only; no Playwright needed)"
             ) from exc
-        fetcher_cls = getattr(scrapling, "Fetcher", None)
-        if fetcher_cls is None:
-            raise RuntimeError("scrapling has no Fetcher class in this version")
         try:
-            page = fetcher_cls().get(url)
-            text = _extract_text(page)
+            import urllib.request
+
+            req = urllib.request.Request(
+                url, headers={"User-Agent": "WSB-Alpha-Research/1.0 (paper research)"}
+            )
+            with urllib.request.urlopen(req, timeout=30) as resp:
+                html = resp.read()
+            text = _extract_text(Adaptor(html, url=url))
+            if not text:
+                raise RuntimeError("empty parse result")
         except Exception as exc:
             raise RuntimeError(f"scrapling fetch failed for {url}: {exc}") from exc
         try:
