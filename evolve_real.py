@@ -755,6 +755,22 @@ def breed_proposals():
             # validate keys against space (breeder may drift)
             space = SPACES[p["family"]]
             if set(p["params"]) == set(space):
+                # E-self-1: skip ledger-blocked combos (distilled REJECTED history)
+                try:
+                    import hashlib as _hl
+
+                    _dg = ROOT / "docs" / "data" / "ledger_digest.json"
+                    if _dg.exists():
+                        _blocked = {
+                            (b.get("family"), b.get("param_hash"))
+                            for b in json.loads(_dg.read_text(encoding="utf-8")).get("blocked_combos", [])
+                        }
+                        _ph = _hl.sha256(json.dumps(p["params"], sort_keys=True, default=str).encode()).hexdigest()[:12]
+                        if (p["family"], _ph) in _blocked:
+                            log(f"breed proposal blocked by ledger digest (E-self-1): {p['family']}")
+                            return None
+                except Exception as e:
+                    log(f"ledger digest check skipped: {e}")
                 return p
     except Exception as e:
         log(f"breed consume skipped: {e}")
