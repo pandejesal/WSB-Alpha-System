@@ -186,6 +186,13 @@ def _normalize_metrics(metrics: dict[str, Any]) -> dict[str, Any]:
             trades = None
     if trades is not None:
         out["total_trades"] = trades
+    # E-regime pools: preserve best-regime tag so breeders can split bull/bear
+    # pools. Validated against known windows; anything else is dropped (never
+    # trusted blindly — an attacker-controlled tag must not steer breeding).
+    _regimes = {"bull_2019", "covid_crash", "bear_2022", "bull_2023_2024"}
+    _br = metrics.get("best_regime")
+    if isinstance(_br, str) and _br in _regimes:
+        out["best_regime"] = _br
     return out
 
 

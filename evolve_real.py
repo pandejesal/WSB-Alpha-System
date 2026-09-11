@@ -981,6 +981,26 @@ def main():
         except Exception:
             rec["dsr_fam"] = 0.0
         rec["fam_trials"] = FAM_TRIALS.get(family, 1)
+        # E-self-1 completion: every loop trial lands in the ledger (feeds the
+        # distiller + blocked combos). Best-effort: never breaks the iteration.
+        try:
+            from src.backtest.defend.trial_ledger import TrialLedger
+            TrialLedger(path=str(ROOT / "run-logs" / "trials.jsonl")).append_experiment(
+                strategy_id=f"{family}_real_{it}",
+                params=params if isinstance(params, dict) else {},
+                data_range="2019-01-02/2026-08-07",
+                metrics={"sharpe": m.get("sharpe", 0.0),
+                         "oos_sharpe": m.get("oos", 0.0),
+                         "max_dd": m.get("max_dd", 0.0),
+                         "family": family,
+                         "best_regime": max(
+                             ((m.get("regime_coverage", {}) or {}).items()),
+                             key=lambda kv: (kv[1] is not None, kv[1] or 0.0),
+                             default=(None, None))[0]},
+                provider="evolve_real",
+            )
+        except Exception as e:
+            log(f"ledger append skipped iter={it}: {e}")
         try:
             with open(HIST, "a", encoding="utf-8") as f:
                 f.write(json.dumps(rec) + "\n")
