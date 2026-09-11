@@ -1,10 +1,13 @@
 import json
+import logging
 import os
 from typing import Any, Dict, List, Tuple
 
 import yaml
 
 from src.utils.config import config
+
+logger = logging.getLogger(__name__)
 
 
 class MalformedSpecError(Exception):
@@ -157,7 +160,13 @@ def load_registry(registry_path: str = "strategies/registry.json") -> tuple[list
              # Try relative to the directory containing registry.json
              spec_path = os.path.join(os.path.dirname(registry_path), os.path.basename(entry["spec_file"]))
              if not os.path.exists(spec_path):
-                 raise MalformedSpecError(f"Registry entry {entry.get('id', 'UNKNOWN')} points to non-existent spec_file: {entry['spec_file']}")
+                 # Per-row fail-safe (2026-09-11 merge fix): one stale pointer
+                 # must not brick the other 130 strategies. Skip loudly.
+                 logger.warning(
+                     "Skipping registry entry %s: spec_file not found: %s",
+                     entry.get("id", "UNKNOWN"), entry["spec_file"],
+                 )
+                 continue
 
         # Load and validate
         spec = load_yaml(spec_path)
