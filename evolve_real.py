@@ -1047,7 +1047,11 @@ def main():
                                 "tracks_cleared": len(tracks),
                                 "regime_coverage": rec.get("regime_coverage", {}),
                                 "regime_warn": bool(rec.get("regime_warn", False)),
-                                "best_regime": max((rec.get("regime_coverage", {}) or {}).items(), key=lambda kv: (kv[1] is not None, kv[1] or 0.0), default=(None, None))[0],
+                                "best_regime": max(
+                                    (rec.get("regime_coverage", {}) or {}).items(),
+                                    key=lambda kv: (kv[1] is not None, kv[1] or 0.0),
+                                    default=(None, None),
+                                )[0],
                                 "bench_sharpe": round(float(safe_sharpe(
                                     data["SPY"].pct_change().fillna(0.0))), 3)}})
             try:
