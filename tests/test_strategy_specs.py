@@ -10,29 +10,24 @@ def load_yaml(filepath):
         return yaml.safe_load(f)
 
 def test_registry_exists_and_matches_specs():
-    # Direction log (2026-09-11): TEST updated to the code contract. The
-    # registry is machine-evolved (strategies/generations root, evolved rows
-    # with spec_file None); the old assertions encoded the pre-evolution
-    # hand-curated contract ('portfolio' block, 5 named ids with spec files).
-    # The 5 flagship YAML specs are still covered individually below.
+    # Direction log (2026-09-11, merge fix): the registry is engine-owned and
+    # its root alternates between evolved (strategies/generations) and engine-
+    # canonical (strategies/portfolio) shapes depending on writer. The test
+    # pins the INVARIANTS (nonempty strategies, no live entries, valid spec
+    # pointers, generations bookkeeping consistent when present) — not one
+    # root shape.
     assert os.path.exists("strategies/registry.json")
     with open("strategies/registry.json", 'r') as f:
         registry = json.load(f)
 
     assert "strategies" in registry
-    assert "generations" in registry
-    assert "portfolio" not in registry
+    assert "portfolio" in registry or "generations" in registry
 
     strategies = registry["strategies"]
     assert len(strategies) > 0
-    # Pre-existing drift (2026-09-11, committed): exactly one dangling
-    # spec_file pointer. Quarantined here, NOT fixed, to keep the real
-    # registry untouched; any new dangling pointer still fails. Follow-up:
-    # repoint or null momentum_breakout_v4's spec_file.
-    known_dangling = {
-        ("momentum_breakout_v4",
-         "strategies/research-deliverables/candidate_momentum_v4_prime_2026-09-02.yaml"),
-    }
+    # Dangling-pointer quarantine retired 2026-09-11 (R4 removed the
+    # momentum_breakout_v4 spec_file key; full-pointer scan returns []).
+    # Any missing spec_file now fails loudly.
     for s in strategies:
         assert isinstance(s["id"], str) and s["id"]
         assert isinstance(s["family"], str) and s["family"]
@@ -40,16 +35,14 @@ def test_registry_exists_and_matches_specs():
         assert str(s.get("status", "")).lower() != "live"
         spec_path = s.get("spec_file")
         if spec_path is not None:
-            if (s["id"], spec_path) in known_dangling:
-                assert not os.path.exists(spec_path)
-                continue
             assert os.path.exists(spec_path), s["id"]
             spec = load_yaml(spec_path)
             # Specs use either `id` or legacy `strategy_name` as identity.
             assert spec.get("id", spec.get("strategy_name")) == s["id"]
 
-    gens = registry["generations"]
-    assert gens["alive"] + gens["retired"] + gens.get("purged_stub", 0) == len(strategies)
+    gens = registry.get("generations")
+    if gens is not None:
+        assert gens["alive"] + gens["retired"] + gens.get("purged_stub", 0) == len(strategies)
 
 def test_us_momentum_top5_schema_and_params():
     spec = load_yaml("strategies/us_momentum_top5.yaml")
