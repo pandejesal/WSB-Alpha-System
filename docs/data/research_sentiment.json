@@ -1,7 +1,7 @@
 [
   {
     "ticker": "AAPL",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -9,7 +9,7 @@
   },
   {
     "ticker": "MSFT",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -17,7 +17,7 @@
   },
   {
     "ticker": "GOOGL",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -25,23 +25,23 @@
   },
   {
     "ticker": "AMZN",
-    "date": "2026-08-31T15:35:36.494534Z",
-    "score": 0.2405,
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2391,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
     "source": "ResearchPipeline"
   },
   {
     "ticker": "NVDA",
-    "date": "2026-08-31T15:35:36.494534Z",
-    "score": 0.2479,
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
     "stance": "NEUTRAL",
-    "reasoning": "Bull Agent: Positive sentiment ratio (0.03) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
     "source": "ResearchPipeline"
   },
   {
     "ticker": "META",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -49,15 +49,15 @@
   },
   {
     "ticker": "TSLA",
-    "date": "2026-08-31T15:35:36.494534Z",
-    "score": 0.2405,
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
     "stance": "NEUTRAL",
-    "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
     "source": "ResearchPipeline"
   },
   {
-    "ticker": "BRK.A",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "ticker": "QQQ",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -65,7 +65,7 @@
   },
   {
     "ticker": "JPM",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -73,7 +73,7 @@
   },
   {
     "ticker": "V",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -81,7 +81,7 @@
   },
   {
     "ticker": "JNJ",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -89,7 +89,7 @@
   },
   {
     "ticker": "WMT",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.2405,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -97,15 +97,15 @@
   },
   {
     "ticker": "MA",
-    "date": "2026-08-31T15:35:36.494534Z",
-    "score": 0.0,
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2358,
     "stance": "NEUTRAL",
-    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "reasoning": "Bull Agent: Positive sentiment ratio (0.01) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
     "source": "ResearchPipeline"
   },
   {
     "ticker": "PG",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -113,15 +113,15 @@
   },
   {
     "ticker": "UNH",
-    "date": "2026-08-31T15:35:36.494534Z",
-    "score": 0.0,
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2405,
     "stance": "NEUTRAL",
-    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
     "source": "ResearchPipeline"
   },
   {
     "ticker": "XOM",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
@@ -129,34 +129,122 @@
   },
   {
     "ticker": "HD",
-    "date": "2026-08-31T15:35:36.494534Z",
-    "score": 0.0,
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2391,
     "stance": "NEUTRAL",
-    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
     "source": "ResearchPipeline"
   },
   {
     "ticker": "DIS",
-    "date": "2026-08-31T15:35:36.494534Z",
-    "score": 0.2451,
-    "stance": "NEUTRAL",
-    "reasoning": "Bull Agent: Positive sentiment ratio (0.03) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
-    "source": "ResearchPipeline"
-  },
-  {
-    "ticker": "BTC/USD",
-    "date": "2026-08-31T15:35:36.494534Z",
+    "date": "2026-09-14T14:31:08.747467Z",
     "score": 0.0,
     "stance": "NEUTRAL",
     "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
     "source": "ResearchPipeline"
   },
   {
-    "ticker": "ETH/USD",
-    "date": "2026-08-31T15:35:36.494534Z",
-    "score": 0.2358,
+    "ticker": "BAC",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2405,
     "stance": "NEUTRAL",
-    "reasoning": "Bull Agent: Positive sentiment ratio (0.01) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "CVX",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "KO",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "PEP",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2526,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Positive sentiment ratio (0.04) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "COST",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2418,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "AVGO",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "LLY",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2418,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "ABBV",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.2391,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Positive sentiment ratio (0.02) indicates upward momentum. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "NKE",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "CRM",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "ORCL",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": -0.2418,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Negative sentiment ratio (0.02) points to potential downside. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "NFLX",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
+    "source": "ResearchPipeline"
+  },
+  {
+    "ticker": "AMD",
+    "date": "2026-09-14T14:31:08.747467Z",
+    "score": 0.0,
+    "stance": "NEUTRAL",
+    "reasoning": "Bull Agent: Not enough positive sentiment to maintain a strong bullish outlook. | Bear Agent: Insufficient negative indicators to form a strong bearish position. | Neutral Agent: Balanced market sentiment suggests no clear directional advantage.",
     "source": "ResearchPipeline"
   }
 ]
