@@ -6,6 +6,7 @@ import sys
 
 import yaml
 
+from src.backtest.defend.discard_log import append_discard, spec_sha256_of
 from src.backtest.defend.trial_ledger import TrialLedger
 from src.ops.preregistration import (
     check_recorded_report_hash,
@@ -140,6 +141,9 @@ def main():
             filepath = record_evaluation(args.spec_path, args.verdict, args.cycle, args.eval_path, args.registry, args.docs_dir)
             print(f"Successfully recorded evaluation at {filepath}")
             _append_prereg_trial_to_ledger(args.spec_path, filepath)
+            if args.verdict == "HONEST_ABANDON":
+                try: append_discard(os.path.splitext(os.path.basename(args.spec_path))[0], spec_sha256_of(args.spec_path), "HONEST_ABANDON", ["HONEST_ABANDON"], "preregister:record:abandon")
+                except Exception: pass  # noqa: BLE001, S110 - discard logging is fail-open
         except Exception as e:
             print(f"Error recording evaluation: {e}", file=sys.stderr)
             sys.exit(1)

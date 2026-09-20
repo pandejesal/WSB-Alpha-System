@@ -1,0 +1,70 @@
+id: rotation_h28
+name: "Rotation H28 (H27-exact rotation x dispersion entry filter: trailing-63d mean > trailing-252d median, always-invested)"
+family: high_exposure_momentum
+venue: alpaca
+universe: "31-name rotation_universe broad panel + SPY + fixed sleeve [TLT, GLD, SLV, HYG, UUP], daily OHLCV 2019-2026 (dropna-aligned, T=1910 bars)"
+pre_registration_ref: "docs/data/cycle196_prereg_high_exposure_momentum.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/rotation/20260912-h28-rotation/results/eval_rotation_h28.json"
+status: "paper"
+version: 1
+signal:
+  entry: "H27-EXACT legs: CALM = H24-frozen (252d formation 21d skip, top-decile 4 names + SPY-fill to 5 slots, annual year-end, x calm deleverage-only scale clip(0.15/trailing-63d ann vol, 0.5, 1.0)). STRESS (SPY close < SMA200 OR trailing-60d < -8%, past-only shift1): 4 lowest trailing-252d-beta among [TLT,GLD,SLV,HYG,UUP] month-end, equal-weight. PORTFOLIO OVERLAY: trailing-63d ann vol of H25-target-implied returns -> scale clip(0.15/vol, 0.5, 1.0). DISPERSION ENTRY FILTER (new): calm->stress rotation fires ONLY when trailing-63d mean dispersion > trailing-252d median at trigger close (DH1 CSV, past-only, full windows, fail-closed suppress); suppressed episodes hold calm leg. Stress exits on frozen trigger clearing (ungated). Full-row target assignment daily; T+1 execution; never cash."
+  exit: "Calm exits at annual reselection; admitted stress episodes exit when trigger clears (back to calm leg); suppressed episodes never entered; scales exit nothing (smoothing only)"
+  sizing: "Equal weight per leg (calm 1/5 slots x calm scale; stress 1/4 basket) x portfolio scale [0.5,1.0]; fractional shares; T+1 execution"
+  caps:
+    max_concurrent_positions: 5
+  rebalance: "annual calm picks + monthly stress basket + daily calm scale + daily portfolio scale + per-entry dispersion gate, all past-only"
+parameters:
+  calm_lookback: 252
+  calm_skip: 21
+  calm_decile: 0.1
+  calm_top_n: 4
+  calm_slots: 5
+  fill_asset: SPY
+  reselection: annual_last_trading_day_of_year
+  exec_delay: 1
+  calm_vol_target_ann: 0.15
+  calm_vol_lookback: 63
+  calm_scale_min: 0.5
+  calm_scale_max: 1.0
+  port_vol_target_ann: 0.15
+  port_vol_lookback: 63
+  port_scale_min: 0.5
+  port_scale_max: 1.0
+  stress_sma_slow: 200
+  stress_drawdown_trigger_60d: -0.08
+  stress_beta_lookback: 252
+  stress_defensive_k: 4
+  stress_defensive_sleeve: [TLT, GLD, SLV, HYG, UUP]
+  stress_selection: monthly_month_end
+  dispersion_fast_window: 63
+  dispersion_fast_stat: mean
+  dispersion_slow_window: 252
+  dispersion_slow_stat: median
+  dispersion_scope: calm_to_stress_entries_only
+  fam_trials_N: 59
+indicators:
+  - "252d cumulative return formation with 21d skip"
+  - "Top-decile cross-sectional rank"
+  - "Trailing-63d unscaled-sleeve annualized vol (calm deleverage-only scale)"
+  - "Trailing-63d H25-target-implied annualized vol (portfolio deleverage-only scale)"
+  - "SPY vs SMA200 + trailing-60d return stress trigger"
+  - "Trailing-252d beta vs SPY (stress sleeve selection)"
+  - "Trailing-63d mean dispersion vs trailing-252d median (entry filter, DH1 CSV)"
+position_sizing:
+  - "Equal weight across active leg (calm 1/5 slots x calm scale; stress 1/4) x portfolio scale [0.5,1.0]"
+  - "Fractional shares via Alpaca paper API"
+fee_model:
+  commission: "$0 (Alpaca) + 2.5bp W5"
+  slippage: "5-7bps slippage + vol_scalar scale 2 cap 2 (W5 tiered cost on combined scaled notionals)"
+  settlement: "T+1"
+benchmark_result:
+  benchmark: "SPY identical-window twin (1910 bars)"
+feasibility_at_100:
+  - "5 calm positions / 4 stress positions fractional; annual + monthly + daily-scale turnover; T+1"
+risks:
+  - "Filter removes only 4/18 entries; perm lift NOT assumed — small-N change may move perm either way"
+  - "Only 8 annual calm reselections; single-regime luck dominates; survivorship bias in panel"
+  - "DSR at min(lineage-N, fam-N=59) harsh for a rotation-timing claim"

@@ -1,0 +1,11 @@
+﻿[2026-08-29 12:06:23] === continuous_arxiv_loop.ps1 started (PID 9928) ===
+[2026-08-29 12:06:23] Python: python  Script: C:\Users\DELL\Documents\Default Project\scrape_arxiv_qfin_v2.py
+[2026-08-29 12:06:23] Launching: python C:\Users\DELL\Documents\Default Project\scrape_arxiv_qfin_v2.py --loop --sleep-hours 6  (full history, no cap)
+[2026-08-30 10:59:17] Scraper exited with code 1
+[2026-08-30 10:59:17] Crash/backoff 30s before restart
+[2026-08-30 10:59:48] Restarting loop after 10s...
+[2026-08-30 10:59:58] Launching: python C:\Users\DELL\Documents\Default Project\scrape_arxiv_qfin_v2.py --loop --sleep-hours 6  (full history, no cap)
+[2026-08-30 11:19:39] Scraper exited with code 1
+[2026-08-30 11:19:39] Crash/backoff 60s before restart
+[2026-08-30 11:20:39] Restarting loop after 10s...
+[2026-08-30 11:20:49] Launching: python C:\Users\DELL\Documents\Default Project\scrape_arxiv_qfin_v2.py --loop --sleep-hours 6  (full history, no cap)

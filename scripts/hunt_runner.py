@@ -7,6 +7,7 @@ from datetime import datetime, timezone
 
 import yaml
 
+from src.backtest.defend.discard_log import append_discard, spec_sha256_of
 from src.backtest.defend.trial_ledger import TrialLedger
 from src.ops import preregistration, strategy_registry
 
@@ -315,7 +316,7 @@ def do_collect(args):
                 if not os.path.exists(eval_file) and not os.path.exists(os.path.join(results_dir, os.path.basename(eval_file))):
                      missing_items.append(f"Eval records not found at {eval_file} or in results/")
 
-            print(f"✅ Valid Spec: {cand_file}")
+            print(f"[OK] Valid Spec: {cand_file}")
             if missing_items:
                 print("   Missing items for registry entry:")
                 for item in missing_items:
@@ -324,11 +325,13 @@ def do_collect(args):
                 print("   Ready for registry merging (human-gated step).")
 
         except (strategy_registry.MalformedSpecError, yaml.YAMLError, OSError) as e:
-            print(f"❌ Rejected: {cand_file} - {e}")
+            print(f"[REJECTED] {cand_file} - {e}")
             shutil.move(cand_path, os.path.join(rejected_dir, cand_file))
             # Create a rejection reason file
             with open(os.path.join(rejected_dir, f"{cand_file}.reason"), 'w') as f:
                 f.write(str(e))
+            try: append_discard(os.path.splitext(cand_file)[0], spec_sha256_of(os.path.join(rejected_dir, cand_file)), "REJECTED", [f"{type(e).__name__}: {e}"], "hunt:collect:reject")
+            except Exception: pass  # noqa: BLE001, S110 - discard logging is fail-open
 
 def do_status(args):
     hunts_dir = "hunts"

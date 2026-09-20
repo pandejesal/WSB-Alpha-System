@@ -1,0 +1,37 @@
+id: breadth_timing_h13
+name: "Breadth Timing H13 (two-signal combo: breadth-contrarian sizing x dispersion regime filter, SPY-only)"
+family: breadth_timing
+venue: alpaca
+universe: "SPY single-asset timing driven by DH1 breadth panel (hunts/data_hunt_20260911/breadth_features_20260912.csv, 1909 rows, 2019-01-03..2026-08-07); local CSVs only"
+pre_registration_ref: "docs/data/cycle29_prereg_breadth_timing.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/breadth_timing/20260911-h13-breadth/results/eval_breadth_timing_h13.json"
+status: "paper"
+version: 1
+signal:
+  entry: "Dispersion-ON (dispersion trailing-252d quantile >= 0.50, past-only at close t): breadth-quantile >= 0.80 -> SPY 0.70; <= 0.20 -> SPY 1.00; middle -> SPY 0.85. Dispersion-OFF or warmup (<252 rows) -> SPY 1.00. Remainder cash at zero. T+1 via shift(1). NEVER below SPY 0.70, NEVER short, NEVER leverage."
+  exit: "Signal re-evaluated daily; weight floats back to 1.00 SPY automatically when quantiles normalize (no discrete exit event)"
+  sizing: "SPY weight in {1.00, 0.85, 0.70}; gross <= 1.0 always; remainder cash"
+  caps:
+    max_concurrent_positions: 1
+  rebalance: "daily signal evaluation, weight changes only on level switches, forward T+1"
+parameters:
+  breadth_lookback: 252
+  crowded_hi: 0.80
+  thin_lo: 0.20
+  dispersion_gate: 0.50
+  spy_hi: 1.0
+  spy_mid: 0.85
+  spy_lo: 0.70
+  exec_delay: 1
+indicators:
+  - "pct_above_50d trailing-252d quantile rank (past-only)"
+  - "dispersion trailing-252d quantile rank (past-only)"
+position_sizing:
+  - "SPY 1.00/0.85/0.70 graduated by breadth-contrarian fade gated on dispersion regime; cash remainder"
+  - "Fractional shares via Alpaca paper API"
+fee_model: "tiered W5 via evolve_real._rotation_result (equities tier, T+1)"
+risk:
+  live_trading_enabled: false
+  paper_only: true

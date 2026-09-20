@@ -1,0 +1,47 @@
+id: persist_h23
+name: "Persistence H23 (12-1 annual top-decile, SPY slot-fill, always-invested)"
+family: high_exposure_momentum
+venue: alpaca
+universe: "31-name rotation_universe broad panel, daily OHLCV 2019-2026 (dropna-aligned, T=1910 bars)"
+pre_registration_ref: "docs/data/cycle191_prereg_persist_h23.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/persistence/20260912-h23-persist/results/eval_persist_h23.json"
+status: "paper"
+version: 1
+signal:
+  entry: "Rank 31 names by 252d cumulative formation return with 21d skip (12-1) at each year-end (last trading day); take top decile ceil(0.1*31)=4 names; fill 5 equal-weight slots with picks first then SPY (tmin guard, always invested). Forward-fill daily holding, T+1 execution."
+  exit: "Re-rank annually; exit names dropping out of top decile at year-end reselection"
+  sizing: "Equal weight 1/5 per slot (4 decile picks + SPY fill as needed); fractional shares; T+1 execution"
+  caps:
+    max_concurrent_positions: 5
+  rebalance: "annual (last trading day of year), forward-filled daily"
+parameters:
+  lookback: 252
+  skip: 21
+  decile: 0.1
+  top_n: 4
+  slots: 5
+  fill_asset: SPY
+  reselection: annual_last_trading_day_of_year
+  exec_delay: 1
+  fam_trials_N: 54
+indicators:
+  - "252d cumulative return formation"
+  - "21d skip (reversal avoidance)"
+  - "Top-decile cross-sectional rank"
+position_sizing:
+  - "Equal weight 1/5 across 5 slots (decile picks + SPY fill)"
+  - "Fractional shares via Alpaca paper API"
+fee_model:
+  commission: "$0 (Alpaca) + 2.5bp W5"
+  slippage: "5-7bps slippage + vol_scalar scale 2 cap 2 (W5 tiered cost)"
+  settlement: "T+1"
+benchmark_result:
+  benchmark: "SPY identical-window twin (1910 bars)"
+feasibility_at_100:
+  - "5 positions x ~$20 fractional; 1 rebalance/yr; T+1"
+risks:
+  - "4-stock concentration => crash DD risk vs 35% cap; always-invested tmin~=1.0 bears full equity beta"
+  - "Only 6 annual reselections in window; single-regime luck dominates; survivorship bias in panel"
+  - "DSR at min(lineage-N, fam-N=54) is a harsh bar for a 6-bet strategy"

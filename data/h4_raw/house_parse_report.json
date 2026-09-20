@@ -1,0 +1,87 @@
+{
+  "generated_note": "consolidated: main acquisition run 2026-08-25 + recovery pass (smoke-12 refetch, http_error retries with adjacent-year folder fallback)",
+  "source_base": "https://disclosures-clerk.house.gov/public_disc",
+  "retrieved": "2026-08-25",
+  "eligible_filings": 4667,
+  "status_counts_total": {
+    "fetched": 3736,
+    "parse_empty": 103,
+    "image_only": 823,
+    "http_error": 5
+  },
+  "transactions_extracted": 39157,
+  "transactions_confident_ticker": 33898,
+  "purchase_rows_confident": 16326,
+  "unpublished_index_entries_no_pdf_any_year": [
+    "8216835",
+    "8219061",
+    "8219062",
+    "8219906",
+    "8221334"
+  ],
+  "per_year_manifest": {
+    "2018": {
+      "filings": 157,
+      "fetched": 96,
+      "parse_empty": 4,
+      "image_only": 56,
+      "http_error": 1
+    },
+    "2019": {
+      "filings": 683,
+      "fetched": 502,
+      "parse_empty": 18,
+      "image_only": 162,
+      "http_error": 1
+    },
+    "2020": {
+      "filings": 733,
+      "fetched": 545,
+      "parse_empty": 52,
+      "image_only": 134,
+      "http_error": 2
+    },
+    "2021": {
+      "filings": 680,
+      "fetched": 558,
+      "parse_empty": 7,
+      "image_only": 115,
+      "http_error": 0
+    },
+    "2022": {
+      "filings": 624,
+      "fetched": 502,
+      "parse_empty": 3,
+      "image_only": 119,
+      "http_error": 0
+    },
+    "2023": {
+      "filings": 460,
+      "fetched": 381,
+      "parse_empty": 7,
+      "image_only": 72,
+      "http_error": 0
+    },
+    "2024": {
+      "filings": 451,
+      "fetched": 389,
+      "parse_empty": 5,
+      "image_only": 56,
+      "http_error": 1
+    },
+    "2025": {
+      "filings": 515,
+      "fetched": 444,
+      "parse_empty": 5,
+      "image_only": 66,
+      "http_error": 0
+    },
+    "2026": {
+      "filings": 364,
+      "fetched": 319,
+      "parse_empty": 2,
+      "image_only": 43,
+      "http_error": 0
+    }
+  }
+}

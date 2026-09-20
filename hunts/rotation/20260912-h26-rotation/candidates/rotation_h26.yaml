@@ -1,0 +1,60 @@
+id: rotation_h26
+name: "Rotation H26 (H24 vol-persistence calm x duration/metals-4 stress, H9-loose trigger + 2-day confirmation, always-invested)"
+family: high_exposure_momentum
+venue: alpaca
+universe: "31-name rotation_universe broad panel + SPY + fixed sleeve [TLT, GLD, SLV, HYG, UUP], daily OHLCV 2019-2026 (dropna-aligned, T=1910 bars)"
+pre_registration_ref: "docs/data/cycle194_prereg_high_exposure_momentum.md"
+gates_passed: "0/5"
+verdict: "PENDING"
+eval_records: "hunts/rotation/20260912-h26-rotation/results/eval_rotation_h26.json"
+status: "paper"
+version: 1
+signal:
+  entry: "CALM: rank 31 names by 252d formation with 21d skip at each year-end; top decile 4 names + SPY-fill to 5 equal-weight slots, forward-filled daily, x deleverage-only vol-target scale clip(0.15/trailing-63d ann vol, 0.5, 1.0). STRESS (CONFIRMED: raw SPY close < SMA200 OR trailing-60d < -8% on 2 consecutive closes, all past-only shift1): 4 lowest trailing-252d-beta among [TLT,GLD,SLV,HYG,UUP] selected month-end, equal-weight. Full-row target assignment daily; T+1 execution; never cash."
+  exit: "Calm exits at annual reselection; stress exits when confirmed trigger clears (back to calm leg)"
+  sizing: "Equal weight per leg (calm 1/5 slots x vol scale in [0.5,1.0]; stress 1/4 basket); fractional shares; T+1 execution"
+  caps:
+    max_concurrent_positions: 5
+  rebalance: "annual calm picks + monthly stress basket + daily vol scale, all past-only"
+parameters:
+  calm_lookback: 252
+  calm_skip: 21
+  calm_decile: 0.1
+  calm_top_n: 4
+  calm_slots: 5
+  fill_asset: SPY
+  reselection: annual_last_trading_day_of_year
+  exec_delay: 1
+  vol_target_ann: 0.15
+  vol_lookback: 63
+  scale_min: 0.5
+  scale_max: 1.0
+  stress_sma_slow: 200
+  stress_drawdown_trigger_60d: -0.08
+  stress_confirmation_days: 2
+  stress_beta_lookback: 252
+  stress_defensive_k: 4
+  stress_defensive_sleeve: [TLT, GLD, SLV, HYG, UUP]
+  stress_selection: monthly_month_end
+  fam_trials_N: 57
+indicators:
+  - "252d cumulative return formation with 21d skip"
+  - "Top-decile cross-sectional rank"
+  - "Trailing-63d unscaled-sleeve annualized vol (deleverage-only scale)"
+  - "SPY vs SMA200 + trailing-60d return stress trigger with 2-day confirmation"
+  - "Trailing-252d beta vs SPY (stress sleeve selection)"
+position_sizing:
+  - "Equal weight across active leg (calm 1/5 slots x scale [0.5,1.0]; stress 1/4)"
+  - "Fractional shares via Alpaca paper API"
+fee_model:
+  commission: "$0 (Alpaca) + 2.5bp W5"
+  slippage: "5-7bps slippage + vol_scalar scale 2 cap 2 (W5 tiered cost on combined notionals)"
+  settlement: "T+1"
+benchmark_result:
+  benchmark: "SPY identical-window twin (1910 bars)"
+feasibility_at_100:
+  - "5 calm positions / 4 stress positions fractional; annual + monthly + daily-scale turnover; T+1"
+risks:
+  - "Confirmation lags crisis entries by 1 day (slower stress response vs H25 raw trigger)"
+  - "Only 8 annual calm reselections; single-regime luck dominates; survivorship bias in panel"
+  - "DSR at min(lineage-N, fam-N=57) harsh for a rotation-timing claim; regime-timing perm content NOT assumed"

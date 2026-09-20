@@ -1,0 +1,5 @@
+# InterHarness v2 - Pending Tracker (JSONL)
+# Format: one JSON object per line, append-only
+# Fields: probe_id, sent_ts, deadline_ts, owner, reply_path, evidence_required
+# Stale sweeper runs every 15min: if now > deadline_ts + 30min grace -> BLOCKED-stale receipt
+{"probe_id": "soak-001", "sent_ts": "2026-09-18T17:54:42.535368Z", "deadline_ts": "2026-09-18T18:54:42.535409Z", "owner": "kilo", "reply_path": "InterHarness/kilo-to-hermes-soak-001.md", "evidence_required": true}
