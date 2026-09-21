@@ -1,0 +1,20 @@
+{
+  "mode": "TOY_SANDBOX",
+  "simulated": true,
+  "days_completed": 1,
+  "last_run": "2026-09-21T23:43:03.488370Z",
+  "portfolio_value": 100.0,
+  "trades": [
+    {
+      "ticker": "BAC",
+      "direction": "buy",
+      "entry_price": 62.85,
+      "confluence_score": 3,
+      "quantity": 1.0,
+      "entry_day": 1,
+      "unrealized_pnl": 0.0
+    }
+  ],
+  "realized_pnl": 0.0,
+  "cash": 37.15
+}

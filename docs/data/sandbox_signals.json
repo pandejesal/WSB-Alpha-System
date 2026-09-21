@@ -1,0 +1,199 @@
+{
+  "mode": "TOY_SANDBOX",
+  "simulated": true,
+  "day": 1,
+  "date": "2026-09-21",
+  "signals": [
+    {
+      "ticker": "AAPL",
+      "direction": "buy",
+      "entry_price": 313.06,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "MSFT",
+      "direction": "buy",
+      "entry_price": 499.05,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "GOOGL",
+      "direction": "buy",
+      "entry_price": 354.07,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "AMZN",
+      "direction": "buy",
+      "entry_price": 274.48,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "NVDA",
+      "direction": "buy",
+      "entry_price": 223.71,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "META",
+      "direction": "buy",
+      "entry_price": 592.1,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "TSLA",
+      "direction": "buy",
+      "entry_price": 328.58,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "QQQ",
+      "direction": "buy",
+      "entry_price": 723.03,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "JPM",
+      "direction": "buy",
+      "entry_price": 357.52,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "V",
+      "direction": "sell",
+      "entry_price": 361.83,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "JNJ",
+      "direction": "sell",
+      "entry_price": 257.97,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "WMT",
+      "direction": "sell",
+      "entry_price": 111.58,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "MA",
+      "direction": "sell",
+      "entry_price": 562.95,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "PG",
+      "direction": "sell",
+      "entry_price": 145.79,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "UNH",
+      "direction": "sell",
+      "entry_price": 407.08,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "XOM",
+      "direction": "sell",
+      "entry_price": 152.06,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "HD",
+      "direction": "buy",
+      "entry_price": 353.02,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "DIS",
+      "direction": "buy",
+      "entry_price": 104.91,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "BAC",
+      "direction": "buy",
+      "entry_price": 62.85,
+      "confluence_score": 3,
+      "quantity": 1.0,
+      "entry_day": 1,
+      "unrealized_pnl": 0.0
+    },
+    {
+      "ticker": "CVX",
+      "direction": "sell",
+      "entry_price": 184.95,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "KO",
+      "direction": "buy",
+      "entry_price": 87.05,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "PEP",
+      "direction": "sell",
+      "entry_price": 137.55,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "COST",
+      "direction": "buy",
+      "entry_price": 947.82,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "AVGO",
+      "direction": "buy",
+      "entry_price": 427.76,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "LLY",
+      "direction": "buy",
+      "entry_price": 1184.01,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "ABBV",
+      "direction": "sell",
+      "entry_price": 246.04,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "NKE",
+      "direction": "sell",
+      "entry_price": 41.26,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "CRM",
+      "direction": "buy",
+      "entry_price": 192.74,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "ORCL",
+      "direction": "buy",
+      "entry_price": 147.02,
+      "confluence_score": 4
+    },
+    {
+      "ticker": "NFLX",
+      "direction": "buy",
+      "entry_price": 74.14,
+      "confluence_score": 3
+    },
+    {
+      "ticker": "AMD",
+      "direction": "buy",
+      "entry_price": 483.36,
+      "confluence_score": 3
+    }
+  ],
+  "portfolio_value": 100.0,
+  "trades_today": 31
+}
