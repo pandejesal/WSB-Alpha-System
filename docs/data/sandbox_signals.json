@@ -1,8 +1,8 @@
 {
   "mode": "TOY_SANDBOX",
   "simulated": true,
-  "day": 1,
-  "date": "2026-09-21",
+  "day": 2,
+  "date": "2026-09-22",
   "signals": [
     {
       "ticker": "AAPL",
@@ -78,7 +78,7 @@
     },
     {
       "ticker": "MA",
-      "direction": "sell",
+      "direction": "buy",
       "entry_price": 562.95,
       "confluence_score": 3
     },
@@ -116,10 +116,7 @@
       "ticker": "BAC",
       "direction": "buy",
       "entry_price": 62.85,
-      "confluence_score": 3,
-      "quantity": 1.0,
-      "entry_day": 1,
-      "unrealized_pnl": 0.0
+      "confluence_score": 3
     },
     {
       "ticker": "CVX",
