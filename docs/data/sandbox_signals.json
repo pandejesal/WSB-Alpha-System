@@ -1,8 +1,8 @@
 {
   "mode": "TOY_SANDBOX",
   "simulated": true,
-  "day": 3,
-  "date": "2026-09-23",
+  "day": 4,
+  "date": "2026-09-24",
   "signals": [
     {
       "ticker": "AAPL",
@@ -78,7 +78,7 @@
     },
     {
       "ticker": "MA",
-      "direction": "sell",
+      "direction": "buy",
       "entry_price": 562.95,
       "confluence_score": 3
     },
@@ -132,7 +132,7 @@
     },
     {
       "ticker": "PEP",
-      "direction": "buy",
+      "direction": "sell",
       "entry_price": 137.55,
       "confluence_score": 3
     },
@@ -146,13 +146,13 @@
       "ticker": "AVGO",
       "direction": "buy",
       "entry_price": 427.76,
-      "confluence_score": 4
+      "confluence_score": 3
     },
     {
       "ticker": "LLY",
       "direction": "buy",
       "entry_price": 1184.01,
-      "confluence_score": 3
+      "confluence_score": 4
     },
     {
       "ticker": "ABBV",
