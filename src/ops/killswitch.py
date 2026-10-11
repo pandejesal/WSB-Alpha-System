@@ -11,14 +11,25 @@ ALLOWED_TOP_KEYS = {"state", "sleeves"}
 class KillSwitch:
     """
     Reads config/ops_state.yaml and enforces the operational state.
-    States: off | halt_new_orders | flat
+    States: off | halt_new_orders | halt_only
     Fails closed on missing or unparseable state file (defaults to halt_new_orders).
     NEVER auto-flat.
+
+    Audit finding F5: the legacy "flat" state never flattened anything — it
+    only stopped new orders, which is what halt_new_orders already means.
+    It was renamed halt_only so an operator cannot believe positions were
+    closed when they were not. A state file still containing "flat" is
+    treated as halt_new_orders (fail closed) with a CRITICAL log. Real
+    flattening (fetch positions -> closing orders -> monitor -> verify flat)
+    is NOT implemented; do not rely on any state name to liquidate.
     Schema: only ALLOWED_TOP_KEYS allowed; extra keys -> fail-closed.
     """
     def __init__(self, filepath: str = "config/ops_state.yaml"):
         self.filepath = filepath
-        self.valid_states = {"off", "halt_new_orders", "flat"}
+        self.valid_states = {"off", "halt_new_orders", "halt_only"}
+        # Legacy aliases accepted on READ for backward compatibility with
+        # existing ops_state.yaml files; they map to their true behavior.
+        self.legacy_state_aliases = {"flat": "halt_new_orders"}
 
     def get_state(self) -> str:
         """
@@ -43,6 +54,13 @@ class KillSwitch:
                 return "halt_new_orders"
 
             state = data.get("state", "halt_new_orders")
+            if state in self.legacy_state_aliases:
+                logger.critical(
+                    f"Legacy kill switch state '{state}' found — it never flattens positions. "
+                    f"Treating as '{self.legacy_state_aliases[state]}' (fail closed). "
+                    "Use halt_only for halt-without-liquidation; real flattening is not implemented."
+                )
+                return self.legacy_state_aliases[state]
             if state not in self.valid_states:
                 logger.error(f"Invalid kill switch state: {state}. Failing closed.")
                 return "halt_new_orders"
@@ -54,9 +72,9 @@ class KillSwitch:
 
     def set_state(self, new_state: str) -> None:
         """
-        Updates the state file. NEVER set state to flat automatically in operations.
-        (Only manual tools or telegram commands can trigger a state change via this,
-        and even then, flat does NOT automatically execute market orders, it just sets the state).
+        Updates the state file. NEVER sets a state that implies liquidation:
+        halt_only stops new orders only (it does NOT flatten). Real flattening
+        is not implemented — no state name here closes positions.
 
         S2: single-writer, atomic, sleeve-preserving. Reads the existing file and
         keeps allowed keys (e.g. ``sleeves``) so a crash or concurrent rewrite can
@@ -115,6 +133,8 @@ class KillSwitch:
                 sleeves = data.get("sleeves", {})
                 if isinstance(sleeves, dict) and sleeve_id in sleeves:
                     state = sleeves[sleeve_id]
+                    if state in self.legacy_state_aliases:
+                        return self.legacy_state_aliases[state]
                     if state in self.valid_states:
                         return state
             return self.get_state()

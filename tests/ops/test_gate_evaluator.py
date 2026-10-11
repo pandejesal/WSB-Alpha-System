@@ -31,9 +31,10 @@ def _heartbeat_artifact(days: list[str]) -> dict:
 
 
 def _fills() -> list[dict]:
-    fills = [{"sleeve_id": "us_momentum_top5"} for _ in range(15)]
-    fills.extend([{"sleeve_id": "spy_rsi2"} for _ in range(15)])
-    fills.extend([{"sleeve_id": "spy_sma200"} for _ in range(20)])
+    # Canonical schema (audit F3): broker-confirmed fills only.
+    fills = [{"client_order_id": f"c{i}", "sleeve_id": "us_momentum_top5", "status": "FILLED", "avg_px": 100.0} for i in range(15)]
+    fills.extend([{"client_order_id": f"r{i}", "sleeve_id": "spy_rsi2", "status": "FILLED", "avg_px": 100.0} for i in range(15)])
+    fills.extend([{"client_order_id": f"s{i}", "sleeve_id": "spy_sma200", "status": "FILLED", "avg_px": 100.0} for i in range(20)])
     return fills
 
 
@@ -57,7 +58,7 @@ def test_gate_evaluator_all_pass():
 
 
 def test_gate_evaluator_g1_fails_under_50():
-    data = _pass_data(fills=[{"sleeve_id": "us_momentum_top5"} for _ in range(10)])
+    data = _pass_data(fills=[{"client_order_id": f"c{i}", "sleeve_id": "us_momentum_top5", "status": "FILLED", "avg_px": 100.0} for i in range(10)])
     results = GateEvaluator().evaluate_all(data)
     assert results["G1"] is False
 
@@ -65,7 +66,7 @@ def test_gate_evaluator_g1_fails_under_50():
 def test_gate_evaluator_g2_fails_sleeve_under_10():
     fills = _fills()
     fills = [f for f in fills if f["sleeve_id"] != "spy_rsi2"]
-    fills.extend([{"sleeve_id": "spy_rsi2"} for _ in range(5)])
+    fills.extend([{"client_order_id": f"r{i}", "sleeve_id": "spy_rsi2", "status": "FILLED", "avg_px": 100.0} for i in range(5)])
     data = _pass_data(fills=fills)
     results = GateEvaluator().evaluate_all(data)
     assert results["G2"] is False

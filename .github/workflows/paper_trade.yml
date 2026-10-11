@@ -2,7 +2,10 @@ name: Paper Trade Execution
 
 on:
   schedule:
-    - cron: '30 14 * * *' # 14:30 UTC daily (7-day cron as requested, engine logic maintained)
+    # Weekday-only, after the NYSE close-aware 20:55 UTC slot shared with the
+    # sandbox job (audit finding F2: the previous '30 14 * * *' ran on weekends
+    # when US equity markets are closed).
+    - cron: '55 20 * * 1-5'
   workflow_dispatch:
 
 permissions:
@@ -37,11 +40,9 @@ jobs:
           ALPACA_API_KEY: ${{ secrets.ALPACA_API_KEY }}
           ALPACA_SECRET_KEY: ${{ secrets.ALPACA_SECRET_KEY }}
           PAPER_TRADING_ENABLED: 'True'
-          # Fail-closed propagation of the live-gate flip (Task 5.1):
-          # defaults to 'False' when the repo variable is unset, so the
-          # executor stays paper-only until live_gate_flip.yml explicitly
-          # sets the LIVE_TRADING_ENABLED repository variable.
-          LIVE_TRADING_ENABLED: ${{ vars.LIVE_TRADING_ENABLED || 'False' }}
+          # Paper-only by construction (audit finding F2): the executor builds
+          # its broker with paper=True and hard-errors if LIVE_TRADING_ENABLED
+          # is set, so this workflow no longer forwards the live-gate flag.
         run: python scripts/run_paper_execution.py
 
       - name: Commit Ops Data

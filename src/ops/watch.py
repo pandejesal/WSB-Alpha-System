@@ -55,7 +55,10 @@ def main():
             new_state = "halt_new_orders"
             state_changed = True
         elif text.startswith("/flat"):
-            new_state = "flat"
+            # Audit finding F5: "flat" never liquidated anything — it was a
+            # halt without a liquidation. Renamed halt_only so the operator
+            # command name and its true behavior agree.
+            new_state = "halt_only"
             state_changed = True
         elif text.startswith(("/resume", "/off")):
             new_state = "off"

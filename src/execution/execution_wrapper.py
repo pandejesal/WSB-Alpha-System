@@ -43,13 +43,15 @@ class ExecutionWrapper:
     def cancel_order(self, symbol: str) -> bool:
         return self._execute_with_retry(self.broker.cancel_order, symbol)
 
-    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float | None = None) -> dict:
+    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float | None = None, client_order_id: str | None = None) -> dict:
         if symbol in self.halted_symbols:
             logger.error(f"Fails-Closed constraint: Cannot place order for halted symbol {symbol}.")
             return {}
 
         try:
-            return self._execute_with_retry(self.broker.place_order, symbol, qty, side, order_type, stop_loss_price)
+            # client_order_id is forwarded so backoff retries stay idempotent
+            # at the broker (audit finding F4).
+            return self._execute_with_retry(self.broker.place_order, symbol, qty, side, order_type, stop_loss_price, client_order_id)
         except Exception:  # noqa: BLE001 - Catching Exception to fail gracefully
             # FAILS CLOSED PROTOCOL
             logger.error(f"Fails-Closed triggered for {symbol}. Canceling open orders and blocking symbol.")

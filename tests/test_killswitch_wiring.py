@@ -1,7 +1,5 @@
 """CS-01 kill-switch + LIVE_TRADING_ENABLED dual-flag conjunctive gate wiring tests."""
 
-import os
-
 import yaml
 
 from src.ops.killswitch import ALLOWED_TOP_KEYS, KillSwitch, dual_gate_allows_trading
@@ -44,8 +42,18 @@ def test_dual_gate_halt_false_both_blocked(tmp_path):
     assert allowed is False
 
 
-def test_flat_always_blocks(tmp_path):
+def test_halt_only_always_blocks(tmp_path):
+    fp = _write_state(tmp_path, "halt_only")
+    for live in (True, False):
+        allowed, _ = dual_gate_allows_trading(live, filepath=fp)
+        assert allowed is False
+
+
+def test_legacy_flat_state_fails_closed(tmp_path):
+    """Legacy 'flat' in ops_state.yaml maps to halt_new_orders (audit F5)."""
     fp = _write_state(tmp_path, "flat")
+    ks = KillSwitch(filepath=fp)
+    assert ks.get_state() == "halt_new_orders"
     for live in (True, False):
         allowed, _ = dual_gate_allows_trading(live, filepath=fp)
         assert allowed is False

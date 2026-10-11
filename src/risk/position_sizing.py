@@ -1,10 +1,14 @@
 import math
 import os
 
-# GLOBAL DISABLE — 2026-08-21 per user: remove PRM HARD STOP / circuit breaker for all sessions
-# Env override: PRM_HARD_STOP_ENABLED=1 or CIRCUIT_BREAKER_ENABLED=1 to re-enable
-PRM_HARD_STOP_ENABLED = os.getenv("PRM_HARD_STOP_ENABLED", "0").lower() not in ("0", "false", "off", "")
-CIRCUIT_BREAKER_ENABLED = os.getenv("CIRCUIT_BREAKER_ENABLED", "0").lower() not in ("0", "false", "off", "")
+# Risk safety rails — DEFAULT ON (audit remediation 2026-10-11, phase 1).
+# Env override: PRM_HARD_STOP_ENABLED=0 or CIRCUIT_BREAKER_ENABLED=0 to disable.
+# Rationale (audit finding F1): the previous defaults (off, with loss limits
+# widened to 100%) meant a configuration could look risk-managed while the
+# active execution path enforced nothing. Safety limits must be enforced by
+# the implementation, not opt-in via environment.
+PRM_HARD_STOP_ENABLED = os.getenv("PRM_HARD_STOP_ENABLED", "1").lower() not in ("0", "false", "off", "")
+CIRCUIT_BREAKER_ENABLED = os.getenv("CIRCUIT_BREAKER_ENABLED", "1").lower() not in ("0", "false", "off", "")
 
 # ============================================================================
 # PHASE 4: LIVE CAPITAL GATE & SAFETY RAILS (REFACTORED FOR QUANT OVERHAUL)
@@ -26,8 +30,9 @@ MAX_POSITION_SIZE_PCT = 0.25
 # Absolute maximum concurrent positions
 MAX_CONCURRENT_POSITIONS = 4
 
-# Circuit breakers (Halt trading if drawdown exceeds these thresholds) — DISABLED per user 2026-08-21
-# Was 0.05/0.10/0.15 — now 1.0 (100% loss allowed) when CIRCUIT_BREAKER_ENABLED=False
+# Circuit breakers (Halt trading if drawdown exceeds these thresholds).
+# Defaults are the real limits when CIRCUIT_BREAKER_ENABLED (the default);
+# they widen to 1.0 (100% loss allowed) ONLY on an explicit env opt-out.
 DAILY_LOSS_CIRCUIT_BREAKER_PCT = 0.05 if CIRCUIT_BREAKER_ENABLED else 1.0
 WEEKLY_LOSS_CIRCUIT_BREAKER_PCT = 0.10 if CIRCUIT_BREAKER_ENABLED else 1.0
 MAX_DRAWDOWN_CIRCUIT_BREAKER_PCT = 0.15 if CIRCUIT_BREAKER_ENABLED else 1.0
@@ -65,12 +70,30 @@ class PositionSizer:
         win_loss_ratio: float,
         confidence_score: float,
         regime_volatility_multiplier: float = 1.0,
-        broker_min_increment: float = 1.0
+        broker_min_increment: float = 1.0,
+        open_positions: int = 0
     ) -> float:
         """
         Calculates the fractional share quantity based on Fractional Kelly,
         hard risk caps, and confidence thresholds.
+
+        Audit finding F1: the hard cap now applies by default, negative-edge /
+        invalid inputs are rejected (no fallback to a default risk), and the
+        declared position-size and concurrent-position limits are enforced here
+        rather than merely declared.
         """
+        # Invalid or non-positive inputs -> no trade (never fall back to a
+        # default risk allocation).
+        if not all(isinstance(v, (int, float)) for v in (account_equity, current_price, stop_loss_price)):
+            return 0.0
+        if account_equity <= 0 or current_price <= 0:
+            return 0.0
+        if not 0.0 <= win_rate <= 1.0 or win_loss_ratio <= 0 or confidence_score < 0 or confidence_score > 1:
+            return 0.0
+        # Concurrent-position limit is a portfolio-level rail enforced at sizing.
+        if open_positions >= MAX_CONCURRENT_POSITIONS:
+            return 0.0
+
         # Zero-size trades when confidence is low
         if confidence_score < 0.5:
             return 0.0
@@ -78,10 +101,17 @@ class PositionSizer:
         # Calculate base Kelly risk fraction
         target_risk_pct = PositionSizer.calculate_kelly_fraction(win_rate, win_loss_ratio)
 
+        # A non-positive estimated edge is a no-trade, not a default allocation.
+        if target_risk_pct <= 0:
+            return 0.0
+
         # Adjust risk based on regime volatility (e.g., lower risk in high vol)
         target_risk_pct *= regime_volatility_multiplier
+        if target_risk_pct <= 0:
+            return 0.0
 
-        # Apply HARD constraints — bypassed when PRM_HARD_STOP_ENABLED=False
+        # Apply HARD constraints — enforced by default; env opt-out narrows
+        # only the 1% per-trade risk cap (PRM_HARD_STOP_ENABLED=0).
         if PRM_HARD_STOP_ENABLED:
             actual_risk_pct = min(target_risk_pct, MAX_RISK_PER_TRADE_PCT)
         else:
@@ -103,8 +133,11 @@ class PositionSizer:
         max_notional_allowed = account_equity
         max_qty_from_equity = max_notional_allowed / current_price
 
-        # Take the minimum of risk-based qty and equity-based qty
-        final_target_qty = min(target_qty_from_risk, max_qty_from_equity)
+        # Declared max position size (25% of equity) — enforced, not decorative.
+        max_qty_from_position_cap = (account_equity * MAX_POSITION_SIZE_PCT) / current_price
+
+        # Take the minimum of risk-based qty, equity-based qty and position cap
+        final_target_qty = min(target_qty_from_risk, max_qty_from_equity, max_qty_from_position_cap)
 
         # Apply fractional rounding edge cases
         # floor_to_increment(qty, broker_min_increment)

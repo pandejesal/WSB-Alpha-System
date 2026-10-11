@@ -16,10 +16,24 @@ class BaseBroker(ABC):
         """
 
     @abstractmethod
-    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float | None = None) -> dict[str, Any]:
+    def place_order(self, symbol: str, qty: float, side: str, order_type: str = "market", stop_loss_price: float | None = None, client_order_id: str | None = None) -> dict[str, Any]:
         """
         Places an order.
+
+        client_order_id (audit finding F4): a caller-generated, stable,
+        deterministic idempotency key. Implementations MUST forward it to the
+        venue where supported so a retry after an ambiguous outcome (timeout,
+        crash between submission and durable record) cannot create a duplicate
+        order. A local-only duplicate check is not sufficient.
         """
+
+    def get_order(self, client_order_id: str) -> dict[str, Any] | None:
+        """
+        Look up an order by client_order_id. Optional capability: the default
+        returns None (unknown), which callers must treat as "cannot answer" —
+        never as permission to resubmit.
+        """
+        return None
 
     @abstractmethod
     def get_positions(self) -> list[dict[str, Any]]:

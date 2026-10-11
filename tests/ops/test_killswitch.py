@@ -24,9 +24,18 @@ def test_killswitch_valid_states(tmp_path):
     assert ks.get_state() == "halt_new_orders"
     assert ks.can_trade() is False
 
-    # Set to flat
-    ks.set_state("flat")
-    assert ks.get_state() == "flat"
+    # Set to halt_only (audit F5: renamed from "flat" — it never flattened)
+    ks.set_state("halt_only")
+    assert ks.get_state() == "halt_only"
+    assert ks.can_trade() is False
+
+def test_killswitch_legacy_flat_fails_closed(tmp_path):
+    filepath = str(tmp_path / "ops_state.yaml")
+    with open(filepath, "w") as f:
+        yaml.dump({"state": "flat"}, f)
+    ks = KillSwitch(filepath=filepath)
+    # Legacy "flat" never liquidated anything: mapped to halt_new_orders.
+    assert ks.get_state() == "halt_new_orders"
     assert ks.can_trade() is False
 
 def test_killswitch_invalid_state_ignored(tmp_path):

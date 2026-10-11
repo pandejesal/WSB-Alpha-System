@@ -32,7 +32,12 @@ DASHBOARD_PATH = DATA_DIR / "paper_dashboard.json"
 
 MIN_MONTHS_DEFAULT = 2
 MAX_DD_LIMIT_DEFAULT = 0.15
-OK_ORDER_STATUSES = {"SUBMITTED", "FILLED", "FILLED_PARTIAL", "CANCELED"}
+# Terminal-good order statuses (audit F4 state machine). Anything else —
+# UNKNOWN (ambiguous broker outcome), FAILED, SUBMITTING — counts as a broken
+# execution for the verdict.
+OK_ORDER_STATUSES = {
+    "SUBMITTED", "ACCEPTED", "PARTIAL", "FILLED_PARTIAL", "FILLED", "CANCELLED",
+}
 
 
 def _load(path: Path) -> Any:
@@ -59,10 +64,12 @@ def sleeve_summary(fills_doc: dict | None) -> dict[str, dict]:
     for fill in fills_doc.get("fills", []):
         if fill.get("status") != "FILLED":
             continue
-        key = f"{fill.get('sleeve', 'unknown')}:{fill.get('ticker', '?')}"
+        # Canonical key is sleeve_id; legacy artifacts used sleeve (audit F3).
+        sleeve = fill.get("sleeve_id", fill.get("sleeve", "unknown"))
+        key = f"{sleeve}:{fill.get('ticker', '?')}"
         slot = agg.setdefault(
             key,
-            {"sleeve": fill.get("sleeve"), "ticker": fill.get("ticker"), "net_qty": 0.0, "buy_cost": 0.0, "sell_value": 0.0, "fills": 0},
+            {"sleeve": sleeve, "ticker": fill.get("ticker"), "net_qty": 0.0, "buy_cost": 0.0, "sell_value": 0.0, "fills": 0},
         )
         qty = float(fill.get("qty") or 0.0)
         px = float(fill.get("avg_px") or 0.0)

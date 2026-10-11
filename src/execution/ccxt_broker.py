@@ -79,7 +79,7 @@ class CCXTBroker(BaseBroker):
                 })
         return positions
 
-    def place_order(self, symbol: str, qty: float | None, side: str, order_type: str = 'market', stop_loss_price: float | None = None, reduce_only: bool = False) -> dict:
+    def place_order(self, symbol: str, qty: float | None, side: str, order_type: str = 'market', stop_loss_price: float | None = None, reduce_only: bool = False, client_order_id: str | None = None) -> dict:
         if not self.exchange:
             raise ConnectionError("CCXT exchange not initialized.")
 
@@ -91,6 +91,9 @@ class CCXTBroker(BaseBroker):
             params['stopPrice'] = stop_loss_price
         if reduce_only:
             params['reduceOnly'] = True
+        # Broker-side idempotency key (audit finding F4) where the venue supports it.
+        if client_order_id is not None:
+            params['clientOrderId'] = client_order_id
 
         try:
             order = self.exchange.create_order(

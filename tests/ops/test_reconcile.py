@@ -3,10 +3,18 @@ from unittest.mock import patch
 from scripts.reconcile import run_reconciliation
 
 
+def _fill(ticker: str) -> str:
+    """Canonical broker-confirmed fill record (audit F3)."""
+    return (
+        f'{{"client_order_id": "run-sleeve-{ticker}-0", "sleeve_id": "sleeve_a", '
+        f'"status": "FILLED", "ticker": "{ticker}", "side": "buy", "qty": 1, "avg_px": 100.0}}'
+    )
+
+
 def test_reconciliation_clean_mocked():
     # Since the script hardcodes paths, we mock the file reading directly
     plan_data = '{"targets": [{"ticker": "AAPL"}]}'
-    fills_data = '[{"ticker": "AAPL"}]'
+    fills_data = "[" + _fill("AAPL") + "]"
 
     def mock_open_impl(path, mode="r"):
         from unittest.mock import mock_open
@@ -31,7 +39,7 @@ def test_reconciliation_clean_mocked():
 def test_reconciliation_mismatch_mocked():
     # Plan has AAPL, but fills has MSFT
     plan_data = '{"targets": [{"ticker": "AAPL"}]}'
-    fills_data = '[{"ticker": "MSFT"}]'
+    fills_data = "[" + _fill("MSFT") + "]"
 
     def mock_open_impl(path, mode="r"):
         from unittest.mock import mock_open

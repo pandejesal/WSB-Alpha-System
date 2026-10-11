@@ -4,6 +4,7 @@ import os
 from typing import Any
 
 from src.ops.alerts import AlertManager
+from src.ops.artifacts import extract_fills, is_confirmed_fill, sleeve_of
 from src.ops.killswitch import KillSwitch
 
 logger = logging.getLogger(__name__)
@@ -20,6 +21,11 @@ class GateEvaluator:
     If G1/G2/G3 fail -> CRITICAL alert + auto-halt NEW orders only (never auto-flat).
     evaluate_g1..g7 and evaluate_all are PURE functions of data dictionaries:
     no file I/O, no network, no broker. All I/O lives in main()/load_artifacts().
+
+    Artifact contract (src/ops/artifacts.py): fills is the list extracted from
+    docs/data/ops/fills.json, which PaperExecutor writes as
+    {"run_id": ..., "fills": [...]}. Only broker-confirmed fills (status
+    FILLED/PARTIAL with avg_px) count toward G1/G2; submissions do not.
     """
     def __init__(self, data_dir: str = "docs/data"):
         self.data_dir = data_dir
@@ -27,15 +33,17 @@ class GateEvaluator:
         self.paper_dir = os.path.join(data_dir, "paper")
 
     def evaluate_g1(self, fills: list) -> tuple[bool, int]:
-        """G1: >= 50 paper trades executed by the live system."""
-        count = len(fills or [])
+        """G1: >= 50 broker-confirmed paper trades executed by the live system."""
+        count = len([f for f in (fills or []) if is_confirmed_fill(f)])
         return count >= MIN_PAPER_TRADES, count
 
     def evaluate_g2(self, fills: list) -> tuple[bool, dict[str, int]]:
-        """G2: >= 10 trades per active sleeve (spy_sma200 exempt)."""
+        """G2: >= 10 broker-confirmed trades per active sleeve (spy_sma200 exempt)."""
         counts: dict[str, int] = {}
         for fill in fills or []:
-            sleeve = fill.get("sleeve_id")
+            if not is_confirmed_fill(fill):
+                continue
+            sleeve = sleeve_of(fill)
             if sleeve:
                 counts[sleeve] = counts.get(sleeve, 0) + 1
 
@@ -105,15 +113,32 @@ class GateEvaluator:
         }
 
     def load_artifacts(self) -> dict:
-        """Reads all gate inputs from disk (the ONLY I/O surface)."""
+        """Reads all gate inputs from disk (the ONLY I/O surface).
+
+        fills.json is read through src.ops.artifacts.extract_fills so the
+        canonical wrapper shape and per-fill schema are validated here; a
+        malformed artifact fails closed (empty fills -> G1/G2 fail) with an
+        error log rather than silently counting the wrong thing.
+        """
         return {
-            "fills": self._read_json(os.path.join(self.ops_dir, "fills.json")) or [],
+            "fills": self._read_fills(os.path.join(self.ops_dir, "fills.json")),
             "sharpe": self._read_json(os.path.join(self.paper_dir, "sharpe.json")) or {},
             "permutation": self._read_json(os.path.join(self.data_dir, "permutation_study.json")) or {},
             "heartbeats": self._read_json(os.path.join(self.ops_dir, "heartbeat.json")) or {},
             "rehearsal": self._read_json(os.path.join(self.ops_dir, "kill_switch_rehearsal.json")) or {},
             "reconciliation": self._read_json(os.path.join(self.ops_dir, "reconciliation.json")) or {}
         }
+
+    def _read_fills(self, path: str) -> list:
+        """Parse + validate the fills artifact; fail closed to [] on any problem."""
+        raw = self._read_json(path)
+        if raw is None:
+            return []
+        try:
+            return extract_fills(raw)
+        except ValueError as e:
+            logger.error(f"Malformed fills artifact {path}: {e} — failing closed (no confirmed fills).")
+            return []
 
     def _read_json(self, path: str) -> Any:
         if os.path.exists(path):

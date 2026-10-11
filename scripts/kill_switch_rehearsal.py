@@ -1,7 +1,5 @@
 import argparse
-import json
 import logging
-import os
 from datetime import datetime, timezone
 
 from src.ops.audit import write_artifact
@@ -29,12 +27,12 @@ def run_rehearsal(dry_run: bool = False):
     tier2_state = ks.get_state() if not dry_run else "halt_new_orders"
     logger.info(f"Tier-2 state verified: {tier2_state}")
 
-    # Tier-3 rehearsal (simulating manual dispatch flat override)
-    logger.info("Simulating tier-3: setting to flat")
+    # Tier-3 rehearsal (simulating manual dispatch halt-only override)
+    logger.info("Simulating tier-3: setting to halt_only")
     if not dry_run:
-        ks.set_state("flat")
+        ks.set_state("halt_only")
 
-    tier3_state = ks.get_state() if not dry_run else "flat"
+    tier3_state = ks.get_state() if not dry_run else "halt_only"
     logger.info(f"Tier-3 state verified: {tier3_state}")
 
     # Restore
@@ -49,8 +47,9 @@ def run_rehearsal(dry_run: bool = False):
         "dry_run": dry_run,
         "original_state": original_state,
         "tier2_tested": tier2_state == "halt_new_orders",
-        "tier3_tested": tier3_state == "flat",
-        "restored": final_state == original_state
+        "tier3_tested": tier3_state == "halt_only",
+        "restored": final_state == original_state,
+        "note": "halt_only stops new orders; it does NOT flatten positions (audit F5).",
     }
 
     if not dry_run:

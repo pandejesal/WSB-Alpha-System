@@ -19,9 +19,9 @@ class FakeBroker:
     def get_account_balance(self):
         return {"cash": self.cash, "equity": self.equity}
 
-    def place_order(self, symbol, qty, side, order_type="market", stop_loss_price=None, reduce_only=False):
+    def place_order(self, symbol, qty, side, order_type="market", stop_loss_price=None, reduce_only=False, client_order_id=None):
         order_id = f"fake_{len(self.orders)}"
-        self.orders.append({"symbol": symbol, "qty": qty, "side": side})
+        self.orders.append({"symbol": symbol, "qty": qty, "side": side, "client_order_id": client_order_id})
         return {
             "status": "success",
             "order_id": order_id,
